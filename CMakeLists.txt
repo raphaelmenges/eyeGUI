@@ -7,7 +7,7 @@ project(eyeGUILibrary)
 set(LIBNAME eyeGUI)
 
 # Output path
-set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/build/lib/)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build/lib/)
 
 # Activate C++11 in GCC
 IF(CMAKE_COMPILER_IS_GNUCC)
