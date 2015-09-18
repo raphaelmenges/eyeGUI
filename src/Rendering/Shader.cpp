@@ -1,0 +1,99 @@
+//============================================================================
+// Distributed under the MIT License. (See accompanying file LICENSE 
+// or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
+//============================================================================
+
+// Author: Raphael Menges (https://github.com/raphaelmenges)
+
+#include "Shader.h"
+
+#include "External/GLM/glm/gtc/type_ptr.hpp"
+
+#include <fstream>
+
+namespace eyegui
+{
+	Shader::Shader(char const * const pVertexShaderSource, char const * const pFragmentShaderSource)
+	{
+		// Vertex shader
+		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vertexShader, 1, &pVertexShaderSource, NULL);
+		glCompileShader(vertexShader);
+
+		// Fragment shader
+		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fragmentShader, 1, &pFragmentShaderSource, NULL);
+		glCompileShader(fragmentShader);
+
+		// Create program
+		mShaderProgram = glCreateProgram();
+		glAttachShader(mShaderProgram, vertexShader);
+		glAttachShader(mShaderProgram, fragmentShader);
+		glLinkProgram(mShaderProgram);
+
+		// Delete shader
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+
+		// Extract all uniforms of shader
+		int total = -1;
+		glGetProgramiv(mShaderProgram, GL_ACTIVE_UNIFORMS, &total);
+		for (int i = 0; i < total; i++)
+		{
+			// Prepare some values
+			int nameLength = -1;
+			int number = -1;
+			GLenum type = GL_ZERO;
+			char name[100];
+
+			// Get information about uniform
+			glGetActiveUniform(mShaderProgram, GLuint(i), sizeof(name) - 1, &nameLength, &number, &type, name);
+
+			// Add end of string
+			name[nameLength] = 0;
+
+			// Save mapping from name to location in map
+			mUniformLocationCache[name] = glGetUniformLocation(mShaderProgram, name);
+		}
+	}
+
+	Shader::~Shader()
+	{
+		glDeleteProgram(mShaderProgram);
+	}
+
+	void Shader::bind() const
+	{
+		glUseProgram(mShaderProgram);
+	}
+
+	void Shader::fillValue(std::string location, const float rValue) const
+	{
+		glUniform1fv(mUniformLocationCache.at(location), 1, &rValue);
+	}
+
+	void Shader::fillValue(std::string location, const glm::vec2& rValue) const
+	{
+		glUniform2fv(mUniformLocationCache.at(location), 1, glm::value_ptr(rValue));
+	}
+
+	void Shader::fillValue(std::string location, const glm::vec3& rValue) const
+	{
+		glUniform3fv(mUniformLocationCache.at(location), 1, glm::value_ptr(rValue));
+	}
+
+	void Shader::fillValue(std::string location, const glm::vec4& rValue) const
+	{
+		glUniform4fv(mUniformLocationCache.at(location), 1, glm::value_ptr(rValue));
+	}
+
+	void Shader::fillValue(std::string location, const glm::mat4x4& rValue) const
+	{
+		glUniformMatrix4fv(mUniformLocationCache.at(location), 1, GL_FALSE, glm::value_ptr(rValue));
+	}
+
+	GLuint Shader::getShaderProgram() const
+	{
+		return mShaderProgram;
+	}
+}
