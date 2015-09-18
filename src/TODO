@@ -1,0 +1,57 @@
+### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
+- Text rendering using freetype
+- New elements using text rendering
+- Localization using files
+- Floating elements
+  - Extra id map in layout for faster access
+    - Move updating and drawing from layout to new class frame and each layout can have multiple floating frames and one for the layout
+- Changing styles through programming interface
+- New style member: FadeColorMutliplier (used when gaze is not upon the the element)
+- HelloEyeGUI and eyeGUIDemo refactoring..
+- Sensor: instead of real values for penetration: maybe acceleration would be a good idea
+- Maybe make job queue in GUI to enable notification to move layouts
+- BoxButton: enable stretched icons
+- Text input
+
+### VERSION 0.3 [Input] ### (ready for eye browser)
+- More complex input structure and configuration
+  - Mouse
+  - Keyboard
+  - Eyetracker
+  - Brain-computer-interface
+  - Buttons?
+  - Other...
+
+### VERSION 0.4 ### (improvements)
+- Audio
+
+Notes:
+- Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
+- maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
+- Reminder: Parser responsible for value ranges!
+- Precaching of textures (maybe write something to an text file)
+- Event functions, which return boolean telling whether input was processed (mouse, keyboard...eye? brain...? multitouch) -> how to make flexible -> using transferobject?
+- Maybe use sampler states for textures instead of per texture settings
+- Reminder: XML may not contain information about current state (activity, hiding etc!!!)
+- Rasterization of SVGs are depending on DPI at the moment
+- No mixing of buttons / sensors and text. Text should be never penetrateable by gaze (but maybe clickable)
+- Stack
+  - Non used pixels should be better shared among all elements not only the head in stack -> very difficult stuff
+- Reminder: Namespaces easier because Layout and GUI is visible to outer space
+- Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
+- Input
+  - Reminder: can be NULL if irrelevant for Element
+  - At the moment: everything taking place in specialUpdate
+  - Maybe blocks have an option: kill or not kill input (both possible)
+  - is selecting via keyboard input? (at the moment it is not blocked if input is disabled for layout)
+- Text
+	- Tab like button with text (ok, however I decided to make no sensitive area with text...)
+	- Menu
+		- Should have look field for activation -> this field could be box / circle button with icon :)
+	- Tooltips
+	- Make listening elements (analog to notifier template) using pointer, function or method getter to get values like floats or strings for displaying
+- Other
+  - DynamicRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
+
+If bored:
+- Some members of element could be private but getters necessary..
