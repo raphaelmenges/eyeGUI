@@ -32,6 +32,8 @@ namespace eyegui
 		glLinkProgram(mShaderProgram);
 
 		// Delete shader
+		glDetachShader(mShaderProgram, fragmentShader);
+		glDetachShader(mShaderProgram, vertexShader);
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
