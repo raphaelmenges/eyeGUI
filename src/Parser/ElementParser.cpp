@@ -312,14 +312,14 @@ namespace eyegui
 		float padding = parsePercentAttribute("padding", xmlStack);
 		if (padding < 0 || padding > 1)
 		{
-			throwError(OperationNotifier::Operation::PARSING, "Padding of stack not in range of 0% to 100%", filepath);
+			throwError(OperationNotifier::Operation::PARSING, "Padding value of stack not in range of 0% to 100%", filepath);
 		}
 
 		// Get separator
 		float separator = parsePercentAttribute("separator", xmlStack);
 		if (separator < 0 || separator > 1)
 		{
-			throwError(OperationNotifier::Operation::PARSING, "Padding of stack not in range of 0% to 100%", filepath);
+			throwError(OperationNotifier::Operation::PARSING, "Separator value of stack not in range of 0% to 100%", filepath);
 		}
 
 		// Create stack
