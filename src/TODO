@@ -12,6 +12,7 @@
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
 - Text input
+- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
 - More complex input structure and configuration
@@ -50,8 +51,6 @@ Notes:
 		- Should have look field for activation -> this field could be box / circle button with icon :)
 	- Tooltips
 	- Make listening elements (analog to notifier template) using pointer, function or method getter to get values like floats or strings for displaying
-- Other
-  - DynamicRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 
 If bored:
 - Some members of element could be private but getters necessary..
