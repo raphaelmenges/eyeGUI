@@ -137,7 +137,6 @@ namespace eyegui
 			xmlRowCounter = xmlRowCounter->NextSiblingElement();
 		}
 
-
 		// Create grid
 		std::unique_ptr<Grid> upGrid = std::unique_ptr<Grid>(new Grid(id, styleName, pParent, pLayout, pAssetManager, relativeScale, border, rows));
 
