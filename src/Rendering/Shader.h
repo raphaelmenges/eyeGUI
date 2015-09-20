@@ -9,7 +9,7 @@
 #ifndef SHADER_H_
 #define SHADER_H_
 
-#include "External/OpenGLLoader/gl_core_3.3.h"
+#include "External/GLEW/GL/glew.h"
 #include "External/GLM/glm/glm.hpp"
 
 #include <string>

@@ -12,7 +12,7 @@
 #ifndef GL_SETUP_H_
 #define GL_SETUP_H_
 
-#include "External/OpenGLLoader/gl_core_3.3.h"
+#include "External/GLEW/GL/glew.h"
 
 namespace eyegui
 {

@@ -45,9 +45,9 @@ file(GLOB_RECURSE GLM
     "${EXTERNAL_DIR}/GLM/glm/*.hpp")
 include_directories(${EXTERNAL_DIR}/GLM)
 
-# Add OpenGLLoader
-file(GLOB_RECURSE OPEN_GL_LOADER
-    "${EXTERNAL_DIR}/OpenGLLoader/*")
+# Add GLEW
+file(GLOB_RECURSE GLEW
+    "${EXTERNAL_DIR}/GLEW/*")
 
 # Add picoPNG
 file(GLOB_RECURSE PICO_PNG
@@ -63,7 +63,7 @@ set(ALL_CODE
     ${HEADERS}
     ${TINYXML2}
     ${GLM}
-    ${OPEN_GL_LOADER}
+    ${GLEW}
     ${PICO_PNG}
     ${NANO_SVG})
 

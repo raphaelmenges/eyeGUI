@@ -12,7 +12,7 @@
 
 #include "Shader.h"
 #include "Mesh.h"
-#include "External/OpenGLLoader/gl_core_3.3.h"
+#include "External/GLEW/GL/glew.h"
 
 namespace eyegui
 {
