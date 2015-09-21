@@ -5,7 +5,7 @@ This library enables one to load, manipulate and render user interface for eyetr
 Current version on master branch is 0.1 and tested on Linux and Windows. Nexts version will feature floating elements, text rendering and text input using the gaze. At the moment, gaze is simulated using mouse position. This will be changed, as far as i get an eyetracker for testing.
 
 ## Demo
-Video hosted on youtube, click on the preview for viewing. Turn on subtitles for some explanation.
+Video hosted on YouTube, click on the preview for watching. Turn on subtitles for some explanation.
 [![Screenshot](https://raw.githubusercontent.com/wiki/raphaelmenges/eyeGUI/DemoVideoLink.png)](https://youtu.be/niMRX65E7IE)
 
 ## Dependencies
