@@ -9,10 +9,9 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 [![Screenshot](https://raw.githubusercontent.com/wiki/raphaelmenges/eyeGUI/DemoVideoLink.png)](https://youtu.be/niMRX65E7IE)
 
 ## Dependencies
-* GLEW: http://glew.sourceforge.net/
 * NanoSVG: https://github.com/memononen/nanosvg
 * TinyXML2: https://github.com/leethomason/tinyxml2
 * GLM: http://glm.g-truc.net/0.9.7/index.html
 * picoPNG: http://lodev.org/lodepng/
 
-All dependencies are already included inside the folder "External" and should be found by CMake. Keep the licenses in mind when you use this library in your project. At least, the license file of GLEW must be included.
+All dependencies are already included inside the folder "External" and should be found by CMake. Keep the licenses in mind when you use this library in your project. But the chosen dependencies should be no problem if one wants to use just the compiled library without naming anybody.
