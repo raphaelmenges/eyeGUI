@@ -15,3 +15,6 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 * picoPNG: http://lodev.org/lodepng/
 
 All dependencies are already included inside the folder "External" and should be found by CMake. Keep the licenses in mind when you use this library in your project. But the chosen dependencies should be no problem if one wants to use just the compiled library without naming anybody.
+
+## Acknowledgment
+* Great script to create simple, license free OpenGL loader: https://bitbucket.org/alfonse/glloadgen/wiki/Home
