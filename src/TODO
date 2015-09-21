@@ -36,6 +36,7 @@ Notes:
 - Reminder: XML may not contain information about current state (activity, hiding etc!!!)
 - Rasterization of SVGs are depending on DPI at the moment
 - No mixing of buttons / sensors and text. Text should be never penetrateable by gaze (but maybe clickable)
+- Strange or hacky: Since OGL functions are loaded already by the library, what happens in the main program doing the same? Seems to work at least...
 - Stack
   - Non used pixels should be better shared among all elements not only the head in stack -> very difficult stuff
 - Reminder: Namespaces easier because Layout and GUI is visible to outer space
