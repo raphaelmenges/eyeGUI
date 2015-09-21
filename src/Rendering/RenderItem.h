@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -12,39 +12,39 @@
 
 #include "Shader.h"
 #include "Mesh.h"
-#include "External/GLEW/GL/glew.h"
+#include "External/OpenGLLoader/gl_core_3_3.h"
 
 namespace eyegui
 {
-	class RenderItem
-	{
-	public:
+    class RenderItem
+    {
+    public:
 
-		// Constructor
-		RenderItem(Shader* pShader, Mesh* pMesh);
+        // Constructor
+        RenderItem(Shader* pShader, Mesh* pMesh);
 
-		// Destructor
-		virtual ~RenderItem();
+        // Destructor
+        virtual ~RenderItem();
 
-		// Bind whole render item (must used before filling values in shader and drawing)
-		void bind() const;
+        // Bind whole render item (must used before filling values in shader and drawing)
+        void bind() const;
 
-		// Draw
-		void draw() const;
+        // Draw
+        void draw() const;
 
-		// Get pointer to shader
-		Shader* getShader();
+        // Get pointer to shader
+        Shader* getShader();
 
-		// Get pointer to mesh
-		Mesh* getMesh();
+        // Get pointer to mesh
+        Mesh* getMesh();
 
-	private:
+    private:
 
-		// Member
-		Shader* mpShader;
-		Mesh* mpMesh;
-		GLuint mVertexArrayObject;
-	};
+        // Member
+        Shader* mpShader;
+        Mesh* mpMesh;
+        GLuint mVertexArrayObject;
+    };
 }
 
 #endif // RENDER_ITEM_H_

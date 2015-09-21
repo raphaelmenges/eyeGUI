@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -9,7 +9,7 @@
 #ifndef SHADER_H_
 #define SHADER_H_
 
-#include "External/GLEW/GL/glew.h"
+#include "External/OpenGLLoader/gl_core_3_3.h"
 #include "External/GLM/glm/glm.hpp"
 
 #include <string>
@@ -17,35 +17,35 @@
 
 namespace eyegui
 {
-	class Shader
-	{
-	public:
+    class Shader
+    {
+    public:
 
-		// Constructor
-		Shader(char const * const pVertexShader, char const * const pFragmentShader);
+        // Constructor
+        Shader(char const * const pVertexShader, char const * const pFragmentShader);
 
-		// Destructor
-		virtual ~Shader();
+        // Destructor
+        virtual ~Shader();
 
-		// Bind shader for filling uniforms and rendering
-		void bind() const;
+        // Bind shader for filling uniforms and rendering
+        void bind() const;
 
-		// Fill value for rendering
-		void fillValue(std::string location, const float rValue) const;
-		void fillValue(std::string location, const glm::vec2& rValue) const;
-		void fillValue(std::string location, const glm::vec3& rValue) const;
-		void fillValue(std::string location, const glm::vec4& rValue) const;
-		void fillValue(std::string location, const glm::mat4x4& rValue) const;
+        // Fill value for rendering
+        void fillValue(std::string location, const float rValue) const;
+        void fillValue(std::string location, const glm::vec2& rValue) const;
+        void fillValue(std::string location, const glm::vec3& rValue) const;
+        void fillValue(std::string location, const glm::vec4& rValue) const;
+        void fillValue(std::string location, const glm::mat4x4& rValue) const;
 
-		// Getter for handle
-		GLuint getShaderProgram() const;
+        // Getter for handle
+        GLuint getShaderProgram() const;
 
-	private:
+    private:
 
-		// Member
-		GLuint mShaderProgram;
-		std::map<std::string, int> mUniformLocationCache;
-	};
+        // Member
+        GLuint mShaderProgram;
+        std::map<std::string, int> mUniformLocationCache;
+    };
 }
 
 #endif // SHADER_H_

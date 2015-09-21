@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -12,37 +12,40 @@
 #ifndef GL_SETUP_H_
 #define GL_SETUP_H_
 
-#include "External/GLEW/GL/glew.h"
+#include "External/OpenGLLoader/gl_core_3_3.h"
 
 namespace eyegui
 {
-	class GLSetup
-	{
-	public:
+    class GLSetup
+    {
+    public:
 
-		// Store current state and set own
-		void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
+        // Initialization
+        void init();
 
-		// Reset stored state
-		void restore();
+        // Store current state and set own
+        void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
 
-	private:
+        // Reset stored state
+        void restore();
 
-		// Set boolean capability
-		void setCapability(GLenum cap, GLboolean enable) const;
+    private:
 
-		// Member
-		GLint mViewport[4];
-		GLboolean mBlend;
-		GLboolean mDepthMask;
-		GLint mBlendSrc;
-		GLint mBlendDst;
-		GLint mShaderProgram;
-		GLint mVertexArrayObject;
-		GLboolean mTexture2D;
-		GLint mActiveTexture;
-		GLboolean mCulling;
-	};
+        // Set boolean capability
+        void setCapability(GLenum cap, GLboolean enable) const;
+
+        // Member
+        GLint mViewport[4];
+        GLboolean mBlend;
+        GLboolean mDepthMask;
+        GLint mBlendSrc;
+        GLint mBlendDst;
+        GLint mShaderProgram;
+        GLint mVertexArrayObject;
+        GLboolean mTexture2D;
+        GLint mActiveTexture;
+        GLboolean mCulling;
+    };
 }
 
 #endif // GL_SETUP_H_

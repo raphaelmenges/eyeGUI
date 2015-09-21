@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -9,34 +9,34 @@
 #ifndef MESH_H_
 #define MESH_H_
 
-#include "External/GLEW/GL/glew.h"
+#include "External/OpenGLLoader/gl_core_3_3.h"
 
 #include <vector>
 
 namespace eyegui
 {
-	class Mesh
-	{
-	public:
+    class Mesh
+    {
+    public:
 
-		// Constructor
-		Mesh(std::vector<float> const * const pVertices, std::vector<float> const * const pTextureCoordinates);
+        // Constructor
+        Mesh(std::vector<float> const * const pVertices, std::vector<float> const * const pTextureCoordinates);
 
-		// Deconstructor
-		virtual ~Mesh();
+        // Deconstructor
+        virtual ~Mesh();
 
-		// Getter
-		GLuint getVertexCount() const;
-		GLuint getVertexBuffer() const;
-		GLuint getTextureCoordinateBuffer() const;
+        // Getter
+        GLuint getVertexCount() const;
+        GLuint getVertexBuffer() const;
+        GLuint getTextureCoordinateBuffer() const;
 
-	private:
+    private:
 
-		// Members
-		GLuint mVertexCount;
-		GLuint mVertexBuffer;
-		GLuint mTextureCoordinateBuffer;
-	};
+        // Members
+        GLuint mVertexCount;
+        GLuint mVertexBuffer;
+        GLuint mTextureCoordinateBuffer;
+    };
 }
 
 #endif // MESH_H_
