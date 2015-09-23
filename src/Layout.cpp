@@ -26,7 +26,7 @@ namespace eyegui
         mUseInput = true;
         mpSelectedInteractiveElement = NULL;
         mupNotificatons = std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > >(new std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> >);
-        mupMainFrame = std::unique_ptr<Frame>(new Frame(this));
+        mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
 
         // Parse style file
         mStyles = mStylesheetParser.parse(stylesheetFilepath);
@@ -787,6 +787,9 @@ namespace eyegui
                     deselectInteractiveElement();
                 }
             }
+
+            // Kill front elements in frame
+            pTarget->getFrame()->killFrontElementsOfElement(pTarget);
 
             // Remove target and all children from id map
             if (pTarget->getId() != EMPTY_STRING_ATTRIBUTE)

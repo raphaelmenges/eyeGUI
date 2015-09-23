@@ -25,7 +25,12 @@ namespace eyegui
     public:
 
         // Constructor
-        Frame(Layout * const pLayout);
+        Frame(
+            Layout * const pLayout,
+            float relativePositionX,
+            float relativePositionY,
+            float relativeSizeX,
+            float relativeSizeY);
 
         // Destuctor
         virtual ~Frame();
@@ -77,8 +82,12 @@ namespace eyegui
         std::map<Element*, float> mFrontElementAlphas;
         std::vector<std::unique_ptr<Element> > mDyingReplacedElements;
         bool mResizeNecessary;
+        float mRelativePositionX;
+        float mRelativePositionY;
+        float mRelativeSizeX;
+        float mRelativeSizeY;
 
-        // TODO: position and scale (relative!)
+        // TODO: position and scale (relative!)^
     };
 }
 

@@ -12,7 +12,12 @@
 
 namespace eyegui
 {
-    Frame::Frame(Layout * const pLayout)
+    Frame::Frame(
+        Layout * const pLayout,
+        float relativePositionX,
+        float relativePositionY,
+        float relativeSizeX,
+        float relativeSizeY)
     {
         // Initialize members
         mpLayout = pLayout;
@@ -20,6 +25,10 @@ namespace eyegui
         mVisible = true;
         mupRoot = NULL;
         mResizeNecessary = true;
+        mRelativePositionX = relativePositionX;
+        mRelativePositionY = relativePositionY;
+        mRelativeSizeX = relativeSizeX;
+        mRelativeSizeY = relativeSizeY;
     }
 
     Frame::~Frame()
@@ -91,13 +100,19 @@ namespace eyegui
     {
         if (mAlpha > 0  || force)
         {
-            // Use position and scale of frame...
+            // Fetch values from layout
+            int layoutWidth = mpLayout->getLayoutWidth();
+            int layoutHeight = mpLayout->getLayoutHeight();
 
-            // Show attached root centered
-            int width, height;
-            mupRoot->evaluateSize(mpLayout->getLayoutWidth(), mpLayout->getLayoutHeight(), width, height);
-            int deltaX = (mpLayout->getLayoutWidth() - width) / 2;
-            int deltaY = (mpLayout->getLayoutHeight() - height) / 2;
+            // Calculate available width and height
+            int width = mRelativeSizeX * layoutWidth;
+            int height = mRelativeSizeY * layoutHeight;
+            int usedWidth, usedHeight;
+
+            // Show attached element centered
+            mupRoot->evaluateSize(width, height, usedWidth, usedHeight);
+            int deltaX = (layoutWidth - usedWidth) / 2;
+            int deltaY = (layoutHeight - usedHeight) / 2;
             mupRoot->transformAndSize(deltaX, deltaY, width, height);
             mResizeNecessary = false;
         }
