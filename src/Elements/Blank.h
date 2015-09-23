@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -14,37 +14,38 @@
 
 namespace eyegui
 {
-	class Blank : public Element
-	{
-	public:
+    class Blank : public Element
+    {
+    public:
 
-		// Constructor
-		Blank(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout* pLayout,
-			AssetManager* pAssetManager,
-			float relativeScale,
-			float border);
+        // Constructor
+        Blank(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout* pLayout,
+            Frame * pFrame,
+            AssetManager* pAssetManager,
+            float relativeScale,
+            float border);
 
-		// Destructor
-		virtual ~Blank();
+        // Destructor
+        virtual ~Blank();
 
-	protected:
+    protected:
 
-		// Updating filled by subclasses
-		virtual void specialUpdate(float tpf, Input* pInput);
+        // Updating filled by subclasses
+        virtual void specialUpdate(float tpf, Input* pInput);
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize();
 
-		// Reset filld by subclasses
-		virtual void specialReset();
-	};
+        // Reset filld by subclasses
+        virtual void specialReset();
+    };
 }
 
 #endif // BLANK_H_

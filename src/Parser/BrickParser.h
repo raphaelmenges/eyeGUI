@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -13,28 +13,24 @@
 
 namespace eyegui
 {
-	// Forward declaration
-	class GUI;
-	class Layout;
+    class BrickParser
+    {
+    public:
 
-	class BrickParser
-	{
-	public:
+        // Constructor
+        BrickParser();
 
-		// Constructor
-		BrickParser();
+        // Destructor
+        virtual ~BrickParser();
 
-		// Destructor
-		virtual ~BrickParser();
+        // Parsing
+        std::unique_ptr<elementsAndIds> parse(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, Element* pParent, std::string filepath);
 
-		// Parsing
-		std::unique_ptr<elementsAndIds> parse(Layout* pLayout, AssetManager* pAssetManager, Element* pParent, std::string filepath);
+    private:
 
-	private:
-
-		// Member
-		ElementParser mElementParser;
-	};
+        // Member
+        ElementParser mElementParser;
+    };
 }
 
 #endif // BRICK_PARSER_H_

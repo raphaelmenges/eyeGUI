@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -13,30 +13,31 @@
 
 namespace eyegui
 {
-	class BoxButton : public Button
-	{
-	public:
+    class BoxButton : public Button
+    {
+    public:
 
-		// Constructor
-		BoxButton(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout* pLayout,
-			AssetManager* pAssetManager,
-			float relativeScale,
-			float border,
-			std::string iconFilepath,
-			bool isSwitch);
+        // Constructor
+        BoxButton(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout* pLayout,
+            Frame * pFrame,
+            AssetManager* pAssetManager,
+            float relativeScale,
+            float border,
+            std::string iconFilepath,
+            bool isSwitch);
 
-		// Deconstructor
-		~BoxButton();
+        // Deconstructor
+        ~BoxButton();
 
-	protected:
+    protected:
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
-	};
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
+    };
 }
 
 #endif // BOX_BUTTON_H_

@@ -1,10 +1,13 @@
+Working on:
+- Floating elements
+  - Extra id map in layout for faster access
+    - Move updating and drawing from layout to new class frame and each layout can have multiple floating frames and one main for the layout
+
+
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Text rendering using freetype
 - New elements using text rendering
 - Localization using files
-- Floating elements
-  - Extra id map in layout for faster access
-    - Move updating and drawing from layout to new class frame and each layout can have multiple floating frames and one for the layout
 - Changing styles through programming interface
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)
 - HelloEyeGUI and eyeGUIDemo refactoring..
