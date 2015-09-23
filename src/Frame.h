@@ -68,8 +68,8 @@ namespace eyegui
         // Reset elements
         void resetElements();
 
-        // Kill front elements of a element
-        void killFrontElementsOfElement(Element* pTarget);
+        // Remove front elements of a element
+        void removeFrontElementsOfElement(Element* pTarget);
 
     private:
 

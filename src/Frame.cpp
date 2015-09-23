@@ -193,7 +193,7 @@ namespace eyegui
         mupRoot->reset();
     }
 
-    void Frame::killFrontElementsOfElement(Element* pTarget)
+    void Frame::removeFrontElementsOfElement(Element* pTarget)
     {
         // Get rid of front element
         for (Element* pFrontElement : mFrontElements)

@@ -788,8 +788,8 @@ namespace eyegui
                 }
             }
 
-            // Kill front elements in frame
-            pTarget->getFrame()->killFrontElementsOfElement(pTarget);
+            // Remove front elements in frame
+            pTarget->getFrame()->removeFrontElementsOfElement(pTarget);
 
             // Remove target and all children from id map
             if (pTarget->getId() != EMPTY_STRING_ATTRIBUTE)
