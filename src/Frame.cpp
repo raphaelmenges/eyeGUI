@@ -111,9 +111,13 @@ namespace eyegui
 
             // Show attached element centered
             mupRoot->evaluateSize(width, height, usedWidth, usedHeight);
-            int deltaX = (layoutWidth - usedWidth) / 2;
-            int deltaY = (layoutHeight - usedHeight) / 2;
-            mupRoot->transformAndSize(deltaX, deltaY, width, height);
+            float deltaX = (width - usedWidth) / 2;
+            float deltaY = (height - usedHeight) / 2;
+            mupRoot->transformAndSize(
+                mRelativePositionX * layoutWidth + deltaX,
+                mRelativePositionY * layoutHeight + deltaY,
+                usedWidth,
+                usedHeight);
             mResizeNecessary = false;
         }
         else
@@ -125,6 +129,7 @@ namespace eyegui
     void Frame::attachRoot(std::unique_ptr<Element> upElement)
     {
         mupRoot = std::move(upElement);
+        resize();
     }
 
     std::unique_ptr<Element> Frame::replaceRoot(std::unique_ptr<Element> upElement)
@@ -160,7 +165,7 @@ namespace eyegui
 
     void Frame::setVisibility(bool visible, bool setImmediately)
     {
-        // TODO: not used now!
+        // TODO: not accesible through interface
 
         mVisible = visible;
 

@@ -15,10 +15,11 @@
 
 namespace eyegui
 {
-    Layout::Layout(GUI const * pGUI, std::string stylesheetFilepath)
+    Layout::Layout(GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath)
     {
         // Initialize members
         mpGUI = pGUI;
+        mpAssetManager = pAssetManager;
         mupIds = NULL;
         mAlpha = 1;
         mVisible = true;
@@ -101,7 +102,11 @@ namespace eyegui
             }
 
             // Update floating frames
-            // TODO
+            for(int i = mFloatingFrames.size()-1; i>=0; i--)
+            {
+                // Update last added first
+                mFloatingFrames[i]->update(tpf, pInput);
+            }
 
             // Update main frame
             mupMainFrame->update(tpf, pInput);
@@ -113,11 +118,14 @@ namespace eyegui
         // Use alpha because while fading it should still draw
         if (mAlpha > 0)
         {
-           // Draw main frame
-           mupMainFrame->draw();
+            // Draw main frame
+            mupMainFrame->draw();
 
-           // Draw floating frames
-           // TODO
+            // Draw floating frames
+            for(auto& upFrame : mFloatingFrames)
+            {
+                upFrame->draw();
+            }
         }
     }
 
@@ -125,8 +133,15 @@ namespace eyegui
     {
         if (mAlpha > 0 || force)
         {
-            // TODO: Resize floating frames
+            // Resize main frame
             mupMainFrame->resize(force);
+
+            // Resize floating frames
+            for(auto& upFrame : mFloatingFrames)
+            {
+                upFrame->resize(force);
+            }
+
             mResizeNecessary = false;
         }
         else
@@ -144,6 +159,8 @@ namespace eyegui
 
         // Keep track of ids
         mupIds = std::move(upIds);
+
+        // TODO: strange to call it attach root but to delegate it to a frame
     }
 
     void Layout::enqueueNotification(InteractiveElement* pNotifier, InteractiveElement::Notification notification)
@@ -467,7 +484,10 @@ namespace eyegui
     {
         mupMainFrame->resetElements();
 
-        // TODO: Reset elements of floating frames
+        for(auto& upFrame : mFloatingFrames)
+        {
+            upFrame->resetElements();
+        }
     }
 
     bool Layout::checkForId(std::string id) const
@@ -707,6 +727,45 @@ namespace eyegui
         }
     }
 
+    Frame* Layout::addFrameWithBrick(
+            std::string filepath,
+            float relativePositionX,
+            float relativePositionY,
+            float relativeSizeX,
+            float relativeSizeY,
+            bool doFading,
+            bool visible)
+    {
+        // Push back new frame
+        auto upFrame = std::unique_ptr<Frame>(
+                        new Frame(
+                            this,
+                            relativePositionX,
+                            relativePositionY,
+                            relativeSizeX,
+                            relativeSizeY));
+        Frame* pFrame = upFrame.get();
+        mFloatingFrames.push_back(std::move(upFrame));
+
+        // Create brick
+        std::unique_ptr<elementsAndIds> upPair = std::move(
+                mBrickParser.parse(
+                    this,
+                    pFrame,
+                    mpAssetManager,
+                    NULL,
+                    filepath));
+
+        // Attach elements to root of frame
+        pFrame->attachRoot(std::move(upPair->first));
+
+        // Set visibility
+        pFrame->setVisibility(visible, !doFading);
+
+        // Insert ids
+        insertIds(std::move(upPair->second));
+    }
+
     Element* Layout::fetchElement(std::string id) const
     {
         auto it = mupIds->find(id);
@@ -802,8 +861,8 @@ namespace eyegui
                 mupIds->erase(id);
             }
 
-            // Do resizing of whole layout
-            resize();
+            // Do resizing of whole frame
+            pTarget->getFrame()->resize();
 
             // Success
             return true;

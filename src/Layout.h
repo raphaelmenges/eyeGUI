@@ -10,6 +10,7 @@
 // root element and all its children. Elements can register child elements for
 // updating and rendering as front elements, which are then updated before the
 // other elements and drawn at least by the layout.
+// TODO: Frames (ids still here, but no elements...)
 
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
@@ -37,7 +38,7 @@ namespace eyegui
     public:
 
         // Constructor
-        Layout(GUI const * pGUI, std::string stylesheetFilepath);
+        Layout(GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath);
 
         // Destructor
         virtual ~Layout();
@@ -162,6 +163,16 @@ namespace eyegui
         // Replace any element with a brick of elements
         void replaceElementWithBrick(std::string id, bool doFading, std::string filepath);
 
+        // Add frame with brick
+        Frame* addFrameWithBrick(
+            std::string filepath,
+            float relativePositionX,
+            float relativePositionY,
+            float relativeSizeX,
+            float relativeSizeY,
+            bool doFading,
+            bool visible);
+
     private:
 
         // Fetch pointer to element by id
@@ -178,8 +189,10 @@ namespace eyegui
 
         // Members
         GUI const * mpGUI;
+        AssetManager* mpAssetManager;
         std::unique_ptr<Frame> mupMainFrame;
         std::unique_ptr<std::map<std::string, Element*> > mupIds;
+        std::vector<std::unique_ptr<Frame> > mFloatingFrames;
         float mAlpha;
         bool mVisible;
         bool mResizeNecessary;

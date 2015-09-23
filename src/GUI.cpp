@@ -44,10 +44,6 @@ namespace eyegui
             // Move layout and return raw pointer
             Layout* pLayout = upLayout.get();
             mLayouts.push_back(std::move(upLayout));
-
-            // Set visibility (resizing it done there, too)
-            pLayout->setVisibility(visible, true);
-
             return pLayout;
         }
         else

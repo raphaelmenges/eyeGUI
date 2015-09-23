@@ -219,6 +219,20 @@ namespace eyegui
         pLayout->replaceElementWithBrick(id, doFading, filepath);
     }
 
+    Frame* addFrameWithBrick(
+        Layout* pLayout,
+        std::string filepath,
+        float relativePositionX,
+        float relativePositionY,
+        float relativeSizeX,
+        float relativeSizeY,
+        bool doFading,
+        bool visible)
+    {
+        // TODO: visibilty / fading
+        pLayout->addFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, doFading, visible);
+    }
+
     void setErrorCallback(void(*pCallbackFunction)(std::string))
     {
         OperationNotifier::setErrorCallback(pCallbackFunction);

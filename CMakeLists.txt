@@ -9,9 +9,6 @@ set(LIBNAME eyeGUI)
 # Output path
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build/lib/)
 
-# Copy header to build folder
-file(COPY eyeGUI.h DESTINATION ${CMAKE_BINARY_DIR}/build/include)
-
 # Activate C++11 in GCC
 IF(CMAKE_COMPILER_IS_GNUCC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -44,7 +41,7 @@ file(GLOB_RECURSE TINYXML2
 file(GLOB_RECURSE GLM
     "${EXTERNAL_DIR}/GLM/glm/*.hpp")
 include_directories(${EXTERNAL_DIR}/GLM)
-    
+
 # Add OpenGLLoader
 file(GLOB_RECURSE OpenGLLoader
     "${EXTERNAL_DIR}/OpenGLLoader/*")
@@ -92,3 +89,8 @@ set(ALL_CODE ${ALL_CODE} eyeGUI.h)
 
 # Create library
 add_library(${LIBNAME} STATIC ${ALL_CODE})
+
+# Copy header to build directory
+add_custom_command(TARGET ${LIBNAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${CMAKE_SOURCE_DIR}/eyeGUI.h ${CMAKE_BINARY_DIR}/build/include)
