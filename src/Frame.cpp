@@ -36,11 +36,11 @@ namespace eyegui
         // Nothing to do
     }
 
-    void Frame::update(float tpf, Input* pInput)
+    void Frame::update(float tpf, float alpha, Input* pInput)
     {
         // *** OWN UPDATE ***
 
-        // Update alpha
+        // Update own alpha
         if (mVisible)
         {
             mAlpha += tpf / mpLayout->getConfig()->animationDuration;
@@ -51,11 +51,14 @@ namespace eyegui
         }
         mAlpha = clamp(mAlpha, 0, 1);
 
+        // Combine own alpha with layout's
+        float combinedAlpha = mAlpha * alpha;
+
         // Update root only if own alpha greater zero
-        if (mAlpha > 0)
+        if (combinedAlpha > 0)
         {
             // Do not use input if still fading
-            if (mAlpha < 1)
+            if (combinedAlpha < 1)
             {
                 pInput = NULL;
             }
@@ -63,13 +66,13 @@ namespace eyegui
             // Update front elements (other way than expected because inner ones are added first)
             for (int i = 0; i < mFrontElements.size(); i++)
             {
-                // Alpha value final, do not multiply with mAlpha
+                // Alpha value final, do not multiply with mAlpha or combined alpha
                 Element* pElement = mFrontElements[i];
                 pElement->update(tpf, mFrontElementAlphas[pElement], pInput);
             }
 
             // Update standard elements
-            mupRoot->update(tpf, mAlpha, pInput);
+            mupRoot->update(tpf, combinedAlpha, pInput);
         }
 
         // *** DELETION OF REPLACED ELEMENTS ***

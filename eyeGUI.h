@@ -198,7 +198,7 @@ namespace eyegui
     */
     void setElementActivity(Layout* pLayout, std::string id, bool active, bool setImmediately = false);
 
-    //! Toogle activity of element.
+    //! Toggle activity of element.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
@@ -395,7 +395,7 @@ namespace eyegui
     */
     void replaceElementWithBrick(Layout* pLayout, std::string id, bool doFading, std::string filepath);
 
-    //! Adds floating frame with brick inside
+    //! Creates floating frame with brick inside
     /*!
       \param pLayout pointer to layout.
       \param dpFading indicated, whether frame should fade in.
@@ -405,9 +405,9 @@ namespace eyegui
       \param relativeSizeX initial relative x size
       \param relativeSizeY initial relative y size
       \param visible indicates, whether frame should be visible or not
-      \return pointer to added frame
+      \return index of created floating frame
     */
-    Frame* addFrameWithBrick(
+    unsigned int addFloatingFrameWithBrick(
         Layout* pLayout,
         std::string filepath,
         float relativePositionX,
@@ -416,6 +416,16 @@ namespace eyegui
         float relativeSizeY,
         bool doFading,
         bool visible = true);
+
+    //! Set visibility of floating frame.
+    /*!
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \param visible is a bool value to set visibility.
+      \param reset indicates whether all elements in layout should be reset.
+      \param setImmediately prohibits fading.
+    */
+    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset = false, bool setImmediately = false);
 
     //! Set error callback function.
     /*!

@@ -219,7 +219,7 @@ namespace eyegui
         pLayout->replaceElementWithBrick(id, doFading, filepath);
     }
 
-    Frame* addFrameWithBrick(
+    unsigned int addFloatingFrameWithBrick(
         Layout* pLayout,
         std::string filepath,
         float relativePositionX,
@@ -230,7 +230,17 @@ namespace eyegui
         bool visible)
     {
         // TODO: visibilty / fading
-        pLayout->addFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, doFading, visible);
+        return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, doFading, visible);
+    }
+
+    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool setImmediately)
+    {
+        pLayout->setVisibiltyOfFloatingFrame(frameIndex, visible, setImmediately);
+
+        if (reset)
+        {
+            pLayout->resetFloatingFramesElements(frameIndex);
+        }
     }
 
     void setErrorCallback(void(*pCallbackFunction)(std::string))

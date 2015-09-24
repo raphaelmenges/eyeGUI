@@ -36,7 +36,7 @@ namespace eyegui
         virtual ~Frame();
 
         // Updating
-        void update(float tpf, Input* pInput);
+        void update(float tpf, float alpha, Input* pInput);
 
         // Drawing
         void draw() const;

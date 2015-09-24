@@ -105,11 +105,11 @@ namespace eyegui
             for(int i = mFloatingFrames.size()-1; i>=0; i--)
             {
                 // Update last added first
-                mFloatingFrames[i]->update(tpf, pInput);
+                mFloatingFrames[i]->update(tpf, mAlpha, pInput);
             }
 
             // Update main frame
-            mupMainFrame->update(tpf, pInput);
+            mupMainFrame->update(tpf, mAlpha, pInput);
         }
     }
 
@@ -727,7 +727,7 @@ namespace eyegui
         }
     }
 
-    Frame* Layout::addFrameWithBrick(
+    unsigned int Layout::addFloatingFrameWithBrick(
             std::string filepath,
             float relativePositionX,
             float relativePositionY,
@@ -745,6 +745,8 @@ namespace eyegui
                             relativeSizeX,
                             relativeSizeY));
         Frame* pFrame = upFrame.get();
+
+        // TODO: when floating frame deleted, overwrite with new if new added
         mFloatingFrames.push_back(std::move(upFrame));
 
         // Create brick
@@ -764,6 +766,27 @@ namespace eyegui
 
         // Insert ids
         insertIds(std::move(upPair->second));
+
+        // Return index
+        return mFloatingFrames.size()-1;
+    }
+
+    void Layout::setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool setImmediately)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if(pFrame != NULL)
+        {
+            pFrame->setVisibility(visible, setImmediately);
+        }
+    }
+
+    void Layout::resetFloatingFramesElements(uint frameIndex)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if(pFrame != NULL)
+        {
+            pFrame->resetElements();
+        }
     }
 
     Element* Layout::fetchElement(std::string id) const
@@ -895,5 +918,21 @@ namespace eyegui
         {
             throwError(OperationNotifier::Operation::RUNTIME, "Ids are no more unique");
         }
+    }
+
+    Frame* Layout::fetchFloatingFrame(uint frameIndex)
+    {
+        Frame* pFrame = NULL;
+        if(frameIndex < mFloatingFrames.size())
+        {
+            pFrame =  mFloatingFrames[frameIndex].get();
+        }
+
+        if(pFrame == NULL)
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find floating frame with index: " + frameIndex);
+        }
+
+        return pFrame;
     }
 }

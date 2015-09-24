@@ -163,8 +163,8 @@ namespace eyegui
         // Replace any element with a brick of elements
         void replaceElementWithBrick(std::string id, bool doFading, std::string filepath);
 
-        // Add frame with brick
-        Frame* addFrameWithBrick(
+        // Add floating frame with brick
+        unsigned int addFloatingFrameWithBrick(
             std::string filepath,
             float relativePositionX,
             float relativePositionY,
@@ -172,6 +172,12 @@ namespace eyegui
             float relativeSizeY,
             bool doFading,
             bool visible);
+
+        // Set visibilty of floating frame
+        void setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool setImmediately);
+
+        // Reset elements of floating frame
+        void resetFloatingFramesElements(uint frameIndex);
 
     private:
 
@@ -186,6 +192,9 @@ namespace eyegui
 
         // Insert map of ids
         void insertIds(std::unique_ptr<idMap> upIdMap);
+
+        // Fetch pointer to frame
+        Frame* fetchFloatingFrame(uint frameIndex);
 
         // Members
         GUI const * mpGUI;
