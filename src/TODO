@@ -20,6 +20,7 @@ Working on:
 - BoxButton: enable stretched icons
 - Text input
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
+- Overwork CMakeLists! Probably, unecessary sourcing instead of including
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
 - More complex input structure and configuration
