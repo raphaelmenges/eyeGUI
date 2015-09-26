@@ -93,4 +93,4 @@ add_library(${LIBNAME} STATIC ${ALL_CODE})
 # Copy header to build directory
 add_custom_command(TARGET ${LIBNAME} PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_SOURCE_DIR}/eyeGUI.h ${CMAKE_BINARY_DIR}/build/include)
+    ${CMAKE_SOURCE_DIR}/eyeGUI.h ${CMAKE_BINARY_DIR}/build/include/eyeGUI.h)

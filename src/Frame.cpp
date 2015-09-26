@@ -108,17 +108,17 @@ namespace eyegui
             int layoutHeight = mpLayout->getLayoutHeight();
 
             // Calculate available width and height
-            int width = mRelativeSizeX * layoutWidth;
-            int height = mRelativeSizeY * layoutHeight;
+            int width = (int)(mRelativeSizeX * layoutWidth);
+            int height = (int)(mRelativeSizeY * layoutHeight);
             int usedWidth, usedHeight;
 
             // Show attached element centered
             mupRoot->evaluateSize(width, height, usedWidth, usedHeight);
-            float deltaX = (width - usedWidth) / 2;
-            float deltaY = (height - usedHeight) / 2;
+            float deltaX = (width - usedWidth) / 2.0f;
+            float deltaY = (height - usedHeight) / 2.0f;
             mupRoot->transformAndSize(
-                mRelativePositionX * layoutWidth + deltaX,
-                mRelativePositionY * layoutHeight + deltaY,
+                (int)(mRelativePositionX * layoutWidth + deltaX),
+                (int)(mRelativePositionY * layoutHeight + deltaY),
                 usedWidth,
                 usedHeight);
             mResizeNecessary = false;
@@ -193,7 +193,7 @@ namespace eyegui
 
     InteractiveElement* Frame::getFirstInteractiveElement()
     {
-        mupRoot->nextInteractiveElement();
+        return mupRoot->nextInteractiveElement();
     }
 
     void Frame::resetElements()

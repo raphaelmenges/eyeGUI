@@ -102,7 +102,7 @@ namespace eyegui
             }
 
             // Update floating frames
-            for(int i = mFloatingFrames.size()-1; i>=0; i--)
+            for(int i = (int)(mFloatingFrames.size())-1; i>=0; i--)
             {
                 // Update last added first
                 mFloatingFrames[i]->update(tpf, mAlpha, pInput);
@@ -768,7 +768,7 @@ namespace eyegui
         insertIds(std::move(upPair->second));
 
         // Return index
-        return mFloatingFrames.size()-1;
+        return (int)(mFloatingFrames.size())-1;
     }
 
     void Layout::setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool setImmediately)
