@@ -343,11 +343,11 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param fade indicates, whether replaced element should fade.
       \param filepath is the path to the image used in the picture element.
       \param alignment is the inner alignment of the picture.
+	  \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithPicture(Layout* pLayout, std::string id, bool fade, std::string filepath, PictureAlignment alignment);
+    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, PictureAlignment alignment, bool fade = false);
 
     //! Replace element with blank.
     /*!
@@ -361,50 +361,50 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param fade indicates, whether replaced element should fade.
       \param iconFilepath path to image which should be used as icon.
       \param isSwitch indicates, whether button should be a switch.
+	  \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithCircleButton(Layout* pLayout, std::string id, bool fade, std::string iconFilepath, bool isSwitch = false);
+    void replaceElementWithCircleButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch = false, bool fade = false);
 
     //! Replace element with box button.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param fade indicates, whether replaced element should fade.
       \param iconFilepath path to image which should be used as icon.
       \param isSwitch indicates, whether button should be a switch.
+	  \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWitBoxButton(Layout* pLayout, std::string id, bool fade, std::string iconFilepath, bool isSwitch = false);
+    void replaceElementWitBoxButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch = false, bool fade = false);
 
     //! Replace element with sensor.
     /*!
       \param pLayout pointer to layout.
-      \param id is the unique id of an element.
-      \param fade indicates, whether replaced element should fade.
+      \param id is the unique id of an element.  
       \param iconFilepath path to image which should be used as icon.
+	  \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWitSensor(Layout* pLayout, std::string id, bool fade, std::string iconFilepath);
+    void replaceElementWitSensor(Layout* pLayout, std::string id, std::string iconFilepath, bool fade = false);
 
     //! Replace element with brick.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param fade indicates, whether replaced element should fade.
       \param filepath is path to brick xml file.
+	  \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBrick(Layout* pLayout, std::string id, bool fade, std::string filepath);
+    void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade);
 
     //! Creates floating frame with brick inside
     /*!
       \param pLayout pointer to layout.
-      \param fade indicates, whether frame should fade in.
       \param filepath is path to brick xml file.
       \param relativePositionX initial relative x position.
       \param relativePositionY initial relative y position.
       \param relativeSizeX initial relative x size.
       \param relativeSizeY initial relative y size.
       \param visible indicates, whether frame should be visible or not.
+	  \param fade indicates, whether frame should fade in.
       \return index of created floating frame.
     */
     unsigned int addFloatingFrameWithBrick(
@@ -414,8 +414,8 @@ namespace eyegui
         float relativePositionY,
         float relativeSizeX,
         float relativeSizeY,
-        bool fade,
-        bool visible = true);
+        bool visible = true,
+		bool fade = false);
 
     //! Set visibility of floating frame.
     /*!

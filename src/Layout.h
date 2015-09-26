@@ -146,22 +146,22 @@ namespace eyegui
         void replaceElementWithBlock(std::string id, bool fade);
 
         // Replace any element with picture
-        void replaceElementWithPicture(std::string id, bool fade, std::string filepath, PictureAlignment alignment);
+        void replaceElementWithPicture(std::string id, std::string filepath, PictureAlignment alignment, bool fade);
 
         // Replace any element with blank
         void replaceElementWithBlank(std::string id, bool fade);
 
         // Replace any element with circle button
-        void replaceElementWithCircleButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch);
+        void replaceElementWithCircleButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade);
 
         // Replace any element with box button
-        void replaceElementWitBoxButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch);
+        void replaceElementWitBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade);
 
         // Replace any element with sensor
-        void replaceElementWitSensor(std::string id, bool fade, std::string iconFilepath);
+        void replaceElementWitSensor(std::string id, std::string iconFilepath, bool fade);
 
         // Replace any element with a brick of elements
-        void replaceElementWithBrick(std::string id, bool fade, std::string filepath);
+        void replaceElementWithBrick(std::string id, std::string filepath, bool fade);
 
         // Add floating frame with brick
         uint addFloatingFrameWithBrick(
@@ -170,8 +170,8 @@ namespace eyegui
             float relativePositionY,
             float relativeSizeX,
             float relativeSizeY,
-            bool fade,
-            bool visible);
+            bool visible,
+			bool fade);
 
         // Set visibilty of floating frame
         void setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool fade);

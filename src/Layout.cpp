@@ -636,7 +636,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithPicture(std::string id, bool fade, std::string filepath, PictureAlignment alignment)
+    void Layout::replaceElementWithPicture(std::string id, std::string filepath, PictureAlignment alignment, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -698,7 +698,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithCircleButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch)
+    void Layout::replaceElementWithCircleButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -730,7 +730,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWitBoxButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch)
+    void Layout::replaceElementWitBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -762,7 +762,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWitSensor(std::string id, bool fade, std::string iconFilepath)
+    void Layout::replaceElementWitSensor(std::string id, std::string iconFilepath, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -793,7 +793,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithBrick(std::string id, bool fade, std::string filepath)
+    void Layout::replaceElementWithBrick(std::string id, std::string filepath, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -822,8 +822,8 @@ namespace eyegui
             float relativePositionY,
             float relativeSizeX,
             float relativeSizeY,
-            bool fade,
-            bool visible)
+            bool visible,
+			bool fade)
     {
         // Push back new frame
         auto upFrame = std::unique_ptr<Frame>(

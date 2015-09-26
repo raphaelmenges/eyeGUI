@@ -1,9 +1,8 @@
 Working on:
-- "doFading" to "fade" in interface and move it to the end of parameters with default value of false
+- Test changes in demo
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
-- setVisibilit: reset and setImmediately should be in another order
 - Text rendering using freetype
 - New elements using text rendering
 - Localization using files
