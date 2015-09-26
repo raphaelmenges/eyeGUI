@@ -87,6 +87,13 @@ namespace eyegui
 		}
 		mDyingFloatingFramesIndices.clear();
 
+		// *** RESIZING ***
+
+		if (mVisible && mResizeNecessary)
+		{
+			resize(true);
+		}
+
         // *** OWN UPDATE ***
 
         // Update alpha
@@ -251,12 +258,6 @@ namespace eyegui
     void Layout::setVisibility(bool visible, bool setImmediately)
     {
         mVisible = visible;
-
-        // If visible now and resize is necessary, resize!
-        if (mVisible && mResizeNecessary)
-        {
-            resize(true);
-        }
 
         if (setImmediately)
         {
@@ -868,6 +869,42 @@ namespace eyegui
 			{
 				mDyingFloatingFramesIndices.push_back(frameIndex);
 			}
+		}
+	}
+
+	void Layout::translateFloatingFrame(uint frameIndex, float translateX, float translateY)
+	{
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+		if (pFrame != NULL)
+		{
+			pFrame->translate(translateX, translateY);
+		}
+	}
+
+	void Layout::scaleFloatingFrame(uint frameIndex, float scaleX, float scaleY)
+	{
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+		if (pFrame != NULL)
+		{
+			pFrame->scale(scaleX, scaleY);
+		}
+	}
+
+	void Layout::setPositionOfFloatingFrame(uint frameIndex, float relativePositionX, float relativePositionY)
+	{
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+		if (pFrame != NULL)
+		{
+			pFrame->setPosition(relativePositionX, relativePositionY);
+		}
+	}
+
+	void Layout::setSizeOfFloatingFrame(uint frameIndex, float relativeSizeX, float relativeSizeY)
+	{
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+		if (pFrame != NULL)
+		{
+			pFrame->setSize(relativeSizeX, relativeSizeY);
 		}
 	}
 

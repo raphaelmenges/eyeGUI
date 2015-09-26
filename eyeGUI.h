@@ -400,12 +400,12 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param dpFading indicated, whether frame should fade in.
       \param filepath is path to brick xml file.
-      \param relativePositionX initial relative x position
-      \param relativePositionY initial relative y position
-      \param relativeSizeX initial relative x size
-      \param relativeSizeY initial relative y size
-      \param visible indicates, whether frame should be visible or not
-      \return index of created floating frame
+      \param relativePositionX initial relative x position.
+      \param relativePositionY initial relative y position.
+      \param relativeSizeX initial relative x size.
+      \param relativeSizeY initial relative y size.
+      \param visible indicates, whether frame should be visible or not.
+      \return index of created floating frame.
     */
     unsigned int addFloatingFrameWithBrick(
         Layout* pLayout,
@@ -434,6 +434,42 @@ namespace eyegui
 	\param fade indicates, whether floating frame should fade out.
 	*/
 	void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade = false);
+
+	//! Translates floating frame
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	\param translateX amount of translation in x direction.
+	\param translateY amount of translation in y direction.
+	*/
+	void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY);
+
+	//! Scales floating frame
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	\param scaleX scaling in x direction.
+	\param scaleY scaling in y direction.
+	*/
+	void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY);
+
+	//! Set relative position of floating frame
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	\param relativePositionX relative x position.
+	\param relativePositionY relative y position.
+	*/
+	void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY);
+
+	//! Set relative size of floating frame
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	\param relativeSizeX relative x size.
+	\param relativeSizeY relative y size.
+	*/
+	void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY);
 
     //! Set error callback function.
     /*!

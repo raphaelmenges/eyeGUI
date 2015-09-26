@@ -182,7 +182,17 @@ namespace eyegui
 		// Remove floating frame
 		void removeFloatingFrame(uint frameIndex, bool fade);
 
-		// TODO: move floating frame, translate floating frame, scale floating frame, setPosition / setSize
+		// Translate floating frame
+		void translateFloatingFrame(uint frameIndex, float translateX, float translateY);
+
+		// Scale floating frame
+		void scaleFloatingFrame(uint frameIndex, float scaleX, float scaleY);
+
+		// Set position of floating frame
+		void setPositionOfFloatingFrame(uint frameIndex, float relativePositionX, float relativePositionY);
+
+		// Set size of floating frame
+		void setSizeOfFloatingFrame(uint frameIndex, float relativeSizeX, float relativeSizeY);
 
     private:
 

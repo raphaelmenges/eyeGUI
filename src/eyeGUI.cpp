@@ -248,6 +248,26 @@ namespace eyegui
 		pLayout->removeFloatingFrame(frameIndex, fade);
 	}
 
+	void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY)
+	{
+		pLayout->translateFloatingFrame(frameIndex, translateX, translateY);
+	}
+
+	void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY)
+	{
+		pLayout->scaleFloatingFrame(frameIndex, scaleX, scaleY);
+	}
+
+	void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY)
+	{
+		pLayout->setPositionOfFloatingFrame(frameIndex, relativePositionX, relativePositionY);
+	}
+
+	void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY)
+	{
+		pLayout->setSizeOfFloatingFrame(frameIndex, relativeSizeX, relativeSizeY);
+	}
+
     void setErrorCallback(void(*pCallbackFunction)(std::string))
     {
         OperationNotifier::setErrorCallback(pCallbackFunction);

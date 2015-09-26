@@ -87,7 +87,22 @@ namespace eyegui
 		// Is removed?
 		bool isRemoved() const;
 
+		// Translation
+		void translate(float translateX, float translateY);
+
+		// Scaling
+		void scale(float scaleX, float scaleY);
+
+		// Set position
+		void setPosition(float relativePositionX, float relativePositionY);
+
+		// Set size
+		void setSize(float relativeSizeX, float relativeSizeY);
+
     private:
+
+		// Clamp size
+		void clampSize();
 
         // Members
         Layout const * mpLayout;

@@ -32,6 +32,8 @@ namespace eyegui
         mRelativeSizeX = relativeSizeX;
         mRelativeSizeY = relativeSizeY;
 		mRemoved = false;
+
+		clampSize();
     }
 
     Frame::~Frame()
@@ -42,6 +44,12 @@ namespace eyegui
     void Frame::update(float tpf, float alpha, Input* pInput)
     {
         // *** OWN UPDATE ***
+
+		// If visible now and resize is necessary, resize!
+		if (mVisible && mResizeNecessary)
+		{
+			resize(true);
+		}
 
         // Update own alpha
 		if (mVisible)
@@ -171,15 +179,7 @@ namespace eyegui
 
     void Frame::setVisibility(bool visible, bool setImmediately)
     {
-        // TODO: not accesible through interface
-
 		mVisible = visible;
-
-		// If visible now and resize is necessary, resize!
-		if (mVisible && mResizeNecessary)
-		{
-			resize(true);
-		}
 
 		if (setImmediately)
 		{
@@ -256,5 +256,39 @@ namespace eyegui
 	bool Frame::isRemoved() const
 	{
 		return mRemoved;
+	}
+
+	void Frame::translate(float translateX, float translateY)
+	{
+		mRelativePositionX += translateX;
+		mRelativePositionY += translateY;
+		mResizeNecessary = true;
+	}
+
+	void Frame::scale(float scaleX, float scaleY)
+	{
+		mRelativeSizeX *= scaleX;
+		mRelativeSizeY *= scaleY;
+		clampSize();
+		mResizeNecessary = true;
+	}
+
+	void Frame::setPosition(float relativePositionX, float relativePositionY)
+	{
+		mRelativePositionX = relativePositionX;
+		mRelativePositionY = relativePositionY;
+	}
+
+	void Frame::setSize(float relativeSizeX, float relativeSizeY)
+	{
+		mRelativeSizeX = relativeSizeX;
+		mRelativeSizeY = relativeSizeY;
+		clampSize();
+	}
+
+	void Frame::clampSize()
+	{
+		mRelativeSizeX = std::max(mRelativeSizeX, 0.0f);
+		mRelativeSizeY = std::max(mRelativeSizeY, 0.0f);
 	}
 }
