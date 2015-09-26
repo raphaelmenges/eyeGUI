@@ -243,6 +243,11 @@ namespace eyegui
         }
     }
 
+	void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade)
+	{
+		pLayout->removeFloatingFrame(frameIndex, fade);
+	}
+
     void setErrorCallback(void(*pCallbackFunction)(std::string))
     {
         OperationNotifier::setErrorCallback(pCallbackFunction);

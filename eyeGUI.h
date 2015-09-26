@@ -427,6 +427,14 @@ namespace eyegui
     */
     void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset = false, bool setImmediately = false);
 
+	//! Removes floating frame from layout.
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	\param fade indicates, whether floating frame should fade out.
+	*/
+	void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade = false);
+
     //! Set error callback function.
     /*!
       \param pCallbackFunction is function pointer to function which should be called back.

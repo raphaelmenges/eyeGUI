@@ -4,7 +4,7 @@ Working on:
   - Moving order of floating frames
   - Translation / Rotation / Scaling
   - Strange: doFading VS setImmediately in setter for visibility...
-  - "doFading" to "fade" in interface
+  - "doFading" to "fade" in interface and move it to the end of parameters with default value of false
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
@@ -21,6 +21,7 @@ Working on:
 - Text input
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Overwork CMakeLists! Probably, unecessary sourcing instead of including
+- Notification into own class and layout as const pointer
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
 - More complex input structure and configuration

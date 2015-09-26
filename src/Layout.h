@@ -164,7 +164,7 @@ namespace eyegui
         void replaceElementWithBrick(std::string id, bool doFading, std::string filepath);
 
         // Add floating frame with brick
-        unsigned int addFloatingFrameWithBrick(
+        uint addFloatingFrameWithBrick(
             std::string filepath,
             float relativePositionX,
             float relativePositionY,
@@ -178,6 +178,11 @@ namespace eyegui
 
         // Reset elements of floating frame
         void resetFloatingFramesElements(uint frameIndex);
+
+		// Remove floating frame
+		void removeFloatingFrame(uint frameIndex, bool fade);
+
+		// TODO: move floating frame, translate floating frame, scale floating frame, setPosition / setSize
 
     private:
 
@@ -202,6 +207,7 @@ namespace eyegui
         std::unique_ptr<Frame> mupMainFrame;
         std::unique_ptr<std::map<std::string, Element*> > mupIds;
         std::vector<std::unique_ptr<Frame> > mFloatingFrames;
+		std::vector<int> mDyingFloatingFramesIndices;
         float mAlpha;
         bool mVisible;
         bool mResizeNecessary;

@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <map>
+#include <set>
 
 namespace eyegui
 {
@@ -63,7 +64,7 @@ namespace eyegui
         void setVisibility(bool visible, bool setImmediately);
 
         // Get first interactive element. Returns null, if none found
-        InteractiveElement* getFirstInteractiveElement();
+        InteractiveElement* getFirstInteractiveElement() const;
 
         // Reset elements
         void resetElements();
@@ -71,12 +72,28 @@ namespace eyegui
         // Remove front elements of a element
         void removeFrontElementsOfElement(Element* pTarget);
 
+		// Get all elements' ids
+		std::set<std::string> getAllElementsIds() const;
+
+		// Set frame's alpha
+		void setFrameAlpha(float alpha);
+
+		// Get frame's alpha
+		float getFrameAlpha() const;
+
+		// Set removed
+		void setRemoved();
+
+		// Is removed?
+		bool isRemoved() const;
+
     private:
 
         // Members
         Layout const * mpLayout;
         std::unique_ptr<Element> mupRoot;
-        float mAlpha;
+        float mFrameAlpha;
+		float mCombinedAlpha;
         bool mVisible;
         std::vector<Element*> mFrontElements;
         std::map<Element*, float> mFrontElementAlphas;
@@ -86,8 +103,7 @@ namespace eyegui
         float mRelativePositionY;
         float mRelativeSizeX;
         float mRelativeSizeY;
-
-        // TODO: position and scale (relative!)^
+		bool mRemoved;
     };
 }
 

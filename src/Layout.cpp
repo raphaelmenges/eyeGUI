@@ -13,6 +13,8 @@
 #include "Defines.h"
 #include "OperationNotifier.h"
 
+#include <algorithm>
+
 namespace eyegui
 {
     Layout::Layout(GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath)
@@ -77,6 +79,14 @@ namespace eyegui
             }
         }
 
+		// *** DELETION OF REMOVED FLOATING FRAMES ***
+
+		for (int i : mDyingFloatingFramesIndices)
+		{
+			mFloatingFrames[i].reset(NULL);
+		}
+		mDyingFloatingFramesIndices.clear();
+
         // *** OWN UPDATE ***
 
         // Update alpha
@@ -92,7 +102,7 @@ namespace eyegui
 
         // *** UPDATE FRAMES ***
 
-         // Update root only if own alpha greater zero
+        // Update root only if own alpha greater zero
         if (mAlpha > 0)
         {
             // Do not use input if still fading
@@ -105,7 +115,31 @@ namespace eyegui
             for(int i = (int)(mFloatingFrames.size())-1; i>=0; i--)
             {
                 // Update last added first
-                mFloatingFrames[i]->update(tpf, mAlpha, pInput);
+				Frame* pFrame = mFloatingFrames[i].get();
+				if (pFrame != NULL)
+				{
+					if (pFrame->isRemoved())
+					{
+						// Do fading
+						float fadingAlpha = pFrame->getFrameAlpha() - (tpf / getConfig()->animationDuration);
+						fadingAlpha = clamp(fadingAlpha, 0, 1);
+						pFrame->setFrameAlpha(fadingAlpha);
+						
+						// Update
+						pFrame->update(tpf, mAlpha, NULL);
+
+						// Delete frame in next update
+						if (fadingAlpha <= 0)
+						{
+							mDyingFloatingFramesIndices.push_back(i);
+						}
+					}
+					else
+					{
+						// Standard update
+						pFrame->update(tpf, mAlpha, pInput);
+					}
+				}
             }
 
             // Update main frame
@@ -124,7 +158,11 @@ namespace eyegui
             // Draw floating frames
             for(auto& upFrame : mFloatingFrames)
             {
-                upFrame->draw();
+				Frame* pFrame = upFrame.get();
+				if (pFrame != NULL)
+				{
+					upFrame->draw();
+				}
             }
         }
     }
@@ -727,7 +765,7 @@ namespace eyegui
         }
     }
 
-    unsigned int Layout::addFloatingFrameWithBrick(
+    uint Layout::addFloatingFrameWithBrick(
             std::string filepath,
             float relativePositionX,
             float relativePositionY,
@@ -746,8 +784,30 @@ namespace eyegui
                             relativeSizeY));
         Frame* pFrame = upFrame.get();
 
-        // TODO: when floating frame deleted, overwrite with new if new added
-        mFloatingFrames.push_back(std::move(upFrame));
+		// Go through floating frames and search for free place
+		int freeIndex = -1;
+		for (int i = 0; i < mFloatingFrames.size(); i++)
+		{
+			Frame* pFrame = mFloatingFrames[i].get();
+			if (pFrame == NULL)
+			{
+				freeIndex = i;
+				break;
+			}
+		}
+
+		// Insert new floating frame
+		int frameIndex = -1;
+		if (freeIndex >= 0)
+		{
+			mFloatingFrames[freeIndex] = std::move(upFrame);
+			frameIndex = freeIndex;
+		}
+		else
+		{
+			mFloatingFrames.push_back(std::move(upFrame));
+			frameIndex = (int)(mFloatingFrames.size()) - 1;
+		}
 
         // Create brick
         std::unique_ptr<elementsAndIds> upPair = std::move(
@@ -768,7 +828,7 @@ namespace eyegui
         insertIds(std::move(upPair->second));
 
         // Return index
-        return (int)(mFloatingFrames.size())-1;
+        return frameIndex;
     }
 
     void Layout::setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool setImmediately)
@@ -788,6 +848,28 @@ namespace eyegui
             pFrame->resetElements();
         }
     }
+
+	void Layout::removeFloatingFrame(uint frameIndex, bool fade)
+	{
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+		if (pFrame != NULL)
+		{
+			// Remove ids
+			for (std::string id : pFrame->getAllElementsIds())
+			{
+				mupIds->erase(id);
+			}
+
+			// Reminder for removed frame
+			pFrame->setRemoved();
+
+			// Delete frame in next update before drawing
+			if (!fade)
+			{
+				mDyingFloatingFramesIndices.push_back(frameIndex);
+			}
+		}
+	}
 
     Element* Layout::fetchElement(std::string id) const
     {
@@ -925,7 +1007,16 @@ namespace eyegui
         Frame* pFrame = NULL;
         if(frameIndex < mFloatingFrames.size())
         {
-            pFrame =  mFloatingFrames[frameIndex].get();
+			pFrame = mFloatingFrames[frameIndex].get();       
+
+			// Check whether frame was removed
+			if (pFrame != NULL)
+			{
+				if (pFrame->isRemoved())
+				{
+					pFrame = NULL;
+				}
+			}
         }
 
         if(pFrame == NULL)

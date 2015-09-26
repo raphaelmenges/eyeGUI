@@ -21,7 +21,8 @@ namespace eyegui
     {
         // Initialize members
         mpLayout = pLayout;
-        mAlpha = 1;
+        mFrameAlpha = 1;
+		mCombinedAlpha = 1;
         mVisible = true;
         mupRoot = NULL;
         mResizeNecessary = true;
@@ -29,6 +30,7 @@ namespace eyegui
         mRelativePositionY = relativePositionY;
         mRelativeSizeX = relativeSizeX;
         mRelativeSizeY = relativeSizeY;
+		mRemoved = false;
     }
 
     Frame::~Frame()
@@ -41,24 +43,27 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update own alpha
-        if (mVisible)
-        {
-            mAlpha += tpf / mpLayout->getConfig()->animationDuration;
-        }
-        else
-        {
-            mAlpha -= tpf / mpLayout->getConfig()->animationDuration;
-        }
-        mAlpha = clamp(mAlpha, 0, 1);
+		if (!mRemoved)
+		{
+			if (mVisible)
+			{
+				mFrameAlpha += tpf / mpLayout->getConfig()->animationDuration;
+			}
+			else
+			{
+				mFrameAlpha -= tpf / mpLayout->getConfig()->animationDuration;
+			}
+			mFrameAlpha = clamp(mFrameAlpha, 0, 1);
+		}
 
         // Combine own alpha with layout's
-        float combinedAlpha = mAlpha * alpha;
+		mCombinedAlpha = mFrameAlpha * alpha;
 
         // Update root only if own alpha greater zero
-        if (combinedAlpha > 0)
+        if (mCombinedAlpha > 0)
         {
             // Do not use input if still fading
-            if (combinedAlpha < 1)
+            if (mCombinedAlpha < 1)
             {
                 pInput = NULL;
             }
@@ -72,7 +77,7 @@ namespace eyegui
             }
 
             // Update standard elements
-            mupRoot->update(tpf, combinedAlpha, pInput);
+            mupRoot->update(tpf, mCombinedAlpha, pInput);
         }
 
         // *** DELETION OF REPLACED ELEMENTS ***
@@ -85,7 +90,7 @@ namespace eyegui
     void Frame::draw() const
     {
         // Use alpha because while fading it should still draw
-        if (mAlpha > 0)
+        if (mCombinedAlpha > 0)
         {
             // Draw standard elements
             mupRoot->draw();
@@ -101,7 +106,7 @@ namespace eyegui
 
     void Frame::resize(bool force)
     {
-        if (mAlpha > 0  || force)
+        if (mCombinedAlpha > 0  || force)
         {
             // Fetch values from layout
             int layoutWidth = mpLayout->getLayoutWidth();
@@ -170,28 +175,31 @@ namespace eyegui
     {
         // TODO: not accesible through interface
 
-        mVisible = visible;
+		if (!mRemoved)
+		{
+			mVisible = visible;
 
-        // If visible now and resize is necessary, resize!
-        if (mVisible && mResizeNecessary)
-        {
-            resize(true);
-        }
+			// If visible now and resize is necessary, resize!
+			if (mVisible && mResizeNecessary)
+			{
+				resize(true);
+			}
 
-        if (setImmediately)
-        {
-            if (mVisible)
-            {
-                mAlpha = 1;
-            }
-            else
-            {
-                mAlpha = 0;
-            }
-        }
+			if (setImmediately)
+			{
+				if (mVisible)
+				{
+					mFrameAlpha = 1;
+				}
+				else
+				{
+					mFrameAlpha = 0;
+				}
+			}
+		}
     }
 
-    InteractiveElement* Frame::getFirstInteractiveElement()
+    InteractiveElement* Frame::getFirstInteractiveElement() const
     {
         return mupRoot->nextInteractiveElement();
     }
@@ -229,4 +237,29 @@ namespace eyegui
             }
         }
     }
+
+	std::set<std::string> Frame::getAllElementsIds() const
+	{
+		return mupRoot->getAllChildrensIds();
+	}
+
+	void Frame::setFrameAlpha(float alpha)
+	{
+		mFrameAlpha = alpha;
+	}
+
+	float Frame::getFrameAlpha() const
+	{
+		return mFrameAlpha;
+	}
+
+	void Frame::setRemoved()
+	{
+		mRemoved = true;
+	}
+
+	bool Frame::isRemoved() const
+	{
+		return mRemoved;
+	}
 }
