@@ -162,12 +162,12 @@ namespace eyegui
         return mBorder;
     }
 
-    std::set<Element*> Element::getAllChildren()
+    std::set<Element*> Element::getAllChildren() const
     {
         std::set<Element*> elements;
 
         // Go over children and collect pointers
-        for (std::unique_ptr<Element>& rupChild : mChildren)
+        for (const std::unique_ptr<Element>& rupChild : mChildren)
         {
             std::set<Element*> childrensElements = rupChild->getAllChildren();
             elements.insert(childrensElements.begin(), childrensElements.end());

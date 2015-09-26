@@ -233,6 +233,18 @@ namespace eyegui
         }
     }
 
+	std::set<Element*> Frame::getAllElements() const
+	{
+		// Get all children of root
+		std::set<Element*> elements = mupRoot->getAllChildren();
+
+		// Get the root
+		elements.insert(mupRoot.get());
+
+		// Return set
+		return elements;
+	}
+
 	std::set<std::string> Frame::getAllElementsIds() const
 	{
 		return mupRoot->getAllChildrensIds();

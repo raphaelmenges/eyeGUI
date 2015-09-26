@@ -482,19 +482,61 @@ namespace eyegui
         bool reachedEndOfLayout = true;
 
         // Pointer to next interactive element
-        InteractiveElement* pNext;
+        InteractiveElement* pNext = NULL;
 
         if (mpSelectedInteractiveElement == NULL)
         {
-            // Nothing selected at the moment, so try frames
-            pNext = mupMainFrame->getFirstInteractiveElement();
-
-            // TODO: if null, go through vector of frames...
+            // Nothing selected at the moment, so start at main frame
+			pNext = mupMainFrame->getFirstInteractiveElement();
         }
         else
         {
-            // Try to get next interactive element
+            // Try to get next interactive element from that frame
             pNext = mpSelectedInteractiveElement->nextInteractiveElement();
+
+			// No further interactive element found in frame
+			if (pNext == NULL)
+			{
+				Frame* pFrame = mpSelectedInteractiveElement->getFrame();	
+
+				// Find start frame
+				int indexStartFrame = -1;
+				if (pFrame == mupMainFrame.get())
+				{
+					indexStartFrame = 0;
+				}
+				else
+				{
+					for (int i = 0; i < mFloatingFrames.size(); i++)
+					{
+						Frame* pThatFrame = mFloatingFrames[i].get();
+						if (pThatFrame != NULL && pThatFrame == pFrame)
+						{
+							indexStartFrame = i + 1;
+							break;
+						}
+					}
+				}
+
+				// Go over all remaining frames until interactive element found
+				if (indexStartFrame >= 0)
+				{
+					for (int i = indexStartFrame;  i < mFloatingFrames.size(); i++)
+					{
+						Frame* pNextFrame = mFloatingFrames[i].get();
+						if (pNextFrame != NULL && !pNextFrame->isRemoved())
+						{
+							pNext = pNextFrame->getFirstInteractiveElement();
+							if (pNext != NULL)
+							{
+								// Found interactive element!
+								break;
+							}
+						}
+						
+					}
+				}
+			}
         }
 
         // Only do something, if something was found
@@ -864,6 +906,17 @@ namespace eyegui
 			// Reminder for removed frame
 			pFrame->setRemoved();
 
+			// Deselected element if it is in frame
+			std::set<Element*> children = pFrame->getAllElements();
+			for (Element* pElement : children)
+			{
+				if (mpSelectedInteractiveElement == pElement)
+				{
+					deselectInteractiveElement();
+					break;
+				}
+			}
+
 			// Delete frame in next update before drawing
 			if (!fade)
 			{
@@ -937,9 +990,7 @@ namespace eyegui
         else
         {
             // No parent? So must be root of a frame
-            upTarget = std::move(mupMainFrame->replaceRoot(std::move(upElement)));
-
-            // TODO: other frames (get frame is necessary....)
+            upTarget = std::move(pTarget->getFrame()->replaceRoot(std::move(upElement)));
         }
 
         // Check, whether element to be replaced was found and not yet replaced
@@ -960,7 +1011,7 @@ namespace eyegui
                 shouldSelected = true;
             }
 
-            // Get pointers to children to determine, whether child is selected
+            // Get pointers to children to determine whether child is selected
             if (!shouldSelected)
             {
                 std::set<Element*> children = pTarget->getAllChildren();

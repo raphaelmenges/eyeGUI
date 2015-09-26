@@ -1,7 +1,5 @@
 Working on:
 - Floating elements
-  - Replace Elements: handle case when element is in floating frame
-  - select next in combination with floating frames
   - Moving order of floating frames
   - Strange: doFading VS setImmediately in setter for visibility...
   - "doFading" to "fade" in interface and move it to the end of parameters with default value of false

@@ -115,7 +115,7 @@ namespace eyegui
         float getBorder() const;
 
         // Get pointer to all children, recursively
-        std::set<Element *> getAllChildren();
+        std::set<Element*> getAllChildren() const;
 
         // Get ids of all children, recursively
         std::set<std::string> getAllChildrensIds() const;

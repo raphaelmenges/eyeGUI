@@ -72,6 +72,9 @@ namespace eyegui
         // Remove front elements of a element
         void removeFrontElementsOfElement(Element* pTarget);
 
+		// Get pointer to all elements, recursively
+		std::set<Element*> getAllElements() const;
+
 		// Get all elements' ids
 		std::set<std::string> getAllElementsIds() const;
 
