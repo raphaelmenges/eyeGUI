@@ -184,39 +184,39 @@ namespace eyegui
         pLayout->registerSensorListener(id, wpListener);
     }
 
-    void replaceElementWithBlock(Layout* pLayout, std::string id, bool doFading)
+    void replaceElementWithBlock(Layout* pLayout, std::string id, bool fade)
     {
-        pLayout->replaceElementWithBlock(id, doFading);
+        pLayout->replaceElementWithBlock(id, fade);
     }
 
-    void replaceElementWithPicture(Layout* pLayout, std::string id, bool doFading, std::string filepath, PictureAlignment alignment)
+    void replaceElementWithPicture(Layout* pLayout, std::string id, bool fade, std::string filepath, PictureAlignment alignment)
     {
-        pLayout->replaceElementWithPicture(id, doFading, filepath, alignment);
+        pLayout->replaceElementWithPicture(id, fade, filepath, alignment);
     }
 
-    void replaceElementWithBlank(Layout* pLayout, std::string id, bool doFading)
+    void replaceElementWithBlank(Layout* pLayout, std::string id, bool fade)
     {
-        pLayout->replaceElementWithBlank(id, doFading);
+        pLayout->replaceElementWithBlank(id, fade);
     }
 
-    void replaceElementWithCircleButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch)
+    void replaceElementWithCircleButton(Layout* pLayout, std::string id, bool fade, std::string iconFilepath, bool isSwitch)
     {
-        pLayout->replaceElementWithCircleButton(id, doFading, iconFilepath, isSwitch);
+        pLayout->replaceElementWithCircleButton(id, fade, iconFilepath, isSwitch);
     }
 
-    void replaceElementWitBoxButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch)
+    void replaceElementWitBoxButton(Layout* pLayout, std::string id, bool fade, std::string iconFilepath, bool isSwitch)
     {
-        pLayout->replaceElementWitBoxButton(id, doFading, iconFilepath, isSwitch);
+        pLayout->replaceElementWitBoxButton(id, fade, iconFilepath, isSwitch);
     }
 
-    void replaceElementWitSensor(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath)
+    void replaceElementWitSensor(Layout* pLayout, std::string id, bool fade, std::string iconFilepath)
     {
-        pLayout->replaceElementWitSensor(id, doFading, iconFilepath);
+        pLayout->replaceElementWitSensor(id, fade, iconFilepath);
     }
 
-    void replaceElementWithBrick(Layout* pLayout, std::string id, bool doFading, std::string filepath)
+    void replaceElementWithBrick(Layout* pLayout, std::string id, bool fade, std::string filepath)
     {
-        pLayout->replaceElementWithBrick(id, doFading, filepath);
+        pLayout->replaceElementWithBrick(id, fade, filepath);
     }
 
     unsigned int addFloatingFrameWithBrick(
@@ -226,11 +226,11 @@ namespace eyegui
         float relativePositionY,
         float relativeSizeX,
         float relativeSizeY,
-        bool doFading,
+        bool fade,
         bool visible)
     {
         // TODO: visibilty / fading
-        return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, doFading, visible);
+        return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, fade, visible);
     }
 
     void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool setImmediately)

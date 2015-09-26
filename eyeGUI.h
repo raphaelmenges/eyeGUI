@@ -162,7 +162,7 @@ namespace eyegui
     //! Control layout's input usage.
     /*!
       \param pLayout pointer to layout.
-      \param useInput indicated whether layout may use input or ignore it.
+      \param useInput indicates whether layout may use input or ignore it.
     */
     void setInputUsageOfLayout(Layout* pLayout, bool useInput);
 
@@ -335,70 +335,70 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param dpFading indicated, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBlock(Layout* pLayout, std::string id, bool doFading);
+    void replaceElementWithBlock(Layout* pLayout, std::string id, bool fade);
 
     //! Replace element with picture.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param dpFading indicated, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
       \param filepath is the path to the image used in the picture element.
       \param alignment is the inner alignment of the picture.
     */
-    void replaceElementWithPicture(Layout* pLayout, std::string id, bool doFading, std::string filepath, PictureAlignment alignment);
+    void replaceElementWithPicture(Layout* pLayout, std::string id, bool fade, std::string filepath, PictureAlignment alignment);
 
     //! Replace element with blank.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param dpFading indicated, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBlank(Layout* pLayout, std::string id, bool doFading);
+    void replaceElementWithBlank(Layout* pLayout, std::string id, bool fade);
 
     //! Replace element with circle button.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param dpFading indicated, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
       \param iconFilepath path to image which should be used as icon.
-      \param isSwitch indicated, whether button should be a switch.
+      \param isSwitch indicates, whether button should be a switch.
     */
-    void replaceElementWithCircleButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch = false);
+    void replaceElementWithCircleButton(Layout* pLayout, std::string id, bool fade, std::string iconFilepath, bool isSwitch = false);
 
     //! Replace element with box button.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param dpFading indicated, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
       \param iconFilepath path to image which should be used as icon.
-      \param isSwitch indicated, whether button should be a switch.
+      \param isSwitch indicates, whether button should be a switch.
     */
-    void replaceElementWitBoxButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch = false);
+    void replaceElementWitBoxButton(Layout* pLayout, std::string id, bool fade, std::string iconFilepath, bool isSwitch = false);
 
     //! Replace element with sensor.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param dpFading indicated, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
       \param iconFilepath path to image which should be used as icon.
     */
-    void replaceElementWitSensor(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath);
+    void replaceElementWitSensor(Layout* pLayout, std::string id, bool fade, std::string iconFilepath);
 
     //! Replace element with brick.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param dpFading indicated, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
       \param filepath is path to brick xml file.
     */
-    void replaceElementWithBrick(Layout* pLayout, std::string id, bool doFading, std::string filepath);
+    void replaceElementWithBrick(Layout* pLayout, std::string id, bool fade, std::string filepath);
 
     //! Creates floating frame with brick inside
     /*!
       \param pLayout pointer to layout.
-      \param dpFading indicated, whether frame should fade in.
+      \param fade indicates, whether frame should fade in.
       \param filepath is path to brick xml file.
       \param relativePositionX initial relative x position.
       \param relativePositionY initial relative y position.
@@ -414,7 +414,7 @@ namespace eyegui
         float relativePositionY,
         float relativeSizeX,
         float relativeSizeY,
-        bool doFading,
+        bool fade,
         bool visible = true);
 
     //! Set visibility of floating frame.

@@ -421,9 +421,9 @@ namespace eyegui
         return NULL;
     }
 
-    void Element::commitReplacedElement(std::unique_ptr<Element> upElement, bool doFading)
+    void Element::commitReplacedElement(std::unique_ptr<Element> upElement, bool fade)
     {
-        if (doFading)
+        if (fade)
         {
             // Fading is wished, so remember the replaced element
             mupReplacedElement = std::move(upElement);

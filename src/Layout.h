@@ -143,25 +143,25 @@ namespace eyegui
         bool isInteractiveElementHighlighted(std::string id) const;
 
         // Replace any element with block
-        void replaceElementWithBlock(std::string id, bool doFading);
+        void replaceElementWithBlock(std::string id, bool fade);
 
         // Replace any element with picture
-        void replaceElementWithPicture(std::string id, bool doFading, std::string filepath, PictureAlignment alignment);
+        void replaceElementWithPicture(std::string id, bool fade, std::string filepath, PictureAlignment alignment);
 
         // Replace any element with blank
-        void replaceElementWithBlank(std::string id, bool doFading);
+        void replaceElementWithBlank(std::string id, bool fade);
 
         // Replace any element with circle button
-        void replaceElementWithCircleButton(std::string id, bool doFading, std::string iconFilepath, bool isSwitch);
+        void replaceElementWithCircleButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch);
 
         // Replace any element with box button
-        void replaceElementWitBoxButton(std::string id, bool doFading, std::string iconFilepath, bool isSwitch);
+        void replaceElementWitBoxButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch);
 
         // Replace any element with sensor
-        void replaceElementWitSensor(std::string id, bool doFading, std::string iconFilepath);
+        void replaceElementWitSensor(std::string id, bool fade, std::string iconFilepath);
 
         // Replace any element with a brick of elements
-        void replaceElementWithBrick(std::string id, bool doFading, std::string filepath);
+        void replaceElementWithBrick(std::string id, bool fade, std::string filepath);
 
         // Add floating frame with brick
         uint addFloatingFrameWithBrick(
@@ -170,7 +170,7 @@ namespace eyegui
             float relativePositionY,
             float relativeSizeX,
             float relativeSizeY,
-            bool doFading,
+            bool fade,
             bool visible);
 
         // Set visibilty of floating frame
@@ -206,7 +206,7 @@ namespace eyegui
         Element* fetchElement(std::string id) const;
 
         // Internal replacement helper, returns whether successful
-        bool replaceElement(Element* pTarget, std::unique_ptr<Element> upElement, bool doFading);
+        bool replaceElement(Element* pTarget, std::unique_ptr<Element> upElement, bool fade);
 
         // Insert id of element
         void insertId(Element* pElement);

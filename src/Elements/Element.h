@@ -172,7 +172,7 @@ namespace eyegui
             std::unique_ptr<Element> upReplacement);
 
         // Commit replaced element to this element
-        void commitReplacedElement(std::unique_ptr<Element> upElement, bool doFading);
+        void commitReplacedElement(std::unique_ptr<Element> upElement, bool fade);
 
     protected:
 

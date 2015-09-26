@@ -606,7 +606,7 @@ namespace eyegui
         return false;
     }
 
-    void Layout::replaceElementWithBlock(std::string id, bool doFading)
+    void Layout::replaceElementWithBlock(std::string id, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -625,7 +625,7 @@ namespace eyegui
             Element* pBlock = upBlock.get();
 
             // Replace target with it
-            if (replaceElement(pElement, std::move(upBlock), doFading))
+            if (replaceElement(pElement, std::move(upBlock), fade))
             {
                 insertId(pBlock);
             }
@@ -636,7 +636,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithPicture(std::string id, bool doFading, std::string filepath, PictureAlignment alignment)
+    void Layout::replaceElementWithPicture(std::string id, bool fade, std::string filepath, PictureAlignment alignment)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -657,7 +657,7 @@ namespace eyegui
             Element* pPicture = upPicture.get();
 
             // Replace target with it
-            if (replaceElement(pElement, std::move(upPicture), doFading))
+            if (replaceElement(pElement, std::move(upPicture), fade))
             {
                 insertId(pPicture);
             }
@@ -668,7 +668,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithBlank(std::string id, bool doFading)
+    void Layout::replaceElementWithBlank(std::string id, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -687,7 +687,7 @@ namespace eyegui
             Element* pBlank = upBlank.get();
 
             // Replace target with it
-            if (replaceElement(pElement, std::move(upBlank), doFading))
+            if (replaceElement(pElement, std::move(upBlank), fade))
             {
                 insertId(pBlank);
             }
@@ -698,7 +698,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithCircleButton(std::string id, bool doFading, std::string iconFilepath, bool isSwitch)
+    void Layout::replaceElementWithCircleButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -719,7 +719,7 @@ namespace eyegui
             Element* pCircleButton = upCircleButton.get();
 
             // Replace target with it
-            if (replaceElement(pElement, std::move(upCircleButton), doFading))
+            if (replaceElement(pElement, std::move(upCircleButton), fade))
             {
                 insertId(pCircleButton);
             }
@@ -730,7 +730,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWitBoxButton(std::string id, bool doFading, std::string iconFilepath, bool isSwitch)
+    void Layout::replaceElementWitBoxButton(std::string id, bool fade, std::string iconFilepath, bool isSwitch)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -751,7 +751,7 @@ namespace eyegui
             Element* pBoxButton = upBoxButton.get();
 
             // Replace target with it
-            if (replaceElement(pElement, std::move(upBoxButton), doFading))
+            if (replaceElement(pElement, std::move(upBoxButton), fade))
             {
                 insertId(pBoxButton);
             }
@@ -762,7 +762,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWitSensor(std::string id, bool doFading, std::string iconFilepath)
+    void Layout::replaceElementWitSensor(std::string id, bool fade, std::string iconFilepath)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -782,7 +782,7 @@ namespace eyegui
             Element* pSensor = upSensor.get();
 
             // Replace target with it
-            if (replaceElement(pElement, std::move(upSensor), doFading))
+            if (replaceElement(pElement, std::move(upSensor), fade))
             {
                 insertId(pSensor);
             }
@@ -793,7 +793,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithBrick(std::string id, bool doFading, std::string filepath)
+    void Layout::replaceElementWithBrick(std::string id, bool fade, std::string filepath)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -805,7 +805,7 @@ namespace eyegui
                     pElement->getAssetManager(),
                     pElement->getParent(),
                     filepath));
-            if (replaceElement(pElement, std::move(upPair->first), doFading))
+            if (replaceElement(pElement, std::move(upPair->first), fade))
             {
                 insertIds(std::move(upPair->second));
             }
@@ -822,7 +822,7 @@ namespace eyegui
             float relativePositionY,
             float relativeSizeX,
             float relativeSizeY,
-            bool doFading,
+            bool fade,
             bool visible)
     {
         // Push back new frame
@@ -876,7 +876,7 @@ namespace eyegui
         pFrame->attachRoot(std::move(upPair->first));
 
         // Set visibility
-        pFrame->setVisibility(visible, !doFading);
+        pFrame->setVisibility(visible, !fade);
 
         // Insert ids
         insertIds(std::move(upPair->second));
@@ -1036,7 +1036,7 @@ namespace eyegui
         }
     }
 
-    bool Layout::replaceElement(Element* pTarget, std::unique_ptr<Element> upElement, bool doFading)
+    bool Layout::replaceElement(Element* pTarget, std::unique_ptr<Element> upElement, bool fade)
     {
         // Pointer to replacement
         Element* pElement = upElement.get();
@@ -1061,7 +1061,7 @@ namespace eyegui
             pElement->setActivity(pTarget->isActive(), true);
 
             // Give new element replaced one for fading
-            pElement->commitReplacedElement(std::move(upTarget), doFading);
+            pElement->commitReplacedElement(std::move(upTarget), fade);
 
             // Some reminder to handle selection later
             bool shouldSelected = false;
