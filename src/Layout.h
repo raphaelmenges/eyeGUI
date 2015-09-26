@@ -226,7 +226,7 @@ namespace eyegui
         std::unique_ptr<Frame> mupMainFrame;
         std::unique_ptr<std::map<std::string, Element*> > mupIds;
         std::vector<std::unique_ptr<Frame> > mFloatingFrames;
-		std::vector<Frame*> mSortedFloatingFrames;
+		std::vector<int> mFloatingFramesOrderingIndices;
 		std::vector<int> mDyingFloatingFramesIndices;
         float mAlpha;
         bool mVisible;
