@@ -80,13 +80,13 @@ namespace eyegui
         std::set<std::string> getNamesOfAvailableStyles() const;
 
         // Set visibility
-        void setVisibility(bool visible, bool setImmediately);
+        void setVisibility(bool visible, bool fade);
 
         // One may want not to use input for this layout
         void useInput(bool useInput);
 
         // Set element activity
-        void setElementActivity(std::string id, bool active, bool setImmediately);
+        void setElementActivity(std::string id, bool active, bool fade);
 
         // Check activity of element
         bool isElementActive(std::string id) const;
@@ -174,7 +174,7 @@ namespace eyegui
             bool visible);
 
         // Set visibilty of floating frame
-        void setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool setImmediately);
+        void setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool fade);
 
         // Reset elements of floating frame
         void resetFloatingFramesElements(uint frameIndex);

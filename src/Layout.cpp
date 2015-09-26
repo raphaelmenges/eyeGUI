@@ -263,11 +263,11 @@ namespace eyegui
         return names;
     }
 
-    void Layout::setVisibility(bool visible, bool setImmediately)
+    void Layout::setVisibility(bool visible, bool fade)
     {
         mVisible = visible;
 
-        if (setImmediately)
+        if (!fade)
         {
             if (mVisible)
             {
@@ -285,12 +285,12 @@ namespace eyegui
         mUseInput = useInput;
     }
 
-    void Layout::setElementActivity(std::string id, bool active, bool setImmediately)
+    void Layout::setElementActivity(std::string id, bool active, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
         {
-            pElement->setActivity(active, setImmediately);
+            pElement->setActivity(active, fade);
 
             if (!active && mpSelectedInteractiveElement == pElement)
             {
@@ -885,12 +885,12 @@ namespace eyegui
         return frameIndex;
     }
 
-    void Layout::setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool setImmediately)
+    void Layout::setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool fade)
     {
         Frame* pFrame = fetchFloatingFrame(frameIndex);
         if(pFrame != NULL)
         {
-            pFrame->setVisibility(visible, setImmediately);
+            pFrame->setVisibility(visible, fade);
         }
     }
 

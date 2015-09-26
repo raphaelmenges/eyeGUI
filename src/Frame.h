@@ -61,7 +61,7 @@ namespace eyegui
         void commitDyingReplacedElement(std::unique_ptr<Element> upElement);
 
         // Set visibility
-        void setVisibility(bool visible, bool setImmediately);
+        void setVisibility(bool visible, bool fade);
 
         // Get first interactive element. Returns null, if none found
         InteractiveElement* getFirstInteractiveElement() const;

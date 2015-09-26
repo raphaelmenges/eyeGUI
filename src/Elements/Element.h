@@ -100,7 +100,7 @@ namespace eyegui
         float getAlpha() const;
 
         // Activate or deactivate
-        virtual void setActivity(bool active, bool setImmediately);
+        virtual void setActivity(bool active, bool fade);
 
         // Get layout
         Layout* getLayout() const;

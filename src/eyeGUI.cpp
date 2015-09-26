@@ -69,9 +69,9 @@ namespace eyegui
         pLayout->useInput(useInput);
     }
 
-    void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset, bool setImmediately)
+    void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset, bool fade)
     {
-        pLayout->setVisibility(visible, setImmediately);
+        pLayout->setVisibility(visible, fade);
 
         if (reset)
         {
@@ -89,14 +89,14 @@ namespace eyegui
         pGUI->moveLayoutToBack(pLayout);
     }
 
-    void setElementActivity(Layout* pLayout, std::string id, bool active, bool setImmediately)
+    void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade)
     {
-        pLayout->setElementActivity(id, active, setImmediately);
+        pLayout->setElementActivity(id, active, fade);
     }
 
-    void toggleElementActivity(Layout* pLayout, std::string id, bool setImmediately)
+    void toggleElementActivity(Layout* pLayout, std::string id, bool fade)
     {
-        pLayout->setElementActivity(id, !pLayout->isElementActive(id), setImmediately);
+        pLayout->setElementActivity(id, !pLayout->isElementActive(id), fade);
     }
 
     bool isElementActive(Layout const * pLayout, std::string id)
@@ -233,9 +233,9 @@ namespace eyegui
         return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, fade, visible);
     }
 
-    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool setImmediately)
+    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool fade)
     {
-        pLayout->setVisibiltyOfFloatingFrame(frameIndex, visible, setImmediately);
+        pLayout->setVisibiltyOfFloatingFrame(frameIndex, visible, fade);
 
         if (reset)
         {

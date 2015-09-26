@@ -51,7 +51,7 @@ namespace eyegui
         virtual InteractiveElement* nextInteractiveElement();
 
         // Activate or deactivate
-        virtual void setActivity(bool active, bool setImmediately);
+        virtual void setActivity(bool active, bool fade);
 
     protected:
 

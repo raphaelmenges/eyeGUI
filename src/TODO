@@ -1,12 +1,5 @@
 Working on:
-BUGS:
-- Removal of floating frames does not work anymore perfectly
-- Move to front does not work (frame disappears...)
-
-- Floating elements
-  - Moving order of floating frames
-  - Strange: doFading VS setImmediately in setter for visibility...
-  - "doFading" to "fade" in interface and move it to the end of parameters with default value of false
+- "doFading" to "fade" in interface and move it to the end of parameters with default value of false
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc

@@ -95,7 +95,7 @@ namespace eyegui
         return mAlpha;
     }
 
-    void Element::setActivity(bool active, bool setImmediately)
+    void Element::setActivity(bool active, bool fade)
     {
         if (active == mActive)
         {
@@ -111,7 +111,7 @@ namespace eyegui
                     mActive = true;
 
                     // Do it immediatelly, maybe
-                    if (setImmediately)
+                    if (!fade)
                     {
                         mActivity = 1;
                     }
@@ -119,7 +119,7 @@ namespace eyegui
                     // Do it for all children
                     for (const std::unique_ptr<Element>& element : mChildren)
                     {
-                        element.get()->setActivity(true, setImmediately);
+                        element.get()->setActivity(true, fade);
                     }
                 }
             }
@@ -127,8 +127,8 @@ namespace eyegui
             {
                 mActive = false;
 
-                // Do it immediatelly, maybe
-                if (setImmediately)
+                // Do it immediately, maybe
+                if (!fade)
                 {
                     mActivity = 0;
                 }
@@ -136,7 +136,7 @@ namespace eyegui
                 // Do it for all children
                 for (const std::unique_ptr<Element>& element : mChildren)
                 {
-                    element.get()->setActivity(false, setImmediately);
+                    element.get()->setActivity(false, fade);
                 }
             }
         }

@@ -125,16 +125,16 @@ namespace eyegui
         return BoxButton::nextInteractiveElement();
     }
 
-    void DropButton::setActivity(bool active, bool setImmediately)
+    void DropButton::setActivity(bool active, bool fade)
     {
-        // Member set, so use it
+        // Member not yet set, so use parameter
         if (!active)
         {
-            up(setImmediately);
+            up(!fade);
         }
 
         // Super call after up(), because up() tests for active
-        BoxButton::setActivity(active, setImmediately);
+        BoxButton::setActivity(active, fade);
     }
 
     void DropButton::specialUpdate(float tpf, Input * pInput)

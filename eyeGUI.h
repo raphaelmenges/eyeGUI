@@ -171,9 +171,9 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param visible is a bool value to set visibility.
       \param reset indicates whether all elements in layout should be reset.
-      \param setImmediately prohibits fading.
+      \param fade indicates, whether layer should fade.
     */
-    void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset = false, bool setImmediately = false);
+    void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset = false, bool fade = false);
 
     //! Move layout to front.
     /*!
@@ -194,17 +194,17 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param active indicates the state of acitvity.
-      \param setImmediately prohibits fading.
+      \param fade indicates, whether activity should fade.
     */
-    void setElementActivity(Layout* pLayout, std::string id, bool active, bool setImmediately = false);
+    void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade = false);
 
     //! Toggle activity of element.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param setImmediately prohibits fading.
+      \param fade indicates, whether activity should fade.
     */
-    void toggleElementActivity(Layout* pLayout, std::string id, bool setImmediately = false);
+    void toggleElementActivity(Layout* pLayout, std::string id, bool fade = false);
 
     //! Get activity of element.
     /*!
@@ -337,7 +337,7 @@ namespace eyegui
       \param id is the unique id of an element.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBlock(Layout* pLayout, std::string id, bool fade);
+    void replaceElementWithBlock(Layout* pLayout, std::string id, bool fade = false);
 
     //! Replace element with picture.
     /*!
@@ -355,7 +355,7 @@ namespace eyegui
       \param id is the unique id of an element.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBlank(Layout* pLayout, std::string id, bool fade);
+    void replaceElementWithBlank(Layout* pLayout, std::string id, bool fade = false);
 
     //! Replace element with circle button.
     /*!
@@ -423,9 +423,9 @@ namespace eyegui
       \param frameIndex index of frame in layout.
       \param visible is a bool value to set visibility.
       \param reset indicates whether all elements in layout should be reset.
-      \param setImmediately prohibits fading.
+      \param fade indicates, whether frame should fade.
     */
-    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset = false, bool setImmediately = false);
+    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset = false, bool fade = false);
 
 	//! Removes floating frame from layout.
 	/*!

@@ -177,11 +177,11 @@ namespace eyegui
         mDyingReplacedElements.push_back(std::move(upElement));
     }
 
-    void Frame::setVisibility(bool visible, bool setImmediately)
+    void Frame::setVisibility(bool visible, bool fade)
     {
 		mVisible = visible;
 
-		if (setImmediately)
+		if (!fade)
 		{
 			if (mVisible)
 			{
