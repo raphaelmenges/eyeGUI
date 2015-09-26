@@ -23,6 +23,7 @@ namespace eyegui
         mpLayout = pLayout;
         mFrameAlpha = 1;
 		mCombinedAlpha = 1;
+		mRemovedFadingAlpha = 1;
         mVisible = true;
         mupRoot = NULL;
         mResizeNecessary = true;
@@ -43,21 +44,18 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update own alpha
-		if (!mRemoved)
+		if (mVisible)
 		{
-			if (mVisible)
-			{
-				mFrameAlpha += tpf / mpLayout->getConfig()->animationDuration;
-			}
-			else
-			{
-				mFrameAlpha -= tpf / mpLayout->getConfig()->animationDuration;
-			}
-			mFrameAlpha = clamp(mFrameAlpha, 0, 1);
+			mFrameAlpha += tpf / mpLayout->getConfig()->animationDuration;
 		}
+		else
+		{
+			mFrameAlpha -= tpf / mpLayout->getConfig()->animationDuration;
+		}
+		mFrameAlpha = clamp(mFrameAlpha, 0, 1);
 
         // Combine own alpha with layout's
-		mCombinedAlpha = mFrameAlpha * alpha;
+		mCombinedAlpha = mFrameAlpha * mRemovedFadingAlpha * alpha;
 
         // Update root only if own alpha greater zero
         if (mCombinedAlpha > 0)
@@ -175,26 +173,23 @@ namespace eyegui
     {
         // TODO: not accesible through interface
 
-		if (!mRemoved)
+		mVisible = visible;
+
+		// If visible now and resize is necessary, resize!
+		if (mVisible && mResizeNecessary)
 		{
-			mVisible = visible;
+			resize(true);
+		}
 
-			// If visible now and resize is necessary, resize!
-			if (mVisible && mResizeNecessary)
+		if (setImmediately)
+		{
+			if (mVisible)
 			{
-				resize(true);
+				mFrameAlpha = 1;
 			}
-
-			if (setImmediately)
+			else
 			{
-				if (mVisible)
-				{
-					mFrameAlpha = 1;
-				}
-				else
-				{
-					mFrameAlpha = 0;
-				}
+				mFrameAlpha = 0;
 			}
 		}
     }
@@ -243,14 +238,14 @@ namespace eyegui
 		return mupRoot->getAllChildrensIds();
 	}
 
-	void Frame::setFrameAlpha(float alpha)
+	void Frame::setRemovedFadingAlpha(float alpha)
 	{
-		mFrameAlpha = alpha;
+		mRemovedFadingAlpha = alpha;
 	}
 
-	float Frame::getFrameAlpha() const
+	float Frame::getRemovedFadingAlpha() const
 	{
-		return mFrameAlpha;
+		return mRemovedFadingAlpha;
 	}
 
 	void Frame::setRemoved()

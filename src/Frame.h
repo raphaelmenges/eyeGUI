@@ -75,11 +75,11 @@ namespace eyegui
 		// Get all elements' ids
 		std::set<std::string> getAllElementsIds() const;
 
-		// Set frame's alpha
-		void setFrameAlpha(float alpha);
+		// Set removed fading alpha
+		void setRemovedFadingAlpha(float alpha);
 
-		// Get frame's alpha
-		float getFrameAlpha() const;
+		// Get removed fading alpha
+		float getRemovedFadingAlpha() const;
 
 		// Set removed
 		void setRemoved();
@@ -104,6 +104,7 @@ namespace eyegui
         float mRelativeSizeX;
         float mRelativeSizeY;
 		bool mRemoved;
+		float mRemovedFadingAlpha;
     };
 }
 

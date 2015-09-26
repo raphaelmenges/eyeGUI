@@ -121,9 +121,9 @@ namespace eyegui
 					if (pFrame->isRemoved())
 					{
 						// Do fading
-						float fadingAlpha = pFrame->getFrameAlpha() - (tpf / getConfig()->animationDuration);
+						float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / getConfig()->animationDuration);
 						fadingAlpha = clamp(fadingAlpha, 0, 1);
-						pFrame->setFrameAlpha(fadingAlpha);
+						pFrame->setRemovedFadingAlpha(fadingAlpha);
 						
 						// Update
 						pFrame->update(tpf, mAlpha, NULL);
