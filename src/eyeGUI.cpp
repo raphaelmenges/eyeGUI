@@ -229,7 +229,6 @@ namespace eyegui
         bool visible,
 		bool fade)
     {
-        // TODO: visibilty / fading
         return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, visible, fade);
     }
 
