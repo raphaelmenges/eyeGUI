@@ -83,6 +83,7 @@ namespace eyegui
 
 		for (int i : mDyingFloatingFramesIndices)
 		{
+			mSortedFloatingFrames.erase(std::remove(mSortedFloatingFrames.begin(), mSortedFloatingFrames.end(), mFloatingFrames[i].get()), mSortedFloatingFrames.end());
 			mFloatingFrames[i].reset(NULL);
 		}
 		mDyingFloatingFramesIndices.clear();
@@ -119,10 +120,10 @@ namespace eyegui
             }
 
             // Update floating frames
-            for(int i = (int)(mFloatingFrames.size())-1; i>=0; i--)
+            for(int i = (int)(mSortedFloatingFrames.size())-1; i>=0; i--)
             {
                 // Update last added first
-				Frame* pFrame = mFloatingFrames[i].get();
+				Frame* pFrame = mSortedFloatingFrames[i];
 				if (pFrame != NULL)
 				{
 					if (pFrame->isRemoved())
@@ -163,12 +164,11 @@ namespace eyegui
             mupMainFrame->draw();
 
             // Draw floating frames
-            for(auto& upFrame : mFloatingFrames)
+            for(Frame* pFrame : mSortedFloatingFrames)
             {
-				Frame* pFrame = upFrame.get();
 				if (pFrame != NULL)
 				{
-					upFrame->draw();
+					pFrame->draw();
 				}
             }
         }
@@ -852,6 +852,9 @@ namespace eyegui
 			frameIndex = (int)(mFloatingFrames.size()) - 1;
 		}
 
+		// Push back for updating and drawing
+		mSortedFloatingFrames.push_back(pFrame);
+
         // Create brick
         std::unique_ptr<elementsAndIds> upPair = std::move(
                 mBrickParser.parse(
@@ -959,6 +962,52 @@ namespace eyegui
 		{
 			pFrame->setSize(relativeSizeX, relativeSizeY);
 		}
+	}
+
+	void Layout::moveFloatingFrameToFront(uint frameIndex)
+	{
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+
+		// Search for it in sorted vector
+		int index = -1;
+		for (int i = 0; i < mSortedFloatingFrames.size(); i++)
+		{
+			if (mSortedFloatingFrames[i] == pFrame)
+			{
+				index = i;
+				break;
+			}
+		}
+
+		if (index < 0)
+		{
+			throwError(OperationNotifier::Operation::BUG, "Floating frame is owned by layout but not in sorted frame vector");
+		}
+		
+		moveFloatingFrame(index, (int)(mSortedFloatingFrames.size())-1);
+	}
+
+	void Layout::moveFloatingFrameToBack(uint frameIndex)
+	{
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+
+		// Search for it in sorted vector
+		int index = -1;
+		for (int i = 0; i < mSortedFloatingFrames.size(); i++)
+		{
+			if (mSortedFloatingFrames[i] == pFrame)
+			{
+				index = i;
+				break;
+			}
+		}
+
+		if (index < 0)
+		{
+			throwError(OperationNotifier::Operation::BUG, "Floating frame is owned by layout but not in sorted frame vector");
+		}
+
+		moveFloatingFrame(index, 0);
 	}
 
     Element* Layout::fetchElement(std::string id) const
@@ -1114,4 +1163,19 @@ namespace eyegui
 
         return pFrame;
     }
+
+	void Layout::moveFloatingFrame(int oldIndex, int newIndex)
+	{
+		Frame* pFrame = mSortedFloatingFrames[oldIndex];
+		mSortedFloatingFrames.erase(mSortedFloatingFrames.begin() + oldIndex);
+
+		if (newIndex >= mSortedFloatingFrames.size())
+		{
+			mSortedFloatingFrames.push_back(pFrame);
+		}
+		else
+		{
+			mSortedFloatingFrames.insert(mSortedFloatingFrames.begin() + newIndex, pFrame);
+		}
+	}
 }

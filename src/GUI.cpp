@@ -131,7 +131,7 @@ namespace eyegui
             // Continue only if found
             if (index >= 0)
             {
-                moveLayout(index, (int)(mLayouts.size()));
+                moveLayout(index, (int)(mLayouts.size())-1);
             }
             else
             {

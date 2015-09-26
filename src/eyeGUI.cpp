@@ -268,6 +268,16 @@ namespace eyegui
 		pLayout->setSizeOfFloatingFrame(frameIndex, relativeSizeX, relativeSizeY);
 	}
 
+	void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex)
+	{
+		pLayout->moveFloatingFrameToFront(frameIndex);
+	}
+
+	void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex)
+	{
+		pLayout->moveFloatingFrameToBack(frameIndex);
+	}
+
     void setErrorCallback(void(*pCallbackFunction)(std::string))
     {
         OperationNotifier::setErrorCallback(pCallbackFunction);

@@ -1,4 +1,8 @@
 Working on:
+BUGS:
+- Removal of floating frames does not work anymore perfectly
+- Move to front does not work (frame disappears...)
+
 - Floating elements
   - Moving order of floating frames
   - Strange: doFading VS setImmediately in setter for visibility...

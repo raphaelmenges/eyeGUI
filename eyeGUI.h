@@ -471,6 +471,20 @@ namespace eyegui
 	*/
 	void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY);
 
+	//! Move frame to front.
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	*/
+	void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex);
+
+	//! Move frame to back.
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	*/
+	void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
+
     //! Set error callback function.
     /*!
       \param pCallbackFunction is function pointer to function which should be called back.

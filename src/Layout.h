@@ -194,6 +194,12 @@ namespace eyegui
 		// Set size of floating frame
 		void setSizeOfFloatingFrame(uint frameIndex, float relativeSizeX, float relativeSizeY);
 
+		// Move floating frame to front
+		void moveFloatingFrameToFront(uint frameIndex);
+
+		// Move floating frame to back
+		void moveFloatingFrameToBack(uint frameIndex);
+
     private:
 
         // Fetch pointer to element by id
@@ -211,12 +217,16 @@ namespace eyegui
         // Fetch pointer to frame
         Frame* fetchFloatingFrame(uint frameIndex);
 
+		// Move floating frame by id
+		void moveFloatingFrame(int oldIndex, int newIndex);
+
         // Members
         GUI const * mpGUI;
         AssetManager* mpAssetManager;
         std::unique_ptr<Frame> mupMainFrame;
         std::unique_ptr<std::map<std::string, Element*> > mupIds;
         std::vector<std::unique_ptr<Frame> > mFloatingFrames;
+		std::vector<Frame*> mSortedFloatingFrames;
 		std::vector<int> mDyingFloatingFramesIndices;
         float mAlpha;
         bool mVisible;
