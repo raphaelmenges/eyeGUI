@@ -502,37 +502,39 @@ namespace eyegui
             // Try to get next interactive element from that frame
             pNext = mpSelectedInteractiveElement->nextInteractiveElement();
 
-			// No further interactive element found in frame
-			if (pNext == NULL)
+			// No further interactive element found in current frame, try other
+			if (pNext == NULL && mFloatingFramesOrderingIndices.size() > 0)
 			{
+				// Get the current frame
 				Frame* pFrame = mpSelectedInteractiveElement->getFrame();	
 
-				// Find start frame
-				int indexStartFrame = -1;
+				// Find start frame in vector of ordered frames indices
+				int indexOfStartFrameIndex = -1;
 				if (pFrame == mupMainFrame.get())
 				{
-					indexStartFrame = 0;
+					indexOfStartFrameIndex = 0;
 				}
 				else
 				{
-					for (int i = 0; i < mFloatingFrames.size(); i++)
+					// Go over ordered frame indices and search for current frame
+					for (int i = 0; i < (int)(mFloatingFramesOrderingIndices.size())-1; i++)
 					{
-						Frame* pThatFrame = mFloatingFrames[i].get();
-						if (pThatFrame != NULL && pThatFrame == pFrame)
+						Frame* pThatFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
+						if (pThatFrame == pFrame)
 						{
-							indexStartFrame = i + 1;
+							indexOfStartFrameIndex = i+1;
 							break;
 						}
 					}
 				}
 
-				// Go over all remaining frames until interactive element found
-				if (indexStartFrame >= 0)
+				// Go over all remaining frame indices until interactive element found or null
+				if (indexOfStartFrameIndex >= 0)
 				{
-					for (int i = indexStartFrame;  i < mFloatingFrames.size(); i++)
+					for (int i = indexOfStartFrameIndex;  i < mFloatingFramesOrderingIndices.size(); i++)
 					{
-						Frame* pNextFrame = mFloatingFrames[i].get();
-						if (pNextFrame != NULL && !pNextFrame->isRemoved())
+						Frame* pNextFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
+						if (!pNextFrame->isRemoved())
 						{
 							pNext = pNextFrame->getFirstInteractiveElement();
 							if (pNext != NULL)
