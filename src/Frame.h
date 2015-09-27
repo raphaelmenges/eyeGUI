@@ -4,7 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Frame is owner of elements. Elements can register child elements for
+// updating and rendering as front elements, which are then updated before 
+// the other elements and drawn on top by the frame.
 
 #ifndef FRAME_H_
 #define FRAME_H_

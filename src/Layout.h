@@ -4,13 +4,11 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Layout class owning one root element. Does mapping of ids to element pointer.
-// Enqueues notifications of elements occuring during updating and works on them
-// before the next update and drawing. Is owner of the stylesheet used by the
-// root element and all its children. Elements can register child elements for
-// updating and rendering as front elements, which are then updated before the
-// other elements and drawn at least by the layout.
-// TODO: Frames (ids still here, but no elements...)
+// Layout manages frames with elements. There is one main frame which is 
+// screen filling and a free number of floating frames. Does mapping of id to 
+// element pointer. Enqueues notifications of elements occuring during updating 
+// and works on them before the next update and drawing. Is owner of the 
+// stylesheet used by the roots in frames and all their children.
 
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
@@ -57,7 +55,7 @@ namespace eyegui
             std::unique_ptr<Element> upElement,
             std::unique_ptr<std::map<std::string, Element*> > upIds);
 
-        // Enqueue notification which is processed before updating
+        // Enqueue notification which is processed before next updating
         void enqueueNotification(InteractiveElement* pNotifier, InteractiveElement::Notification notification);
 
         // Get pointer to config of owning GUI
