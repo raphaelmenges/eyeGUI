@@ -318,6 +318,58 @@ namespace eyegui
         return false;
     }
 
+	float Layout::getRelativePositionOfElementOnLayoutX(std::string id) const
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			return pElement->getRelativePositionOnLayoutX();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	float Layout::getRelativePositionOfElementOnLayoutY(std::string id) const
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			return pElement->getRelativePositionOnLayoutY();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	float Layout::getRelativeSizeOfElementOnLayoutX(std::string id) const
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			return pElement->getRelativeSizeOnLayoutX();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	float Layout::getRelativeSizeOfElementOnLayoutY(std::string id) const
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			return pElement->getRelativeSizeOnLayoutY();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
     void Layout::highlightInteractiveElement(std::string id, bool doHighlight)
     {
         InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));
