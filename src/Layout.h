@@ -89,6 +89,12 @@ namespace eyegui
         // Check activity of element
         bool isElementActive(std::string id) const;
 
+		// Relative position and size of elements
+		float getRelativePositionOfElementOnLayoutX(std::string id) const;
+		float getRelativePositionOfElementOnLayoutY(std::string id) const;
+		float getRelativeSizeOfElementOnLayoutX(std::string id) const;
+		float getRelativeSizeOfElementOnLayoutY(std::string id) const;
+
         // Set interactive element as highlighted
         void highlightInteractiveElement(std::string id, bool doHighlight);
 

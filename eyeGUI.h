@@ -214,6 +214,38 @@ namespace eyegui
     */
     bool isElementActive(Layout const * pLayout, std::string id);
 
+	//! Get relative x position of element on its layout.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return relative x position on layout.
+	*/
+	float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id);
+
+	//! Get relative y position of element on its layout.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return relative y position on layout.
+	*/
+	float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id);
+
+	//! Get relative size in x direction of element on its layout.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return relative size in x direction on layout.
+	*/
+	float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id);
+
+	//! Get relative size in y direction of element on its layout.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return relative size in y direction on layout.
+	*/
+	float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id);
+
     //! Check for existence of id.
     /*!
       \param pLayout pointer to layout.

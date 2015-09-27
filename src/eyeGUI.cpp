@@ -104,6 +104,26 @@ namespace eyegui
         return pLayout->isElementActive(id);
     }
 
+	float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
+	{
+		return pLayout->getRelativePositionOfElementOnLayoutX(id);
+	}
+
+	float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id)
+	{
+		return pLayout->getRelativePositionOfElementOnLayoutY(id);
+	}
+
+	float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id)
+	{
+		return pLayout->getRelativeSizeOfElementOnLayoutX(id);
+	}
+
+	float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id)
+	{
+		return pLayout->getRelativeSizeOfElementOnLayoutY(id);
+	}
+
     bool checkForId(Layout const * pLayout, std::string id)
     {
         return pLayout->checkForId(id);

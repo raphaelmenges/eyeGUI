@@ -37,8 +37,8 @@ namespace eyegui
 
         // Resizing of vectors to fit row count
         mCellIndices.resize(rows);
-        mElementWidths.resize(rows);
-        mElementHeights.resize(rows);
+        mElementRelativeWidths.resize(rows);
+        mElementRelativeHeights.resize(rows);
         mColumns.resize(rows);
     }
 
@@ -56,7 +56,7 @@ namespace eyegui
     {
         // Resize vectors by column count
         mCellIndices[row].resize(columns);
-        mElementWidths[row].resize(columns);
+        mElementRelativeWidths[row].resize(columns);
 
         // Save count of columns per row
         mColumns[row] = columns;
@@ -78,7 +78,7 @@ namespace eyegui
     {
         // Check sum of heights
         float sum = 0;
-        for (float height : mElementHeights)
+        for (float height : mElementRelativeHeights)
         {
             sum += height;
         }
@@ -88,7 +88,7 @@ namespace eyegui
         }
 
         // Check sum of widths
-        for (const std::vector<float>& columns : mElementWidths)
+        for (const std::vector<float>& columns : mElementRelativeWidths)
         {
             sum = 0;
             for (float width : columns)
@@ -106,22 +106,22 @@ namespace eyegui
 
     void Grid::setRelativeHeightOfRow(int row, float height)
     {
-        mElementHeights[row] = height;
+        mElementRelativeHeights[row] = height;
     }
 
     void Grid::setRelativeWidthOfCell(int row, int column, float width)
     {
-        mElementWidths[row][column] = width;
+        mElementRelativeWidths[row][column] = width;
     }
 
     float Grid::getRelativeHeight(int row) const
     {
-        return mElementHeights[row];
+        return mElementRelativeHeights[row];
     }
 
     float Grid::getRelativeWidth(int row, int column) const
     {
-        return mElementWidths[row][column];
+        return mElementRelativeWidths[row][column];
     }
 
     InteractiveElement* Grid::internalNextInteractiveElement(Element const * pChildCaller)
@@ -199,7 +199,7 @@ namespace eyegui
         for (int i = 0; i < mRows; i++)
         {
             // Necessary to calculate height of element
-            currentRelativeYEnd += mElementHeights[i];
+            currentRelativeYEnd += mElementRelativeHeights[i];
 
             // Initalize values per row
             int columnCount = mColumns[i];
@@ -222,7 +222,7 @@ namespace eyegui
             for (int j = 0; j < columnCount; j++)
             {
                 // Necessary to calculate width of element
-                currentRelativeXEnd += mElementWidths[i][j];
+                currentRelativeXEnd += mElementRelativeWidths[i][j];
 
                 // Calculate available space
                 if ((j + 1) == columnCount)

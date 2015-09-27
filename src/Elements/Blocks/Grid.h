@@ -75,8 +75,8 @@ namespace eyegui
 
         // Members
         std::vector<std::vector<int> > mCellIndices;
-        std::vector<std::vector<float> > mElementWidths;
-        std::vector<float> mElementHeights;
+        std::vector<std::vector<float> > mElementRelativeWidths;
+        std::vector<float> mElementRelativeHeights;
         std::vector<int> mColumns;
         int mRows = 0;
     };

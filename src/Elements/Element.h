@@ -142,7 +142,15 @@ namespace eyegui
         int getY() const;
         int getWidth() const;
         int getHeight() const;
+
+		// Get relative scale
         float getRelativeScale() const;
+
+		// Get relative screen position and size
+		float getRelativePositionOnLayoutX() const;
+		float getRelativePositionOnLayoutY() const;
+		float getRelativeSizeOnLayoutX() const;
+		float getRelativeSizeOnLayoutY() const;
 
         // Updating
         void update(float tpf, float alpha, Input* pInput);

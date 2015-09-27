@@ -280,6 +280,26 @@ namespace eyegui
         return mRelativeScale;
     }
 
+	float Element::getRelativePositionOnLayoutX() const
+	{
+		return (float)mX / mpLayout->getLayoutWidth();
+	}
+
+	float Element::getRelativePositionOnLayoutY() const
+	{
+		return (float)mY / mpLayout->getLayoutHeight();
+	}
+
+	float Element::getRelativeSizeOnLayoutX() const
+	{
+		return (float)mWidth / mpLayout->getLayoutWidth();
+	}
+
+	float Element::getRelativeSizeOnLayoutY() const
+	{
+		return (float)mHeight / mpLayout->getLayoutHeight();
+	}
+
     void Element::update(float tpf, float alpha, Input* pInput)
     {
         // Activity animation
