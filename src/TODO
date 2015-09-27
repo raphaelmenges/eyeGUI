@@ -15,8 +15,7 @@ Working on:
 - Text input
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Overwork CMakeLists! Probably, unecessary sourcing instead of including
-- Notification into own class and layout as const pointer
-- Getter for relative position and scale via id (to fit floating frame inside layout)
+- Notification into own class and layout as const pointer in elements
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
 - More complex input structure and configuration
@@ -26,6 +25,7 @@ Working on:
   - Brain-computer-interface
   - Buttons?
   - Other...
+- More complex elements with text
 
 ### VERSION 0.4 ### (improvements)
 - Audio
