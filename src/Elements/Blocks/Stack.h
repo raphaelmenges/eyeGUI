@@ -10,7 +10,7 @@
 #define STACK_H_
 
 #include "Block.h"
-#include "External/GLM/glm/glm.hpp"
+#include "externals/GLM/glm/glm.hpp"
 
 #include <vector>
 #include <memory>

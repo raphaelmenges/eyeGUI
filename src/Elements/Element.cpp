@@ -9,7 +9,7 @@
 
 #include "Layout.h"
 #include "Helper.h"
-#include "External/GLM/glm/gtc/matrix_transform.hpp"
+#include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
 #include <algorithm>
 
@@ -280,25 +280,25 @@ namespace eyegui
         return mRelativeScale;
     }
 
-	float Element::getRelativePositionOnLayoutX() const
-	{
-		return (float)mX / mpLayout->getLayoutWidth();
-	}
+    float Element::getRelativePositionOnLayoutX() const
+    {
+        return (float)mX / mpLayout->getLayoutWidth();
+    }
 
-	float Element::getRelativePositionOnLayoutY() const
-	{
-		return (float)mY / mpLayout->getLayoutHeight();
-	}
+    float Element::getRelativePositionOnLayoutY() const
+    {
+        return (float)mY / mpLayout->getLayoutHeight();
+    }
 
-	float Element::getRelativeSizeOnLayoutX() const
-	{
-		return (float)mWidth / mpLayout->getLayoutWidth();
-	}
+    float Element::getRelativeSizeOnLayoutX() const
+    {
+        return (float)mWidth / mpLayout->getLayoutWidth();
+    }
 
-	float Element::getRelativeSizeOnLayoutY() const
-	{
-		return (float)mHeight / mpLayout->getLayoutHeight();
-	}
+    float Element::getRelativeSizeOnLayoutY() const
+    {
+        return (float)mHeight / mpLayout->getLayoutHeight();
+    }
 
     void Element::update(float tpf, float alpha, Input* pInput)
     {

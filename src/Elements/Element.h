@@ -22,7 +22,7 @@
 #include "Rendering/AssetManager.h"
 #include "Input.h"
 #include "Style.h"
-#include "External/GLM/glm/glm.hpp"
+#include "externals/GLM/glm/glm.hpp"
 
 #include <memory>
 #include <vector>
@@ -143,14 +143,14 @@ namespace eyegui
         int getWidth() const;
         int getHeight() const;
 
-		// Get relative scale
+        // Get relative scale
         float getRelativeScale() const;
 
-		// Get relative screen position and size
-		float getRelativePositionOnLayoutX() const;
-		float getRelativePositionOnLayoutY() const;
-		float getRelativeSizeOnLayoutX() const;
-		float getRelativeSizeOnLayoutY() const;
+        // Get relative screen position and size
+        float getRelativePositionOnLayoutX() const;
+        float getRelativePositionOnLayoutY() const;
+        float getRelativeSizeOnLayoutX() const;
+        float getRelativeSizeOnLayoutY() const;
 
         // Updating
         void update(float tpf, float alpha, Input* pInput);

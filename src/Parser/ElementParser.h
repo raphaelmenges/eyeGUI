@@ -12,8 +12,8 @@
 #include "eyeGUI.h"
 #include "Rendering/AssetManager.h"
 #include "Elements/Elements.h"
-#include "External/TinyXML2/tinyxml2.h"
-#include "External/GLM/glm/vec4.hpp"
+#include "externals/TinyXML2/tinyxml2.h"
+#include "externals/GLM/glm/vec4.hpp"
 
 #include <memory>
 #include <map>

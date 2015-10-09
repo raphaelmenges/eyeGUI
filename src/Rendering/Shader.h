@@ -9,8 +9,8 @@
 #ifndef SHADER_H_
 #define SHADER_H_
 
-#include "External/OpenGLLoader/gl_core_3_3.h"
-#include "External/GLM/glm/glm.hpp"
+#include "externals/OpenGLLoader/gl_core_3_3.h"
+#include "externals/GLM/glm/glm.hpp"
 
 #include <string>
 #include <map>
