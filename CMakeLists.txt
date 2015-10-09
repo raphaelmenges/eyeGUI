@@ -31,7 +31,7 @@ file(GLOB_RECURSE HEADERS
     "${SRC_DIR}/*.h")
 
 # Directory of external stuff
-set(EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External)
+set(EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/externals)
 
 # Add TinyXML2
 file(GLOB_RECURSE TINYXML2
