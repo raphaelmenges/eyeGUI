@@ -16,6 +16,7 @@ Working on:
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Overwork CMakeLists! Probably, unecessary sourcing instead of including
 - Notification into own class and layout as const pointer in elements
+- Add version / date of externals
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
 - More complex input structure and configuration
