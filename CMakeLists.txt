@@ -9,10 +9,10 @@ set(LIBNAME eyeGUI)
 # Output path
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build/lib/)
 
-# Activate C++11 in GCC
-IF(CMAKE_COMPILER_IS_GNUCC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-ENDIF(CMAKE_COMPILER_IS_GNUCC)
+# Activate C++11 in GCC and CLANG
+IF(NOT MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+ENDIF(NOT MSVC)
 
 # Directory of source code
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
