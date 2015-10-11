@@ -15,11 +15,11 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 ## Dependencies
 * NanoSVG: https://github.com/memononen/nanosvg
 * TinyXML2: https://github.com/leethomason/tinyxml2
-* GLM: http://glm.g-truc.net/0.9.7/index.html (MIT License chosen)
+* GLM: http://glm.g-truc.net/0.9.7/index.html (MIT license chosen)
 * picoPNG: http://lodev.org/lodepng/
-* FreeType 2.6.1: http://www.freetype.org/ (FreeType License chosen)
+* FreeType 2.6.1: http://www.freetype.org/ (FreeType license chosen)
 
-All dependencies are already included inside the folder "externals" and should be found by CMake. Keep the licenses in mind when you use this library in your project.
+All dependencies are already included inside the folder "externals" and should be found by CMake. Keep the licenses in mind when you use this library in your project. The source code of this project itself in the folder "src" and the header "eyeGUI.h" is licensed under the MIT license.
 
 ## Acknowledgment
 * Great script to create license free OpenGL loader: https://bitbucket.org/alfonse/glloadgen/wiki
