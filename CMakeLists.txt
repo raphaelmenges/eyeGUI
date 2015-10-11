@@ -55,9 +55,7 @@ file(GLOB_RECURSE NANO_SVG
   "${EXTERNAL_DIR}/NanoSVG/*.h")
 
 # Add FreeType2 (list of source code taken from ./externals/FreeType2/CMakeLists.txt)
-
 add_definitions(-DFT2_BUILD_LIBRARY)
-
 set(FREETYPE2_DIR "${EXTERNAL_DIR}/FreeType2")
 file(GLOB FREETYPE2
   "${FREETYPE2_DIR}/include/ft2build.h"
