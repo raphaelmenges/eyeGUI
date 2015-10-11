@@ -87,8 +87,25 @@ ENDIF(MSVC)
 # Add the interface header file
 set(ALL_CODE ${ALL_CODE} eyeGUI.h)
 
-# Create library
+# Include FreeType library
+set(FREETYPE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/externals/FreeType2")
+include_directories("${FREETYPE_DIR}/include")
+set(FREETYPE_LIBRARIES_DIR "${FREETYPE_DIR}/lib")
+
+# Find the correct FreeType library for the system (TODO: 32Bit, other systems...)
+IF(MSVC)
+
+  set(FREETYPE_DEBUG_LIBRARIES "${FREETYPE_LIBRARIES_DIR}/windows/vc2015/x64/Debug/freetype.lib")
+  set(FREETYPE_RELEASE_LIBRARIES "${FREETYPE_LIBRARIES_DIR}/windows/vc2015/x64/Release/freetype.lib")
+
+ENDIF(MSVC)
+
+# Create eyeGUI static library
 add_library(${LIBNAME} STATIC ${ALL_CODE})
+
+# Link libraries
+target_link_libraries(${LIBNAME} debug FREETYPE_DEBUG_LIBRARIES)
+target_link_libraries(${LIBNAME} optimized FREETYPE_RELEASE_LIBRARIES)
 
 # Copy header to build directory
 add_custom_command(TARGET ${LIBNAME} PRE_BUILD

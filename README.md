@@ -21,5 +21,5 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 
 All dependencies are already included inside the folder "externals" and should be found by CMake. Keep the licenses in mind when you use this library in your project. The source code of this project itself in the folder "src" and the header "eyeGUI.h" is licensed under the MIT license.
 
-## Acknowledgment
+## Acknowledgments
 * Great script to create license free OpenGL loader: https://bitbucket.org/alfonse/glloadgen/wiki

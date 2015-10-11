@@ -10,6 +10,9 @@
 #include "Defines.h"
 #include "OperationNotifier.h"
 
+// TODO: remove me soon
+#include "Rendering/Font/Font.h"
+
 namespace eyegui
 {
     GUI::GUI(int width, int height)
@@ -27,6 +30,9 @@ namespace eyegui
 
         // Initialize OpenGL
         mGLSetup.init();
+
+		// TODO: test the freetype library
+		testFreetype();
     }
 
     GUI::~GUI()
