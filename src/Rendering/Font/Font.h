@@ -23,6 +23,10 @@ namespace eyegui
 		FT_Library ft;
 		if (FT_Init_FreeType(&ft))
 			std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+		else
+		{
+			std::cout << "Seems to work..." << std::endl;
+		}
 	}
 }
 

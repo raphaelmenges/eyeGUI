@@ -7,7 +7,7 @@ project(eyeGUILibrary)
 set(LIBNAME eyeGUI)
 
 # Output path
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build/lib/)
+set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/build/lib/")
 
 # Activate C++11 in GCC and CLANG
 IF(NOT MSVC)
@@ -23,36 +23,98 @@ include_directories(${SRC_DIR})
 
 # Find all sources and headers
 file(GLOB_RECURSE SOURCES
-    "${SRC_DIR}/*.cpp"
-    "${SRC_DIR}/*.cc"
-    "${SRC_DIR}/*.c")
+  "${SRC_DIR}/*.cpp"
+  "${SRC_DIR}/*.cc"
+  "${SRC_DIR}/*.c")
 
 file(GLOB_RECURSE HEADERS
-    "${SRC_DIR}/*.h")
+  "${SRC_DIR}/*.h")
 
 # Directory of external stuff
 set(EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/externals)
 
 # Add TinyXML2
 file(GLOB_RECURSE TINYXML2
-    "${EXTERNAL_DIR}/TinyXML2/*")
+  "${EXTERNAL_DIR}/TinyXML2/*")
 
 # Add GLM
 file(GLOB_RECURSE GLM
-    "${EXTERNAL_DIR}/GLM/glm/*.hpp")
+  "${EXTERNAL_DIR}/GLM/glm/*.hpp")
 include_directories(${EXTERNAL_DIR}/GLM)
 
 # Add OpenGLLoader
 file(GLOB_RECURSE OpenGLLoader
-    "${EXTERNAL_DIR}/OpenGLLoader/*")
+  "${EXTERNAL_DIR}/OpenGLLoader/*")
 
 # Add picoPNG
 file(GLOB_RECURSE PICO_PNG
-    "${EXTERNAL_DIR}/picoPNG/*")
+  "${EXTERNAL_DIR}/picoPNG/*")
 
 # Add NanoSVG
 file(GLOB_RECURSE NANO_SVG
-    "${EXTERNAL_DIR}/NanoSVG/*.h")
+  "${EXTERNAL_DIR}/NanoSVG/*.h")
+
+# Add FreeType2 (list of source code taken from ./externals/FreeType2/CMakeLists.txt)
+
+add_definitions(-DFT2_BUILD_LIBRARY)
+
+set(FREETYPE2_DIR "${EXTERNAL_DIR}/FreeType2")
+file(GLOB FREETYPE2
+  "${FREETYPE2_DIR}/include/ft2build.h"
+  "${FREETYPE2_DIR}/include/freetype/*.h"
+  "${FREETYPE2_DIR}/include/freetype/config/*.h"
+  "${FREETYPE2_DIR}/include/freetype/internal/*.h"
+  "${FREETYPE2_DIR}/src/autofit/autofit.c"
+  "${FREETYPE2_DIR}/src/base/ftbase.c"
+  "${FREETYPE2_DIR}/src/base/ftbbox.c"
+  "${FREETYPE2_DIR}/src/base/ftbdf.c"
+  "${FREETYPE2_DIR}/src/base/ftbitmap.c"
+  "${FREETYPE2_DIR}/src/base/ftcid.c"
+  "${FREETYPE2_DIR}/src/base/ftfntfmt.c"
+  "${FREETYPE2_DIR}/src/base/ftfstype.c"
+  "${FREETYPE2_DIR}/src/base/ftgasp.c"
+  "${FREETYPE2_DIR}/src/base/ftglyph.c"
+  "${FREETYPE2_DIR}/src/base/ftgxval.c"
+  "${FREETYPE2_DIR}/src/base/ftinit.c"
+  "${FREETYPE2_DIR}/src/base/ftlcdfil.c"
+  "${FREETYPE2_DIR}/src/base/ftmm.c"
+  "${FREETYPE2_DIR}/src/base/ftotval.c"
+  "${FREETYPE2_DIR}/src/base/ftpatent.c"
+  "${FREETYPE2_DIR}/src/base/ftpfr.c"
+  "${FREETYPE2_DIR}/src/base/ftstroke.c"
+  "${FREETYPE2_DIR}/src/base/ftsynth.c"
+  "${FREETYPE2_DIR}/src/base/ftsystem.c"
+  "${FREETYPE2_DIR}/src/base/fttype1.c"
+  "${FREETYPE2_DIR}/src/base/ftwinfnt.c"
+  "${FREETYPE2_DIR}/src/bdf/bdf.c"
+  "${FREETYPE2_DIR}/src/bzip2/ftbzip2.c"
+  "${FREETYPE2_DIR}/src/cache/ftcache.c"
+  "${FREETYPE2_DIR}/src/cff/cff.c"
+  "${FREETYPE2_DIR}/src/cid/type1cid.c"
+  "${FREETYPE2_DIR}/src/gzip/ftgzip.c"
+  "${FREETYPE2_DIR}/src/lzw/ftlzw.c"
+  "${FREETYPE2_DIR}/src/pcf/pcf.c"
+  "${FREETYPE2_DIR}/src/pfr/pfr.c"
+  "${FREETYPE2_DIR}/src/psaux/psaux.c"
+  "${FREETYPE2_DIR}/src/pshinter/pshinter.c"
+  "${FREETYPE2_DIR}/src/psnames/psnames.c"
+  "${FREETYPE2_DIR}/src/raster/raster.c"
+  "${FREETYPE2_DIR}/src/sfnt/sfnt.c"
+  "${FREETYPE2_DIR}/src/smooth/smooth.c"
+  "${FREETYPE2_DIR}/src/truetype/truetype.c"
+  "${FREETYPE2_DIR}/src/type1/type1.c"
+  "${FREETYPE2_DIR}/src/type42/type42.c"
+  "${FREETYPE2_DIR}/src/winfonts/winfnt.c"
+)
+
+if (WIN32)
+  set(FREETYPE2 ${FREETYPE2} "${FREETYPE2_DIR}/builds/windows/ftdebug.c")
+else ()
+  set(FREETYPE2 ${FREETYPE2} "${FREETYPE2_DIR}/src/base/ftdebug.c")
+endif ()
+
+# Including for FreeType
+include_directories("${FREETYPE2_DIR}/include")
 
 # Collect all code
 set(ALL_CODE
@@ -62,7 +124,8 @@ set(ALL_CODE
     ${GLM}
     ${OpenGLLoader}
     ${PICO_PNG}
-    ${NANO_SVG})
+    ${NANO_SVG}
+    ${FREETYPE2})
 
 # Filtering for Visual Studio
 IF(MSVC)
@@ -87,27 +150,10 @@ ENDIF(MSVC)
 # Add the interface header file
 set(ALL_CODE ${ALL_CODE} eyeGUI.h)
 
-# Include FreeType library
-set(FREETYPE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/externals/FreeType2")
-include_directories("${FREETYPE_DIR}/include")
-set(FREETYPE_LIBRARIES_DIR "${FREETYPE_DIR}/lib")
-
-# Find the correct FreeType library for the system (TODO: 32Bit, other systems...)
-IF(MSVC)
-
-  set(FREETYPE_DEBUG_LIBRARIES "${FREETYPE_LIBRARIES_DIR}/windows/vc2015/x64/Debug/freetype.lib")
-  set(FREETYPE_RELEASE_LIBRARIES "${FREETYPE_LIBRARIES_DIR}/windows/vc2015/x64/Release/freetype.lib")
-
-ENDIF(MSVC)
-
 # Create eyeGUI static library
 add_library(${LIBNAME} STATIC ${ALL_CODE})
 
-# Link libraries
-target_link_libraries(${LIBNAME} debug FREETYPE_DEBUG_LIBRARIES)
-target_link_libraries(${LIBNAME} optimized FREETYPE_RELEASE_LIBRARIES)
-
 # Copy header to build directory
 add_custom_command(TARGET ${LIBNAME} PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_SOURCE_DIR}/eyeGUI.h ${CMAKE_BINARY_DIR}/build/include/eyeGUI.h)
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${CMAKE_SOURCE_DIR}/eyeGUI.h ${CMAKE_BINARY_DIR}/build/include/eyeGUI.h)
