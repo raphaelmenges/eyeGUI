@@ -95,6 +95,9 @@ namespace eyegui
 		Config mConfig;
 		bool mLayoutsLocked;
 		std::string mConfigToLoad;
+
+		// TODO: Test
+		RenderItem* mpGlyphQuad;
 	};
 }
 
