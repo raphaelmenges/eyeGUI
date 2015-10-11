@@ -15,10 +15,11 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 ## Dependencies
 * NanoSVG: https://github.com/memononen/nanosvg
 * TinyXML2: https://github.com/leethomason/tinyxml2
-* GLM: http://glm.g-truc.net/0.9.7/index.html
+* GLM: http://glm.g-truc.net/0.9.7/index.html (MIT License chosen)
 * picoPNG: http://lodev.org/lodepng/
+* FreeType 2.6.1: http://www.freetype.org/ (FreeType License chosen)
 
-All dependencies are already included inside the folder "externals" and should be found by CMake. Keep the licenses in mind when you use this library in your project. But the chosen dependencies should be no problem if one wants to use just the compiled library without naming anybody.
+All dependencies are already included inside the folder "externals" and should be found by CMake. Keep the licenses in mind when you use this library in your project.
 
 ## Acknowledgment
 * Great script to create license free OpenGL loader: https://bitbucket.org/alfonse/glloadgen/wiki
