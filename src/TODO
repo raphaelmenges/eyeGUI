@@ -1,9 +1,24 @@
-Working on:
-- Test changes in demo
+At the moment:
+- Atlas creation and visual testing
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
 - Text rendering using freetype
+  - somehow set default font (just interface function)
+  - Integrate into AssetManager
+    - Get unique pointer to text flow
+    - Something more low level for later text input
+      - Something like: bindFontAtlas and get glyph or so
+  - Font
+    - Owns atlas
+    - Owns font object
+    - owns map of chars to glyphs
+  - TextFlow
+    - is mesh with text geometry
+    - has pointer to font object
+    - can be used for rendering block of text
+    - alignment (left, right, center, justify)
+  - Resize wait time (expensive to update fonts)
 - New elements using text rendering
 - Localization using files
 - Changing styles through programming interface

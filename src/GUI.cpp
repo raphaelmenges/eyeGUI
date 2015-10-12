@@ -10,9 +10,6 @@
 #include "Defines.h"
 #include "OperationNotifier.h"
 
-// TODO: remove me soon
-#include "Rendering/Font/Font.h"
-
 namespace eyegui
 {
     GUI::GUI(int width, int height)
@@ -23,6 +20,7 @@ namespace eyegui
         mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
         mLayoutsLocked = false;
         mConfigToLoad = NO_CONFIG_TO_LOAD;
+		mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
 
         // Input initialization
         mInput.mouseCursorX = width / 2;
@@ -32,8 +30,8 @@ namespace eyegui
         mGLSetup.init();
 
 		// TODO: test the freetype library
-		testFreetype();
-		mpGlyphQuad = mAssetManager.fetchRenderItem(shaders::Type::PICTURE, meshes::Type::QUAD);
+		//testFreetype();
+		//mpGlyphQuad = mAssetManager.fetchRenderItem(shaders::Type::PICTURE, meshes::Type::QUAD);
     }
 
     GUI::~GUI()
@@ -46,7 +44,7 @@ namespace eyegui
         if (!mLayoutsLocked)
         {
             // Parse layout
-            std::unique_ptr<Layout> upLayout = mLayoutParser.parse(this, &mAssetManager, filepath);
+            std::unique_ptr<Layout> upLayout = mLayoutParser.parse(this, mupAssetManager.get(), filepath);
 
             // Move layout and return raw pointer
             Layout* pLayout = upLayout.get();
@@ -81,6 +79,9 @@ namespace eyegui
                 // Layout fetches size via const pointer to this
                 upLayout->resize();
             }
+
+			// Resize font atlases
+			mupAssetManager->resizeFontAtlases();
         }
         mLayoutsLocked = false;
     }
@@ -127,12 +128,12 @@ namespace eyegui
         mLayoutsLocked = false;
 
 		// TODO: test
-		mpGlyphQuad->bind();
+		/* mpGlyphQuad->bind();
 		mpGlyphQuad->getShader()->fillValue("matrix", glm::mat4(1.0f));
 		mpGlyphQuad->getShader()->fillValue("alpha", 1);
 		mpGlyphQuad->getShader()->fillValue("activity", 1);
 		bindGlyphTexture('a');
-		mpGlyphQuad->draw();
+		mpGlyphQuad->draw(); */
     }
 
     void GUI::setMouseCursor(int x, int y)
@@ -252,6 +253,6 @@ namespace eyegui
 
     void GUI::prefetchImage(std::string filepath)
     {
-        mAssetManager.fetchTexture(filepath);
+        mupAssetManager->fetchTexture(filepath);
     }
 }

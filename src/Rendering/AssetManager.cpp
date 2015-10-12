@@ -12,19 +12,32 @@
 #include "Shaders.h"
 #include "Meshes.h"
 #include "Graphics.h"
+#include "OperationNotifier.h"
+#include "Helper.h"
+#include "GUI.h"
 
 #include <algorithm>
 
 namespace eyegui
 {
-	AssetManager::AssetManager()
+	AssetManager::AssetManager(GUI const * pGUI)
 	{
-		// Nothing to do
+		// Save members
+		mpGUI = pGUI;
+
+		// Initialize FreeType Library
+		if (FT_Init_FreeType(&mFreeTypeLibrary))
+		{
+			throwError(
+				OperationNotifier::Operation::RUNTIME,
+				"Could not initialize FreeType Library");
+		}
 	}
 
 	AssetManager::~AssetManager()
 	{
-		// Nothing to do
+		// Close FreeType Library
+		FT_Done_FreeType(mFreeTypeLibrary);
 	}
 
 	RenderItem* AssetManager::fetchRenderItem(shaders::Type shader, meshes::Type mesh)
@@ -137,6 +150,55 @@ namespace eyegui
 		}
 
 		return pTexture;
+	}
+
+	Font* AssetManager::fetchFont(std::string filepath)
+	{
+		// Search for font
+		std::unique_ptr<Font>& rupFont = mFonts[filepath];
+		Font* pFont = rupFont.get();
+
+		// Create font if not existing
+		if (pFont == NULL)
+		{
+			// Check filepath
+			if (!checkFileNameExtension(filepath, "ttf"))
+			{
+				throwError(OperationNotifier::Operation::FONT_LOADING, "Font file has unknown format", filepath);
+			}
+
+			// Load font to FreeType face
+			std::unique_ptr<FT_Face> upFace;
+			if (FT_New_Face(mFreeTypeLibrary, filepath.c_str(), 0, upFace.get()))
+			{
+				throwError(OperationNotifier::Operation::FONT_LOADING, "Faild to load font with FreeType Library", filepath);
+			}
+
+			// TODO: Create character set somewhere else... (should be set globally) -> maybe at initialization of whole GUI
+			std::set<wchar_t> characterSet;
+			for (wchar_t c = 0; c < 128; c++)
+			{
+				characterSet.insert(c);
+			}
+
+			// Give face to a font object (it will delete is at the end)()
+			rupFont = std::unique_ptr<Font>(new Font(filepath, std::move(upFace), characterSet, mpGUI->getWindowWidth(), mpGUI->getWindowHeight()));
+			pFont = rupFont.get();
+
+			// Add font to own map
+			mFonts[filepath] = std::move(rupFont);
+		}
+
+		return pFont;
+	}
+
+	void AssetManager::resizeFontAtlases()
+	{
+		// TODO: does not work, maybe (unique pointer..)
+		for (auto& rPair : mFonts)
+		{
+			rPair.second->resizeFontAtlases(mpGUI->getWindowWidth(), mpGUI->getWindowHeight());
+		}
 	}
 
 	Shader* AssetManager::fetchShader(shaders::Type shader)

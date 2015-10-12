@@ -6,110 +6,78 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // TODO
 
+// TODO:
+//	- what to do if glyph was not found?
+
 #ifndef FONT_H_
 #define FONT_H_
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include "eyeGUI.h"
 
-#include <iostream>
+#include "externals/FreeType2/include/ft2build.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
+#include "externals/GLM/glm/glm.hpp"
 
-// TESTING FREETYPE !!!
+#include <memory>
+#include <map>
+#include <set>
+#include <vector>
+
+#include FT_FREETYPE_H
 
 namespace eyegui
 {
-	// Some struct to store glyphs
-	struct Character {
-		GLuint     TextureID;  // ID handle of the glyph texture
-		glm::ivec2 Size;       // Size of glyph
-		glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
-		GLuint     Advance;    // Offset to advance to next glyph
+	struct Glyph
+	{
+		glm::vec2	atlasPosition;	// Position in atlas
+		glm::vec2	atlasSize;		// Size in atlas
+		glm::ivec2  size;			// Size in pixel
+		glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
+		GLuint		advance;		// Offset to advance to next glyph in pixel
 	};
 
-	static std::map<GLchar, Character> characters;
-
-	static void testFreetype()
+	class Font
 	{
-		// Initialize freetype library
-		FT_Library ft;
-		if(FT_Init_FreeType(&ft))
-		{
-			std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-		}
-		
-		// Load font into face
-		FT_Face face;
-		if(FT_New_Face(ft, "arial.ttf", 0, &face))
-		{
-			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-		}
+	public:
 
-		// Set height in pixel (width is done automatically)
-		FT_Set_Pixel_Sizes(face, 0, 360);
+		// Constructor (takes responsibility for face)
+		Font(
+			std::string filepath,
+			std::unique_ptr<FT_Face> upFace,
+			const std::set<wchar_t>& characterSet,
+			int windowWidth,
+			int windowHeight);
 
-		// Set an active glyph
-		if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-		{
-			std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-		}
+		// Destructor
+		virtual ~Font();
 
-		// Store A to Z in texture
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
+		// Resize font atlases
+		void resizeFontAtlases(int windowWidth, int windowHeight);
 
-		for (GLubyte c = 0; c < 128; c++)
-		{
-			// Load character glyph 
-			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-			{
-				std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-				continue;
-			}
+	private:
 
-			// Generate texture
-			GLuint texture;
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RED,
-				face->glyph->bitmap.width,
-				face->glyph->bitmap.rows,
-				0,
-				GL_RED,
-				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer);
+		// Fill atlas
+		void fillAtlas(int pixelHeight, std::map<wchar_t, Glyph>& rGlyphMap, GLuint textureId);
 
-			// Set texture options
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// Members
+		std::unique_ptr<FT_Face> mupFace;
+		std::set<wchar_t> mCharacterSet;
 
-			// Now store character for later use
-			Character character = {
-				texture,
-				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				(GLuint) face->glyph->advance.x
-			};
-			characters.insert(std::pair<GLchar, Character>(c, character));
-		}
+		std::map<wchar_t, Glyph> mTallGlyphs;
+		std::map<wchar_t, Glyph> mMediumGlyphs;
+		std::map<wchar_t, Glyph> mSmallGlyphs;
 
-		// Free freetype
-		FT_Done_Face(face);
-		FT_Done_FreeType(ft);
-	}
+		GLuint mTallTexture;
+		GLuint mMediumTexture;
+		GLuint mSmallTexture;
 
-	static void bindGlyphTexture(GLchar character)
-	{
-		// Choose slot
-		glActiveTexture(GL_TEXTURE0);
+		int mTallPixelHeight;
+		int mMediumPixelHeight;
+		int mSmallPixelHeight;
 
-		// Bind texture
-		glBindTexture(GL_TEXTURE_2D, characters.at(character).TextureID);
-	}
+		std::string mFilepath;
+
+	};
 }
 
 #endif // FONT_H_

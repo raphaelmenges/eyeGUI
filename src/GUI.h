@@ -88,7 +88,7 @@ namespace eyegui
 		int mWidth, mHeight;
 		LayoutParser mLayoutParser;
 		ConfigParser mConfigParser;
-		AssetManager mAssetManager;
+		std::unique_ptr<AssetManager> mupAssetManager;
 		GLSetup mGLSetup;
 		Input mInput;
 		float mAccPeriodicTime;
@@ -97,7 +97,7 @@ namespace eyegui
 		std::string mConfigToLoad;
 
 		// TODO: Test
-		RenderItem* mpGlyphQuad;
+		//RenderItem* mpGlyphQuad;
 	};
 }
 

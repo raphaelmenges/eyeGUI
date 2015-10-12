@@ -5,7 +5,8 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Managing all kind of assets like shaders, meshes and graphics. Ensures that
-// all assets are unique and loaded only one time into memory.
+// all assets are unique and loaded only one time into memory. Initializes and
+// terminates the FreeType library and manages fonts.
 
 #ifndef ASSET_MANAGER_H_
 #define ASSET_MANAGER_H_
@@ -14,6 +15,10 @@
 #include "Mesh.h"
 #include "Textures/Texture.h"
 #include "RenderItem.h"
+#include "Font/Font.h"
+
+#include "externals/FreeType2/include/ft2build.h"
+#include FT_FREETYPE_H
 
 #include <memory>
 #include <map>
@@ -25,12 +30,15 @@ namespace eyegui
 	namespace meshes { enum class Type { QUAD }; }
 	namespace graphics { enum class Type { CIRCLE, NOT_FOUND }; }
 
+	// Forward declaration
+	class GUI;
+
 	class AssetManager
 	{
 	public:
 
 		// Constructor
-		AssetManager();
+		AssetManager(GUI const * pGUI);
 
 		// Destructor
 		virtual ~AssetManager();
@@ -44,6 +52,12 @@ namespace eyegui
 		// Fetch graphics
 		Texture* fetchTexture(graphics::Type graphic);
 
+		// Fetch font
+		Font* fetchFont(std::string filepath);
+
+		// Resize font atlases (should be called by GUI only)
+		void resizeFontAtlases();
+
 	private:
 
 		// Fetch shader
@@ -53,11 +67,14 @@ namespace eyegui
 		Mesh* fetchMesh(meshes::Type mesh);
 
 		// Members
+		GUI const * mpGUI;
+		FT_Library mFreeTypeLibrary;
 		std::map<shaders::Type, std::unique_ptr<Shader> > mShaders;
 		std::map<meshes::Type, std::unique_ptr<Mesh> > mMeshes;
 		std::map<shaders::Type, std::map<meshes::Type, std::unique_ptr<RenderItem> > > mRenderItems;
 		std::map<std::string, std::unique_ptr<Texture> > mTextures;
 		std::map<graphics::Type, std::unique_ptr<Texture> > mGraphics;
+		std::map<std::string, std::unique_ptr<Font> > mFonts;
 	};
 }
 
