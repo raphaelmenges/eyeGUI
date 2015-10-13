@@ -32,6 +32,10 @@ namespace eyegui
     static const float ACCUMULATED_TIME_PERIOD = 1800.0f;
     static const float FONT_CHARACTER_PADDING = 0.02; // Percentage of height
     static const int FONT_MINIMAL_CHARACTER_PADDING = 1;
+    static const float FONT_TALL_SCREEN_HEIGHT = 0.23f;
+    static const float FONT_MEDIUM_SCREEN_HEIGHT = 0.18f;
+    static const float FONT_SMALL_SCREEN_HEIGHT = 0.13f;
+
 }
 
 #endif // DEFINES_H_

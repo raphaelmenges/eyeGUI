@@ -16,7 +16,6 @@ namespace eyegui
         std::string filepath,
         std::unique_ptr<FT_Face> upFace,
         std::set<char16_t> characterSet,
-        int windowWidth,
         int windowHeight)
     {
         // Fill members
@@ -34,6 +33,9 @@ namespace eyegui
         glGenTextures(1, &mMediumTexture);
         glGenTextures(1, &mSmallTexture);
 
+        // Update pixel heights
+        fillPixelHeights(windowHeight);
+
         // Fill atlases the first time
         fillAtlases();
     }
@@ -49,12 +51,10 @@ namespace eyegui
         FT_Done_Face(*(mupFace.get()));
     }
 
-    void Font::resizeFontAtlases(int windowWidth, int windowHeight)
+    void Font::resizeFontAtlases(int windowHeight)
     {
-        // Update pixel heights (TODO) -> put in Defines.h
-        mTallPixelHeight = 100;
-        mMediumPixelHeight = 32;
-        mSmallPixelHeight = 10;
+        // Update pixel heights
+        fillPixelHeights(windowHeight);
 
         // Update all atlases
         fillAtlases();
@@ -99,6 +99,13 @@ namespace eyegui
         return std::max(
             FONT_MINIMAL_CHARACTER_PADDING,
             (int) (pixelHeight * FONT_CHARACTER_PADDING));
+    }
+
+    void Font::fillPixelHeights(int windowHeight)
+    {
+        mTallPixelHeight = windowHeight * FONT_TALL_SCREEN_HEIGHT;
+        mMediumPixelHeight = windowHeight * FONT_MEDIUM_SCREEN_HEIGHT;
+        mSmallPixelHeight = windowHeight * FONT_SMALL_SCREEN_HEIGHT;
     }
 
     void Font::fillAtlases()

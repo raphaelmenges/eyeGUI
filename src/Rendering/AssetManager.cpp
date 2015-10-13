@@ -197,7 +197,6 @@ namespace eyegui
                         filepath,
                         std::move(upFace),
                         characters,
-                        mpGUI->getWindowWidth(),
                         mpGUI->getWindowHeight()));
                 pFont = rupFont.get();
 
@@ -211,10 +210,10 @@ namespace eyegui
 
     void AssetManager::resizeFontAtlases()
     {
-        // TODO: does not work, maybe (unique pointer..)
+        // TODO: maybe! does not work, but seems so. unique pointer reference?
         for (auto& rPair : mFonts)
         {
-            rPair.second->resizeFontAtlases(mpGUI->getWindowWidth(), mpGUI->getWindowHeight());
+            rPair.second->resizeFontAtlases(mpGUI->getWindowHeight());
         }
     }
 

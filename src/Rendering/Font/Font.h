@@ -42,14 +42,13 @@ namespace eyegui
             std::string filepath,
             std::unique_ptr<FT_Face> upFace,
             std::set<char16_t> characterSet,
-            int windowWidth,
             int windowHeight);
 
         // Destructor
         virtual ~Font();
 
         // Resize font atlases
-        void resizeFontAtlases(int windowWidth, int windowHeight);
+        void resizeFontAtlases(int windowHeight);
 
         // Get glyph (may return NULL if not found)
         Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
@@ -61,6 +60,9 @@ namespace eyegui
 
         // Calculate padding
         int calculatePadding(int pixelHeight);
+
+        // Fill pixel heights
+        void fillPixelHeights(int windowHeight);
 
         // Fill all atlases
         void fillAtlases();
