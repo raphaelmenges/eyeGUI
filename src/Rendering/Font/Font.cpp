@@ -3,9 +3,6 @@
 #include "OperationNotifier.h"
 #include "Defines.h"
 
-// TODO: testing
-#include <iostream>
-
 namespace eyegui
 {
     Font::Font(
@@ -243,10 +240,18 @@ namespace eyegui
                     GL_UNSIGNED_BYTE,
                     bitmapOrder[i][j]->second.data());
 
-                xPen += bitmapWidth + 2 * padding;
+                // Save further values to glyph structur
+                bitmapOrder[i][j]->first->atlasPosition = glm::vec4(
+                    (float)(xPen + padding) / xResolution,
+                    (float)(yPen + padding) / yResolution,
+                    (float)(xPen + padding + bitmapWidth) / xResolution,
+                    (float)(yPen + padding + bitmapHeight) / yResolution);
 
-                // Save further values to glyph structure TODO
+                // Advance pen
+                xPen += bitmapWidth + 2 * padding;
             }
+
+            // Advance pen
             yPen -= pixelHeight + 2 * padding;
         }
 

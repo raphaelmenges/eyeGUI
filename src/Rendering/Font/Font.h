@@ -8,8 +8,6 @@
 
 // TODO:
 //	- what to do if glyph was not found?
-//  - letters should start at top
-//  - some letters not found (maybe test font is not good?!)
 //  - fillAtlas VERY slow (maybe no improvement possible..)
 
 #ifndef FONT_H_
@@ -33,8 +31,7 @@ namespace eyegui
     struct Glyph
     {
         GLint       atlasTextureId; // Id of atlas texture
-        glm::vec2	atlasPosition;	// Position in atlas
-        glm::vec2	atlasSize;		// Size in atlas
+        glm::vec4	atlasPosition;	// Position in atlas (minS, minT, maxS, maxT)
         glm::ivec2  size;			// Size in pixel
         glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
         glm::ivec2	advance;        // Offset to advance to next glyph in pixel
@@ -57,9 +54,6 @@ namespace eyegui
 
         // Resize font atlases
         void resizeFontAtlases(int windowWidth, int windowHeight);
-
-        // For testing (TODO)
-        GLuint getMediumTextureHandle() {return mMediumTexture;}
 
     private:
 
