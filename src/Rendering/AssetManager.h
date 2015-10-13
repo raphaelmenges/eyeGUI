@@ -16,6 +16,7 @@
 #include "Textures/Texture.h"
 #include "RenderItem.h"
 #include "Font/Font.h"
+#include "Font/TextFlow.h"
 
 #include "externals/FreeType2/include/ft2build.h"
 #include FT_FREETYPE_H
@@ -26,7 +27,7 @@
 namespace eyegui
 {
     // Available assets
-    namespace shaders { enum class Type { SEPARATOR, BLOCK, PICTURE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR }; }
+    namespace shaders { enum class Type { SEPARATOR, BLOCK, PICTURE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, FONT }; }
     namespace meshes { enum class Type { QUAD }; }
     namespace graphics { enum class Type { CIRCLE, NOT_FOUND }; }
 
@@ -57,6 +58,15 @@ namespace eyegui
 
         // Resize font atlases (should be called by GUI only)
         void resizeFontAtlases();
+
+        // Create text flow and return it as unique pointer
+        std::unique_ptr<TextFlow> createTextFlow(
+            FontSize fontSize,
+            int x,
+            int y,
+            int width,
+            int height,
+            std::u16string content);
 
     private:
 

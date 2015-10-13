@@ -218,6 +218,28 @@ namespace eyegui
         }
     }
 
+    std::unique_ptr<TextFlow> AssetManager::AssetManager::createTextFlow(
+            FontSize fontSize,
+            int x,
+            int y,
+            int width,
+            int height,
+            std::u16string content)
+    {
+        return std::move(
+            std::unique_ptr<TextFlow>(
+                new TextFlow(
+                    mpGUI,
+                    mpGUI->getDefaultFont(),
+                    fontSize,
+                    fetchShader(shaders::Type::FONT),
+                    x,
+                    y,
+                    width,
+                    height,
+                    content)));
+    }
+
     Shader* AssetManager::fetchShader(shaders::Type shader)
     {
         // Search in map for shader and create if needed
@@ -245,6 +267,9 @@ namespace eyegui
                 break;
             case shaders::Type::SENSOR:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSensorFragmentShader));
+                break;
+            case shaders::Type::FONT:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pFontFragmentShader));
                 break;
             }
             pShader = rupShader.get();

@@ -39,6 +39,18 @@ namespace eyegui
             "}\n";
 
         // Uniforms:
+        // float alpha
+        static const char* pFontFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform sampler2D atlas;\n"
+            "uniform float alpha;\n"
+            "void main() {\n"
+            "   fragColor = vec4(texture2D(atlas, uv).rgb, alpha);\n"
+            "}\n";
+
+        // Uniforms:
         // vec4 backgroundColor
         // float alpha
         // float activity

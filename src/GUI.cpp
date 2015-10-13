@@ -47,6 +47,9 @@ namespace eyegui
 
         // Initialize OpenGL
         mGLSetup.init();
+
+        // TODO: testing
+        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::MEDIUM, 10, 10, 200, 100, u"Hallo Text!"));
     }
 
     GUI::~GUI()
@@ -136,6 +139,9 @@ namespace eyegui
             {
                 mLayouts[i]->draw();
             }
+
+            // TODO: test
+            mupTextFlow->draw(0.5f);
 
             // Restore OpenGL state of application
             mGLSetup.restore();

@@ -7,20 +7,32 @@
 
 #include "TextFlow.h"
 
+#include "GUI.h"
+#include "externals/GLM/glm/gtc/matrix_transform.hpp"
+
+// TODO: Testing
+#include <iostream>
+
 namespace eyegui
 {
     TextFlow::TextFlow(
+        GUI const * pGUI,
         Font const * pFont,
         FontSize fontSize,
         Shader const * pShader,
+        int x,
+        int y,
         int width,
         int height,
         std::u16string content)
     {
         // Fill members
+        mpGUI = pGUI;
         mpFont = pFont;
         mFontSize = fontSize;
         mpShader = pShader;
+        mX = x;
+        mY = y;
         mWidth = width;
         mHeight = height;
         mContent = content;
@@ -54,6 +66,9 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
         glBindVertexArray(oldVAO);
 
+        // TODO: just useable when only one atlas texture (whole member will be deleted)
+        mAtlasTextureId = mpFont->getGlyph(mFontSize, u'a')->atlasTextureId; // TODO
+
         // Calculate it
         calculateMesh();
     }
@@ -78,21 +93,27 @@ namespace eyegui
         mHeight = height;
         mContent = content;
 
-        // TODO: just useable when only one atlas texture
-        mAtlasTextureId = 42; // TODO
-
         // Calculate mesh
         calculateMesh();
     }
 
-    void TextFlow::draw(int xPosition, int yPosition) const
+    void TextFlow::draw(float alpha) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
 
+        // If matrix were not calculated every frame, this would have to be notified about resizing...
+        glm::mat4 matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1));
+
         // TODO
         // Position
         // Color?
+
+        // TODO: TEST
+        glBindTexture(GL_TEXTURE_2D, mAtlasTextureId);
+
+        mpShader->fillValue("matrix", matrix);
+        mpShader->fillValue("alpha", alpha);
 
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
@@ -107,8 +128,8 @@ namespace eyegui
 
         std::vector<float> vertices =
         {
-            0.0,0.0,0, 1.0,0,0, 1.0,1.0,0,
-            1.0,1.0,0, 0,1.0,0, 0,0,0
+            0.0,0.0,0, 100.0,0,0, 100.0,100.0,0,
+            100.0,100.0,0, 0,100.0,0, 0,0,0
         };
         std::vector<float> textureCoordinates =
         {

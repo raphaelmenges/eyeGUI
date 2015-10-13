@@ -1,12 +1,9 @@
 At the moment:
 - Why does it crash at the end (test it with Visual Debugger...)
 - TextFlow
-	- Font Shader necessary
-	- Test whether works as expected (brings a colored quad to the screen?)
 	- Create text primitives
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
-- Rethink about which features in which versions (Praktikum starts soon^^)
 - Create helper for de- and increasing of all values like alpha etc
 - Text rendering using freetype
   - Integrate into AssetManager
@@ -19,23 +16,22 @@ At the moment:
     - can be used for rendering block of text
     - alignment (left, right, center, justify)
   - Resize wait time (expensive to update fonts)
-- New elements using text rendering
+- New elements using text rendering (for the start: textbox and some button? later menu stuff...)
 - Localization using files
 - Changing styles through programming interface
-- New style member: FadeColorMutliplier (used when gaze is not upon the the element)
 - HelloEyeGUI and eyeGUIDemo refactoring..
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
-- Text input
-- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Overwork CMakeLists! Probably, unecessary sourcing instead of including
 - Notification into own class and layout as const pointer in elements
 - Add version / date of externals
   - reintegrate glm (some files may be missing)
   - GLM and Freetype: Choose license
+- Uniform locations of texture slots not used! (maybe problem if there is more than one in use at once)
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
+- New style member: FadeColorMutliplier (used when gaze is not upon the the element)
 - More complex input structure and configuration
   - Mouse
   - Keyboard
@@ -44,6 +40,8 @@ At the moment:
   - Buttons?
   - Other...
 - More complex elements with text
+- Text input
+- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 
 ### VERSION 0.4 ### (improvements)
 - Audio

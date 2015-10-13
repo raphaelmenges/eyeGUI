@@ -18,20 +18,25 @@
 
 #include "Font.h"
 #include "Rendering/Shader.h"
-
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
 namespace eyegui
 {
+    // Forward declaration
+    class GUI;
+
     class TextFlow
     {
     public:
 
         // Constructor
         TextFlow(
+            GUI const * pGUI,
             Font const * pFont,
             FontSize fontSize,
             Shader const * pShader,
+            int x,
+            int y,
             int width,
             int height,
             std::u16string content);
@@ -46,7 +51,7 @@ namespace eyegui
             std::u16string content);
 
         // Draw
-        void draw(int xPosition, int yPosition) const;
+        void draw(float alpha) const;
 
     private:
 
@@ -54,9 +59,12 @@ namespace eyegui
         void calculateMesh();
 
         // Members
+        GUI const * mpGUI;
         Font const * mpFont;
         FontSize mFontSize;
         Shader const * mpShader;
+        int mX;
+        int mY;
         int mWidth;
         int mHeight;
         std::u16string mContent;

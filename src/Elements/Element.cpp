@@ -458,21 +458,21 @@ namespace eyegui
     glm::mat4 Element::calculateDrawMatrix(int x, int y, int width, int height) const
     {
         // Get values from layout
-        float windowWidth = (float)(mpLayout->getLayoutWidth());
-        float windowHeight = (float)(mpLayout->getLayoutHeight());
+        float layoutWidth = (float)(mpLayout->getLayoutWidth());
+        float layoutHeight = (float)(mpLayout->getLayoutHeight());
 
         // Create identity
         glm::mat4 matrix = glm::mat4(1.0f);
 
         // Width and height from zero to one
-        float glWidth = width / windowWidth;
-        float glHeight = height / windowHeight;
+        float glWidth = width / layoutWidth;
+        float glHeight = height / layoutHeight;
 
         // Moving
         matrix = glm::translate(
             matrix,
-            glm::vec3(x / windowWidth,
-                (1.0f - (y / windowHeight)) - glHeight,
+            glm::vec3(x / layoutWidth,
+                (1.0f - (y / layoutHeight)) - glHeight,
                 0));
 
         // Scaling

@@ -107,6 +107,9 @@ namespace eyegui
         bool mLayoutsLocked;
         std::string mConfigToLoad;
         Font const * mpDefaultFont;
+
+        // TODO: Test
+        std::unique_ptr<TextFlow> mupTextFlow;
     };
 }
 
