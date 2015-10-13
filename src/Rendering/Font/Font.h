@@ -32,6 +32,7 @@ namespace eyegui
 {
     struct Glyph
     {
+        GLint       atlasTextureId; // Id of atlas texture
         glm::vec2	atlasPosition;	// Position in atlas
         glm::vec2	atlasSize;		// Size in atlas
         glm::ivec2  size;			// Size in pixel

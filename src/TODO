@@ -50,6 +50,7 @@ At the moment:
 
 Notes:
 - Determine maximum texture resolution and create more than one texture atlas for font rendering if necessary
+	- Save texture id in glyph.. (already done :))
 - Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Reminder: Parser responsible for value ranges!

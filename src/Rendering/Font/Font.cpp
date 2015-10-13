@@ -115,6 +115,7 @@ namespace eyegui
             int bitmapHeight = (*(mupFace.get()))->glyph->bitmap.rows;
 
             // Save some values of the glyph
+            rGlyphMap[c].atlasTextureId = textureId;
             rGlyphMap[c].advance = glm::ivec2(
                 (*(mupFace.get()))->glyph->advance.x,
                 (*(mupFace.get()))->glyph->advance.y);
