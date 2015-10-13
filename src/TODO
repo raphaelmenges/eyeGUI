@@ -1,7 +1,9 @@
 At the moment:
 - Why does it crash at the end (test it with Visual Debugger...)
-- somehow set default font (just interface function)
 - TextFlow
+	- Font Shader necessary
+	- Test whether works as expected (brings a colored quad to the screen?)
+	- Create text primitives
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Rethink about which features in which versions (Praktikum starts soon^^)
