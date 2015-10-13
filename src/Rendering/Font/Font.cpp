@@ -93,13 +93,26 @@ namespace eyegui
                 (*(mupFace.get()))->glyph->bitmap_left,
                 (*(mupFace.get()))->glyph->bitmap_top);
 
+            // Copy bitmap to own vector while mirroring it horizontally (TODO: mirror directly from raw buffer)
+            std::vector<unsigned char> copyBuffer(
+                bufferStart,
+                bufferStart + bitmapWidth * bitmapHeight);
+
+            // Go over rows and mirror it into new buffer
+            std::vector<unsigned char> mirrorBuffer;
+            for(int i = bitmapHeight-1; i >= 0; i--)
+            {
+                for(int j = 0; j < bitmapWidth; j++)
+                {
+                    mirrorBuffer.push_back(copyBuffer[i*bitmapWidth + j]);
+                }
+            }
+
             // Fetch current glyph, copy bitmap and store it in vector as pair
             bitmaps.push_back(
                 glyphBitmapPair(
                     &rGlyphMap[c],
-                    std::vector<unsigned char>(
-                        bufferStart,
-                        bufferStart + bitmapWidth * bitmapHeight)));
+                    mirrorBuffer));
         }
 
         // TODO: Padding size in percent! should be better and defined somewhere else
