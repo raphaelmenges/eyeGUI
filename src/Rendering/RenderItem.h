@@ -21,7 +21,7 @@ namespace eyegui
     public:
 
         // Constructor
-        RenderItem(Shader* pShader, Mesh* pMesh);
+        RenderItem(Shader const * pShader, Mesh const * pMesh);
 
         // Destructor
         virtual ~RenderItem();
@@ -41,8 +41,8 @@ namespace eyegui
     private:
 
         // Member
-        Shader* mpShader;
-        Mesh* mpMesh;
+        Shader const * mpShader;
+        Mesh const * mpMesh;
         GLuint mVertexArrayObject;
     };
 }

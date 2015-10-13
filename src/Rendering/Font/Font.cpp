@@ -51,13 +51,47 @@ namespace eyegui
 
     void Font::resizeFontAtlases(int windowWidth, int windowHeight)
     {
-        // Update pixel heights (TODO)
+        // Update pixel heights (TODO) -> put in Defines.h
         mTallPixelHeight = 100;
         mMediumPixelHeight = 32;
         mSmallPixelHeight = 10;
 
         // Update all atlases
         fillAtlases();
+    }
+
+    Glyph const * Font::getGlyph(FontSize fontSize, char16_t character) const
+    {
+        Glyph const * pGlyph = NULL;
+
+        switch(fontSize)
+        {
+        case FontSize::TALL:
+            pGlyph = getGlyph(mTallGlyphs, character);
+            break;
+        case FontSize::MEDIUM:
+            pGlyph = getGlyph(mMediumGlyphs, character);
+            break;
+        case FontSize::SMALL:
+            pGlyph = getGlyph(mSmallGlyphs, character);
+            break;
+        }
+
+        return pGlyph;
+    }
+
+    Glyph const * Font::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
+    {
+        auto it = rGlyphMap.find(character);
+
+        if(it != rGlyphMap.end())
+        {
+            return &(it->second);
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
     int Font::calculatePadding(int pixelHeight)

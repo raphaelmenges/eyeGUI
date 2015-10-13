@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.1
+ *  \version   0.2
  *  \license   This project is released under the MIT License (MIT)
  */
 
@@ -43,6 +43,10 @@ namespace eyegui
     //! Enumeration of possible character sets for font rendering.
     /*! This enum is defined directly in the interface because it is needed by initialization. */
     enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH};
+
+    //! Enumeration of possible font sizes.
+    /*! This enum is defined directly in the interface because it is needed some functions. */
+    enum class FontSize { TALL, MEDIUM, SMALL};
 
     //! Enumeration of possible picture alignments.
     /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */

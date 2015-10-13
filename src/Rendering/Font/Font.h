@@ -51,7 +51,13 @@ namespace eyegui
         // Resize font atlases
         void resizeFontAtlases(int windowWidth, int windowHeight);
 
+        // Get glyph (may return NULL if not found)
+        Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
+
     private:
+
+        // Get glyph (may return NULL if not found)
+        Glyph const * getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const;
 
         // Calculate padding
         int calculatePadding(int pixelHeight);

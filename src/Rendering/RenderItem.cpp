@@ -9,7 +9,7 @@
 
 namespace eyegui
 {
-    RenderItem::RenderItem(Shader* pShader, Mesh* pMesh)
+    RenderItem::RenderItem(Shader const * pShader, Mesh const * pMesh)
     {
         // Fill members
         mpShader = pShader;
@@ -26,13 +26,13 @@ namespace eyegui
         glBindVertexArray(mVertexArrayObject);
 
         // Vertices
-        GLuint vertexAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "posAttr");
+        GLuint vertexAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "posAttribute");
         glEnableVertexAttribArray(vertexAttrib);
         glBindBuffer(GL_ARRAY_BUFFER, mpMesh->getVertexBuffer());
         glVertexAttribPointer(vertexAttrib, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
         // Texture coordinates
-        GLuint uvAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "uvAttrib");
+        GLuint uvAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "uvAttribute");
         glEnableVertexAttribArray(uvAttrib);
         glBindBuffer(GL_ARRAY_BUFFER, mpMesh->getTextureCoordinateBuffer());
         glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 0, NULL);
