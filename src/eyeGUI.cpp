@@ -16,9 +16,9 @@ static const std::string VERSION_STRING = "0.1";
 
 namespace eyegui
 {
-    GUI* createGUI(int width, int height)
+    GUI* createGUI(int width, int height, CharacterSet characterSet)
     {
-        return (new GUI(width, height));
+        return (new GUI(width, height, characterSet));
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
@@ -104,25 +104,25 @@ namespace eyegui
         return pLayout->isElementActive(id);
     }
 
-	float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
-	{
-		return pLayout->getRelativePositionOfElementOnLayoutX(id);
-	}
+    float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativePositionOfElementOnLayoutX(id);
+    }
 
-	float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id)
-	{
-		return pLayout->getRelativePositionOfElementOnLayoutY(id);
-	}
+    float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativePositionOfElementOnLayoutY(id);
+    }
 
-	float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id)
-	{
-		return pLayout->getRelativeSizeOfElementOnLayoutX(id);
-	}
+    float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativeSizeOfElementOnLayoutX(id);
+    }
 
-	float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id)
-	{
-		return pLayout->getRelativeSizeOfElementOnLayoutY(id);
-	}
+    float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativeSizeOfElementOnLayoutY(id);
+    }
 
     bool checkForId(Layout const * pLayout, std::string id)
     {
@@ -247,7 +247,7 @@ namespace eyegui
         float relativeSizeX,
         float relativeSizeY,
         bool visible,
-		bool fade)
+        bool fade)
     {
         return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, visible, fade);
     }
@@ -262,40 +262,40 @@ namespace eyegui
         }
     }
 
-	void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade)
-	{
-		pLayout->removeFloatingFrame(frameIndex, fade);
-	}
+    void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade)
+    {
+        pLayout->removeFloatingFrame(frameIndex, fade);
+    }
 
-	void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY)
-	{
-		pLayout->translateFloatingFrame(frameIndex, translateX, translateY);
-	}
+    void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY)
+    {
+        pLayout->translateFloatingFrame(frameIndex, translateX, translateY);
+    }
 
-	void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY)
-	{
-		pLayout->scaleFloatingFrame(frameIndex, scaleX, scaleY);
-	}
+    void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY)
+    {
+        pLayout->scaleFloatingFrame(frameIndex, scaleX, scaleY);
+    }
 
-	void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY)
-	{
-		pLayout->setPositionOfFloatingFrame(frameIndex, relativePositionX, relativePositionY);
-	}
+    void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY)
+    {
+        pLayout->setPositionOfFloatingFrame(frameIndex, relativePositionX, relativePositionY);
+    }
 
-	void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY)
-	{
-		pLayout->setSizeOfFloatingFrame(frameIndex, relativeSizeX, relativeSizeY);
-	}
+    void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY)
+    {
+        pLayout->setSizeOfFloatingFrame(frameIndex, relativeSizeX, relativeSizeY);
+    }
 
-	void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex)
-	{
-		pLayout->moveFloatingFrameToFront(frameIndex);
-	}
+    void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex)
+    {
+        pLayout->moveFloatingFrameToFront(frameIndex);
+    }
 
-	void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex)
-	{
-		pLayout->moveFloatingFrameToBack(frameIndex);
-	}
+    void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex)
+    {
+        pLayout->moveFloatingFrameToBack(frameIndex);
+    }
 
     void setErrorCallback(void(*pCallbackFunction)(std::string))
     {

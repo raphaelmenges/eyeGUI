@@ -12,11 +12,12 @@
 
 namespace eyegui
 {
-    GUI::GUI(int width, int height)
+    GUI::GUI(int width, int height, CharacterSet characterSet)
     {
         // Initialize members
         mWidth = width;
         mHeight = height;
+        mCharacterSet = characterSet;
         mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
         mLayoutsLocked = false;
         mConfigToLoad = NO_CONFIG_TO_LOAD;
@@ -243,6 +244,11 @@ namespace eyegui
     Config const * GUI::getConfig() const
     {
         return &mConfig;
+    }
+
+    CharacterSet GUI::getCharacterSet() const
+    {
+        return mCharacterSet;
     }
 
     void GUI::loadConfig(std::string filepath)

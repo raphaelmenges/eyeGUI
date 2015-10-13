@@ -8,7 +8,6 @@
 
 // TODO:
 //	- what to do if glyph was not found?
-//  - letters up side down
 //  - letters should start at top
 //  - some letters not found (maybe test font is not good?!)
 //  - fillAtlas VERY slow (maybe no improvement possible..)
@@ -37,7 +36,7 @@ namespace eyegui
         glm::vec2	atlasSize;		// Size in atlas
         glm::ivec2  size;			// Size in pixel
         glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
-        GLuint		advance;		// Offset to advance to next glyph in pixel
+        glm::ivec2	advance;        // Offset to advance to next glyph in pixel
     };
 
     class Font
@@ -48,7 +47,7 @@ namespace eyegui
         Font(
             std::string filepath,
             std::unique_ptr<FT_Face> upFace,
-            const std::set<char16_t>& characterSet,
+            std::set<char16_t> characterSet,
             int windowWidth,
             int windowHeight);
 
@@ -63,8 +62,18 @@ namespace eyegui
 
     private:
 
+        // Calculate padding
+        int calculatePadding(int pixelHeight);
+
+        // Fill all atlases
+        void fillAtlases();
+
         // Fill atlas
-        void fillAtlas(int pixelHeight, std::map<char16_t, Glyph>& rGlyphMap, GLuint textureId);
+        void fillAtlas(
+            int pixelHeight,
+            std::map<char16_t,Glyph>& rGlyphMap,
+            GLuint textureId,
+            int padding);
 
         // Members
         std::unique_ptr<FT_Face> mupFace;

@@ -40,6 +40,10 @@ namespace eyegui
     class Layout;
     class Frame;
 
+    //! Enumeration of possible character sets for font rendering.
+    /*! This enum is defined directly in the interface because it is needed by initialization. */
+    enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH};
+
     //! Enumeration of possible picture alignments.
     /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */
     enum class PictureAlignment { ORIGINAL, STRETCHED };
@@ -103,9 +107,10 @@ namespace eyegui
     /*!
       \param width of GUI as integer.
       \param height of GUI as integer.
+      \param characterSet used to initialize font rendering.
       \return pointer to created GUI.
     */
-    GUI* createGUI(int width, int height);
+    GUI* createGUI(int width, int height, CharacterSet characterSet = CharacterSet::US_ENGLISH);
 
     //! Creates layout inside GUI and returns pointer to it.
     /*!
@@ -214,37 +219,37 @@ namespace eyegui
     */
     bool isElementActive(Layout const * pLayout, std::string id);
 
-	//! Get relative x position of element on its layout.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return relative x position on layout.
-	*/
-	float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id);
+    //! Get relative x position of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative x position on layout.
+    */
+    float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id);
 
-	//! Get relative y position of element on its layout.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return relative y position on layout.
-	*/
-	float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id);
+    //! Get relative y position of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative y position on layout.
+    */
+    float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id);
 
-	//! Get relative size in x direction of element on its layout.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return relative size in x direction on layout.
-	*/
-	float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id);
+    //! Get relative size in x direction of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative size in x direction on layout.
+    */
+    float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id);
 
-	//! Get relative size in y direction of element on its layout.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return relative size in y direction on layout.
-	*/
-	float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id);
+    //! Get relative size in y direction of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative size in y direction on layout.
+    */
+    float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id);
 
     //! Check for existence of id.
     /*!
@@ -377,7 +382,7 @@ namespace eyegui
       \param id is the unique id of an element.
       \param filepath is the path to the image used in the picture element.
       \param alignment is the inner alignment of the picture.
-	  \param fade indicates, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, PictureAlignment alignment, bool fade = false);
 
@@ -395,7 +400,7 @@ namespace eyegui
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
       \param isSwitch indicates, whether button should be a switch.
-	  \param fade indicates, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithCircleButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch = false, bool fade = false);
 
@@ -405,16 +410,16 @@ namespace eyegui
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
       \param isSwitch indicates, whether button should be a switch.
-	  \param fade indicates, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWitBoxButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch = false, bool fade = false);
 
     //! Replace element with sensor.
     /*!
       \param pLayout pointer to layout.
-      \param id is the unique id of an element.  
+      \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
-	  \param fade indicates, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWitSensor(Layout* pLayout, std::string id, std::string iconFilepath, bool fade = false);
 
@@ -423,7 +428,7 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param filepath is path to brick xml file.
-	  \param fade indicates, whether replaced element should fade.
+      \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade);
 
@@ -436,7 +441,7 @@ namespace eyegui
       \param relativeSizeX initial relative x size.
       \param relativeSizeY initial relative y size.
       \param visible indicates, whether frame should be visible or not.
-	  \param fade indicates, whether frame should fade in.
+      \param fade indicates, whether frame should fade in.
       \return index of created floating frame.
     */
     unsigned int addFloatingFrameWithBrick(
@@ -447,7 +452,7 @@ namespace eyegui
         float relativeSizeX,
         float relativeSizeY,
         bool visible = true,
-		bool fade = false);
+        bool fade = false);
 
     //! Set visibility of floating frame.
     /*!
@@ -459,63 +464,63 @@ namespace eyegui
     */
     void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset = false, bool fade = false);
 
-	//! Removes floating frame from layout.
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	\param fade indicates, whether floating frame should fade out.
-	*/
-	void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade = false);
+    //! Removes floating frame from layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param fade indicates, whether floating frame should fade out.
+    */
+    void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade = false);
 
-	//! Translates floating frame
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	\param translateX amount of translation in x direction.
-	\param translateY amount of translation in y direction.
-	*/
-	void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY);
+    //! Translates floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param translateX amount of translation in x direction.
+    \param translateY amount of translation in y direction.
+    */
+    void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY);
 
-	//! Scales floating frame
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	\param scaleX scaling in x direction.
-	\param scaleY scaling in y direction.
-	*/
-	void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY);
+    //! Scales floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param scaleX scaling in x direction.
+    \param scaleY scaling in y direction.
+    */
+    void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY);
 
-	//! Set relative position of floating frame
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	\param relativePositionX relative x position.
-	\param relativePositionY relative y position.
-	*/
-	void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY);
+    //! Set relative position of floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param relativePositionX relative x position.
+    \param relativePositionY relative y position.
+    */
+    void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY);
 
-	//! Set relative size of floating frame
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	\param relativeSizeX relative x size.
-	\param relativeSizeY relative y size.
-	*/
-	void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY);
+    //! Set relative size of floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param relativeSizeX relative x size.
+    \param relativeSizeY relative y size.
+    */
+    void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY);
 
-	//! Move frame to front.
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	*/
-	void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex);
+    //! Move frame to front.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    */
+    void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex);
 
-	//! Move frame to back.
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	*/
-	void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
+    //! Move frame to back.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    */
+    void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
 
     //! Set error callback function.
     /*!

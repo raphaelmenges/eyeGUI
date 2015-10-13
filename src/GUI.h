@@ -31,7 +31,7 @@ namespace eyegui
         // Local constants
         const std::string NO_CONFIG_TO_LOAD = "";
 
-        // *** Methods accessed by layout ***
+        // *** Methods accessed by other classes ***
 
         // Getter for window size
         int getWindowWidth() const;
@@ -43,10 +43,13 @@ namespace eyegui
         // Get pointer to config of this GUI
         Config const * getConfig() const;
 
+        // Get used character set
+        CharacterSet getCharacterSet() const;
+
         // *** Methods accessed via interface ***
 
         // Constructor
-        GUI(int width, int height);
+        GUI(int width, int height, CharacterSet characterSet);
 
         // Destructor
         virtual ~GUI();
@@ -86,6 +89,7 @@ namespace eyegui
         // Members
         std::vector<std::unique_ptr<Layout> > mLayouts;
         int mWidth, mHeight;
+        CharacterSet mCharacterSet;
         LayoutParser mLayoutParser;
         ConfigParser mConfigParser;
         std::unique_ptr<AssetManager> mupAssetManager;

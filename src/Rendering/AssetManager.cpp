@@ -12,6 +12,7 @@
 #include "Shaders.h"
 #include "Meshes.h"
 #include "Graphics.h"
+#include "CharacterSets.h"
 #include "OperationNotifier.h"
 #include "Helper.h"
 #include "GUI.h"
@@ -177,18 +178,26 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::FONT_LOADING, "Failed to load font with FreeType Library", filepath);
             }
 
-            // TODO: Create character set somewhere else... (should be set globally) -> maybe at initialization of whole GUI
-            std::set<char16_t> characterSet;
-            for (char16_t c = 0; c < 128; c++)
+            // Decide character set
+            std::set<char16_t> characters = charsets::BASIC;
+            switch(mpGUI->getCharacterSet())
             {
-                characterSet.insert(c);
+            case CharacterSet::GERMANY_GERMAN:
+                characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
+                break;
+            case CharacterSet::US_ENGLISH:
+                // TODO? (are there any special characters in us english?)
+                break;
             }
-            //char16_t testChar = 'ä';
-            //std::cout << std::to_string(testChar) << std::endl;
-            //characterSet.insert(testChar);
 
-            // Give face to a font object (it will delete is at the end)()
-            rupFont = std::unique_ptr<Font>(new Font(filepath, std::move(upFace), characterSet, mpGUI->getWindowWidth(), mpGUI->getWindowHeight()));
+            // Give face to a font object (it will delete is at the end)
+            rupFont = std::unique_ptr<Font>(
+                new Font(
+                    filepath,
+                    std::move(upFace),
+                    characters,
+                    mpGUI->getWindowWidth(),
+                    mpGUI->getWindowHeight()));
             pFont = rupFont.get();
 
             // Add font to own map

@@ -1,6 +1,7 @@
 #include "Font.h"
 
 #include "OperationNotifier.h"
+#include "Defines.h"
 
 // TODO: testing
 #include <iostream>
@@ -10,7 +11,7 @@ namespace eyegui
     Font::Font(
         std::string filepath,
         std::unique_ptr<FT_Face> upFace,
-        const std::set<char16_t>& characterSet,
+        std::set<char16_t> characterSet,
         int windowWidth,
         int windowHeight)
     {
@@ -29,16 +30,17 @@ namespace eyegui
         glGenTextures(1, &mMediumTexture);
         glGenTextures(1, &mSmallTexture);
 
-        // TODO: somewhere: get max texture size for this gpu and limit something somehow...
-
         // Fill atlases the first time
-        fillAtlas(mTallPixelHeight, mTallGlyphs, mTallTexture);
-        fillAtlas(mMediumPixelHeight, mMediumGlyphs, mMediumTexture);
-        fillAtlas(mSmallPixelHeight, mSmallGlyphs, mSmallTexture);
+        fillAtlases();
     }
 
     Font::~Font()
     {
+        // Delete textures
+        glDeleteTextures(1, &mTallTexture);
+        glDeleteTextures(1, &mMediumTexture);
+        glDeleteTextures(1, &mSmallTexture);
+
         // Delete used face
         FT_Done_Face(*(mupFace.get()));
     }
@@ -47,15 +49,44 @@ namespace eyegui
     {
         // Update pixel heights (TODO)
         mTallPixelHeight = 100;
-        mMediumPixelHeight = 50;
+        mMediumPixelHeight = 32;
         mSmallPixelHeight = 10;
 
-        fillAtlas(mTallPixelHeight, mTallGlyphs, mTallTexture);
-        fillAtlas(mMediumPixelHeight, mMediumGlyphs, mMediumTexture);
-        fillAtlas(mSmallPixelHeight, mSmallGlyphs, mSmallTexture);
+        // Update all atlases
+        fillAtlases();
     }
 
-    void Font::fillAtlas(int pixelHeight, std::map<char16_t, Glyph>& rGlyphMap, GLuint textureId)
+    int Font::calculatePadding(int pixelHeight)
+    {
+        return std::max(
+            FONT_MINIMAL_CHARACTER_PADDING,
+            (int) (pixelHeight * FONT_CHARACTER_PADDING));
+    }
+
+    void Font::fillAtlases()
+    {
+        fillAtlas(
+            mTallPixelHeight,
+            mTallGlyphs,
+            mTallTexture,
+            calculatePadding(mTallPixelHeight));
+        fillAtlas(
+            mMediumPixelHeight,
+            mMediumGlyphs,
+            mMediumTexture,
+            calculatePadding(mMediumPixelHeight));
+        fillAtlas(
+            mSmallPixelHeight,
+            mSmallGlyphs,
+            mSmallTexture,
+            calculatePadding(mSmallPixelHeight));
+    }
+
+    void Font::fillAtlas(
+        int pixelHeight,
+        std::map<char16_t, Glyph>& rGlyphMap,
+        GLuint textureId,
+        int padding)
     {
         // Some typedef, keep track of combination of each glyph and its bitmap
         typedef std::pair<Glyph*, std::vector<unsigned char> > glyphBitmapPair;
@@ -83,20 +114,14 @@ namespace eyegui
             int bitmapWidth = (*(mupFace.get()))->glyph->bitmap.width;
             int bitmapHeight = (*(mupFace.get()))->glyph->bitmap.rows;
 
-            // Start of buffer
-            unsigned char* bufferStart = (*(mupFace.get()))->glyph->bitmap.buffer;
-
             // Save some values of the glyph
-            rGlyphMap[c].advance = (*(mupFace.get()))->glyph->advance.x;
+            rGlyphMap[c].advance = glm::ivec2(
+                (*(mupFace.get()))->glyph->advance.x,
+                (*(mupFace.get()))->glyph->advance.y);
             rGlyphMap[c].size = glm::ivec2(bitmapWidth, bitmapHeight);
             rGlyphMap[c].bearing = glm::ivec2(
                 (*(mupFace.get()))->glyph->bitmap_left,
                 (*(mupFace.get()))->glyph->bitmap_top);
-
-            // Copy bitmap to own vector while mirroring it horizontally (TODO: mirror directly from raw buffer)
-            std::vector<unsigned char> copyBuffer(
-                bufferStart,
-                bufferStart + bitmapWidth * bitmapHeight);
 
             // Go over rows and mirror it into new buffer
             std::vector<unsigned char> mirrorBuffer;
@@ -104,19 +129,16 @@ namespace eyegui
             {
                 for(int j = 0; j < bitmapWidth; j++)
                 {
-                    mirrorBuffer.push_back(copyBuffer[i*bitmapWidth + j]);
+                    mirrorBuffer.push_back((*(mupFace.get()))->glyph->bitmap.buffer[i*bitmapWidth + j]);
                 }
             }
 
-            // Fetch current glyph, copy bitmap and store it in vector as pair
+            // Fetch current glyph and bitmap and store it in vector as pair
             bitmaps.push_back(
                 glyphBitmapPair(
                     &rGlyphMap[c],
                     mirrorBuffer));
         }
-
-        // TODO: Padding size in percent! should be better and defined somewhere else
-        int padding = 2;
 
         // Decide, which resolution is minimum when texture would be quadratic
         int sumPixelWidth = 0;
@@ -150,6 +172,7 @@ namespace eyegui
                     rows[j] += width;
                     bitmapOrder[j].push_back(&rGlyphBitmapPair);
                     check = true;
+                    break;
                 }
             }
             if(!check)
@@ -198,7 +221,7 @@ namespace eyegui
             emptyData.data());
 
         // Write bitmaps into texture and save further values to the glyph
-        int yPen = 0;
+        int yPen = yResolution - pixelHeight - 2 * padding;
         for(int i = 0; i < bitmapOrder.size(); i++)
         {
             int xPen = 0;
@@ -223,7 +246,7 @@ namespace eyegui
 
                 // Save further values to glyph structure TODO
             }
-            yPen += pixelHeight + 2 * padding;
+            yPen -= pixelHeight + 2 * padding;
         }
 
         // Unbind texture

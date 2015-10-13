@@ -1,5 +1,5 @@
 # eyeGUI
-This library enables one to load, manipulate and render user interface for eyetracking input defined in xml files describing layouts. To use this library, there is a function based interface in a single header which requires the usage of C++11 and OpenGL 3.3 or higher. Layouts are thought as overlay for your specific application for interaction using the gaze input from a eyetracker, however one can create a whole application using layouts. For more information about usage, please visit the [**wiki**](https://github.com/raphaelmenges/eyeGUI/wiki)!
+This library enables one to load, manipulate and render user interfaces for eyetracking input defined in xml files describing layouts. To use this library, there is a function based interface in a single header which requires the usage of C++11 and OpenGL 3.3 or higher. Layouts are thought as overlay for your specific application for interaction with the gaze input from an eyetracker, however one can create a whole application using layouts. For more information about usage, please visit the [**wiki**](https://github.com/raphaelmenges/eyeGUI/wiki)!
 
 ## Demo
 Video hosted on YouTube, click on the preview for watching. Turn on subtitles for some explanations.
