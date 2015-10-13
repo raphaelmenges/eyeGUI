@@ -51,8 +51,6 @@ namespace eyegui
         // Resize font atlases
         void resizeFontAtlases(int windowWidth, int windowHeight);
 
-        GLint getMediumTextureHandle() const {return mMediumTexture;}
-
     private:
 
         // Calculate padding
