@@ -20,7 +20,7 @@ namespace eyegui
         mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
         mLayoutsLocked = false;
         mConfigToLoad = NO_CONFIG_TO_LOAD;
-		mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
+        mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
 
         // Input initialization
         mInput.mouseCursorX = width / 2;
@@ -29,9 +29,9 @@ namespace eyegui
         // Initialize OpenGL
         mGLSetup.init();
 
-		// TODO: test the freetype library
-		//testFreetype();
-		//mpGlyphQuad = mAssetManager.fetchRenderItem(shaders::Type::PICTURE, meshes::Type::QUAD);
+        // TODO: test the freetype library
+        mpGlyphQuad = mupAssetManager->fetchRenderItem(shaders::Type::PICTURE, meshes::Type::QUAD);
+        mpFont = mupAssetManager->fetchFont("arial.ttf");
     }
 
     GUI::~GUI()
@@ -50,8 +50,8 @@ namespace eyegui
             Layout* pLayout = upLayout.get();
             mLayouts.push_back(std::move(upLayout));
 
-			// Set visibility
-			pLayout->setVisibility(visible, false);
+            // Set visibility
+            pLayout->setVisibility(visible, false);
 
             return pLayout;
         }
@@ -80,8 +80,8 @@ namespace eyegui
                 upLayout->resize();
             }
 
-			// Resize font atlases
-			mupAssetManager->resizeFontAtlases();
+            // Resize font atlases
+            mupAssetManager->resizeFontAtlases();
         }
         mLayoutsLocked = false;
     }
@@ -127,13 +127,13 @@ namespace eyegui
         }
         mLayoutsLocked = false;
 
-		// TODO: test
-		/* mpGlyphQuad->bind();
-		mpGlyphQuad->getShader()->fillValue("matrix", glm::mat4(1.0f));
-		mpGlyphQuad->getShader()->fillValue("alpha", 1);
-		mpGlyphQuad->getShader()->fillValue("activity", 1);
-		bindGlyphTexture('a');
-		mpGlyphQuad->draw(); */
+        // TODO: test
+        mpGlyphQuad->bind();
+        mpGlyphQuad->getShader()->fillValue("matrix", glm::mat4(1.0f));
+        mpGlyphQuad->getShader()->fillValue("alpha", 1);
+        mpGlyphQuad->getShader()->fillValue("activity", 1);
+        glBindTexture(GL_TEXTURE_2D, mpFont->getMediumTextureHandle());
+        mpGlyphQuad->draw();
     }
 
     void GUI::setMouseCursor(int x, int y)

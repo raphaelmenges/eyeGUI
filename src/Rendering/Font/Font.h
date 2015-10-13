@@ -8,6 +8,10 @@
 
 // TODO:
 //	- what to do if glyph was not found?
+//  - letters up side down
+//  - letters should start at top
+//  - some letters not found (maybe test font is not good?!)
+//  - fillAtlas VERY slow (maybe no improvement possible..)
 
 #ifndef FONT_H_
 #define FONT_H_
@@ -27,57 +31,60 @@
 
 namespace eyegui
 {
-	struct Glyph
-	{
-		glm::vec2	atlasPosition;	// Position in atlas
-		glm::vec2	atlasSize;		// Size in atlas
-		glm::ivec2  size;			// Size in pixel
-		glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
-		GLuint		advance;		// Offset to advance to next glyph in pixel
-	};
+    struct Glyph
+    {
+        glm::vec2	atlasPosition;	// Position in atlas
+        glm::vec2	atlasSize;		// Size in atlas
+        glm::ivec2  size;			// Size in pixel
+        glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
+        GLuint		advance;		// Offset to advance to next glyph in pixel
+    };
 
-	class Font
-	{
-	public:
+    class Font
+    {
+    public:
 
-		// Constructor (takes responsibility for face)
-		Font(
-			std::string filepath,
-			std::unique_ptr<FT_Face> upFace,
-			const std::set<wchar_t>& characterSet,
-			int windowWidth,
-			int windowHeight);
+        // Constructor (takes responsibility for face)
+        Font(
+            std::string filepath,
+            std::unique_ptr<FT_Face> upFace,
+            const std::set<char16_t>& characterSet,
+            int windowWidth,
+            int windowHeight);
 
-		// Destructor
-		virtual ~Font();
+        // Destructor
+        virtual ~Font();
 
-		// Resize font atlases
-		void resizeFontAtlases(int windowWidth, int windowHeight);
+        // Resize font atlases
+        void resizeFontAtlases(int windowWidth, int windowHeight);
 
-	private:
+        // For testing (TODO)
+        GLuint getMediumTextureHandle() {return mMediumTexture;}
 
-		// Fill atlas
-		void fillAtlas(int pixelHeight, std::map<wchar_t, Glyph>& rGlyphMap, GLuint textureId);
+    private:
 
-		// Members
-		std::unique_ptr<FT_Face> mupFace;
-		std::set<wchar_t> mCharacterSet;
+        // Fill atlas
+        void fillAtlas(int pixelHeight, std::map<char16_t, Glyph>& rGlyphMap, GLuint textureId);
 
-		std::map<wchar_t, Glyph> mTallGlyphs;
-		std::map<wchar_t, Glyph> mMediumGlyphs;
-		std::map<wchar_t, Glyph> mSmallGlyphs;
+        // Members
+        std::unique_ptr<FT_Face> mupFace;
+        std::set<char16_t> mCharacterSet;
 
-		GLuint mTallTexture;
-		GLuint mMediumTexture;
-		GLuint mSmallTexture;
+        std::map<char16_t, Glyph> mTallGlyphs;
+        std::map<char16_t, Glyph> mMediumGlyphs;
+        std::map<char16_t, Glyph> mSmallGlyphs;
 
-		int mTallPixelHeight;
-		int mMediumPixelHeight;
-		int mSmallPixelHeight;
+        GLuint mTallTexture;
+        GLuint mMediumTexture;
+        GLuint mSmallTexture;
 
-		std::string mFilepath;
+        int mTallPixelHeight;
+        int mMediumPixelHeight;
+        int mSmallPixelHeight;
 
-	};
+        std::string mFilepath;
+
+    };
 }
 
 #endif // FONT_H_

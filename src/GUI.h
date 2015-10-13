@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -24,81 +24,82 @@
 
 namespace eyegui
 {
-	class GUI
-	{
-	public:
+    class GUI
+    {
+    public:
 
-		// Local constants
-		const std::string NO_CONFIG_TO_LOAD = "";
+        // Local constants
+        const std::string NO_CONFIG_TO_LOAD = "";
 
-		// *** Methods accessed by layout ***
+        // *** Methods accessed by layout ***
 
-		// Getter for window size
-		int getWindowWidth() const;
-		int getWindowHeight() const;
+        // Getter for window size
+        int getWindowWidth() const;
+        int getWindowHeight() const;
 
-		// Get time since start (gets reset if too big)
-		float getAccPeriodicTime() const;
+        // Get time since start (gets reset if too big)
+        float getAccPeriodicTime() const;
 
-		// Get pointer to config of this GUI
-		Config const * getConfig() const;
+        // Get pointer to config of this GUI
+        Config const * getConfig() const;
 
-		// *** Methods accessed via interface ***
+        // *** Methods accessed via interface ***
 
-		// Constructor
-		GUI(int width, int height);
+        // Constructor
+        GUI(int width, int height);
 
-		// Destructor
-		virtual ~GUI();
+        // Destructor
+        virtual ~GUI();
 
-		// Load layout from xml, returns NULL if fails
-		Layout* addLayout(std::string filepath, bool visible);
+        // Load layout from xml, returns NULL if fails
+        Layout* addLayout(std::string filepath, bool visible);
 
-		// Resize whole gui
-		void resize(int width, int height);
+        // Resize whole gui
+        void resize(int width, int height);
 
-		// Render all layouts
-		void render(float tpf);
+        // Render all layouts
+        void render(float tpf);
 
-		// Set mouse cursor position
-		void setMouseCursor(int x, int y);
+        // Set mouse cursor position
+        void setMouseCursor(int x, int y);
 
-		// Move layout to front
-		void moveLayoutToFront(Layout* pLayout);
+        // Move layout to front
+        void moveLayoutToFront(Layout* pLayout);
 
-		// Move layout to back
-		void moveLayoutToBack(Layout* pLayout);
+        // Move layout to back
+        void moveLayoutToBack(Layout* pLayout);
 
-		// Load a config
-		void loadConfig(std::string filepath);
+        // Load a config
+        void loadConfig(std::string filepath);
 
-		// Prefatch image to avoid lag
-		void prefetchImage(std::string filepath);
+        // Prefatch image to avoid lag
+        void prefetchImage(std::string filepath);
 
-	private:
+    private:
 
-		// Find index of layout, returns -1 if fails
-		int findLayout(Layout const * pLayout) const;
+        // Find index of layout, returns -1 if fails
+        int findLayout(Layout const * pLayout) const;
 
-		// Move layout
-		void moveLayout(int oldIndex, int newIndex);
+        // Move layout
+        void moveLayout(int oldIndex, int newIndex);
 
-		// Members
-		std::vector<std::unique_ptr<Layout> > mLayouts;
-		int mWidth, mHeight;
-		LayoutParser mLayoutParser;
-		ConfigParser mConfigParser;
-		std::unique_ptr<AssetManager> mupAssetManager;
-		GLSetup mGLSetup;
-		Input mInput;
-		float mAccPeriodicTime;
-		Config mConfig;
-		bool mLayoutsLocked;
-		std::string mConfigToLoad;
+        // Members
+        std::vector<std::unique_ptr<Layout> > mLayouts;
+        int mWidth, mHeight;
+        LayoutParser mLayoutParser;
+        ConfigParser mConfigParser;
+        std::unique_ptr<AssetManager> mupAssetManager;
+        GLSetup mGLSetup;
+        Input mInput;
+        float mAccPeriodicTime;
+        Config mConfig;
+        bool mLayoutsLocked;
+        std::string mConfigToLoad;
 
-		// TODO: Test
-		//RenderItem* mpGlyphQuad;
-	};
+        // TODO: Test
+        RenderItem* mpGlyphQuad;
+        Font* mpFont;
+    };
 }
 
 #endif // GUI_H_
