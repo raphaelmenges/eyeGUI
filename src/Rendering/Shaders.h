@@ -47,7 +47,8 @@ namespace eyegui
             "uniform sampler2D atlas;\n"
             "uniform float alpha;\n"
             "void main() {\n"
-            "   fragColor = vec4(texture2D(atlas, uv).rgb, alpha);\n"
+            "   float text = texture2D(atlas, uv).r;\n"
+            "   fragColor = vec4(1, 1, 1, text * alpha);\n"
             "}\n";
 
         // Uniforms:

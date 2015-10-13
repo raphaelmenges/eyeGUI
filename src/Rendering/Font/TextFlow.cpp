@@ -8,6 +8,7 @@
 #include "TextFlow.h"
 
 #include "GUI.h"
+#include "OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
 // TODO: Testing
@@ -106,7 +107,6 @@ namespace eyegui
         glm::mat4 matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1));
 
         // TODO
-        // Position
         // Color?
 
         // TODO: TEST
@@ -124,25 +124,63 @@ namespace eyegui
         GLint oldBuffer;
         glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
 
-        // TODO (create real geometry for letters...
+        // Empty data
+        std::vector<glm::vec3> vertices;
+        std::vector<glm::vec2> textureCoordinates;
 
-        std::vector<float> vertices =
+        // Create data for text (TODO: expand it..)
+        int xPen = 0;
+        for(int i = 0; i < mContent.size(); i++)
         {
-            0.0,0.0,0, 100.0,0,0, 100.0,100.0,0,
-            100.0,100.0,0, 0,100.0,0, 0,0,0
-        };
-        std::vector<float> textureCoordinates =
-        {
-            0,0, 1,0, 1,1,
-            1,1, 0,1, 0,0
-        };
-        mVertexCount = 6;
+            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, mContent[i]);
+            if(pGlyph == NULL)
+            {
+                throwWarning(
+                    OperationNotifier::Operation::RUNTIME,
+                    "TextFlow has character in content not covered by character set");
+                continue;
+            }
 
+            // Vertices for this quad
+            glm::vec3 vertexA = glm::vec3(xPen, 0, 0);
+            glm::vec3 vertexB = glm::vec3(xPen+pGlyph->size.x, 0, 0);
+            glm::vec3 vertexC = glm::vec3(xPen+pGlyph->size.x, pGlyph->size.y, 0);
+            glm::vec3 vertexD = glm::vec3(xPen, pGlyph->size.y, 0);
+
+            // Texture coordinates for this quad
+            glm::vec2 textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
+            glm::vec2 textureCoordinateB = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.y);
+            glm::vec2 textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
+            glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
+
+            //xPen += pGlyph->size.x + pGlyph->advance.x; TODO: advance seems too big
+            xPen += pGlyph->size.x;
+
+            // Fill into data blocks
+            vertices.push_back(vertexA);
+            vertices.push_back(vertexB);
+            vertices.push_back(vertexC);
+            vertices.push_back(vertexC);
+            vertices.push_back(vertexD);
+            vertices.push_back(vertexA);
+
+            textureCoordinates.push_back(textureCoordinateA);
+            textureCoordinates.push_back(textureCoordinateB);
+            textureCoordinates.push_back(textureCoordinateC);
+            textureCoordinates.push_back(textureCoordinateC);
+            textureCoordinates.push_back(textureCoordinateD);
+            textureCoordinates.push_back(textureCoordinateA);
+        }
+
+        // Vertex count
+        mVertexCount = vertices.size();
+
+        // Fill into buffer
         glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
-        glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
 
         // Restore old setting
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);

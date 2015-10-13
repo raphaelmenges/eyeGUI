@@ -3,6 +3,7 @@ At the moment:
 - Where to prohibit to access a NULL pointer to the default font object if it is not exisiting?
 - TextFlow
 	- Create text primitives
+	- Umlaute in input text do not work (encoding?!)
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc

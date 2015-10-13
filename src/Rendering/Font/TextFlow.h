@@ -12,6 +12,7 @@
 //  - Actually, one would have to have one mesh per atlas texture. Todo for later
 //  when there could be more then one atlas texture
 //  - will get problems if pointer to font is null
+//  - position should be changed using the matrix (much faster!)
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_

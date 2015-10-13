@@ -40,7 +40,6 @@ namespace eyegui
                 "No default font set, text rendering will not work");
         }
 
-
         // Input initialization
         mInput.mouseCursorX = width / 2;
         mInput.mouseCursorY = height / 2;
@@ -49,7 +48,7 @@ namespace eyegui
         mGLSetup.init();
 
         // TODO: testing
-        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::MEDIUM, 10, 10, 200, 100, u"Hallo Text!"));
+        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::SMALL, 10, 10, 200, 100, u"HalloText!"));
     }
 
     GUI::~GUI()
