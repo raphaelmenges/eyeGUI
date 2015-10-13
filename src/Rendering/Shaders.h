@@ -23,7 +23,7 @@ namespace eyegui
             "uniform mat4 matrix;\n"
             "void main() {\n"
             "   uv = uvAttribute;\n"
-            "   gl_Position = matrix * vec4(posAttr, 1);\n"
+            "   gl_Position = matrix * vec4(posAttribute, 1);\n"
             "}\n";
 
         // Uniforms:
