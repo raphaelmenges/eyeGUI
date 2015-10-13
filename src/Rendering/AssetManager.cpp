@@ -44,7 +44,7 @@ namespace eyegui
         FT_Done_FreeType(mFreeTypeLibrary);
     }
 
-    RenderItem* AssetManager::fetchRenderItem(shaders::Type shader, meshes::Type mesh)
+    RenderItem const * AssetManager::fetchRenderItem(shaders::Type shader, meshes::Type mesh)
     {
         std::unique_ptr<RenderItem> upRenderItem;
         RenderItem* pRenderItem = NULL;
@@ -82,7 +82,7 @@ namespace eyegui
         return pRenderItem;
     }
 
-    Texture* AssetManager::fetchTexture(std::string filepath)
+    Texture const * AssetManager::fetchTexture(std::string filepath)
     {
         // Search in map for texture and create if needed
         std::unique_ptr<Texture>& rupTexture = mTextures[filepath];
@@ -132,7 +132,7 @@ namespace eyegui
         return pTexture;
     }
 
-    Texture* AssetManager::fetchTexture(graphics::Type graphic)
+    Texture const * AssetManager::fetchTexture(graphics::Type graphic)
     {
         // Search in map for graphic and create if needed
         std::unique_ptr<Texture>& rupTexture = mGraphics[graphic];
@@ -156,7 +156,7 @@ namespace eyegui
         return pTexture;
     }
 
-    Font* AssetManager::fetchFont(std::string filepath)
+    Font const * AssetManager::fetchFont(std::string filepath)
     {
         // Search for font
         std::unique_ptr<Font>& rupFont = mFonts[filepath];

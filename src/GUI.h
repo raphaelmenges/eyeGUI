@@ -106,11 +106,10 @@ namespace eyegui
         Config mConfig;
         bool mLayoutsLocked;
         std::string mConfigToLoad;
-        Font* mpDefaultFont;
+        Font const * mpDefaultFont;
 
         // TODO: Test
-        RenderItem* mpGlyphQuad;
-        Font const * mpFont;
+        RenderItem const * mpGlyphQuad;
     };
 }
 

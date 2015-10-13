@@ -81,7 +81,7 @@ namespace eyegui
         virtual bool penetratedByInput(Input const * pInput) const;
 
         // Members
-        RenderItem* mpRenderItem; // has to be initialized by subclasses
+        RenderItem const * mpRenderItem; // has to be initialized by subclasses
 
     private:
 
@@ -90,7 +90,7 @@ namespace eyegui
         bool mIsHighlighted;
         float mSelection;
         bool mIsSelected;
-        Texture* mpIcon;
+        Texture const * mpIcon;
     };
 }
 

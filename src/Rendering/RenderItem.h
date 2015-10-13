@@ -33,10 +33,10 @@ namespace eyegui
         void draw() const;
 
         // Get pointer to shader
-        Shader* getShader();
+        Shader const * getShader() const;
 
         // Get pointer to mesh
-        Mesh* getMesh();
+        Mesh const * getMesh() const;
 
     private:
 

@@ -48,7 +48,7 @@ namespace eyegui
     private:
 
         // Members
-        RenderItem* mpBackground;
+        RenderItem const * mpBackground;
     };
 }
 

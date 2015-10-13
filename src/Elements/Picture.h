@@ -57,8 +57,8 @@ namespace eyegui
     private:
 
         // Members
-        RenderItem* mpQuad;
-        Texture* mpImage;
+        RenderItem const * mpQuad;
+        Texture const * mpImage;
         PictureAlignment mAlignment;
     };
 }
