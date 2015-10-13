@@ -106,11 +106,16 @@ namespace eyegui
     //! Creates GUI and returns pointer to it.
     /*!
       \param width of GUI as integer.
-      \param height of GUI as integer.
+      \param height of GUI as integer
+      \param fontFilepath is path to a ttf font file
       \param characterSet used to initialize font rendering.
       \return pointer to created GUI.
     */
-    GUI* createGUI(int width, int height, CharacterSet characterSet = CharacterSet::US_ENGLISH);
+    GUI* createGUI(
+        int width,
+        int height,
+        std::string fontFilepath = "",
+        CharacterSet characterSet = CharacterSet::US_ENGLISH);
 
     //! Creates layout inside GUI and returns pointer to it.
     /*!

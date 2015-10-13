@@ -177,31 +177,33 @@ namespace eyegui
             {
                 throwError(OperationNotifier::Operation::FONT_LOADING, "Failed to load font with FreeType Library", filepath);
             }
-
-            // Decide character set
-            std::set<char16_t> characters = charsets::BASIC;
-            switch(mpGUI->getCharacterSet())
+            else
             {
-            case CharacterSet::GERMANY_GERMAN:
-                characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
-                break;
-            case CharacterSet::US_ENGLISH:
-                // TODO? (are there any special characters in us english?)
-                break;
+                // Decide character set
+                std::set<char16_t> characters = charsets::BASIC;
+                switch(mpGUI->getCharacterSet())
+                {
+                case CharacterSet::GERMANY_GERMAN:
+                    characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
+                    break;
+                case CharacterSet::US_ENGLISH:
+                    // TODO? (are there any special characters in us english?)
+                    break;
+                }
+
+                // Give face to a font object (it will delete is at the end)
+                rupFont = std::unique_ptr<Font>(
+                    new Font(
+                        filepath,
+                        std::move(upFace),
+                        characters,
+                        mpGUI->getWindowWidth(),
+                        mpGUI->getWindowHeight()));
+                pFont = rupFont.get();
+
+                // Add font to own map
+                mFonts[filepath] = std::move(rupFont);
             }
-
-            // Give face to a font object (it will delete is at the end)
-            rupFont = std::unique_ptr<Font>(
-                new Font(
-                    filepath,
-                    std::move(upFace),
-                    characters,
-                    mpGUI->getWindowWidth(),
-                    mpGUI->getWindowHeight()));
-            pFont = rupFont.get();
-
-            // Add font to own map
-            mFonts[filepath] = std::move(rupFont);
         }
 
         return pFont;

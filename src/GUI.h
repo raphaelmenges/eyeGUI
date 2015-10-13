@@ -46,10 +46,17 @@ namespace eyegui
         // Get used character set
         CharacterSet getCharacterSet() const;
 
+        // Get set default font
+        Font const * getDefaultFont() const;
+
         // *** Methods accessed via interface ***
 
         // Constructor
-        GUI(int width, int height, CharacterSet characterSet);
+        GUI(
+            int width,
+            int height,
+            std::string fontFilepath,
+            CharacterSet characterSet);
 
         // Destructor
         virtual ~GUI();
@@ -99,10 +106,11 @@ namespace eyegui
         Config mConfig;
         bool mLayoutsLocked;
         std::string mConfigToLoad;
+        Font* mpDefaultFont;
 
         // TODO: Test
         RenderItem* mpGlyphQuad;
-        Font* mpFont;
+        Font const * mpFont;
     };
 }
 

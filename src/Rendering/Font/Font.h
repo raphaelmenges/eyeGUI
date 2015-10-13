@@ -6,10 +6,6 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // TODO
 
-// TODO:
-//	- what to do if glyph was not found?
-//  - fillAtlas VERY slow (maybe no improvement possible..)
-
 #ifndef FONT_H_
 #define FONT_H_
 
@@ -54,6 +50,8 @@ namespace eyegui
 
         // Resize font atlases
         void resizeFontAtlases(int windowWidth, int windowHeight);
+
+        GLint getMediumTextureHandle() const {return mMediumTexture;}
 
     private:
 

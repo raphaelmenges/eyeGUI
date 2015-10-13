@@ -12,7 +12,11 @@
 
 namespace eyegui
 {
-    GUI::GUI(int width, int height, CharacterSet characterSet)
+    GUI::GUI(
+        int width,
+        int height,
+        std::string fontFilepath,
+        CharacterSet characterSet)
     {
         // Initialize members
         mWidth = width;
@@ -22,6 +26,20 @@ namespace eyegui
         mLayoutsLocked = false;
         mConfigToLoad = NO_CONFIG_TO_LOAD;
         mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
+        mpDefaultFont = NULL;
+
+        // Initialize default font
+        if(fontFilepath != "")
+        {
+            mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
+        }
+        else
+        {
+            throwWarning(
+                OperationNotifier::Operation::RUNTIME,
+                "No default font set, text rendering will not work");
+        }
+
 
         // Input initialization
         mInput.mouseCursorX = width / 2;
@@ -32,7 +50,6 @@ namespace eyegui
 
         // TODO: test the freetype library
         mpGlyphQuad = mupAssetManager->fetchRenderItem(shaders::Type::PICTURE, meshes::Type::QUAD);
-        mpFont = mupAssetManager->fetchFont("arial.ttf");
     }
 
     GUI::~GUI()
@@ -133,7 +150,7 @@ namespace eyegui
         mpGlyphQuad->getShader()->fillValue("matrix", glm::mat4(1.0f));
         mpGlyphQuad->getShader()->fillValue("alpha", 1);
         mpGlyphQuad->getShader()->fillValue("activity", 1);
-        glBindTexture(GL_TEXTURE_2D, mpFont->getMediumTextureHandle());
+        glBindTexture(GL_TEXTURE_2D, mpDefaultFont->getMediumTextureHandle());
         mpGlyphQuad->draw();
     }
 
@@ -249,6 +266,11 @@ namespace eyegui
     CharacterSet GUI::getCharacterSet() const
     {
         return mCharacterSet;
+    }
+
+    Font const * GUI::getDefaultFont() const
+    {
+        return mpDefaultFont;
     }
 
     void GUI::loadConfig(std::string filepath)
