@@ -139,14 +139,17 @@ namespace eyegui
         // Store bitmaps temporarily
         std::vector<glyphBitmapPair> bitmaps;
 
+        // Reference to face
+        FT_Face& rFace = *(mupFace.get());
+
         // Set the height for generation of glyphs
-        FT_Set_Pixel_Sizes(*(mupFace.get()), 0, pixelHeight);
+        FT_Set_Pixel_Sizes(rFace, 0, pixelHeight);
 
         // Go over character set and collect glyphs and bitmaps
         for (char16_t c : mCharacterSet)
         {
             // Load current glyph in face
-            if (FT_Load_Char(*(mupFace.get()), c, FT_LOAD_RENDER))
+            if (FT_Load_Char(rFace, c, FT_LOAD_RENDER))
             {
                 throwWarning(
                     OperationNotifier::Operation::RUNTIME,
@@ -156,18 +159,18 @@ namespace eyegui
             }
 
             // Determine width and height
-            int bitmapWidth = (*(mupFace.get()))->glyph->bitmap.width;
-            int bitmapHeight = (*(mupFace.get()))->glyph->bitmap.rows;
+            int bitmapWidth = rFace->glyph->bitmap.width;
+            int bitmapHeight = rFace->glyph->bitmap.rows;
 
             // Save some values of the glyph
             rGlyphMap[c].atlasTextureId = textureId;
             rGlyphMap[c].advance = glm::ivec2(
-                (*(mupFace.get()))->glyph->advance.x,
-                (*(mupFace.get()))->glyph->advance.y);
+                rFace->glyph->advance.x / 64,   // Given as 1/64 pixel
+                rFace->glyph->advance.y / 64);  // Given as 1/64 pixel
             rGlyphMap[c].size = glm::ivec2(bitmapWidth, bitmapHeight);
             rGlyphMap[c].bearing = glm::ivec2(
-                (*(mupFace.get()))->glyph->bitmap_left,
-                (*(mupFace.get()))->glyph->bitmap_top);
+                rFace->glyph->bitmap_left,
+                rFace->glyph->bitmap_top);
 
             // Go over rows and mirror it into new buffer
             std::vector<unsigned char> mirrorBuffer;
@@ -175,7 +178,7 @@ namespace eyegui
             {
                 for(int j = 0; j < bitmapWidth; j++)
                 {
-                    mirrorBuffer.push_back((*(mupFace.get()))->glyph->bitmap.buffer[i*bitmapWidth + j]);
+                    mirrorBuffer.push_back(rFace->glyph->bitmap.buffer[i*bitmapWidth + j]);
                 }
             }
 

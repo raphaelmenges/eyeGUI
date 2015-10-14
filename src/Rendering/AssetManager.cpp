@@ -223,6 +223,7 @@ namespace eyegui
             int y,
             int width,
             int height,
+            glm::vec4 color,
             std::u16string content)
     {
         return std::move(
@@ -236,6 +237,7 @@ namespace eyegui
                     y,
                     width,
                     height,
+                    color,
                     content)));
     }
 

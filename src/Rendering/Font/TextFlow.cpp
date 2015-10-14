@@ -25,6 +25,7 @@ namespace eyegui
         int y,
         int width,
         int height,
+        glm::vec4 color,
         std::u16string content)
     {
         // Fill members
@@ -36,6 +37,7 @@ namespace eyegui
         mY = y;
         mWidth = width;
         mHeight = height;
+        mColor = color;
         mContent = content;
 
         // Save currently set buffer and vertex array object
@@ -84,6 +86,27 @@ namespace eyegui
         glDeleteBuffers(1, &mTextureCoordinateBuffer);
     }
 
+    void TextFlow::move(int x, int y)
+    {
+        mX = x;
+        mY = y;
+    }
+
+    void TextFlow::setColor(glm::vec4 color)
+    {
+        mColor = color;
+    }
+
+    void TextFlow::update(int width, int height)
+    {
+        update(width, height, mContent);
+    }
+
+    void TextFlow::update(std::u16string content)
+    {
+        update(mWidth, mHeight, content);
+    }
+
     void TextFlow::update(
         int width,
         int height,
@@ -98,22 +121,27 @@ namespace eyegui
         calculateMesh();
     }
 
+    void TextFlow::resize()
+    {
+        // Calculate mesh
+        calculateMesh();
+    }
+
     void TextFlow::draw(float alpha) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
 
         // If matrix were not calculated every frame, this would have to be notified about resizing...
-        glm::mat4 matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1));
+        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mY, 0));
+        matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
 
-        // TODO
-        // Color?
-
-        // TODO: TEST
+        // TODO: TEST (only one atlas at the moment)
         glBindTexture(GL_TEXTURE_2D, mAtlasTextureId);
 
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("alpha", alpha);
+        mpShader->fillValue("color", mColor);
 
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
@@ -141,11 +169,13 @@ namespace eyegui
                 continue;
             }
 
+            int yPen = 0 - (pGlyph->size.y - pGlyph->bearing.y);
+
             // Vertices for this quad
-            glm::vec3 vertexA = glm::vec3(xPen, 0, 0);
-            glm::vec3 vertexB = glm::vec3(xPen+pGlyph->size.x, 0, 0);
-            glm::vec3 vertexC = glm::vec3(xPen+pGlyph->size.x, pGlyph->size.y, 0);
-            glm::vec3 vertexD = glm::vec3(xPen, pGlyph->size.y, 0);
+            glm::vec3 vertexA = glm::vec3(xPen, yPen, 0);
+            glm::vec3 vertexB = glm::vec3(xPen+pGlyph->size.x, yPen, 0);
+            glm::vec3 vertexC = glm::vec3(xPen+pGlyph->size.x, yPen+pGlyph->size.y, 0);
+            glm::vec3 vertexD = glm::vec3(xPen, yPen+pGlyph->size.y, 0);
 
             // Texture coordinates for this quad
             glm::vec2 textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
@@ -153,8 +183,7 @@ namespace eyegui
             glm::vec2 textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
             glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
 
-            //xPen += pGlyph->size.x + pGlyph->advance.x; TODO: advance seems too big
-            xPen += pGlyph->size.x;
+            xPen += pGlyph->advance.x;
 
             // Fill into data blocks
             vertices.push_back(vertexA);

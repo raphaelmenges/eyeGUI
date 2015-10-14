@@ -40,23 +40,35 @@ namespace eyegui
             int y,
             int width,
             int height,
+            glm::vec4 color,
             std::u16string content);
 
         // Destructor
         virtual ~TextFlow();
 
+        // Move
+        void move(int x, int y);
+
+        // Set text color
+        void setColor(glm::vec4 color);
+
         // Update
+        void update(int width,int height);
+        void update(std::u16string content);
         void update(
             int width,
             int height,
             std::u16string content);
 
-        // Draw
+        // Resize
+        void resize();
+
+        // Draw (uses orthoprojection to scale to screen)
         void draw(float alpha) const;
 
     private:
 
-        // Calculate mesh
+        // Calculate mesh (in pixel coordinates)
         void calculateMesh();
 
         // Members
@@ -68,6 +80,7 @@ namespace eyegui
         int mY;
         int mWidth;
         int mHeight;
+        glm::vec4 mColor;
         std::u16string mContent;
 
         GLuint mVertexCount;

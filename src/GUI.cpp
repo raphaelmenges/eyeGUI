@@ -48,7 +48,7 @@ namespace eyegui
         mGLSetup.init();
 
         // TODO: testing
-        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::SMALL, 10, 10, 200, 100, u"HalloText!"));
+        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::SMALL, 10, 10, 200, 100, glm::vec4(1,1,0,1), u"Raphael"));
     }
 
     GUI::~GUI()
@@ -99,6 +99,9 @@ namespace eyegui
 
             // Resize font atlases
             mupAssetManager->resizeFontAtlases();
+
+            // TODO: test
+            mupTextFlow->resize();
         }
         mLayoutsLocked = false;
     }
@@ -140,7 +143,7 @@ namespace eyegui
             }
 
             // TODO: test
-            mupTextFlow->draw(0.5f);
+            mupTextFlow->draw(1);
 
             // Restore OpenGL state of application
             mGLSetup.restore();

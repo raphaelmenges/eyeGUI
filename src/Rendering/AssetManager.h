@@ -66,6 +66,7 @@ namespace eyegui
             int y,
             int width,
             int height,
+            glm::vec4 color,
             std::u16string content);
 
     private:
