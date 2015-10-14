@@ -4,7 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO: All values pixel values!
+// TODO:
+//  - All values pixel values!
+//  - Center of text alway in the center? or where?!
 
 // TODO
 //  - Alignment (Right, left, justify, center)
@@ -35,6 +37,7 @@ namespace eyegui
             GUI const * pGUI,
             Font const * pFont,
             FontSize fontSize,
+            TextFlowAlignment alignment,
             Shader const * pShader,
             int x,
             int y,
@@ -75,6 +78,7 @@ namespace eyegui
         GUI const * mpGUI;
         Font const * mpFont;
         FontSize mFontSize;
+        TextFlowAlignment mAlignment;
         Shader const * mpShader;
         int mX;
         int mY;

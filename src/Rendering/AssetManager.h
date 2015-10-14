@@ -62,6 +62,7 @@ namespace eyegui
         // Create text flow and return it as unique pointer
         std::unique_ptr<TextFlow> createTextFlow(
             FontSize fontSize,
+            TextFlowAlignment alignment,
             int x,
             int y,
             int width,

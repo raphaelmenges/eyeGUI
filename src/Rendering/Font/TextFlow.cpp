@@ -20,6 +20,7 @@ namespace eyegui
         GUI const * pGUI,
         Font const * pFont,
         FontSize fontSize,
+        TextFlowAlignment alignment,
         Shader const * pShader,
         int x,
         int y,
@@ -32,6 +33,7 @@ namespace eyegui
         mpGUI = pGUI;
         mpFont = pFont;
         mFontSize = fontSize;
+        mAlignment = alignment;
         mpShader = pShader;
         mX = x;
         mY = y;

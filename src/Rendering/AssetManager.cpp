@@ -219,6 +219,7 @@ namespace eyegui
 
     std::unique_ptr<TextFlow> AssetManager::AssetManager::createTextFlow(
             FontSize fontSize,
+            TextFlowAlignment alignment,
             int x,
             int y,
             int width,
@@ -232,6 +233,7 @@ namespace eyegui
                     mpGUI,
                     mpGUI->getDefaultFont(),
                     fontSize,
+                    alignment,
                     fetchShader(shaders::Type::FONT),
                     x,
                     y,
