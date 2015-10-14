@@ -59,7 +59,7 @@ namespace eyegui
                 FontSize::SMALL,
                 TextFlowAlignment::LEFT,
                 10,
-                20,
+                10,
                 200,
                 100,
                 glm::vec4(1,1,0,1),

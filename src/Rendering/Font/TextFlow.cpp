@@ -135,7 +135,7 @@ namespace eyegui
         glBindVertexArray(mVertexArrayObject);
 
         // If matrix were not calculated every frame, this would have to be notified about resizing...
-        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - mY, 0));
+        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - mY - mHeight, 0));
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
 
         // TODO: TEST (only one atlas at the moment)
