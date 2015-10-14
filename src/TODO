@@ -2,22 +2,17 @@ At the moment:
 - Why does it crash at the end (test it with Visual Debugger...)
 - Where to prohibit to access a NULL pointer to the default font object if it is not exisiting?
 - TextFlow
-	- Create text primitives
 	- Umlaute in input text do not work (encoding?!)
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
 - Text rendering using freetype
   - Integrate into AssetManager
-    - Get unique pointer to text flow
     - Something more low level for later text input
       - Something like: bindFontAtlas and get glyph or so
   - TextFlow
-    - is mesh with text geometry
-    - has pointer to font object
     - can be used for rendering block of text
     - alignment (left, right, center, justify)
-  - Resize wait time (expensive to update fonts)
 - New elements using text rendering (for the start: textbox and some button? later menu stuff...)
 - Localization using files
 - Changing styles through programming interface
@@ -29,8 +24,7 @@ At the moment:
 - Notification into own class and layout as const pointer in elements
 - Add version / date of externals
   - reintegrate glm (some files may be missing)
-  - GLM and Freetype: Choose license
-- Uniform locations of texture slots not used! (maybe problem if there is more than one in use at once)
+- Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)

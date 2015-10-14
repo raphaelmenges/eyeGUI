@@ -9,6 +9,7 @@
 
 #include "Defines.h"
 #include "OperationNotifier.h"
+#include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
 namespace eyegui
 {
@@ -27,6 +28,8 @@ namespace eyegui
         mConfigToLoad = NO_CONFIG_TO_LOAD;
         mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
         mpDefaultFont = NULL;
+        mResizing = false;
+        mResizeWaitTime = 0;
 
         // Initialize default font
         if(fontFilepath != "")
@@ -47,8 +50,11 @@ namespace eyegui
         // Initialize OpenGL
         mGLSetup.init();
 
+        // Fetch render item for resize blending
+        mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+
         // TODO: testing
-        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::SMALL, 10, 10, 200, 100, glm::vec4(1,1,0,1), u"Raphael"));
+        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::SMALL, 10, 10, 200, 100, glm::vec4(1,1,0,1), u"Raphael Bla"));
     }
 
     GUI::~GUI()
@@ -83,33 +89,35 @@ namespace eyegui
 
     void GUI::resize(int width, int height)
     {
-        // Would be not ok if layout could call resize, but it cannot (could otherwise cancel locking)
-        mLayoutsLocked = true;
+        if(mWidth != width || mHeight != height)
         {
+            mResizing = true;
+            mResizeWaitTime = RESIZE_WAIT_DURATION;
+
             // Save to members
             mWidth = width;
             mHeight = height;
-
-            // Resize all layouts
-            for (std::unique_ptr<Layout>& upLayout : mLayouts)
-            {
-                // Layout fetches size via const pointer to this
-                upLayout->resize();
-            }
-
-            // Resize font atlases
-            mupAssetManager->resizeFontAtlases();
-
-            // TODO: test
-            mupTextFlow->resize();
         }
-        mLayoutsLocked = false;
     }
 
     void GUI::render(float tpf)
     {
         mLayoutsLocked = true;
         {
+            // Resizing
+            if(mResizing)
+            {
+                mResizeWaitTime -= tpf;
+
+                // Resizing should take place?
+                if(mResizeWaitTime <= 0)
+                {
+                    internalResizing();
+                    mResizing = false;
+                    mResizeWaitTime = 0;
+                }
+            }
+
             // Expensive but better then in the middle of rendering
             if (mConfigToLoad != NO_CONFIG_TO_LOAD)
             {
@@ -144,6 +152,17 @@ namespace eyegui
 
             // TODO: test
             mupTextFlow->draw(1);
+
+            // Render resize blend
+            if(mResizing)
+            {
+                glm::mat4 matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+                mpResizeBlend->bind();
+                mpResizeBlend->getShader()->fillValue("matrix", matrix);
+                mpResizeBlend->getShader()->fillValue("color", RESIZE_BLEND_COLOR);
+                mpResizeBlend->getShader()->fillValue("alpha", 1.0f - 0.5f * (mResizeWaitTime / RESIZE_WAIT_DURATION));
+                mpResizeBlend->draw();
+            }
 
             // Restore OpenGL state of application
             mGLSetup.restore();
@@ -233,6 +252,28 @@ namespace eyegui
         }
 
         return index;
+    }
+
+    void GUI::internalResizing()
+    {
+        // Would be not ok if layout could call resize, but it cannot because it has only cont pointer
+        // (could otherwise cancel locking by accident)
+        mLayoutsLocked = true;
+        {
+            // Resize all layouts
+            for (std::unique_ptr<Layout>& upLayout : mLayouts)
+            {
+                // Layout fetches size via const pointer to this
+                upLayout->resize();
+            }
+
+            // Resize font atlases
+            mupAssetManager->resizeFontAtlases();
+
+            // TODO: test
+            mupTextFlow->resize();
+        }
+        mLayoutsLocked = false;
     }
 
     void GUI::moveLayout(int oldIndex, int newIndex)

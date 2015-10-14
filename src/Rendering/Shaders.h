@@ -27,6 +27,19 @@ namespace eyegui
             "}\n";
 
         // Uniforms:
+        // vec4 color
+        // float alpha
+        static const char* pColorFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "uniform vec4 color;\n"
+            "uniform float alpha;\n"
+            "void main() {\n"
+            "   fragColor = vec4(color.rgb, color.a * alpha);\n"
+            "}\n";
+
+
+        // Uniforms:
         // vec4 separatorColor
         // float alpha
         static const char* pSeparatorFragmentShader =

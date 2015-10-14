@@ -9,6 +9,8 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
+#include "externals/GLM/glm/glm.hpp"
+
 #include <string>
 
 namespace eyegui
@@ -35,7 +37,8 @@ namespace eyegui
     static const float FONT_TALL_SCREEN_HEIGHT = 0.1f;
     static const float FONT_MEDIUM_SCREEN_HEIGHT = 0.05f;
     static const float FONT_SMALL_SCREEN_HEIGHT = 0.025f;
-
+    static const float RESIZE_WAIT_DURATION = 0.3f;
+    static const glm::vec4 RESIZE_BLEND_COLOR = glm::vec4(0.75f, 0.75f, 0.75f, 0.75f);
 }
 
 #endif // DEFINES_H_

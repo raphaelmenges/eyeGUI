@@ -31,24 +31,6 @@ namespace eyegui
         // Local constants
         const std::string NO_CONFIG_TO_LOAD = "";
 
-        // *** Methods accessed by other classes ***
-
-        // Getter for window size
-        int getWindowWidth() const;
-        int getWindowHeight() const;
-
-        // Get time since start (gets reset if too big)
-        float getAccPeriodicTime() const;
-
-        // Get pointer to config of this GUI
-        Config const * getConfig() const;
-
-        // Get used character set
-        CharacterSet getCharacterSet() const;
-
-        // Get set default font
-        Font const * getDefaultFont() const;
-
         // *** Methods accessed via interface ***
 
         // Constructor
@@ -85,6 +67,24 @@ namespace eyegui
         // Prefatch image to avoid lag
         void prefetchImage(std::string filepath);
 
+        // *** Methods accessed by other classes ***
+
+        // Getter for window size
+        int getWindowWidth() const;
+        int getWindowHeight() const;
+
+        // Get time since start (gets reset if too big)
+        float getAccPeriodicTime() const;
+
+        // Get pointer to config of this GUI
+        Config const * getConfig() const;
+
+        // Get used character set
+        CharacterSet getCharacterSet() const;
+
+        // Get set default font
+        Font const * getDefaultFont() const;
+
     private:
 
         // Find index of layout, returns -1 if fails
@@ -92,6 +92,9 @@ namespace eyegui
 
         // Move layout
         void moveLayout(int oldIndex, int newIndex);
+
+        // Internal resizing
+        void internalResizing();
 
         // Members
         std::vector<std::unique_ptr<Layout> > mLayouts;
@@ -107,6 +110,9 @@ namespace eyegui
         bool mLayoutsLocked;
         std::string mConfigToLoad;
         Font const * mpDefaultFont;
+        bool mResizing;
+        float mResizeWaitTime;
+        RenderItem const * mpResizeBlend;
 
         // TODO: Test
         std::unique_ptr<TextFlow> mupTextFlow;
