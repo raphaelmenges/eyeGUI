@@ -7,14 +7,15 @@
 // TODO:
 //  - All values pixel values!
 //  - Center of text alway in the center? or where?!
+//  - internal origin lower left but interface upper left...
+//      - element seems although to handle it at drawing only...
 
 // TODO
 //  - Alignment (Right, left, justify, center)
-//  - Choose tall, medium, small font (enumeration in eyeGUI.h necessary)
 //  - Actually, one would have to have one mesh per atlas texture. Todo for later
 //  when there could be more then one atlas texture
 //  - will get problems if pointer to font is null
-//  - position should be changed using the matrix (much faster!)
+//  - reaction to \n and - in text
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
@@ -71,8 +72,19 @@ namespace eyegui
 
     private:
 
+        // Some struct for easier alignment
+        struct Word
+        {
+            std::shared_ptr<std::vector<glm::vec3> > spVertices;
+            std::shared_ptr<std::vector<glm::vec2> > spTextureCoordinates;
+            float width;
+        };
+
         // Calculate mesh (in pixel coordinates)
         void calculateMesh();
+
+        // Calculate word
+        Word calculateWord(std::u16string content);
 
         // Members
         GUI const * mpGUI;

@@ -135,7 +135,7 @@ namespace eyegui
         glBindVertexArray(mVertexArrayObject);
 
         // If matrix were not calculated every frame, this would have to be notified about resizing...
-        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mY, 0));
+        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - mY, 0));
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
 
         // TODO: TEST (only one atlas at the moment)
@@ -154,15 +154,75 @@ namespace eyegui
         GLint oldBuffer;
         glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
 
-        // Empty data
+        // Go over words in content
+        std::u16string copyContent = mContent;
+
+        // Get words out of string
+        std::vector<TextFlow::Word> words;
+        std::u16string delimiter = u" ";
+        size_t pos = 0;
+        std::u16string token;
+        while ((pos = copyContent.find(delimiter)) != std::u16string::npos)
+        {
+            token = copyContent.substr(0, pos);
+            words.push_back(calculateWord(token));
+            copyContent.erase(0, pos + delimiter.length());
+        }
+        words.push_back(calculateWord(copyContent)); // Last word
+
+        // Build flow together from words
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec2> textureCoordinates;
 
-        // Create data for text (TODO: expand it..)
         int xPen = 0;
-        for(int i = 0; i < mContent.size(); i++)
+        int yPen = 0;
+
+        // Go over lines
+        for(const Word& rWord : words)
         {
-            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, mContent[i]);
+            // Assuming, that the count of vertices and texture coordinates is equal
+            for(int i = 0; i < rWord.spVertices->size(); i++)
+            {
+                glm::vec3& rVertex = rWord.spVertices->at(i);
+                vertices.push_back(glm::vec3(rVertex.x + xPen, rVertex.y + yPen, rVertex.z));
+                glm::vec2& rTextureCoordinate = rWord.spTextureCoordinates->at(i);
+                textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+            }
+            xPen += rWord.width;
+
+            if(xPen > mWidth)
+            {
+                xPen = 0;
+                yPen -= 13; // TODO (somehow wrong orientation, but no idea how to change it..)
+            }
+        }
+
+        // Vertex count
+        mVertexCount = vertices.size();
+
+        // Fill into buffer
+        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
+        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
+
+        // Restore old setting
+        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
+    }
+
+    TextFlow::Word TextFlow::calculateWord(std::u16string content)
+    {
+        // Empty word
+        Word word;
+        word.spVertices = std::shared_ptr<std::vector<glm::vec3> >(new std::vector<glm::vec3>);
+        word.spTextureCoordinates = std::shared_ptr<std::vector<glm::vec2> >(new std::vector<glm::vec2>);
+
+        // Create data for text
+        int xPen = 0;
+        for(int i = 0; i < content.size(); i++)
+        {
+            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, content[i]);
             if(pGlyph == NULL)
             {
                 throwWarning(
@@ -188,32 +248,24 @@ namespace eyegui
             xPen += pGlyph->advance.x;
 
             // Fill into data blocks
-            vertices.push_back(vertexA);
-            vertices.push_back(vertexB);
-            vertices.push_back(vertexC);
-            vertices.push_back(vertexC);
-            vertices.push_back(vertexD);
-            vertices.push_back(vertexA);
+            word.spVertices->push_back(vertexA);
+            word.spVertices->push_back(vertexB);
+            word.spVertices->push_back(vertexC);
+            word.spVertices->push_back(vertexC);
+            word.spVertices->push_back(vertexD);
+            word.spVertices->push_back(vertexA);
 
-            textureCoordinates.push_back(textureCoordinateA);
-            textureCoordinates.push_back(textureCoordinateB);
-            textureCoordinates.push_back(textureCoordinateC);
-            textureCoordinates.push_back(textureCoordinateC);
-            textureCoordinates.push_back(textureCoordinateD);
-            textureCoordinates.push_back(textureCoordinateA);
+            word.spTextureCoordinates->push_back(textureCoordinateA);
+            word.spTextureCoordinates->push_back(textureCoordinateB);
+            word.spTextureCoordinates->push_back(textureCoordinateC);
+            word.spTextureCoordinates->push_back(textureCoordinateC);
+            word.spTextureCoordinates->push_back(textureCoordinateD);
+            word.spTextureCoordinates->push_back(textureCoordinateA);
         }
 
-        // Vertex count
-        mVertexCount = vertices.size();
+        // Set width of whole word
+        word.width = xPen;
 
-        // Fill into buffer
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
-
-        glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
-
-        // Restore old setting
-        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
+        return word;
     }
 }
