@@ -54,7 +54,7 @@ namespace eyegui
         mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
 
         // TODO: testing
-        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::SMALL, 10, 10, 200, 100, glm::vec4(1,1,0,1), u"Raphael Bla"));
+        mupTextFlow = std::move(mupAssetManager->createTextFlow(FontSize::SMALL, 10, 10, 200, 100, glm::vec4(1,1,0,1), u"This is a test!"));
     }
 
     GUI::~GUI()
