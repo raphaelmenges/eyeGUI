@@ -52,18 +52,6 @@ namespace eyegui
 
         // Fetch render item for resize blending
         mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
-
-        // TODO: testing
-        mupTextFlow = std::move(
-            mupAssetManager->createTextFlow(
-                FontSize::SMALL,
-                TextFlowAlignment::LEFT,
-                10,
-                10,
-                400,
-                100,
-                glm::vec4(0,0,1,1),
-                u""));
     }
 
     GUI::~GUI()
@@ -158,9 +146,6 @@ namespace eyegui
             {
                 mLayouts[i]->draw();
             }
-
-            // TODO: test
-            mupTextFlow->draw(1);
 
             // Render resize blend
             if(mResizing)
@@ -278,9 +263,6 @@ namespace eyegui
                 // Layout fetches size via const pointer to this
                 upLayout->resize();
             }
-
-            // TODO: test
-            mupTextFlow->resize();
         }
         mLayoutsLocked = false;
     }

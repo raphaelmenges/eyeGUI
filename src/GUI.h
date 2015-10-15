@@ -113,9 +113,6 @@ namespace eyegui
         bool mResizing;
         float mResizeWaitTime;
         RenderItem const * mpResizeBlend;
-
-        // TODO: Test
-        std::unique_ptr<TextFlow> mupTextFlow;
     };
 }
 
