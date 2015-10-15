@@ -38,6 +38,7 @@ At the moment:
 - Audio
 
 Notes:
+- Remember: inside .xeyegui / .beyegui only 8bit chars are allowed so no umlaute in content of text block
 - Determine maximum texture resolution and create more than one texture atlas for font rendering if necessary
 	- Save texture id in glyph.. (already done :))
 - Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment

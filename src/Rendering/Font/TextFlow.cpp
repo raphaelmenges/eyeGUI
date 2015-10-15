@@ -22,11 +22,6 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         Shader const * pShader,
-        int x,
-        int y,
-        int width,
-        int height,
-        glm::vec4 color,
         std::u16string content)
     {
         // Fill members
@@ -35,12 +30,13 @@ namespace eyegui
         mFontSize = fontSize;
         mAlignment = alignment;
         mpShader = pShader;
-        mX = x;
-        mY = y;
-        mWidth = width;
-        mHeight = height;
-        mColor = color;
         mContent = content;
+
+        // Update have to done before usage
+        mX = 0;
+        mY = 0;
+        mWidth = 0;
+        mHeight = 0;
 
         // Save currently set buffer and vertex array object
         GLint oldBuffer, oldVAO;
@@ -74,8 +70,7 @@ namespace eyegui
         // TODO: just useable when only one atlas texture (whole member will be deleted)
         mAtlasTextureId = mpFont->getGlyph(mFontSize, u'a')->atlasTextureId; // TODO
 
-        // Calculate it
-        calculateMesh();
+        // UPDATE HAS TO BE CALLED ONCE AT LEAST
     }
 
     TextFlow::~TextFlow()
@@ -88,54 +83,34 @@ namespace eyegui
         glDeleteBuffers(1, &mTextureCoordinateBuffer);
     }
 
-    void TextFlow::move(int x, int y)
+    // Set content
+    void TextFlow::setContent(std::u16string content)
+    {
+        mContent = content;
+        calculateMesh();
+    }
+
+    // Transform and size
+    void TextFlow::transformAndSize(
+        int x,
+        int y,
+        int width,
+        int height)
     {
         mX = x;
         mY = y;
-    }
-
-    void TextFlow::setColor(glm::vec4 color)
-    {
-        mColor = color;
-    }
-
-    void TextFlow::update(int width, int height)
-    {
-        update(width, height, mContent);
-    }
-
-    void TextFlow::update(std::u16string content)
-    {
-        update(mWidth, mHeight, content);
-    }
-
-    void TextFlow::update(
-        int width,
-        int height,
-        std::u16string content)
-    {
-        // Save values
         mWidth = width;
         mHeight = height;
-        mContent = content;
-
-        // Calculate mesh
         calculateMesh();
     }
 
-    void TextFlow::resize()
-    {
-        // Calculate mesh
-        calculateMesh();
-    }
-
-    void TextFlow::draw(float alpha) const
+    void TextFlow::draw(glm::vec4 color, float alpha) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
 
         // If matrix were not calculated every frame, this would have to be notified about resizing...
-        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - mY - mHeight, 0));
+        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - mY, 0));
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
 
         // TODO: TEST (only one atlas at the moment)
@@ -143,7 +118,7 @@ namespace eyegui
 
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("alpha", alpha);
-        mpShader->fillValue("color", mColor);
+        mpShader->fillValue("color", color);
 
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }

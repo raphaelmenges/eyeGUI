@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -15,6 +15,7 @@
 #include "Elements/Blocks/Grid.h"
 #include "Elements/Blocks/Block.h"
 #include "Elements/Blocks/Stack.h"
+#include "Elements/Blocks/TextBlock.h"
 #include "Elements/InteractiveElements/InteractiveElement.h"
 #include "Elements/InteractiveElements/Buttons/CircleButton.h"
 #include "Elements/InteractiveElements/Buttons/BoxButton.h"

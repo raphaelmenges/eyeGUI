@@ -40,35 +40,23 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             Shader const * pShader,
-            int x,
-            int y,
-            int width,
-            int height,
-            glm::vec4 color,
             std::u16string content);
 
         // Destructor
         virtual ~TextFlow();
 
-        // Move
-        void move(int x, int y);
+        // Set content
+        void setContent(std::u16string content);
 
-        // Set text color
-        void setColor(glm::vec4 color);
-
-        // Update
-        void update(int width,int height);
-        void update(std::u16string content);
-        void update(
+        // Transform and size
+        void transformAndSize(
+            int x,
+            int y,
             int width,
-            int height,
-            std::u16string content);
-
-        // Resize
-        void resize();
+            int height);
 
         // Draw (uses orthoprojection to scale to screen)
-        void draw(float alpha) const;
+        void draw(glm::vec4 color, float alpha) const;
 
     private:
 

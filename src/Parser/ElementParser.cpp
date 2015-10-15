@@ -11,6 +11,8 @@
 #include "Layout.h"
 #include "OperationNotifier.h"
 
+#include <uchar.h>
+
 namespace eyegui
 {
     ElementParser::ElementParser()
@@ -83,6 +85,10 @@ namespace eyegui
         else if (value == "stack")
         {
             upElement = std::move(parseStack(pLayout, pFrame, pAssetManager, id, styleName, relativeScale, border, xmlElement, pParent, filepath, rIdMap));
+        }
+        else if (value == "textblock")
+        {
+            upElement = std::move(parseTextBlock(pLayout, pFrame, pAssetManager, id, styleName, relativeScale, border, xmlElement, pParent, filepath, rIdMap));
         }
         else if (value == "circlebutton")
         {
@@ -338,6 +344,75 @@ namespace eyegui
 
         // Return stack
         return (std::move(upStack));
+    }
+
+    std::unique_ptr<TextBlock> ElementParser::parseTextBlock(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlTextBlock, Element* pParent, std::string filepath, idMap& rIdMap) const
+    {
+        // Get inner border
+        float innerBorder = parsePercentAttribute("innerborder", xmlTextBlock);
+
+         // Get font size
+        std::string fontSizeValue = parseStringAttribute("fontsize", xmlTextBlock);
+        FontSize fontSize;
+        if (fontSizeValue == EMPTY_STRING_ATTRIBUTE || fontSizeValue == "medium")
+        {
+            fontSize = FontSize::MEDIUM;
+        }
+        else if (fontSizeValue == "tall")
+        {
+            fontSize = FontSize::TALL;
+        }
+        else if (fontSizeValue == "small")
+        {
+            fontSize = FontSize::SMALL;
+        }
+        else
+        {
+            throwError(OperationNotifier::Operation::PARSING, "Unknown font size used in text block: " + fontSizeValue, filepath);
+        }
+
+        // Get alignment
+        std::string alignmentValue = parseStringAttribute("alignment", xmlTextBlock);
+        TextFlowAlignment alignment;
+        if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "left")
+        {
+            alignment = TextFlowAlignment::LEFT;
+        }
+        else if (alignmentValue == "right")
+        {
+            alignment = TextFlowAlignment::RIGHT;
+        }
+        else if (alignmentValue == "center")
+        {
+            alignment = TextFlowAlignment::CENTER;
+        }
+        else if (alignmentValue == "justify")
+        {
+            alignment = TextFlowAlignment::JUSTIFY;
+        }
+        else
+        {
+            throwError(OperationNotifier::Operation::PARSING, "Unknown alignment used in text block: " + alignmentValue, filepath);
+        }
+
+        // Get content (only 8 bit are possible inside the xml layout)
+        std::string contentValue = parseStringAttribute("content", xmlTextBlock);
+        std::u16string content = u"";
+        char16_t c16str[3] = u"\0";
+        mbstate_t mbs;
+        for (const auto& it: contentValue)
+        {
+            memset(&mbs, 0, sizeof (mbs));
+            memmove(c16str, u"\0\0\0", 3);
+            mbrtoc16 (c16str, &it, 3, &mbs);
+            content.append(std::u16string(c16str));
+        }
+
+        // Create text block
+        std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, relativeScale, border, fontSize, alignment, content, innerBorder));
+
+        // Return text block
+        return std::move(upTextBlock);
     }
 
     std::unique_ptr<CircleButton> ElementParser::parseCircleButton(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlCircleButton, Element* pParent, std::string filepath, idMap& rIdMap) const

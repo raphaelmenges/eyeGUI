@@ -5,22 +5,22 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // TODO:
-//  - style color "font-color" or so
+//  - style color "font-color" or so (and use it!)
 
-#ifndef TEXT_BOX_H_
-#define TEXT_BOX_H_
+#ifndef TEXT_BLOCK_H_
+#define TEXT_BLOCK_H_
 
-#include "Element.h"
+#include "Block.h"
 #include "Rendering/Font/TextFlow.h"
 
 namespace eyegui
 {
-    class TextBox : public Element
+    class TextBlock : public Block
     {
     public:
 
         // Constructors
-        TextBox(
+        TextBlock(
             std::string id,
             std::string styleName,
             Element* pParent,
@@ -35,36 +35,22 @@ namespace eyegui
             float innerBorder);
 
         // Destructor
-        virtual ~Picture();
-
-        // Check before transformation, how much space is needed
-        virtual void evaluateSize(
-            int availableWidth,
-            int availableHeight,
-            int& rWidth,
-            int& rHeight) const;
+        virtual ~TextBlock();
 
     protected:
-
-        // Updating filled by subclasses
-        virtual void specialUpdate(float tpf, Input* pInput);
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
-        // Transformation filled by subclasses
+        // Transformation
         virtual void specialTransformAndSize();
-
-        // Reset filld by subclasses
-        virtual void specialReset();
 
     private:
 
         // Members
-        RenderItem const * mpQuad;
-
-        PictureAlignment mAlignment;
+        float mInnerBorder;
+        std::unique_ptr<TextFlow> mupTextFlow;
     };
 }
 
-#endif // TEXT_BOX_H_
+#endif // TEXT_BLOCK_H_

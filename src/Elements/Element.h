@@ -52,7 +52,8 @@ namespace eyegui
             DROP_BUTTON,
             BLOCK,
             STACK,
-            GRID
+            GRID,
+            TEXT_BLOCK
         };
 
         // Orientation of element
