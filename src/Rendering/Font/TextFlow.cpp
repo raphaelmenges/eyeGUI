@@ -171,53 +171,73 @@ namespace eyegui
             words.push_back(calculateWord(token));
             copyContent.erase(0, pos + delimiter.length());
         }
-        words.push_back(calculateWord(copyContent)); // Last word
+        words.push_back(calculateWord(copyContent)); // Last word (words never empty)
 
         // Build flow together from words
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec2> textureCoordinates;
 
-        int xPen = 0;
+        // Prepare some values
         int yPen = - mpFont->getLineHeight(mFontSize); // First line should be also inside flow
+        int wordIndex = 0;
+        bool hasNext = true;
 
-        // Collect line
-        /*std::vector<Word const *> line;
-        while(xPen + rWord.width > mWidth) */
-
-        // Go over lines
-        for(const Word& rWord : words)
+        // Collect lines
+        while(hasNext && ((-yPen) <= (mY + mHeight)))
         {
-            bool addSpace = true;
+            // Collect words in one line
+            std::vector<Word const *> line;
+            int wordsWidth = 0;
 
-            // Check, whether word will fit into line
-            if(xPen + rWord.width > mWidth)
+            while(hasNext && ((wordsWidth + words[wordIndex].width) + (((int)line.size())-1) * space) <= mWidth)
             {
-                xPen = 0;
-                yPen -= mpFont->getLineHeight(mFontSize);
-                addSpace = false;
+                wordsWidth += words[wordIndex].width;
+                line.push_back(&words[wordIndex]);
+                wordIndex++;
 
-                // yPen in another coordinate sysstem than mY and mHeight...
-                if((-yPen) > (mY + mHeight))
+                if(wordIndex >= words.size())
                 {
-                    break; // Enough words to fill flow
+                    hasNext = false;
                 }
             }
 
-            // Assuming, that the count of vertices and texture coordinates is equal
-            for(int i = 0; i < rWord.spVertices->size(); i++)
+            // Now decide xOffset
+            int xOffset = 0;
+            if(mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
             {
-                glm::vec3& rVertex = rWord.spVertices->at(i);
-                vertices.push_back(glm::vec3(rVertex.x + xPen, rVertex.y + yPen, rVertex.z));
-                glm::vec2& rTextureCoordinate = rWord.spTextureCoordinates->at(i);
-                textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+                xOffset = mWidth - (wordsWidth + ((int)line.size()-1) * space);
+                if(mAlignment == TextFlowAlignment::CENTER)
+                {
+                    xOffset = xOffset / 2;
+                }
             }
-            xPen += rWord.width;
 
-            if(addSpace)
+            // Decide dynamic space
+            int dynamicSpace = space;
+            if(mAlignment == TextFlowAlignment::JUSTIFY && hasNext)
             {
-                // No end of line so add space
-                xPen += space;
+                // Do not use dynamic space for last line
+                dynamicSpace = (mWidth - wordsWidth) / ((int)line.size()-1);
             }
+
+            int xPen = xOffset;
+            for(int i = 0; i < line.size(); i++)
+            {
+                // Assuming, that the count of vertices and texture coordinates is equal
+                for(int j = 0; j < line[i]->spVertices->size(); j++)
+                {
+                    glm::vec3& rVertex = line[i]->spVertices->at(j);
+                    vertices.push_back(glm::vec3(rVertex.x + xPen, rVertex.y + yPen, rVertex.z));
+                    glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
+                    textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+                }
+
+                // Advance xPen
+                xPen += dynamicSpace + line[i]->width;
+            }
+
+            // Advance yPen
+            yPen -= mpFont->getLineHeight(mFontSize);
         }
 
         // Vertex count
