@@ -154,6 +154,9 @@ namespace eyegui
         GLint oldBuffer;
         glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
 
+        // Get size of space
+        int space = mpFont->getGlyph(mFontSize, u' ')->advance.x;
+
         // Go over words in content
         std::u16string copyContent = mContent;
 
@@ -175,11 +178,31 @@ namespace eyegui
         std::vector<glm::vec2> textureCoordinates;
 
         int xPen = 0;
-        int yPen = 0;
+        int yPen = - mpFont->getLineHeight(mFontSize); // First line should be also inside flow
+
+        // Collect line
+        /*std::vector<Word const *> line;
+        while(xPen + rWord.width > mWidth) */
 
         // Go over lines
         for(const Word& rWord : words)
         {
+            bool addSpace = true;
+
+            // Check, whether word will fit into line
+            if(xPen + rWord.width > mWidth)
+            {
+                xPen = 0;
+                yPen -= mpFont->getLineHeight(mFontSize);
+                addSpace = false;
+
+                // yPen in another coordinate sysstem than mY and mHeight...
+                if((-yPen) > (mY + mHeight))
+                {
+                    break; // Enough words to fill flow
+                }
+            }
+
             // Assuming, that the count of vertices and texture coordinates is equal
             for(int i = 0; i < rWord.spVertices->size(); i++)
             {
@@ -190,10 +213,10 @@ namespace eyegui
             }
             xPen += rWord.width;
 
-            if(xPen > mWidth)
+            if(addSpace)
             {
-                xPen = 0;
-                yPen -= 13; // TODO (somehow wrong orientation, but no idea how to change it..)
+                // No end of line so add space
+                xPen += space;
             }
         }
 

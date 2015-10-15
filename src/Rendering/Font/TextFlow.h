@@ -11,13 +11,15 @@
 //      - element seems although to handle it at drawing only...
 //      - x y coordinate of flow is upper left corner. Flow has to be adjusted,
 //      atm it is starting at the bottom...
+//      - just say in the description: internally, that coordinate system,
+//      and for the interface that.
 
 // TODO
 //  - Alignment (Right, left, justify, center)
 //  - Actually, one would have to have one mesh per atlas texture. Todo for later
 //  when there could be more then one atlas texture
 //  - will get problems if pointer to font is null
-//  - reaction to \n and - in text
+//  - reaction to \n in text
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_

@@ -80,6 +80,36 @@ namespace eyegui
         return pGlyph;
     }
 
+    int Font::getLineHeight(FontSize fontSize) const
+    {
+        // Values seems to be not correct (not depending on bitmap size)
+        /*switch(fontSize)
+        {
+        case FontSize::TALL:
+            return mTallLineHeight;
+            break;
+        case FontSize::MEDIUM:
+            return mMediumLineHeight;
+            break;
+        case FontSize::SMALL:
+            return mSmallLineHeight;
+            break;
+        }*/
+
+        switch(fontSize)
+        {
+        case FontSize::TALL:
+            return mTallPixelHeight;
+            break;
+        case FontSize::MEDIUM:
+            return mMediumPixelHeight;
+            break;
+        case FontSize::SMALL:
+            return mSmallPixelHeight;
+            break;
+        }
+    }
+
     Glyph const * Font::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
     {
         auto it = rGlyphMap.find(character);
@@ -113,16 +143,19 @@ namespace eyegui
         fillAtlas(
             mTallPixelHeight,
             mTallGlyphs,
+            mTallLineHeight,
             mTallTexture,
             calculatePadding(mTallPixelHeight));
         fillAtlas(
             mMediumPixelHeight,
             mMediumGlyphs,
+            mMediumLineHeight,
             mMediumTexture,
             calculatePadding(mMediumPixelHeight));
         fillAtlas(
             mSmallPixelHeight,
             mSmallGlyphs,
+            mSmallLineHeight,
             mSmallTexture,
             calculatePadding(mSmallPixelHeight));
     }
@@ -130,6 +163,7 @@ namespace eyegui
     void Font::fillAtlas(
         int pixelHeight,
         std::map<char16_t, Glyph>& rGlyphMap,
+        int& rLineHeight,
         GLuint textureId,
         int padding)
     {
@@ -144,6 +178,9 @@ namespace eyegui
 
         // Set the height for generation of glyphs
         FT_Set_Pixel_Sizes(rFace, 0, pixelHeight);
+
+        // Set line height
+        rLineHeight = rFace->height / 64; // Given in 1/64 pixel
 
         // Go over character set and collect glyphs and bitmaps
         for (char16_t c : mCharacterSet)
@@ -165,8 +202,8 @@ namespace eyegui
             // Save some values of the glyph
             rGlyphMap[c].atlasTextureId = textureId;
             rGlyphMap[c].advance = glm::ivec2(
-                rFace->glyph->advance.x / 64,   // Given as 1/64 pixel
-                rFace->glyph->advance.y / 64);  // Given as 1/64 pixel
+                rFace->glyph->advance.x / 64,   // Given in 1/64 pixel
+                rFace->glyph->advance.y / 64);  // Given in 1/64 pixel
             rGlyphMap[c].size = glm::ivec2(bitmapWidth, bitmapHeight);
             rGlyphMap[c].bearing = glm::ivec2(
                 rFace->glyph->bitmap_left,
@@ -254,8 +291,8 @@ namespace eyegui
         glBindTexture(GL_TEXTURE_2D, textureId);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         std::vector<GLubyte> emptyData(xResolution * yResolution, 0);
         glTexImage2D(

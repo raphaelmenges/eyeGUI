@@ -50,7 +50,7 @@ namespace eyegui
 
     //! Enumeration of possible text alignments
     /*! This enum is defined directly in the interface because it is needed by some functions. */
-    enum class TextFlowAlignment { LEFT };
+    enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY};
 
     //! Enumeration of possible picture alignments.
     /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */

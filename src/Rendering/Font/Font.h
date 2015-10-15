@@ -53,6 +53,9 @@ namespace eyegui
         // Get glyph (may return NULL if not found)
         Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
 
+        // Get height of line
+        int getLineHeight(FontSize fontSize) const;
+
     private:
 
         // Get glyph (may return NULL if not found)
@@ -71,6 +74,7 @@ namespace eyegui
         void fillAtlas(
             int pixelHeight,
             std::map<char16_t,Glyph>& rGlyphMap,
+            int& rLineHeight,
             GLuint textureId,
             int padding);
 
@@ -81,6 +85,10 @@ namespace eyegui
         std::map<char16_t, Glyph> mTallGlyphs;
         std::map<char16_t, Glyph> mMediumGlyphs;
         std::map<char16_t, Glyph> mSmallGlyphs;
+
+        int mTallLineHeight;
+        int mMediumLineHeight;
+        int mSmallLineHeight;
 
         GLuint mTallTexture;
         GLuint mMediumTexture;
