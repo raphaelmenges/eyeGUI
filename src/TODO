@@ -1,22 +1,21 @@
 At the moment:
+- Changing styles through programming interface
+- Create empty default font to catch any null pointer
+
+BUGS:
 - Why does it crash at the end (test it with Visual Debugger...)
 - Scaling of frame via keystroke does not work (fault)
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
-- Create empty default font to catch any null pointer
 - Create helper for de- and increasing of all values like alpha etc
-- Text rendering using freetype
-  - Integrate into AssetManager
-    - Something more low level for later text input
-      - Something like: bindFontAtlas and get glyph or so
 - Localization using files
-- Changing styles through programming interface
 - HelloEyeGUI and eyeGUIDemo refactoring..
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
 - Overwork CMakeLists! Probably, unecessary sourcing instead of including
 - Notification into own class and layout as const pointer in elements
+- Font with more than one atlas per size (when texture size for gpu too big)
 - Add version / date of externals
   - reintegrate glm (some files may be missing)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
