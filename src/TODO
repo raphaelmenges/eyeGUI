@@ -5,6 +5,7 @@ At the moment:
 BUGS:
 - Why does it crash at the end (test it with Visual Debugger...)
 - Scaling of frame via keystroke does not work (fault)
+	- When TextFlow width to small, error occurs
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
