@@ -1,8 +1,8 @@
 At the moment:
 - Why does it crash at the end (test it with Visual Debugger...)
-- Where to prohibit to access a NULL pointer to the default font object if it is not exisiting?
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
+- Create empty default font to catch any null pointer
 - Create helper for de- and increasing of all values like alpha etc
 - Text rendering using freetype
   - Integrate into AssetManager

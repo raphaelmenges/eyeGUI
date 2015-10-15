@@ -269,15 +269,15 @@ namespace eyegui
         // (could otherwise cancel locking by accident)
         mLayoutsLocked = true;
         {
-            // Resize all layouts
+            // Resize font atlases first
+            mupAssetManager->resizeFontAtlases();
+
+            // Then, resize all layouts
             for (std::unique_ptr<Layout>& upLayout : mLayouts)
             {
                 // Layout fetches size via const pointer to this
                 upLayout->resize();
             }
-
-            // Resize font atlases
-            mupAssetManager->resizeFontAtlases();
 
             // TODO: test
             mupTextFlow->resize();

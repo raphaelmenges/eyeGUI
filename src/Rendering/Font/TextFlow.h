@@ -6,18 +6,16 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // TODO:
 //  - All values pixel values!
-//  - Center of text alway in the center? or where?!
 //  - internal origin lower left but interface upper left...
 //      - element seems although to handle it at drawing only...
 //      - x y coordinate of flow is upper left corner. Flow has to be adjusted,
 //      atm it is starting at the bottom...
 //      - just say in the description: internally, that coordinate system,
 //      and for the interface that.
-
-// TODO
 //  - Actually, one would have to have one mesh per atlas texture. Todo for later
 //  when there could be more then one atlas texture
-//  - will get problems if pointer to font is null
+//  - Future work: add "..." when no space left, make font smaller when not enough
+//  space available...
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
