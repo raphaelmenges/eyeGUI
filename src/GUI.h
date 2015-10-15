@@ -99,6 +99,7 @@ namespace eyegui
         // Members
         std::vector<std::unique_ptr<Layout> > mLayouts;
         int mWidth, mHeight;
+        int mNewWidth, mNewHeight;
         CharacterSet mCharacterSet;
         LayoutParser mLayoutParser;
         ConfigParser mConfigParser;

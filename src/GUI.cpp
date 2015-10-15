@@ -22,6 +22,8 @@ namespace eyegui
         // Initialize members
         mWidth = width;
         mHeight = height;
+        mNewWidth = 0;
+        mNewHeight = 0;
         mCharacterSet = characterSet;
         mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
         mLayoutsLocked = false;
@@ -92,8 +94,8 @@ namespace eyegui
             mResizeWaitTime = RESIZE_WAIT_DURATION;
 
             // Save to members
-            mWidth = width;
-            mHeight = height;
+            mNewWidth = width;
+            mNewHeight = height;
         }
     }
 
@@ -250,6 +252,10 @@ namespace eyegui
 
     void GUI::internalResizing()
     {
+        // Set new width and height
+        mWidth = mNewWidth;
+        mHeight = mNewHeight;
+
         // Would be not ok if layout could call resize, but it cannot because it has only cont pointer
         // (could otherwise cancel locking by accident)
         mLayoutsLocked = true;
