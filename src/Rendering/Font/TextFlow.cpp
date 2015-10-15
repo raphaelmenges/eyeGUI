@@ -159,85 +159,101 @@ namespace eyegui
 
         // Go over words in content
         std::u16string copyContent = mContent;
-
-        // Get words out of string
-        std::vector<TextFlow::Word> words;
-        std::u16string delimiter = u" ";
         size_t pos = 0;
         std::u16string token;
-        while ((pos = copyContent.find(delimiter)) != std::u16string::npos)
+
+        // Get pararaphs separated by \n
+        std::vector<std::u16string> paragraphs;
+        std::u16string paragraphDelimiter = u"\n";
+
+        while ((pos = copyContent.find(paragraphDelimiter)) != std::u16string::npos)
         {
             token = copyContent.substr(0, pos);
-            words.push_back(calculateWord(token));
-            copyContent.erase(0, pos + delimiter.length());
+            paragraphs.push_back(token);
+            copyContent.erase(0, pos + paragraphDelimiter.length());
         }
-        words.push_back(calculateWord(copyContent)); // Last word (words never empty)
+        paragraphs.push_back(copyContent); // Last paragraph (paragraphs never empty)
 
-        // Build flow together from words
+        // Build flow together from words in paragraphs
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec2> textureCoordinates;
 
-        // Prepare some values
+        // Go over paragraphs
         int yPen = - mpFont->getLineHeight(mFontSize); // First line should be also inside flow
-        int wordIndex = 0;
-        bool hasNext = true;
-
-        // Collect lines
-        while(hasNext && ((-yPen) <= (mY + mHeight)))
+        for(std::u16string& rPargraph : paragraphs)
         {
-            // Collect words in one line
-            std::vector<Word const *> line;
-            int wordsWidth = 0;
-
-            while(hasNext && ((wordsWidth + words[wordIndex].width) + (((int)line.size())-1) * space) <= mWidth)
+            // Get words out of string
+            std::vector<TextFlow::Word> words;
+            std::u16string wordDelimiter = u" ";
+            while ((pos = rPargraph.find(wordDelimiter)) != std::u16string::npos)
             {
-                wordsWidth += words[wordIndex].width;
-                line.push_back(&words[wordIndex]);
-                wordIndex++;
-
-                if(wordIndex >= words.size())
-                {
-                    hasNext = false;
-                }
+                token = rPargraph.substr(0, pos);
+                words.push_back(calculateWord(token));
+                rPargraph.erase(0, pos + wordDelimiter.length());
             }
+            words.push_back(calculateWord(rPargraph)); // Last word (words never empty)
 
-            // Now decide xOffset
-            int xOffset = 0;
-            if(mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+            // Prepare some values
+            int wordIndex = 0;
+            bool hasNext = true;
+
+            // Collect lines
+            while(hasNext && ((-yPen) <= (mY + mHeight)))
             {
-                xOffset = mWidth - (wordsWidth + ((int)line.size()-1) * space);
-                if(mAlignment == TextFlowAlignment::CENTER)
+                // Collect words in one line
+                std::vector<Word const *> line;
+                int wordsWidth = 0;
+
+                while(hasNext && ((wordsWidth + words[wordIndex].width) + (((int)line.size())-1) * space) <= mWidth)
                 {
-                    xOffset = xOffset / 2;
-                }
-            }
+                    wordsWidth += words[wordIndex].width;
+                    line.push_back(&words[wordIndex]);
+                    wordIndex++;
 
-            // Decide dynamic space
-            int dynamicSpace = space;
-            if(mAlignment == TextFlowAlignment::JUSTIFY && hasNext)
-            {
-                // Do not use dynamic space for last line
-                dynamicSpace = (mWidth - wordsWidth) / ((int)line.size()-1);
-            }
-
-            int xPen = xOffset;
-            for(int i = 0; i < line.size(); i++)
-            {
-                // Assuming, that the count of vertices and texture coordinates is equal
-                for(int j = 0; j < line[i]->spVertices->size(); j++)
-                {
-                    glm::vec3& rVertex = line[i]->spVertices->at(j);
-                    vertices.push_back(glm::vec3(rVertex.x + xPen, rVertex.y + yPen, rVertex.z));
-                    glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
-                    textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+                    if(wordIndex >= words.size())
+                    {
+                        hasNext = false;
+                    }
                 }
 
-                // Advance xPen
-                xPen += dynamicSpace + line[i]->width;
-            }
+                // Now decide xOffset
+                int xOffset = 0;
+                if(mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+                {
+                    xOffset = mWidth - (wordsWidth + ((int)line.size()-1) * space);
+                    if(mAlignment == TextFlowAlignment::CENTER)
+                    {
+                        xOffset = xOffset / 2;
+                    }
+                }
 
-            // Advance yPen
-            yPen -= mpFont->getLineHeight(mFontSize);
+                // Decide dynamic space
+                int dynamicSpace = space;
+                if(mAlignment == TextFlowAlignment::JUSTIFY && hasNext)
+                {
+                    // Do not use dynamic space for last line
+                    dynamicSpace = (mWidth - wordsWidth) / ((int)line.size()-1);
+                }
+
+                int xPen = xOffset;
+                for(int i = 0; i < line.size(); i++)
+                {
+                    // Assuming, that the count of vertices and texture coordinates is equal
+                    for(int j = 0; j < line[i]->spVertices->size(); j++)
+                    {
+                        glm::vec3& rVertex = line[i]->spVertices->at(j);
+                        vertices.push_back(glm::vec3(rVertex.x + xPen, rVertex.y + yPen, rVertex.z));
+                        glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
+                        textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+                    }
+
+                    // Advance xPen
+                    xPen += dynamicSpace + line[i]->width;
+                }
+
+                // Advance yPen
+                yPen -= mpFont->getLineHeight(mFontSize);
+            }
         }
 
         // Vertex count
