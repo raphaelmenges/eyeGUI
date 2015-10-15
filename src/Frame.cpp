@@ -22,8 +22,8 @@ namespace eyegui
         // Initialize members
         mpLayout = pLayout;
         mFrameAlpha = 1;
-		mCombinedAlpha = 1;
-		mRemovedFadingAlpha = 1;
+        mCombinedAlpha = 1;
+        mRemovedFadingAlpha = 1;
         mVisible = true;
         mupRoot = NULL;
         mResizeNecessary = true;
@@ -31,9 +31,9 @@ namespace eyegui
         mRelativePositionY = relativePositionY;
         mRelativeSizeX = relativeSizeX;
         mRelativeSizeY = relativeSizeY;
-		mRemoved = false;
+        mRemoved = false;
 
-		clampSize();
+        clampSize();
     }
 
     Frame::~Frame()
@@ -45,25 +45,25 @@ namespace eyegui
     {
         // *** OWN UPDATE ***
 
-		// If visible now and resize is necessary, resize!
-		if (mVisible && mResizeNecessary)
-		{
-			resize(true);
-		}
+        // If visible now and resize is necessary, resize!
+        if (mVisible && mResizeNecessary)
+        {
+            resize(true);
+        }
 
         // Update own alpha
-		if (mVisible)
-		{
-			mFrameAlpha += tpf / mpLayout->getConfig()->animationDuration;
-		}
-		else
-		{
-			mFrameAlpha -= tpf / mpLayout->getConfig()->animationDuration;
-		}
-		mFrameAlpha = clamp(mFrameAlpha, 0, 1);
+        if (mVisible)
+        {
+            mFrameAlpha += tpf / mpLayout->getConfig()->animationDuration;
+        }
+        else
+        {
+            mFrameAlpha -= tpf / mpLayout->getConfig()->animationDuration;
+        }
+        mFrameAlpha = clamp(mFrameAlpha, 0, 1);
 
         // Combine own alpha with layout's
-		mCombinedAlpha = mFrameAlpha * mRemovedFadingAlpha * alpha;
+        mCombinedAlpha = mFrameAlpha * mRemovedFadingAlpha * alpha;
 
         // Update root only if own alpha greater zero
         if (mCombinedAlpha > 0)
@@ -179,19 +179,19 @@ namespace eyegui
 
     void Frame::setVisibility(bool visible, bool fade)
     {
-		mVisible = visible;
+        mVisible = visible;
 
-		if (!fade)
-		{
-			if (mVisible)
-			{
-				mFrameAlpha = 1;
-			}
-			else
-			{
-				mFrameAlpha = 0;
-			}
-		}
+        if (!fade)
+        {
+            if (mVisible)
+            {
+                mFrameAlpha = 1;
+            }
+            else
+            {
+                mFrameAlpha = 0;
+            }
+        }
     }
 
     InteractiveElement* Frame::getFirstInteractiveElement() const
@@ -233,74 +233,75 @@ namespace eyegui
         }
     }
 
-	std::set<Element*> Frame::getAllElements() const
-	{
-		// Get all children of root
-		std::set<Element*> elements = mupRoot->getAllChildren();
+    std::set<Element*> Frame::getAllElements() const
+    {
+        // Get all children of root
+        std::set<Element*> elements = mupRoot->getAllChildren();
 
-		// Get the root
-		elements.insert(mupRoot.get());
+        // Get the root
+        elements.insert(mupRoot.get());
 
-		// Return set
-		return elements;
-	}
+        // Return set
+        return elements;
+    }
 
-	std::set<std::string> Frame::getAllElementsIds() const
-	{
-		return mupRoot->getAllChildrensIds();
-	}
+    std::set<std::string> Frame::getAllElementsIds() const
+    {
+        return mupRoot->getAllChildrensIds();
+    }
 
-	void Frame::setRemovedFadingAlpha(float alpha)
-	{
-		mRemovedFadingAlpha = alpha;
-	}
+    void Frame::setRemovedFadingAlpha(float alpha)
+    {
+        mRemovedFadingAlpha = alpha;
+    }
 
-	float Frame::getRemovedFadingAlpha() const
-	{
-		return mRemovedFadingAlpha;
-	}
+    float Frame::getRemovedFadingAlpha() const
+    {
+        return mRemovedFadingAlpha;
+    }
 
-	void Frame::setRemoved()
-	{
-		mRemoved = true;
-	}
+    void Frame::setRemoved()
+    {
+        mRemoved = true;
+    }
 
-	bool Frame::isRemoved() const
-	{
-		return mRemoved;
-	}
+    bool Frame::isRemoved() const
+    {
+        return mRemoved;
+    }
 
-	void Frame::translate(float translateX, float translateY)
-	{
-		mRelativePositionX += translateX;
-		mRelativePositionY += translateY;
-		mResizeNecessary = true;
-	}
+    void Frame::translate(float translateX, float translateY)
+    {
+        mRelativePositionX += translateX;
+        mRelativePositionY += translateY;
+        mResizeNecessary = true;
+    }
 
-	void Frame::scale(float scaleX, float scaleY)
-	{
-		mRelativeSizeX *= scaleX;
-		mRelativeSizeY *= scaleY;
-		clampSize();
-		mResizeNecessary = true;
-	}
+    void Frame::scale(float scaleX, float scaleY)
+    {
+        mRelativeSizeX *= scaleX;
+        mRelativeSizeY *= scaleY;
+        clampSize();
+        mResizeNecessary = true;
+    }
 
-	void Frame::setPosition(float relativePositionX, float relativePositionY)
-	{
-		mRelativePositionX = relativePositionX;
-		mRelativePositionY = relativePositionY;
-	}
+    void Frame::setPosition(float relativePositionX, float relativePositionY)
+    {
+        mRelativePositionX = relativePositionX;
+        mRelativePositionY = relativePositionY;
+    }
 
-	void Frame::setSize(float relativeSizeX, float relativeSizeY)
-	{
-		mRelativeSizeX = relativeSizeX;
-		mRelativeSizeY = relativeSizeY;
-		clampSize();
-	}
+    void Frame::setSize(float relativeSizeX, float relativeSizeY)
+    {
+        mRelativeSizeX = relativeSizeX;
+        mRelativeSizeY = relativeSizeY;
+        clampSize();
+        mResizeNecessary = true;
+    }
 
-	void Frame::clampSize()
-	{
-		mRelativeSizeX = std::max(mRelativeSizeX, 0.0f);
-		mRelativeSizeY = std::max(mRelativeSizeY, 0.0f);
-	}
+    void Frame::clampSize()
+    {
+        mRelativeSizeX = std::max(mRelativeSizeX, 0.0f);
+        mRelativeSizeY = std::max(mRelativeSizeY, 0.0f);
+    }
 }

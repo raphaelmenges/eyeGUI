@@ -4,8 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO:
-//  - style color "font-color" or so (and use it!)
+// TODO
 
 #ifndef TEXT_BLOCK_H_
 #define TEXT_BLOCK_H_
