@@ -10,7 +10,6 @@ BUGS:
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
 - Localization using files
-- HelloEyeGUI and eyeGUIDemo refactoring..
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
@@ -23,7 +22,7 @@ BUGS:
 - Interface functions
 	- Replacement by TextBlock
 
-### VERSION 0.3 [Input] ### (ready for eye browser)
+### VERSION 0.3... [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)
 - More complex input structure and configuration
   - Mouse
@@ -32,11 +31,9 @@ BUGS:
   - Brain-computer-interface
   - Buttons?
   - Other...
-- More complex elements with text
+- More complex elements with text (menu)
 - Text input
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
-
-### VERSION 0.4 ### (improvements)
 - Audio
 
 Notes:
