@@ -1,4 +1,5 @@
 At the moment:
+- Localization using files
 - Create empty default font to catch any null pointer
 
 BUGS:
@@ -8,7 +9,6 @@ BUGS:
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
-- Localization using files
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
@@ -35,6 +35,7 @@ BUGS:
 - Audio
 
 Notes:
+- Localization files MUST BE encoded in UTF-16
 - Remember: inside .xeyegui / .beyegui only 8bit chars are allowed so no umlaute in content of text block
 - Determine maximum texture resolution and create more than one texture atlas for font rendering if necessary
 	- Save texture id in glyph.. (already done :))
