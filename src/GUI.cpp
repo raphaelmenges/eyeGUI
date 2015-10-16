@@ -225,6 +225,17 @@ namespace eyegui
         }
     }
 
+    void GUI::loadConfig(std::string filepath)
+    {
+        // Do it later, not during updating or so (because could be called during that)
+        mConfigToLoad = filepath;
+    }
+
+    void GUI::prefetchImage(std::string filepath)
+    {
+        mupAssetManager->fetchTexture(filepath);
+    }
+
     int GUI::getWindowWidth() const
     {
         return mWidth;
@@ -233,6 +244,26 @@ namespace eyegui
     int GUI::getWindowHeight() const
     {
         return mHeight;
+    }
+
+    float GUI::getAccPeriodicTime() const
+    {
+        return mAccPeriodicTime;
+    }
+
+    Config const * GUI::getConfig() const
+    {
+        return &mConfig;
+    }
+
+    CharacterSet GUI::getCharacterSet() const
+    {
+        return mCharacterSet;
+    }
+
+    Font const * GUI::getDefaultFont() const
+    {
+        return mpDefaultFont;
     }
 
     int GUI::findLayout(Layout const * pLayout) const
@@ -249,6 +280,21 @@ namespace eyegui
         }
 
         return index;
+    }
+
+    void GUI::moveLayout(int oldIndex, int newIndex)
+    {
+        std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
+        mLayouts.erase(mLayouts.begin() + oldIndex);
+
+        if (newIndex >= mLayouts.size())
+        {
+            mLayouts.push_back(std::move(upLayout));
+        }
+        else
+        {
+            mLayouts.insert(mLayouts.begin() + newIndex, std::move(upLayout));
+        }
     }
 
     void GUI::internalResizing()
@@ -272,51 +318,5 @@ namespace eyegui
             }
         }
         mLayoutsLocked = false;
-    }
-
-    void GUI::moveLayout(int oldIndex, int newIndex)
-    {
-        std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
-        mLayouts.erase(mLayouts.begin() + oldIndex);
-
-        if (newIndex >= mLayouts.size())
-        {
-            mLayouts.push_back(std::move(upLayout));
-        }
-        else
-        {
-            mLayouts.insert(mLayouts.begin() + newIndex, std::move(upLayout));
-        }
-    }
-
-    float GUI::getAccPeriodicTime() const
-    {
-        return mAccPeriodicTime;
-    }
-
-    Config const * GUI::getConfig() const
-    {
-        return &mConfig;
-    }
-
-    CharacterSet GUI::getCharacterSet() const
-    {
-        return mCharacterSet;
-    }
-
-    Font const * GUI::getDefaultFont() const
-    {
-        return mpDefaultFont;
-    }
-
-    void GUI::loadConfig(std::string filepath)
-    {
-        // Do it later, not during updating or so (because could be called during that)
-        mConfigToLoad = filepath;
-    }
-
-    void GUI::prefetchImage(std::string filepath)
-    {
-        mupAssetManager->fetchTexture(filepath);
     }
 }

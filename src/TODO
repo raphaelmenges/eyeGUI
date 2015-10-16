@@ -23,7 +23,6 @@ BUGS:
 - Make parser only functions, no classes anymore
 - Interface functions
 	- Replacement by TextBlock
-- Sort GUI methods implementations
 
 ### VERSION 0.3 [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)
