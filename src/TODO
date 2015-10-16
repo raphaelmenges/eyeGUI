@@ -1,5 +1,4 @@
 At the moment:
-- Changing styles through programming interface
 - Create empty default font to catch any null pointer
 
 BUGS:
