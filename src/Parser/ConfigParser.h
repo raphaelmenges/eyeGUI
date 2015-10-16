@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -14,16 +14,11 @@
 
 namespace eyegui
 {
-	class ConfigParser
-	{
-	public:
-
-		// Constructor
-		ConfigParser();
-
-		// Parsing
-		Config parse(std::string filepath);
-	};
+    namespace config_parser
+    {
+        // Parsing
+        Config parse(std::string filepath);
+    }
 }
 
 #endif // CONFIG_PARSER_H_

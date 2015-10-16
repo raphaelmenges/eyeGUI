@@ -120,7 +120,7 @@ namespace eyegui
             // Expensive but better then in the middle of rendering
             if (mConfigToLoad != NO_CONFIG_TO_LOAD)
             {
-                mConfig = mConfigParser.parse(mConfigToLoad);
+                mConfig = config_parser::parse(mConfigToLoad);
                 mConfigToLoad = NO_CONFIG_TO_LOAD;
             }
 

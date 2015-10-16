@@ -102,7 +102,6 @@ namespace eyegui
         int mNewWidth, mNewHeight;
         CharacterSet mCharacterSet;
         LayoutParser mLayoutParser;
-        ConfigParser mConfigParser;
         std::unique_ptr<AssetManager> mupAssetManager;
         GLSetup mGLSetup;
         Input mInput;
