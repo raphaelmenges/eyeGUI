@@ -156,7 +156,8 @@ namespace eyegui
                 mpResizeBlend->bind();
                 mpResizeBlend->getShader()->fillValue("matrix", matrix);
                 mpResizeBlend->getShader()->fillValue("color", RESIZE_BLEND_COLOR);
-                mpResizeBlend->getShader()->fillValue("alpha", 1.0f - 0.5f * (mResizeWaitTime / RESIZE_WAIT_DURATION));
+                // mpResizeBlend->getShader()->fillValue("alpha", 1.0f - 0.5f * (mResizeWaitTime / RESIZE_WAIT_DURATION));
+                mpResizeBlend->getShader()->fillValue("alpha", 1.0f); // Without animation
                 mpResizeBlend->draw();
             }
 
