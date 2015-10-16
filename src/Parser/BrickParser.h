@@ -13,24 +13,11 @@
 
 namespace eyegui
 {
-    class BrickParser
+    namespace brick_parser
     {
-    public:
-
-        // Constructor
-        BrickParser();
-
-        // Destructor
-        virtual ~BrickParser();
-
         // Parsing
         std::unique_ptr<elementsAndIds> parse(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, Element* pParent, std::string filepath);
-
-    private:
-
-        // Member
-        ElementParser mElementParser;
-    };
+    }
 }
 
 #endif // BRICK_PARSER_H_

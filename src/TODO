@@ -1,5 +1,6 @@
 At the moment:
 - Create empty default font to catch any null pointer
+- VerticalTextFlowAlignment
 
 BUGS:
 - Why does it crash at the end (test it with Visual Debugger...)
@@ -19,7 +20,6 @@ BUGS:
 - Add version / date of externals
   - reintegrate glm (some files may be missing)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
-- Make parser only functions, no classes anymore
 - Interface functions
 	- Replacement by TextBlock
 

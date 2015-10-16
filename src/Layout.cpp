@@ -868,7 +868,7 @@ namespace eyegui
         if (pElement != NULL)
         {
             std::unique_ptr<elementsAndIds> upPair = std::move(
-                mBrickParser.parse(
+                brick_parser::parse(
                     pElement->getLayout(),
                     pElement->getFrame(),
                     pElement->getAssetManager(),
@@ -934,7 +934,7 @@ namespace eyegui
 
         // Create brick
         std::unique_ptr<elementsAndIds> upPair = std::move(
-                mBrickParser.parse(
+                brick_parser::parse(
                     this,
                     pFrame,
                     mpAssetManager,

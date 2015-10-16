@@ -242,7 +242,6 @@ namespace eyegui
         std::unique_ptr<std::map<std::string, Style> > mStyles;
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > > mupNotificatons;
-        BrickParser mBrickParser;
     };
 }
 

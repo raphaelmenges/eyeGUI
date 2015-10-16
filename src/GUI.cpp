@@ -66,7 +66,7 @@ namespace eyegui
         if (!mLayoutsLocked)
         {
             // Parse layout
-            std::unique_ptr<Layout> upLayout = mLayoutParser.parse(this, mupAssetManager.get(), filepath);
+            std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), filepath);
 
             // Move layout and return raw pointer
             Layout* pLayout = upLayout.get();

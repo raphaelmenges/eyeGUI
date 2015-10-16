@@ -27,49 +27,41 @@ namespace eyegui
     // Forward declarations
     class Frame;
 
-    class ElementParser
+    namespace element_parser
     {
-    public:
-
-        // Constructor
-        ElementParser();
-
-        // Destructor
-        virtual ~ElementParser();
-
         // Parsing
-        std::unique_ptr<elementsAndIds> parse(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath) const;
+        std::unique_ptr<elementsAndIds> parse(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath);
 
         // Element parsing
-        std::unique_ptr<Element> parseElement(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<Grid> parseGrid(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlGrid, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<Blank> parseBlank(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlBlank, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<Block> parseBlock(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlBlock, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<Picture> parsePicture(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlPicture, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<Stack> parseStack(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlStack, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<TextBlock> parseTextBlock(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlTextBlock, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<CircleButton> parseCircleButton(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlCircleButton, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<BoxButton> parseBoxButton(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlBoxButton, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<Sensor> parseSensor(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlSensor, Element* pParent, std::string filepath, idMap& rIdMap) const;
-        std::unique_ptr<DropButton> parseDropButton(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlDropButton, Element* pParent, std::string filepath, idMap& rIdMap) const;
+        std::unique_ptr<Element> parseElement(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<Grid> parseGrid(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlGrid, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<Blank> parseBlank(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlBlank, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<Block> parseBlock(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlBlock, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<Picture> parsePicture(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlPicture, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<Stack> parseStack(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlStack, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<TextBlock> parseTextBlock(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlTextBlock, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<CircleButton> parseCircleButton(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlCircleButton, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<BoxButton> parseBoxButton(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlBoxButton, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<Sensor> parseSensor(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlSensor, Element* pParent, std::string filepath, idMap& rIdMap);
+        std::unique_ptr<DropButton> parseDropButton(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, std::string id, std::string styleName, float relativeScale, float border, tinyxml2::XMLElement const * xmlDropButton, Element* pParent, std::string filepath, idMap& rIdMap);
 
         // Checking
-        bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& expectedValue) const;
+        bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& expectedValue);
 
         // Other parsing
-        float parseRelativeScale(tinyxml2::XMLElement const * xmlElement) const;
-        std::string parseStyleName(tinyxml2::XMLElement const * xmlElement, Element const * pParent, const std::set<std::string>& rNamesOfAvailableStyles, std::string filepath) const;
+        float parseRelativeScale(tinyxml2::XMLElement const * xmlElement);
+        std::string parseStyleName(tinyxml2::XMLElement const * xmlElement, Element const * pParent, const std::set<std::string>& rNamesOfAvailableStyles, std::string filepath);
 
         // Attribute parsing
-        std::string parseStringAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement) const;
-        bool parseBoolAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement) const;
-        int parseIntAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement) const;
-        float parsePercentAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement) const;
+        std::string parseStringAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement);
+        bool parseBoolAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement);
+        int parseIntAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement);
+        float parsePercentAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement);
 
         // IdMap
-        bool checkElementId(const idMap& rIdMap, const std::string& rId, std::string filepath) const;
-        void insertElementId(idMap& rIdMap, const std::string& rId, Element* pElement) const;
-    };
+        bool checkElementId(const idMap& rIdMap, const std::string& rId, std::string filepath);
+        void insertElementId(idMap& rIdMap, const std::string& rId, Element* pElement);
+    }
 }
 
 #endif // ELEMENT_PARSER_H_
