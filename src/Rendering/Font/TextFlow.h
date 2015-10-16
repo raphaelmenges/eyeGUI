@@ -39,6 +39,7 @@ namespace eyegui
             Font const * pFont,
             FontSize fontSize,
             TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
             Shader const * pShader,
             std::u16string content);
 
@@ -79,6 +80,7 @@ namespace eyegui
         Font const * mpFont;
         FontSize mFontSize;
         TextFlowAlignment mAlignment;
+        TextFlowVerticalAlignment mVerticalAlignment;
         Shader const * mpShader;
         int mX;
         int mY;
@@ -86,6 +88,7 @@ namespace eyegui
         int mHeight;
         glm::vec4 mColor;
         std::u16string mContent;
+        int mFlowHeight;
 
         GLuint mVertexCount;
         GLuint mVertexBuffer;

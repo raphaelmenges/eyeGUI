@@ -42,15 +42,19 @@ namespace eyegui
 
     //! Enumeration of possible character sets for font rendering.
     /*! This enum is defined directly in the interface because it is needed by initialization. */
-    enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH};
+    enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH };
 
     //! Enumeration of possible font sizes.
     /*! This enum is defined directly in the interface because it is needed by some functions. */
-    enum class FontSize { TALL, MEDIUM, SMALL};
+    enum class FontSize { TALL, MEDIUM, SMALL };
 
-    //! Enumeration of possible text alignments
+    //! Enumeration of possible text flow alignments
     /*! This enum is defined directly in the interface because it is needed by some functions. */
-    enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY};
+    enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY };
+
+    //! Enumeration of possible vertical text flow alignments
+    /*! This enum is defined directly in the interface because it is needed by some functions. */
+    enum class TextFlowVerticalAlignment { TOP, CENTER, BOTTOM };
 
     //! Enumeration of possible picture alignments.
     /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */

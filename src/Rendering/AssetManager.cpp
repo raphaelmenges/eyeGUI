@@ -220,6 +220,7 @@ namespace eyegui
     std::unique_ptr<TextFlow> AssetManager::AssetManager::createTextFlow(
             FontSize fontSize,
             TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
             std::u16string content)
     {
         return std::move(
@@ -229,6 +230,7 @@ namespace eyegui
                     mpGUI->getDefaultFont(),
                     fontSize,
                     alignment,
+                    verticalAlignment,
                     fetchShader(shaders::Type::FONT),
                     content)));
     }

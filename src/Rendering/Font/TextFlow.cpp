@@ -10,6 +10,7 @@
 #include "GUI.h"
 #include "OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
+#include <cmath>
 
 // TODO: Testing
 #include <iostream>
@@ -21,6 +22,7 @@ namespace eyegui
         Font const * pFont,
         FontSize fontSize,
         TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
         Shader const * pShader,
         std::u16string content)
     {
@@ -29,8 +31,10 @@ namespace eyegui
         mpFont = pFont;
         mFontSize = fontSize;
         mAlignment = alignment;
+        mVerticalAlignment = verticalAlignment;
         mpShader = pShader;
         mContent = content;
+        mFlowHeight = 0;
 
         // Update have to done before usage
         mX = 0;
@@ -70,7 +74,7 @@ namespace eyegui
         // TODO: just useable when only one atlas texture (whole member will be deleted)
         mAtlasTextureId = mpFont->getGlyph(mFontSize, u'a')->atlasTextureId; // TODO
 
-        // UPDATE HAS TO BE CALLED ONCE AT LEAST
+        // UPDATE HAS TO BE CALLED ONCE AT LAST!
     }
 
     TextFlow::~TextFlow()
@@ -109,8 +113,23 @@ namespace eyegui
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
 
+        // Calculate y offset because of vertical alignment
+        int yOffset;
+        switch(mVerticalAlignment)
+        {
+        case TextFlowVerticalAlignment::TOP:
+            yOffset = 0;
+            break;
+        case TextFlowVerticalAlignment::CENTER:
+            yOffset = std::max((mHeight - mFlowHeight) / 2, 0);
+            break;
+        case TextFlowVerticalAlignment::BOTTOM:
+            yOffset = std::max((mHeight - mFlowHeight), 0);
+            break;
+        }
+
         // If matrix were not calculated every frame, this would have to be notified about resizing...
-        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - mY, 0));
+        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - (mY + yOffset), 0));
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
 
         // TODO: TEST (only one atlas at the moment)
@@ -153,7 +172,7 @@ namespace eyegui
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec2> textureCoordinates;
 
-        // Go over paragraphs
+        // Go over paragraphs (pens are in local pixel coordinate system with origin in lower left corner)
         int yPen = - mpFont->getLineHeight(mFontSize); // First line should be also inside flow
         for(std::u16string& rPargraph : paragraphs)
         {
@@ -230,6 +249,9 @@ namespace eyegui
                 yPen -= mpFont->getLineHeight(mFontSize);
             }
         }
+
+        // Get height of all lines
+        mFlowHeight = std::max(abs(yPen) - mpFont->getLineHeight(mFontSize), 0);
 
         // Vertex count
         mVertexCount = vertices.size();

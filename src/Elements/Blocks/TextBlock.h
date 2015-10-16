@@ -30,6 +30,7 @@ namespace eyegui
             float border,
             FontSize fontSize,
             TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
             float innerBorder);
 

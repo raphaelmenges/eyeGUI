@@ -63,6 +63,7 @@ namespace eyegui
         std::unique_ptr<TextFlow> createTextFlow(
             FontSize fontSize,
             TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
             std::u16string content);
 
     private:

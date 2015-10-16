@@ -20,6 +20,7 @@ namespace eyegui
         float border,
         FontSize fontSize,
         TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
         float innerBorder) : Block(
             id,
@@ -35,7 +36,7 @@ namespace eyegui
 
         // Fill members
         mInnerBorder = innerBorder;
-        mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, content));
+        mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
     }
 
     TextBlock::~TextBlock()

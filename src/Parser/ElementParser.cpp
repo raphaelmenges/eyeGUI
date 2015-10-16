@@ -387,6 +387,26 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Unknown alignment used in text block: " + alignmentValue, filepath);
             }
 
+            // Get vertical alignment
+            std::string verticalAlignmentValue = parseStringAttribute("verticalalignment", xmlTextBlock);
+            TextFlowVerticalAlignment verticalAlignment;
+            if (verticalAlignmentValue == EMPTY_STRING_ATTRIBUTE || verticalAlignmentValue == "top")
+            {
+                verticalAlignment = TextFlowVerticalAlignment::TOP;
+            }
+            else if (verticalAlignmentValue == "center")
+            {
+                verticalAlignment = TextFlowVerticalAlignment::CENTER;
+            }
+            else if (verticalAlignmentValue == "bottom")
+            {
+                verticalAlignment = TextFlowVerticalAlignment::BOTTOM;
+            }
+            else
+            {
+                throwError(OperationNotifier::Operation::PARSING, "Unknown vertical alignment used in text block: " + verticalAlignmentValue, filepath);
+            }
+
             // Get content (only 8 bit are possible inside the xml layout)
             std::string contentValue = parseStringAttribute("content", xmlTextBlock);
             std::u16string content = u"";
@@ -401,7 +421,7 @@ namespace eyegui
             }
 
             // Create text block
-            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, relativeScale, border, fontSize, alignment, content, innerBorder));
+            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, relativeScale, border, fontSize, alignment, verticalAlignment, content, innerBorder));
 
             // Return text block
             return std::move(upTextBlock);
