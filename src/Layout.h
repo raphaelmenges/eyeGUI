@@ -4,10 +4,10 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Layout manages frames with elements. There is one main frame which is 
-// screen filling and a free number of floating frames. Does mapping of id to 
-// element pointer. Enqueues notifications of elements occuring during updating 
-// and works on them before the next update and drawing. Is owner of the 
+// Layout manages frames with elements. There is one main frame which is
+// screen filling and a free number of floating frames. Does mapping of id to
+// element pointer. Enqueues notifications of elements occuring during updating
+// and works on them before the next update and drawing. Is owner of the
 // stylesheet used by the roots in frames and all their children.
 
 #ifndef LAYOUT_H_
@@ -89,11 +89,11 @@ namespace eyegui
         // Check activity of element
         bool isElementActive(std::string id) const;
 
-		// Relative position and size of elements
-		float getRelativePositionOfElementOnLayoutX(std::string id) const;
-		float getRelativePositionOfElementOnLayoutY(std::string id) const;
-		float getRelativeSizeOfElementOnLayoutX(std::string id) const;
-		float getRelativeSizeOfElementOnLayoutY(std::string id) const;
+        // Relative position and size of elements
+        float getRelativePositionOfElementOnLayoutX(std::string id) const;
+        float getRelativePositionOfElementOnLayoutY(std::string id) const;
+        float getRelativeSizeOfElementOnLayoutX(std::string id) const;
+        float getRelativeSizeOfElementOnLayoutY(std::string id) const;
 
         // Set interactive element as highlighted
         void highlightInteractiveElement(std::string id, bool doHighlight);
@@ -146,6 +146,9 @@ namespace eyegui
         // Check whether element is highlighted
         bool isInteractiveElementHighlighted(std::string id) const;
 
+        // Change value of style attribute
+        void setValueOfStyleAttribute(std::string styleName, std::string attribute, glm::vec4 value);
+
         // Replace any element with block
         void replaceElementWithBlock(std::string id, bool fade);
 
@@ -175,7 +178,7 @@ namespace eyegui
             float relativeSizeX,
             float relativeSizeY,
             bool visible,
-			bool fade);
+            bool fade);
 
         // Set visibilty of floating frame
         void setVisibiltyOfFloatingFrame(uint frameIndex, bool visible, bool fade);
@@ -183,26 +186,26 @@ namespace eyegui
         // Reset elements of floating frame
         void resetFloatingFramesElements(uint frameIndex);
 
-		// Remove floating frame
-		void removeFloatingFrame(uint frameIndex, bool fade);
+        // Remove floating frame
+        void removeFloatingFrame(uint frameIndex, bool fade);
 
-		// Translate floating frame
-		void translateFloatingFrame(uint frameIndex, float translateX, float translateY);
+        // Translate floating frame
+        void translateFloatingFrame(uint frameIndex, float translateX, float translateY);
 
-		// Scale floating frame
-		void scaleFloatingFrame(uint frameIndex, float scaleX, float scaleY);
+        // Scale floating frame
+        void scaleFloatingFrame(uint frameIndex, float scaleX, float scaleY);
 
-		// Set position of floating frame
-		void setPositionOfFloatingFrame(uint frameIndex, float relativePositionX, float relativePositionY);
+        // Set position of floating frame
+        void setPositionOfFloatingFrame(uint frameIndex, float relativePositionX, float relativePositionY);
 
-		// Set size of floating frame
-		void setSizeOfFloatingFrame(uint frameIndex, float relativeSizeX, float relativeSizeY);
+        // Set size of floating frame
+        void setSizeOfFloatingFrame(uint frameIndex, float relativeSizeX, float relativeSizeY);
 
-		// Move floating frame to front
-		void moveFloatingFrameToFront(uint frameIndex);
+        // Move floating frame to front
+        void moveFloatingFrameToFront(uint frameIndex);
 
-		// Move floating frame to back
-		void moveFloatingFrameToBack(uint frameIndex);
+        // Move floating frame to back
+        void moveFloatingFrameToBack(uint frameIndex);
 
     private:
 
@@ -221,8 +224,8 @@ namespace eyegui
         // Fetch pointer to frame
         Frame* fetchFloatingFrame(uint frameIndex);
 
-		// Move floating frame by id
-		void moveFloatingFrame(int oldIndex, int newIndex);
+        // Move floating frame by id
+        void moveFloatingFrame(int oldIndex, int newIndex);
 
         // Members
         GUI const * mpGUI;
@@ -230,8 +233,8 @@ namespace eyegui
         std::unique_ptr<Frame> mupMainFrame;
         std::unique_ptr<std::map<std::string, Element*> > mupIds;
         std::vector<std::unique_ptr<Frame> > mFloatingFrames;
-		std::vector<int> mFloatingFramesOrderingIndices;
-		std::vector<int> mDyingFloatingFramesIndices;
+        std::vector<int> mFloatingFramesOrderingIndices;
+        std::vector<int> mDyingFloatingFramesIndices;
         float mAlpha;
         bool mVisible;
         bool mResizeNecessary;
@@ -239,7 +242,6 @@ namespace eyegui
         std::unique_ptr<std::map<std::string, Style> > mStyles;
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > > mupNotificatons;
-        StylesheetParser mStylesheetParser;
         BrickParser mBrickParser;
     };
 }

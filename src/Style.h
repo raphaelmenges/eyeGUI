@@ -10,12 +10,14 @@
 #define STYLE_H_
 
 #include "externals/GLM/glm/glm.hpp"
+#include <string>
 
 namespace eyegui
 {
     struct Style
     {
         // Initialize with fallback values
+        std::string filepath;
         glm::vec4 color = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
         glm::vec4 backgroundColor = glm::vec4(0, 0, 0, 0);
         glm::vec4 highlightColor = glm::vec4(1, 1, 0, 0.5f);

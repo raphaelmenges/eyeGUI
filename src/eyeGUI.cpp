@@ -148,6 +148,18 @@ namespace eyegui
         return pLayout->isInteractiveElementHighlighted(id);
     }
 
+    void setValueOfStyleAttribute(
+        Layout* pLayout,
+        std::string styleName,
+         std::string attribute,
+         float r,
+         float g,
+         float b,
+         float a)
+     {
+        pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r,g,b,a));
+     }
+
     void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
     {
         pLayout->setIconOfInteractiveElement(id, iconFilepath);

@@ -191,7 +191,11 @@ namespace eyegui
       \param reset indicates whether all elements in layout should be reset.
       \param fade indicates, whether layer should fade.
     */
-    void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset = false, bool fade = false);
+    void setVisibilityOfLayout(
+        Layout* pLayout,
+        bool visible,
+        bool reset = false,
+        bool fade = false);
 
     //! Move layout to front.
     /*!
@@ -214,7 +218,11 @@ namespace eyegui
       \param active indicates the state of acitvity.
       \param fade indicates, whether activity should fade.
     */
-    void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade = false);
+    void setElementActivity(
+        Layout* pLayout,
+        std::string id,
+        bool active,
+        bool fade = false);
 
     //! Toggle activity of element.
     /*!
@@ -222,7 +230,10 @@ namespace eyegui
       \param id is the unique id of an element.
       \param fade indicates, whether activity should fade.
     */
-    void toggleElementActivity(Layout* pLayout, std::string id, bool fade = false);
+    void toggleElementActivity(
+        Layout* pLayout,
+        std::string id,
+        bool fade = false);
 
     //! Get activity of element.
     /*!
@@ -238,7 +249,9 @@ namespace eyegui
     \param id is the unique id of an element.
     \return relative x position on layout.
     */
-    float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id);
+    float getRelativePositionOfElementOnLayoutX(
+        Layout const * pLayout,
+        std::string id);
 
     //! Get relative y position of element on its layout.
     /*!
@@ -246,7 +259,9 @@ namespace eyegui
     \param id is the unique id of an element.
     \return relative y position on layout.
     */
-    float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id);
+    float getRelativePositionOfElementOnLayoutY(
+        Layout const * pLayout,
+        std::string id);
 
     //! Get relative size in x direction of element on its layout.
     /*!
@@ -254,7 +269,9 @@ namespace eyegui
     \param id is the unique id of an element.
     \return relative size in x direction on layout.
     */
-    float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id);
+    float getRelativeSizeOfElementOnLayoutX(
+        Layout const * pLayout,
+        std::string id);
 
     //! Get relative size in y direction of element on its layout.
     /*!
@@ -262,7 +279,9 @@ namespace eyegui
     \param id is the unique id of an element.
     \return relative size in y direction on layout.
     */
-    float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id);
+    float getRelativeSizeOfElementOnLayoutY(
+        Layout const * pLayout,
+        std::string id);
 
     //! Check for existence of id.
     /*!
@@ -278,7 +297,10 @@ namespace eyegui
       \param id is the unique id of an element.
       \param doHighlight indicates, whether elemen with given id should be highlighted or not.
     */
-    void highlightInteractiveElement(Layout* pLayout, std::string id, bool doHighlight);
+    void highlightInteractiveElement(
+        Layout* pLayout,
+        std::string id,
+        bool doHighlight);
 
     //! Toggle highlighting of interactive element.
     /*!
@@ -295,13 +317,35 @@ namespace eyegui
     */
     bool isInteractiveElementHighlighted(Layout const * pLayout, std::string id);
 
+    //! Sets value of style attribute.
+    /*!
+      \param pLayout pointer to layout.
+      \param styleName is name of style in used stylesheet.
+      \param attribute is name of attribute which shall be changed.
+      \param r is red color value.
+      \param g is green color value.
+      \param b is blue color value.
+      \param a is alpha color value.
+    */
+    void setValueOfStyleAttribute(
+        Layout* pLayout,
+        std::string styleName,
+         std::string attribute,
+         float r,
+         float g,
+         float b,
+         float a);
+
     //! Set icon of interactive element.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
     */
-    void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath);
+    void setIconOfInteractiveElement(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath);
 
     //! Select interactive element.
     /*!
@@ -371,7 +415,10 @@ namespace eyegui
       \param id is the unique id of an element.
       \param wpListener is weak pointer to listener that should be registered.
     */
-    void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener);
+    void registerButtonListener(
+        Layout* pLayout,
+        std::string id,
+        std::weak_ptr<ButtonListener> wpListener);
 
     //! Register listener to sensor.
     /*!
@@ -379,7 +426,10 @@ namespace eyegui
       \param id is the unique id of an element.
       \param wpListener is weak pointer to listener that should be registered.
     */
-    void registerSensorListener(Layout* pLayout, std::string id, std::weak_ptr<SensorListener> wpListener);
+    void registerSensorListener(
+        Layout* pLayout,
+        std::string id,
+        std::weak_ptr<SensorListener> wpListener);
 
     //! Replace element with block.
     /*!
@@ -387,7 +437,10 @@ namespace eyegui
       \param id is the unique id of an element.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBlock(Layout* pLayout, std::string id, bool fade = false);
+    void replaceElementWithBlock(
+        Layout* pLayout,
+        std::string id,
+        bool fade = false);
 
     //! Replace element with picture.
     /*!
@@ -397,7 +450,13 @@ namespace eyegui
       \param alignment is the inner alignment of the picture.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, PictureAlignment alignment, bool fade = false);
+    void replaceElementWithPicture(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath,
+        PictureAlignment
+        alignment,
+        bool fade = false);
 
     //! Replace element with blank.
     /*!
@@ -405,7 +464,10 @@ namespace eyegui
       \param id is the unique id of an element.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBlank(Layout* pLayout, std::string id, bool fade = false);
+    void replaceElementWithBlank(
+        Layout* pLayout,
+        std::string id,
+        bool fade = false);
 
     //! Replace element with circle button.
     /*!
@@ -415,7 +477,12 @@ namespace eyegui
       \param isSwitch indicates, whether button should be a switch.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithCircleButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch = false, bool fade = false);
+    void replaceElementWithCircleButton(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        bool isSwitch = false,
+        bool fade = false);
 
     //! Replace element with box button.
     /*!
@@ -425,7 +492,12 @@ namespace eyegui
       \param isSwitch indicates, whether button should be a switch.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWitBoxButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch = false, bool fade = false);
+    void replaceElementWitBoxButton(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        bool isSwitch = false,
+        bool fade = false);
 
     //! Replace element with sensor.
     /*!
@@ -434,7 +506,11 @@ namespace eyegui
       \param iconFilepath path to image which should be used as icon.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWitSensor(Layout* pLayout, std::string id, std::string iconFilepath, bool fade = false);
+    void replaceElementWitSensor(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        bool fade = false);
 
     //! Replace element with brick.
     /*!
@@ -443,7 +519,11 @@ namespace eyegui
       \param filepath is path to brick xml file.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade);
+    void replaceElementWithBrick(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath,
+        bool fade);
 
     //! Creates floating frame with brick inside
     /*!
@@ -475,7 +555,12 @@ namespace eyegui
       \param reset indicates whether all elements in layout should be reset.
       \param fade indicates, whether frame should fade.
     */
-    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset = false, bool fade = false);
+    void setVisibilityOFloatingfFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        bool visible,
+        bool reset = false,
+        bool fade = false);
 
     //! Removes floating frame from layout.
     /*!
@@ -483,7 +568,10 @@ namespace eyegui
     \param frameIndex index of frame in layout.
     \param fade indicates, whether floating frame should fade out.
     */
-    void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade = false);
+    void removeFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        bool fade = false);
 
     //! Translates floating frame
     /*!
@@ -492,7 +580,11 @@ namespace eyegui
     \param translateX amount of translation in x direction.
     \param translateY amount of translation in y direction.
     */
-    void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY);
+    void translateFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float translateX,
+        float translateY);
 
     //! Scales floating frame
     /*!
@@ -501,7 +593,11 @@ namespace eyegui
     \param scaleX scaling in x direction.
     \param scaleY scaling in y direction.
     */
-    void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY);
+    void scaleFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float scaleX,
+        float scaleY);
 
     //! Set relative position of floating frame
     /*!
@@ -510,7 +606,11 @@ namespace eyegui
     \param relativePositionX relative x position.
     \param relativePositionY relative y position.
     */
-    void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY);
+    void setPositionOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float relativePositionX,
+        float relativePositionY);
 
     //! Set relative size of floating frame
     /*!
@@ -519,7 +619,11 @@ namespace eyegui
     \param relativeSizeX relative x size.
     \param relativeSizeY relative y size.
     */
-    void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY);
+    void setSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float relativeSizeX,
+        float relativeSizeY);
 
     //! Move frame to front.
     /*!

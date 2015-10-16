@@ -32,7 +32,7 @@ namespace eyegui
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
 
         // Parse style file
-        mStyles = mStylesheetParser.parse(stylesheetFilepath);
+        mStyles = stylesheet_parser::parse(stylesheetFilepath);
     }
 
     Layout::~Layout()
@@ -79,23 +79,23 @@ namespace eyegui
             }
         }
 
-		// *** DELETION OF REMOVED FLOATING FRAMES ***
+        // *** DELETION OF REMOVED FLOATING FRAMES ***
 
-		for (int i : mDyingFloatingFramesIndices)
-		{
-			mFloatingFramesOrderingIndices.erase(
-				std::remove(
-					mFloatingFramesOrderingIndices.begin(), mFloatingFramesOrderingIndices.end(), i), mFloatingFramesOrderingIndices.end());
-			mFloatingFrames[i].reset(NULL);
-		}
-		mDyingFloatingFramesIndices.clear();
+        for (int i : mDyingFloatingFramesIndices)
+        {
+            mFloatingFramesOrderingIndices.erase(
+                std::remove(
+                    mFloatingFramesOrderingIndices.begin(), mFloatingFramesOrderingIndices.end(), i), mFloatingFramesOrderingIndices.end());
+            mFloatingFrames[i].reset(NULL);
+        }
+        mDyingFloatingFramesIndices.clear();
 
-		// *** RESIZING ***
+        // *** RESIZING ***
 
-		if (mVisible && mResizeNecessary)
-		{
-			resize(true);
-		}
+        if (mVisible && mResizeNecessary)
+        {
+            resize(true);
+        }
 
         // *** OWN UPDATE ***
 
@@ -125,32 +125,32 @@ namespace eyegui
             for(int i = (int)(mFloatingFramesOrderingIndices.size())-1; i>=0; i--)
             {
                 // Update last added first
-				int frameIndex = mFloatingFramesOrderingIndices[i];
-				Frame* pFrame = mFloatingFrames[frameIndex].get();
-				if (pFrame != NULL)
-				{
-					if (pFrame->isRemoved())
-					{
-						// Do fading of removed frame
-						float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / getConfig()->animationDuration);
-						fadingAlpha = clamp(fadingAlpha, 0, 1);
-						pFrame->setRemovedFadingAlpha(fadingAlpha);
-						
-						// Update
-						pFrame->update(tpf, mAlpha, NULL);
+                int frameIndex = mFloatingFramesOrderingIndices[i];
+                Frame* pFrame = mFloatingFrames[frameIndex].get();
+                if (pFrame != NULL)
+                {
+                    if (pFrame->isRemoved())
+                    {
+                        // Do fading of removed frame
+                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / getConfig()->animationDuration);
+                        fadingAlpha = clamp(fadingAlpha, 0, 1);
+                        pFrame->setRemovedFadingAlpha(fadingAlpha);
 
-						// Delete frame in next update
-						if (fadingAlpha <= 0)
-						{
-							mDyingFloatingFramesIndices.push_back(frameIndex);
-						}
-					}
-					else
-					{
-						// Standard update
-						pFrame->update(tpf, mAlpha, pInput);
-					}
-				}
+                        // Update
+                        pFrame->update(tpf, mAlpha, NULL);
+
+                        // Delete frame in next update
+                        if (fadingAlpha <= 0)
+                        {
+                            mDyingFloatingFramesIndices.push_back(frameIndex);
+                        }
+                    }
+                    else
+                    {
+                        // Standard update
+                        pFrame->update(tpf, mAlpha, pInput);
+                    }
+                }
             }
 
             // Update main frame
@@ -167,14 +167,14 @@ namespace eyegui
             mupMainFrame->draw();
 
             // Draw floating frames
-			for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
-			{
-				Frame* pFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
-				if (pFrame != NULL)
-				{
-					pFrame->draw();
-				}
-			}
+            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            {
+                Frame* pFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
+                if (pFrame != NULL)
+                {
+                    pFrame->draw();
+                }
+            }
         }
     }
 
@@ -188,11 +188,11 @@ namespace eyegui
             // Resize floating frames
             for(auto& upFrame : mFloatingFrames)
             {
-				Frame* pFrame = upFrame.get();
-				if (pFrame != NULL)
-				{
-					pFrame->resize(force);
-				}
+                Frame* pFrame = upFrame.get();
+                if (pFrame != NULL)
+                {
+                    pFrame->resize(force);
+                }
             }
 
             mResizeNecessary = false;
@@ -318,57 +318,57 @@ namespace eyegui
         return false;
     }
 
-	float Layout::getRelativePositionOfElementOnLayoutX(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativePositionOnLayoutX();
-		}
-		else
-		{
-			return 0;
-		}
-	}
+    float Layout::getRelativePositionOfElementOnLayoutX(std::string id) const
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            return pElement->getRelativePositionOnLayoutX();
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
-	float Layout::getRelativePositionOfElementOnLayoutY(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativePositionOnLayoutY();
-		}
-		else
-		{
-			return 0;
-		}
-	}
+    float Layout::getRelativePositionOfElementOnLayoutY(std::string id) const
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            return pElement->getRelativePositionOnLayoutY();
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
-	float Layout::getRelativeSizeOfElementOnLayoutX(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativeSizeOnLayoutX();
-		}
-		else
-		{
-			return 0;
-		}
-	}
+    float Layout::getRelativeSizeOfElementOnLayoutX(std::string id) const
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            return pElement->getRelativeSizeOnLayoutX();
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
-	float Layout::getRelativeSizeOfElementOnLayoutY(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativeSizeOnLayoutY();
-		}
-		else
-		{
-			return 0;
-		}
-	}
+    float Layout::getRelativeSizeOfElementOnLayoutY(std::string id) const
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            return pElement->getRelativeSizeOnLayoutY();
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
     void Layout::highlightInteractiveElement(std::string id, bool doHighlight)
     {
@@ -547,58 +547,58 @@ namespace eyegui
         if (mpSelectedInteractiveElement == NULL)
         {
             // Nothing selected at the moment, so start at main frame
-			pNext = mupMainFrame->getFirstInteractiveElement();
+            pNext = mupMainFrame->getFirstInteractiveElement();
         }
         else
         {
             // Try to get next interactive element from that frame
             pNext = mpSelectedInteractiveElement->nextInteractiveElement();
 
-			// No further interactive element found in current frame, try other
-			if (pNext == NULL && mFloatingFramesOrderingIndices.size() > 0)
-			{
-				// Get the current frame
-				Frame* pFrame = mpSelectedInteractiveElement->getFrame();	
+            // No further interactive element found in current frame, try other
+            if (pNext == NULL && mFloatingFramesOrderingIndices.size() > 0)
+            {
+                // Get the current frame
+                Frame* pFrame = mpSelectedInteractiveElement->getFrame();
 
-				// Find start frame in vector of ordered frames indices
-				int indexOfStartFrameIndex = -1;
-				if (pFrame == mupMainFrame.get())
-				{
-					indexOfStartFrameIndex = 0;
-				}
-				else
-				{
-					// Go over ordered frame indices and search for current frame
-					for (int i = 0; i < (int)(mFloatingFramesOrderingIndices.size())-1; i++)
-					{
-						Frame* pThatFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
-						if (pThatFrame == pFrame)
-						{
-							indexOfStartFrameIndex = i+1;
-							break;
-						}
-					}
-				}
+                // Find start frame in vector of ordered frames indices
+                int indexOfStartFrameIndex = -1;
+                if (pFrame == mupMainFrame.get())
+                {
+                    indexOfStartFrameIndex = 0;
+                }
+                else
+                {
+                    // Go over ordered frame indices and search for current frame
+                    for (int i = 0; i < (int)(mFloatingFramesOrderingIndices.size())-1; i++)
+                    {
+                        Frame* pThatFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
+                        if (pThatFrame == pFrame)
+                        {
+                            indexOfStartFrameIndex = i+1;
+                            break;
+                        }
+                    }
+                }
 
-				// Go over all remaining frame indices until interactive element found or null
-				if (indexOfStartFrameIndex >= 0)
-				{
-					for (int i = indexOfStartFrameIndex;  i < mFloatingFramesOrderingIndices.size(); i++)
-					{
-						Frame* pNextFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
-						if (!pNextFrame->isRemoved())
-						{
-							pNext = pNextFrame->getFirstInteractiveElement();
-							if (pNext != NULL)
-							{
-								// Found interactive element!
-								break;
-							}
-						}
-						
-					}
-				}
-			}
+                // Go over all remaining frame indices until interactive element found or null
+                if (indexOfStartFrameIndex >= 0)
+                {
+                    for (int i = indexOfStartFrameIndex;  i < mFloatingFramesOrderingIndices.size(); i++)
+                    {
+                        Frame* pNextFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
+                        if (!pNextFrame->isRemoved())
+                        {
+                            pNext = pNextFrame->getFirstInteractiveElement();
+                            if (pNext != NULL)
+                            {
+                                // Found interactive element!
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
         }
 
         // Only do something, if something was found
@@ -655,9 +655,24 @@ namespace eyegui
         }
         else
         {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find interactive element with id: " + id);
+
         }
         return false;
+    }
+
+    void Layout::setValueOfStyleAttribute(std::string styleName, std::string attribute, glm::vec4 value)
+    {
+        // Check, whether style exists
+        auto it = mStyles->find(styleName);
+
+        if (it != mStyles->end())
+        {
+            stylesheet_parser::fillValue(it->second, attribute, value);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find style with name: " + styleName);
+        }
     }
 
     void Layout::replaceElementWithBlock(std::string id, bool fade)
@@ -877,7 +892,7 @@ namespace eyegui
             float relativeSizeX,
             float relativeSizeY,
             bool visible,
-			bool fade)
+            bool fade)
     {
         // Push back new frame
         auto upFrame = std::unique_ptr<Frame>(
@@ -889,33 +904,33 @@ namespace eyegui
                             relativeSizeY));
         Frame* pFrame = upFrame.get();
 
-		// Go through floating frames and search for free place
-		int freeIndex = -1;
-		for (int i = 0; i < mFloatingFrames.size(); i++)
-		{
-			Frame* pFrame = mFloatingFrames[i].get();
-			if (pFrame == NULL)
-			{
-				freeIndex = i;
-				break;
-			}
-		}
+        // Go through floating frames and search for free place
+        int freeIndex = -1;
+        for (int i = 0; i < mFloatingFrames.size(); i++)
+        {
+            Frame* pFrame = mFloatingFrames[i].get();
+            if (pFrame == NULL)
+            {
+                freeIndex = i;
+                break;
+            }
+        }
 
-		// Insert new floating frame
-		int frameIndex = -1;
-		if (freeIndex >= 0)
-		{
-			mFloatingFrames[freeIndex] = std::move(upFrame);
-			frameIndex = freeIndex;
-		}
-		else
-		{
-			mFloatingFrames.push_back(std::move(upFrame));
-			frameIndex = (int)(mFloatingFrames.size()) - 1;
-		}
+        // Insert new floating frame
+        int frameIndex = -1;
+        if (freeIndex >= 0)
+        {
+            mFloatingFrames[freeIndex] = std::move(upFrame);
+            frameIndex = freeIndex;
+        }
+        else
+        {
+            mFloatingFrames.push_back(std::move(upFrame));
+            frameIndex = (int)(mFloatingFrames.size()) - 1;
+        }
 
-		// Push back index for updating and drawing
-		mFloatingFramesOrderingIndices.push_back(frameIndex);
+        // Push back index for updating and drawing
+        mFloatingFramesOrderingIndices.push_back(frameIndex);
 
         // Create brick
         std::unique_ptr<elementsAndIds> upPair = std::move(
@@ -957,124 +972,124 @@ namespace eyegui
         }
     }
 
-	void Layout::removeFloatingFrame(uint frameIndex, bool fade)
-	{
-		Frame* pFrame = fetchFloatingFrame(frameIndex);
-		if (pFrame != NULL)
-		{
-			// Remove ids
-			for (std::string id : pFrame->getAllElementsIds())
-			{
-				mupIds->erase(id);
-			}
+    void Layout::removeFloatingFrame(uint frameIndex, bool fade)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if (pFrame != NULL)
+        {
+            // Remove ids
+            for (std::string id : pFrame->getAllElementsIds())
+            {
+                mupIds->erase(id);
+            }
 
-			// Reminder for removed frame
-			pFrame->setRemoved();
+            // Reminder for removed frame
+            pFrame->setRemoved();
 
-			// Deselected element if it is in frame
-			std::set<Element*> children = pFrame->getAllElements();
-			for (Element* pElement : children)
-			{
-				if (mpSelectedInteractiveElement == pElement)
-				{
-					deselectInteractiveElement();
-					break;
-				}
-			}
+            // Deselected element if it is in frame
+            std::set<Element*> children = pFrame->getAllElements();
+            for (Element* pElement : children)
+            {
+                if (mpSelectedInteractiveElement == pElement)
+                {
+                    deselectInteractiveElement();
+                    break;
+                }
+            }
 
-			// Delete frame in next update before drawing if no fading wished
-			if (!fade)
-			{
-				mDyingFloatingFramesIndices.push_back(frameIndex);
-			}
-		}
-	}
+            // Delete frame in next update before drawing if no fading wished
+            if (!fade)
+            {
+                mDyingFloatingFramesIndices.push_back(frameIndex);
+            }
+        }
+    }
 
-	void Layout::translateFloatingFrame(uint frameIndex, float translateX, float translateY)
-	{
-		Frame* pFrame = fetchFloatingFrame(frameIndex);
-		if (pFrame != NULL)
-		{
-			pFrame->translate(translateX, translateY);
-		}
-	}
+    void Layout::translateFloatingFrame(uint frameIndex, float translateX, float translateY)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if (pFrame != NULL)
+        {
+            pFrame->translate(translateX, translateY);
+        }
+    }
 
-	void Layout::scaleFloatingFrame(uint frameIndex, float scaleX, float scaleY)
-	{
-		Frame* pFrame = fetchFloatingFrame(frameIndex);
-		if (pFrame != NULL)
-		{
-			pFrame->scale(scaleX, scaleY);
-		}
-	}
+    void Layout::scaleFloatingFrame(uint frameIndex, float scaleX, float scaleY)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if (pFrame != NULL)
+        {
+            pFrame->scale(scaleX, scaleY);
+        }
+    }
 
-	void Layout::setPositionOfFloatingFrame(uint frameIndex, float relativePositionX, float relativePositionY)
-	{
-		Frame* pFrame = fetchFloatingFrame(frameIndex);
-		if (pFrame != NULL)
-		{
-			pFrame->setPosition(relativePositionX, relativePositionY);
-		}
-	}
+    void Layout::setPositionOfFloatingFrame(uint frameIndex, float relativePositionX, float relativePositionY)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if (pFrame != NULL)
+        {
+            pFrame->setPosition(relativePositionX, relativePositionY);
+        }
+    }
 
-	void Layout::setSizeOfFloatingFrame(uint frameIndex, float relativeSizeX, float relativeSizeY)
-	{
-		Frame* pFrame = fetchFloatingFrame(frameIndex);
-		if (pFrame != NULL)
-		{
-			pFrame->setSize(relativeSizeX, relativeSizeY);
-		}
-	}
+    void Layout::setSizeOfFloatingFrame(uint frameIndex, float relativeSizeX, float relativeSizeY)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if (pFrame != NULL)
+        {
+            pFrame->setSize(relativeSizeX, relativeSizeY);
+        }
+    }
 
-	void Layout::moveFloatingFrameToFront(uint frameIndex)
-	{
-		Frame* pFrame = fetchFloatingFrame(frameIndex);
-		if (pFrame != NULL)
-		{
-			// Search for it in sorted vector
-			int index = -1;
-			for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
-			{
-				if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
-				{
-					index = i;
-					break;
-				}
-			}
+    void Layout::moveFloatingFrameToFront(uint frameIndex)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if (pFrame != NULL)
+        {
+            // Search for it in sorted vector
+            int index = -1;
+            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            {
+                if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
+                {
+                    index = i;
+                    break;
+                }
+            }
 
-			if (index < 0)
-			{
-				throwError(OperationNotifier::Operation::BUG, "Floating frame is owned by layout but not in ordered frame index vector");
-			}
+            if (index < 0)
+            {
+                throwError(OperationNotifier::Operation::BUG, "Floating frame is owned by layout but not in ordered frame index vector");
+            }
 
-			moveFloatingFrame(index, (int)(mFloatingFramesOrderingIndices.size()) - 1);
-		}
-	}
+            moveFloatingFrame(index, (int)(mFloatingFramesOrderingIndices.size()) - 1);
+        }
+    }
 
-	void Layout::moveFloatingFrameToBack(uint frameIndex)
-	{
-		Frame* pFrame = fetchFloatingFrame(frameIndex);
-		if (pFrame != NULL)
-		{
-			// Search for it in sorted vector
-			int index = -1;
-			for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
-			{
-				if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
-				{
-					index = i;
-					break;
-				}
-			}
+    void Layout::moveFloatingFrameToBack(uint frameIndex)
+    {
+        Frame* pFrame = fetchFloatingFrame(frameIndex);
+        if (pFrame != NULL)
+        {
+            // Search for it in sorted vector
+            int index = -1;
+            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            {
+                if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
+                {
+                    index = i;
+                    break;
+                }
+            }
 
-			if (index < 0)
-			{
-				throwError(OperationNotifier::Operation::BUG, "Floating frame is owned by layout but not in ordered frame index vector");
-			}
+            if (index < 0)
+            {
+                throwError(OperationNotifier::Operation::BUG, "Floating frame is owned by layout but not in ordered frame index vector");
+            }
 
-			moveFloatingFrame(index, 0);
-		}
-	}
+            moveFloatingFrame(index, 0);
+        }
+    }
 
     Element* Layout::fetchElement(std::string id) const
     {
@@ -1210,16 +1225,16 @@ namespace eyegui
         Frame* pFrame = NULL;
         if(frameIndex < mFloatingFrames.size())
         {
-			pFrame = mFloatingFrames[frameIndex].get();       
+            pFrame = mFloatingFrames[frameIndex].get();
 
-			// Check whether frame was removed
-			if (pFrame != NULL)
-			{
-				if (pFrame->isRemoved())
-				{
-					pFrame = NULL;
-				}
-			}
+            // Check whether frame was removed
+            if (pFrame != NULL)
+            {
+                if (pFrame->isRemoved())
+                {
+                    pFrame = NULL;
+                }
+            }
         }
 
         if(pFrame == NULL)
@@ -1230,19 +1245,19 @@ namespace eyegui
         return pFrame;
     }
 
-	void Layout::moveFloatingFrame(int oldIndex, int newIndex)
-	{
-		// Move index of floating frame
-		int movedFrameIndex = mFloatingFramesOrderingIndices[oldIndex];
-		mFloatingFramesOrderingIndices.erase(mFloatingFramesOrderingIndices.begin() + oldIndex);
+    void Layout::moveFloatingFrame(int oldIndex, int newIndex)
+    {
+        // Move index of floating frame
+        int movedFrameIndex = mFloatingFramesOrderingIndices[oldIndex];
+        mFloatingFramesOrderingIndices.erase(mFloatingFramesOrderingIndices.begin() + oldIndex);
 
-		if (newIndex >= mFloatingFramesOrderingIndices.size())
-		{
-			mFloatingFramesOrderingIndices.push_back(movedFrameIndex);
-		}
-		else
-		{
-			mFloatingFramesOrderingIndices.insert(mFloatingFramesOrderingIndices.begin() + newIndex, movedFrameIndex);
-		}
-	}
+        if (newIndex >= mFloatingFramesOrderingIndices.size())
+        {
+            mFloatingFramesOrderingIndices.push_back(movedFrameIndex);
+        }
+        else
+        {
+            mFloatingFramesOrderingIndices.insert(mFloatingFramesOrderingIndices.begin() + newIndex, movedFrameIndex);
+        }
+    }
 }
