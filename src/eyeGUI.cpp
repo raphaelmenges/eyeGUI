@@ -240,14 +240,27 @@ namespace eyegui
         pLayout->replaceElementWithCircleButton(id, iconFilepath, isSwitch, fade);
     }
 
-    void replaceElementWitBoxButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    void replaceElementWithBoxButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch, bool fade)
     {
-        pLayout->replaceElementWitBoxButton(id, iconFilepath, isSwitch, fade);
+        pLayout->replaceElementWithBoxButton(id, iconFilepath, isSwitch, fade);
     }
 
-    void replaceElementWitSensor(Layout* pLayout, std::string id, std::string iconFilepath, bool fade)
+    void replaceElementWithSensor(Layout* pLayout, std::string id, std::string iconFilepath, bool fade)
     {
-        pLayout->replaceElementWitSensor(id, iconFilepath, fade);
+        pLayout->replaceElementWithSensor(id, iconFilepath, fade);
+    }
+
+    void replaceElementWithTextBlock(
+        Layout* pLayout,
+        std::string id,
+        FontSize fontSize,
+        TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
+        std::u16string content,
+        float innerBorder,
+        bool fade)
+    {
+        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, innerBorder, fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)

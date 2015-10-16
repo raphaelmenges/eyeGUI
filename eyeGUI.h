@@ -496,7 +496,7 @@ namespace eyegui
       \param isSwitch indicates, whether button should be a switch.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWitBoxButton(
+    void replaceElementWithBoxButton(
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
@@ -510,10 +510,31 @@ namespace eyegui
       \param iconFilepath path to image which should be used as icon.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWitSensor(
+    void replaceElementWithSensor(
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
+        bool fade = false);
+
+    //! Replace element with text block.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param fontSize is size of used font.
+      \param alignment is alignment of text.
+      \param verticalAlignment is vertical alignment of text.
+      \param content is the content of the displayed text.
+      \param innerBorder is space between border and text.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithTextBlock(
+        Layout* pLayout,
+        std::string id,
+        FontSize fontSize,
+        TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
+        std::u16string content,
+        float innerBorder,
         bool fade = false);
 
     //! Replace element with brick.

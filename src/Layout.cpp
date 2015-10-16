@@ -799,7 +799,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWitBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    void Layout::replaceElementWithBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -831,7 +831,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWitSensor(std::string id, std::string iconFilepath, bool fade)
+    void Layout::replaceElementWithSensor(std::string id, std::string iconFilepath, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -854,6 +854,48 @@ namespace eyegui
             if (replaceElement(pElement, std::move(upSensor), fade))
             {
                 insertId(pSensor);
+            }
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+        }
+    }
+
+    void Layout::replaceElementWithTextBlock(
+            std::string id,
+            FontSize fontSize,
+            TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
+            std::u16string content,
+            float innerBorder,
+            bool fade)
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            // Create new text block
+            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(
+                pElement->getId(),
+                pElement->getStyleName(),
+                pElement->getParent(),
+                pElement->getLayout(),
+                pElement->getFrame(),
+                pElement->getAssetManager(),
+                pElement->getRelativeScale(),
+                pElement->getBorder(),
+                fontSize,
+                alignment,
+                verticalAlignment,
+                content,
+                innerBorder));
+
+            Element* pTextBlock = upTextBlock.get();
+
+            // Replace target with it
+            if (replaceElement(pElement, std::move(upTextBlock), fade))
+            {
+                insertId(pTextBlock);
             }
         }
         else

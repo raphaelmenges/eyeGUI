@@ -18,8 +18,7 @@ BUGS:
 - Add version / date of externals
   - reintegrate glm (some files may be missing)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
-- Interface functions
-	- Replacement by TextBlock
+- Font has sometimes little rendering issues
 
 ### VERSION 0.3... [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)

@@ -162,10 +162,20 @@ namespace eyegui
         void replaceElementWithCircleButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade);
 
         // Replace any element with box button
-        void replaceElementWitBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade);
+        void replaceElementWithBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade);
 
         // Replace any element with sensor
-        void replaceElementWitSensor(std::string id, std::string iconFilepath, bool fade);
+        void replaceElementWithSensor(std::string id, std::string iconFilepath, bool fade);
+
+        // Replace any element with text block
+        void replaceElementWithTextBlock(
+            std::string id,
+            FontSize fontSize,
+            TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
+            std::u16string content,
+            float innerBorder,
+            bool fade);
 
         // Replace any element with a brick of elements
         void replaceElementWithBrick(std::string id, std::string filepath, bool fade);
