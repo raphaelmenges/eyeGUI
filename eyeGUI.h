@@ -119,15 +119,17 @@ namespace eyegui
     /*!
       \param width of GUI as integer.
       \param height of GUI as integer
-      \param fontFilepath is path to a ttf font file
+      \param fontFilepath is path to a .ttf font file
       \param characterSet used to initialize font rendering.
+	  \param localizationFilepath is path to a .leyegui file
       \return pointer to created GUI.
     */
     GUI* createGUI(
         int width,
         int height,
         std::string fontFilepath = "",
-        CharacterSet characterSet = CharacterSet::US_ENGLISH);
+        CharacterSet characterSet = CharacterSet::US_ENGLISH,
+		std::string localizationFilepath = "");
 
     //! Creates layout inside GUI and returns pointer to it.
     /*!
@@ -534,6 +536,7 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
+		std::string key,
         float innerBorder,
         bool fade = false);
 

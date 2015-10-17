@@ -65,7 +65,7 @@ namespace eyegui
             std::string styleName,
             Element* pParent,
             Layout* pLayout,
-            Frame * pFrame,
+            Frame* pFrame,
             AssetManager* pAssetManager,
             float relativeScale,
             float border);

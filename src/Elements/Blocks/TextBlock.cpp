@@ -7,6 +7,9 @@
 
 #include "TextBlock.h"
 
+#include "Layout.h"
+#include "OperationNotifier.h"
+
 namespace eyegui
 {
     TextBlock::TextBlock(
@@ -14,7 +17,7 @@ namespace eyegui
         std::string styleName,
         Element* pParent,
         Layout* pLayout,
-        Frame * pFrame,
+        Frame* pFrame,
         AssetManager* pAssetManager,
         float relativeScale,
         float border,
@@ -22,6 +25,7 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
+		std::string key,
         float innerBorder) : Block(
             id,
             styleName,
@@ -36,7 +40,23 @@ namespace eyegui
 
         // Fill members
         mInnerBorder = innerBorder;
-        mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+		mKey = key;
+
+		std::u16string localization = mpLayout->getContentFromLocalization(mKey);
+		if (localization == LOCALIZATION_NOT_FOUND)
+		{
+			throwWarning(
+				OperationNotifier::Operation::RUNTIME,
+				"No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
+
+			mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+		}
+		else
+		{
+			mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
+		}
+
+        
     }
 
     TextBlock::~TextBlock()

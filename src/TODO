@@ -20,6 +20,11 @@ BUGS:
   - reintegrate glm (some files may be missing)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Font has sometimes little rendering issues
+- Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
+- Function to define search folder or so
+- Common super class for all elements using text
+	- key, textflow
+- Localizatin files: detect encoding
 
 ### VERSION 0.3... [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)

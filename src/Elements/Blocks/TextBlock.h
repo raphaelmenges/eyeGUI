@@ -19,19 +19,20 @@ namespace eyegui
     public:
 
         // Constructors
-        TextBlock(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout* pLayout,
-            Frame * pFrame,
-            AssetManager* pAssetManager,
-            float relativeScale,
-            float border,
-            FontSize fontSize,
-            TextFlowAlignment alignment,
-            TextFlowVerticalAlignment verticalAlignment,
-            std::u16string content,
+		TextBlock(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout* pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			float relativeScale,
+			float border,
+			FontSize fontSize,
+			TextFlowAlignment alignment,
+			TextFlowVerticalAlignment verticalAlignment,
+			std::u16string content,
+			std::string key,
             float innerBorder);
 
         // Destructor
@@ -48,6 +49,7 @@ namespace eyegui
     private:
 
         // Members
+		std::string mKey;
         float mInnerBorder;
         std::unique_ptr<TextFlow> mupTextFlow;
     };

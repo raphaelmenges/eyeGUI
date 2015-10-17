@@ -252,6 +252,11 @@ namespace eyegui
         return &((*(mStyles.get())).at(styleName));
     }
 
+	std::u16string Layout::getContentFromLocalization(std::string key) const
+	{
+		return mpGUI->getContentFromLocalization(key);
+	}
+
     std::set<std::string> Layout::getNamesOfAvailableStyles() const
     {
         std::set<std::string> names;
@@ -868,6 +873,7 @@ namespace eyegui
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
+			std::string key,
             float innerBorder,
             bool fade)
     {
@@ -888,6 +894,7 @@ namespace eyegui
                 alignment,
                 verticalAlignment,
                 content,
+				key,
                 innerBorder));
 
             Element* pTextBlock = upTextBlock.get();

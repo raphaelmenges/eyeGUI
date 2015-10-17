@@ -20,9 +20,10 @@ namespace eyegui
         int width,
         int height,
         std::string fontFilepath,
-        CharacterSet characterSet)
+        CharacterSet characterSet,
+		std::string localizationFilepath)
     {
-        return (new GUI(width, height, fontFilepath, characterSet));
+        return (new GUI(width, height, fontFilepath, characterSet, localizationFilepath));
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
@@ -257,10 +258,11 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
+		std::string key,
         float innerBorder,
         bool fade)
     {
-        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, innerBorder, fade);
+        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, key, innerBorder, fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)

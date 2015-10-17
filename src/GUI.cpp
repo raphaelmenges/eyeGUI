@@ -17,7 +17,8 @@ namespace eyegui
         int width,
         int height,
         std::string fontFilepath,
-        CharacterSet characterSet)
+        CharacterSet characterSet,
+		std::string localizationFilepath)
     {
         // Initialize members
         mWidth = width;
@@ -42,8 +43,20 @@ namespace eyegui
         {
             throwWarning(
                 OperationNotifier::Operation::RUNTIME,
-                "No default font set, text rendering will not work");
+                "No default font set. Text rendering will not work");
         }
+
+		// Load initial localization
+		if (localizationFilepath != "")
+		{
+			mupLocalizationMap = std::move(localization_parser::parse(localizationFilepath));
+		}
+		else
+		{
+			throwWarning(
+				OperationNotifier::Operation::RUNTIME,
+				"No localization filepath set. Localization will not work");
+		}
 
         // Input initialization
         mInput.mouseCursorX = width / 2;
@@ -265,6 +278,21 @@ namespace eyegui
     {
         return mpDefaultFont;
     }
+
+	std::u16string GUI::getContentFromLocalization(std::string key) const
+	{
+		auto it = mupLocalizationMap->find(key);
+
+		if (it != mupLocalizationMap->end())
+		{
+			return it->second;
+		}
+		else
+		{
+			return LOCALIZATION_NOT_FOUND;
+		}
+	}
+
 
     int GUI::findLayout(Layout const * pLayout) const
     {

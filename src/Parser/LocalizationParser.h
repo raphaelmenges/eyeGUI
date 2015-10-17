@@ -23,6 +23,9 @@ namespace eyegui
     {
         // Parsing
         std::unique_ptr<localizationMap> parse(std::string filepath);
+
+		// Parse a line
+		void parseLine(localizationMap& rLocalizationMap, std::u16string line, std::string filepath);
     }
 }
 

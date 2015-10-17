@@ -14,6 +14,7 @@
 #include "Layout.h"
 #include "Parser/LayoutParser.h"
 #include "Parser/ConfigParser.h"
+#include "Parser/LocalizationParser.h"
 #include "Rendering/AssetManager.h"
 #include "Rendering/GLSetup.h"
 #include "Input.h"
@@ -38,7 +39,8 @@ namespace eyegui
             int width,
             int height,
             std::string fontFilepath,
-            CharacterSet characterSet);
+            CharacterSet characterSet,
+			std::string localizationFilepath);
 
         // Destructor
         virtual ~GUI();
@@ -85,6 +87,9 @@ namespace eyegui
         // Get set default font
         Font const * getDefaultFont() const;
 
+		// Get string content from localization
+		std::u16string getContentFromLocalization(std::string key) const;
+
     private:
 
         // Find index of layout, returns -1 if fails
@@ -112,6 +117,7 @@ namespace eyegui
         bool mResizing;
         float mResizeWaitTime;
         RenderItem const * mpResizeBlend;
+		std::unique_ptr<localizationMap> mupLocalizationMap;
     };
 }
 

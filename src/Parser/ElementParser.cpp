@@ -407,6 +407,7 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Unknown vertical alignment used in text block: " + verticalAlignmentValue, filepath);
             }
 
+			// TODO: take a second look at what happens here
             // Get content (only 8 bit are possible inside the xml layout)
             std::string contentValue = parseStringAttribute("content", xmlTextBlock);
             std::u16string content = u"";
@@ -420,8 +421,11 @@ namespace eyegui
                 content.append(std::u16string(c16str));
             }
 
+			// Get key for localization
+			std::string key = parseStringAttribute("key", xmlTextBlock);
+
             // Create text block
-            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, relativeScale, border, fontSize, alignment, verticalAlignment, content, innerBorder));
+            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, relativeScale, border, fontSize, alignment, verticalAlignment, content, key, innerBorder));
 
             // Return text block
             return std::move(upTextBlock);

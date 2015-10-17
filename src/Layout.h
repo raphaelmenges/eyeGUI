@@ -74,6 +74,9 @@ namespace eyegui
         // Get pointer to styles of this layout
         Style const * getStyleFromStylesheet(std::string styleName) const;
 
+		// Get string content from localization
+		std::u16string getContentFromLocalization(std::string key) const;
+
         // Returns set of names of the available styles for this layout
         std::set<std::string> getNamesOfAvailableStyles() const;
 
@@ -174,6 +177,7 @@ namespace eyegui
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
+			std::string key,
             float innerBorder,
             bool fade);
 
