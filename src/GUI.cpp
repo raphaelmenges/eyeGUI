@@ -101,15 +101,19 @@ namespace eyegui
 
     void GUI::resize(int width, int height)
     {
-        if(mWidth != width || mHeight != height)
-        {
-            mResizing = true;
-            mResizeWaitTime = RESIZE_WAIT_DURATION;
+		// TODO: maybe determine some day, why zero breaks the GUI...
+		if (width != 0 && height != 0)
+		{
+			if (mWidth != width || mHeight != height)
+			{
+				mResizing = true;
+				mResizeWaitTime = RESIZE_WAIT_DURATION;
 
-            // Save to members
-            mNewWidth = width;
-            mNewHeight = height;
-        }
+				// Save to members
+				mNewWidth = width;
+				mNewHeight = height;
+			}
+		}
     }
 
     void GUI::render(float tpf)

@@ -443,12 +443,12 @@ namespace eyegui
             }
         }
 
+		// Calculate draw matrices of separators using new data
+		mSeparatorDrawMatrices.clear();
+
         // Only think about separators if necessary
         if (mSeparator > 0 && separatorCount >= 1)
         {
-            // Calculate draw matrices of separators using new data
-            mSeparatorDrawMatrices.clear();
-
             // Calculate correct transformation
             int separatorWidth, separatorHeight;
 
@@ -464,7 +464,7 @@ namespace eyegui
                 separatorHeight = separatorSize;
             }
 
-            for (int i = 0; i < separatorCount; i++)
+            for (int i = 0; i < separatorPositions.size(); i++)
             {
                 // Translation depending on orientation
                 if (getOrientation() == Element::Orientation::HORIZONTAL)
