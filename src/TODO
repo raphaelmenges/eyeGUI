@@ -3,14 +3,9 @@ At the moment:
 - Create empty default font to catch any null pointer
 
 BUGS:
-- Why does it crash at the end (test it with Visual Debugger...)
-	- Closing of face causes it
-		- but should work because done..after or before destructor call of asset manager?
-			- maybe extra "terminate method..." or killing of fonts..
 - Scaling of frame via keystroke does not work (fault)
 	- When TextFlow width to small, error occurs
 - Crashes when minimized (maybe tries to resize with 0)
-- CharacterSet: L compiles on windows, but i do not believe in working...
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
@@ -18,6 +13,7 @@ BUGS:
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
 - Overwork CMakeLists! Probably, unecessary sourcing instead of including
+	- Can one set visual to unicode in cmake?
 - Notification into own class and layout as const pointer in elements
 - Font with more than one atlas per size (when texture size for gpu too big)
 - Add version / date of externals

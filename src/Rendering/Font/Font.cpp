@@ -48,9 +48,8 @@ namespace eyegui
         glDeleteTextures(1, &mMediumTexture);
         glDeleteTextures(1, &mSmallTexture);
 
-        // Delete used face (should be also done by closing FreeType in AssetManager destructor)
-		// TODO: throws error at closing when used :(
-        // FT_Done_Face(*(mupFace.get()));
+        // Delete used face
+        FT_Done_Face(*(mupFace.get()));
     }
 
     void Font::resizeFontAtlases(int windowHeight)

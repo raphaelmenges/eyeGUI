@@ -40,6 +40,9 @@ namespace eyegui
 
     AssetManager::~AssetManager()
     {
+		// Get rid of fonts first because they have to delete FreeType faces
+		mFonts.clear();
+
         // Close FreeType Library
         FT_Done_FreeType(mFreeTypeLibrary);
     }

@@ -254,7 +254,7 @@ namespace eyegui
         mFlowHeight = std::max(abs(yPen) - mpFont->getLineHeight(mFontSize), 0);
 
         // Vertex count
-        mVertexCount = vertices.size();
+        mVertexCount = (GLuint)vertices.size();
 
         // Fill into buffer
         glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
