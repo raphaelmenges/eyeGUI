@@ -25,9 +25,10 @@ namespace eyegui
             '#', '/', '?', '!', '%', '#', ' ', '<', '>', '|'
         };
 
+		// 'u' would be correct prefix, but visual does not take it
         static const std::set<char16_t> GERMANY_GERMAN
         {
-            u'ä', u'ö', u'ü', u'ä', u'ß', u'Ä', u'Ö', u'Ü', u'Ä'
+            L'ä', L'ö', L'ü', L'ä', L'ß', L'Ä', L'Ö', L'Ü', L'Ä'
         };
     }
 }

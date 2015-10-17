@@ -45,6 +45,8 @@ namespace eyegui
 
             // Go through lines and add entries to map
             // TODO...
+
+			return upMap;
         }
     }
 }

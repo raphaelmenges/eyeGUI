@@ -4,8 +4,13 @@ At the moment:
 
 BUGS:
 - Why does it crash at the end (test it with Visual Debugger...)
+	- Closing of face causes it
+		- but should work because done..after or before destructor call of asset manager?
+			- maybe extra "terminate method..." or killing of fonts..
 - Scaling of frame via keystroke does not work (fault)
 	- When TextFlow width to small, error occurs
+- Crashes when minimized (maybe tries to resize with 0)
+- CharacterSet: L compiles on windows, but i do not believe in working...
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc

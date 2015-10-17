@@ -33,7 +33,7 @@ namespace eyegui
     static const float SVG_DPI = 96;
     static const int NOTIFICATION_MAX_LOOP_COUNT = 10;
     static const float ACCUMULATED_TIME_PERIOD = 1800.0f;
-    static const float FONT_CHARACTER_PADDING = 0.02; // Percentage of height
+    static const float FONT_CHARACTER_PADDING = 0.02f; // Percentage of height
     static const int FONT_MINIMAL_CHARACTER_PADDING = 1;
     static const float FONT_TALL_SCREEN_HEIGHT = 0.08f;
     static const float FONT_MEDIUM_SCREEN_HEIGHT = 0.04f;

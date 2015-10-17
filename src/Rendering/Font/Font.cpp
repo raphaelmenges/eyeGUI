@@ -9,6 +9,7 @@
 
 #include "OperationNotifier.h"
 #include "Defines.h"
+#include <algorithm>
 
 namespace eyegui
 {
@@ -47,8 +48,9 @@ namespace eyegui
         glDeleteTextures(1, &mMediumTexture);
         glDeleteTextures(1, &mSmallTexture);
 
-        // Delete used face
-        FT_Done_Face(*(mupFace.get()));
+        // Delete used face (should be also done by closing FreeType in AssetManager destructor)
+		// TODO: throws error at closing when used :(
+        // FT_Done_Face(*(mupFace.get()));
     }
 
     void Font::resizeFontAtlases(int windowHeight)
@@ -107,6 +109,9 @@ namespace eyegui
         case FontSize::SMALL:
             return mSmallPixelHeight;
             break;
+		default:
+			return mMediumPixelHeight;
+			break;
         }
     }
 
@@ -133,9 +138,9 @@ namespace eyegui
 
     void Font::fillPixelHeights(int windowHeight)
     {
-        mTallPixelHeight = windowHeight * FONT_TALL_SCREEN_HEIGHT;
-        mMediumPixelHeight = windowHeight * FONT_MEDIUM_SCREEN_HEIGHT;
-        mSmallPixelHeight = windowHeight * FONT_SMALL_SCREEN_HEIGHT;
+        mTallPixelHeight = (int)(windowHeight * FONT_TALL_SCREEN_HEIGHT);
+        mMediumPixelHeight = (int)(windowHeight * FONT_MEDIUM_SCREEN_HEIGHT);
+        mSmallPixelHeight = (int)(windowHeight * FONT_SMALL_SCREEN_HEIGHT);
     }
 
     void Font::fillAtlases()
@@ -240,7 +245,7 @@ namespace eyegui
         {
             i++;
         }
-        int xResolution = pow(2, i);
+        int xResolution = (int)pow(2, i);
 
         // Try to fit it with given resolution, at least in columns
         std::vector<int> rows;
@@ -273,14 +278,14 @@ namespace eyegui
 
         // Calculate necessary rows
         i = 0;
-        int yResolution = rows.size() * (pixelHeight + 2 * padding);
+        int yResolution = (int)rows.size() * (pixelHeight + 2 * padding);
         while (pow(2, i) < yResolution)
         {
             i++;
         }
 
         // Let's make y resolution also power of two
-        yResolution = pow(2, i);
+        yResolution = (int)pow(2, i);
 
         // Enable writing of non power of two
         GLint oldUnpackAlignment;
