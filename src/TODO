@@ -10,7 +10,7 @@ BUGS:
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
-- Overwork CMakeLists! Probably, unecessary sourcing instead of including
+- Overwork CMakeLists! Probably, unnecessary sourcing instead of including
 	- Can one set visual to unicode in cmake?
 - Notification into own class and layout as const pointer in elements
 - Font with more than one atlas per size (when texture size for gpu too big)
@@ -22,6 +22,10 @@ BUGS:
 - Function to define search folder or so
 - Common super class for all elements using text
 	- key, textflow
+
+Refactoring:
+	- Font.cpp and TextFlow.cpp refactoring...
+	- What happens with font when size too small (like zero)
 
 ### VERSION 0.3... [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)

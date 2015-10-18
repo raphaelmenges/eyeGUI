@@ -40,7 +40,7 @@ namespace eyegui
     static const float FONT_SMALL_SCREEN_HEIGHT = 0.02f;
     static const float RESIZE_WAIT_DURATION = 0.3f;
     static const glm::vec4 RESIZE_BLEND_COLOR = glm::vec4(0.75f, 0.75f, 0.75f, 0.75f);
-	static std::u16string LOCALIZATION_NOT_FOUND = u"";
+	static const std::u16string LOCALIZATION_NOT_FOUND = u"";
 }
 
 #endif // DEFINES_H_

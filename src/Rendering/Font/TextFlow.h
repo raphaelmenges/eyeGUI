@@ -66,7 +66,7 @@ namespace eyegui
         {
             std::shared_ptr<std::vector<glm::vec3> > spVertices;
             std::shared_ptr<std::vector<glm::vec2> > spTextureCoordinates;
-            int width;
+            float pixelWidth;
         };
 
         // Calculate mesh (in pixel coordinates)

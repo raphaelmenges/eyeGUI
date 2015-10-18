@@ -81,7 +81,7 @@ namespace eyegui
         return pGlyph;
     }
 
-    int Font::getLineHeight(FontSize fontSize) const
+    float Font::getLineHeight(FontSize fontSize) const
     {
         // Values seems to be not correct (not depending on bitmap size)
         /*switch(fontSize)
@@ -100,16 +100,16 @@ namespace eyegui
         switch(fontSize)
         {
         case FontSize::TALL:
-            return mTallPixelHeight;
+            return (float)mTallPixelHeight;
             break;
         case FontSize::MEDIUM:
-            return mMediumPixelHeight;
+            return (float)mMediumPixelHeight;
             break;
         case FontSize::SMALL:
-            return mSmallPixelHeight;
+            return (float)mSmallPixelHeight;
             break;
 		default:
-			return mMediumPixelHeight;
+			return (float)mMediumPixelHeight;
 			break;
         }
     }
@@ -147,19 +147,19 @@ namespace eyegui
         fillAtlas(
             mTallPixelHeight,
             mTallGlyphs,
-            mTallLineHeight,
+            mTallLinePixelHeight,
             mTallTexture,
             calculatePadding(mTallPixelHeight));
         fillAtlas(
             mMediumPixelHeight,
             mMediumGlyphs,
-            mMediumLineHeight,
+            mMediumLinePixelHeight,
             mMediumTexture,
             calculatePadding(mMediumPixelHeight));
         fillAtlas(
             mSmallPixelHeight,
             mSmallGlyphs,
-            mSmallLineHeight,
+            mSmallLinePixelHeight,
             mSmallTexture,
             calculatePadding(mSmallPixelHeight));
     }
@@ -167,7 +167,7 @@ namespace eyegui
     void Font::fillAtlas(
         int pixelHeight,
         std::map<char16_t, Glyph>& rGlyphMap,
-        int& rLineHeight,
+        float& rLineHeight,
         GLuint textureId,
         int padding)
     {
@@ -184,7 +184,7 @@ namespace eyegui
         FT_Set_Pixel_Sizes(rFace, 0, pixelHeight);
 
         // Set line height
-        rLineHeight = rFace->height / 64; // Given in 1/64 pixel
+        rLineHeight = (float)(rFace->height) / 64; // Given in 1/64 pixel
 
         // Go over character set and collect glyphs and bitmaps
         for (char16_t c : mCharacterSet)
@@ -205,9 +205,9 @@ namespace eyegui
 
             // Save some values of the glyph
             rGlyphMap[c].atlasTextureId = textureId;
-            rGlyphMap[c].advance = glm::ivec2(
-                rFace->glyph->advance.x / 64,   // Given in 1/64 pixel
-                rFace->glyph->advance.y / 64);  // Given in 1/64 pixel
+            rGlyphMap[c].advance = glm::vec2(
+                (float)(rFace->glyph->advance.x) / 64,   // Given in 1/64 pixel
+				(float)(rFace->glyph->advance.y) / 64);  // Given in 1/64 pixel
             rGlyphMap[c].size = glm::ivec2(bitmapWidth, bitmapHeight);
             rGlyphMap[c].bearing = glm::ivec2(
                 rFace->glyph->bitmap_left,

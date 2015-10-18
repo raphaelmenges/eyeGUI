@@ -101,8 +101,8 @@ namespace eyegui
 
     void GUI::resize(int width, int height)
     {
-		// TODO: maybe determine some day, why zero breaks the GUI...
-		if (width != 0 && height != 0)
+		// Not necessary but saves one from resizing after minimizing
+		if (width > 0 && height > 0)
 		{
 			if (mWidth != width || mHeight != height)
 			{

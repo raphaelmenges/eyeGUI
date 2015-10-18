@@ -30,7 +30,7 @@ namespace eyegui
         glm::vec4	atlasPosition;	// Position in atlas (minU, minV, maxU, maxV)
         glm::ivec2  size;			// Size in pixel
         glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
-        glm::ivec2	advance;        // Offset to advance to next glyph in pixel
+        glm::vec2	advance;        // Offset to advance to next glyph in pixel
     };
 
     class Font
@@ -54,7 +54,7 @@ namespace eyegui
         Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
 
         // Get height of line
-        int getLineHeight(FontSize fontSize) const;
+        float getLineHeight(FontSize fontSize) const;
 
     private:
 
@@ -74,7 +74,7 @@ namespace eyegui
         void fillAtlas(
             int pixelHeight,
             std::map<char16_t,Glyph>& rGlyphMap,
-            int& rLineHeight,
+            float& rLineHeight,
             GLuint textureId,
             int padding);
 
@@ -86,9 +86,9 @@ namespace eyegui
         std::map<char16_t, Glyph> mMediumGlyphs;
         std::map<char16_t, Glyph> mSmallGlyphs;
 
-        int mTallLineHeight;
-        int mMediumLineHeight;
-        int mSmallLineHeight;
+        float mTallLinePixelHeight;
+        float mMediumLinePixelHeight;
+        float mSmallLinePixelHeight;
 
         GLuint mTallTexture;
         GLuint mMediumTexture;
