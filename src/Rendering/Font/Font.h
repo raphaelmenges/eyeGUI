@@ -26,11 +26,11 @@ namespace eyegui
 {
     struct Glyph
     {
-        GLint       atlasTextureId; // Id of atlas texture
-        glm::vec4	atlasPosition;	// Position in atlas (minU, minV, maxU, maxV)
-        glm::ivec2  size;			// Size in pixel
-        glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
-        glm::vec2	advance;        // Offset to advance to next glyph in pixel
+        GLint       atlasTextureHandle;		// Handle of atlas texture
+        glm::vec4	atlasPosition;			// Position in atlas (minU, minV, maxU, maxV)
+        glm::ivec2  size;					// Size in pixel
+        glm::ivec2	bearing;				// Offset from baseline to left / top of glyph in pixel
+        glm::vec2	advance;				// Offset to advance to next glyph in pixel
     };
 
     class Font
@@ -75,7 +75,7 @@ namespace eyegui
             int pixelHeight,
             std::map<char16_t,Glyph>& rGlyphMap,
             float& rLineHeight,
-            GLuint textureId,
+			std::vector<GLuint>& rTextures,
             int padding);
 
         // Members
@@ -90,15 +90,20 @@ namespace eyegui
         float mMediumLinePixelHeight;
         float mSmallLinePixelHeight;
 
-        GLuint mTallTexture;
-        GLuint mMediumTexture;
-        GLuint mSmallTexture;
+        std::vector<GLuint> mTallTextures;
+		std::vector<GLuint> mMediumTextures;
+		std::vector<GLuint> mSmallTextures;
 
         int mTallPixelHeight;
         int mMediumPixelHeight;
         int mSmallPixelHeight;
 
         std::string mFilepath;
+
+		// Initilialize textures
+		/*glGenTextures(1, &mTallTexture);
+		glGenTextures(1, &mMediumTexture);
+		glGenTextures(1, &mSmallTexture); */
 
     };
 }
