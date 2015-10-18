@@ -34,6 +34,9 @@ namespace eyegui
         mResizing = false;
         mResizeWaitTime = 0;
 
+		// Initialize OpenGL
+		mGLSetup.init();
+
         // Initialize default font ("" handled by asset manager)
 		mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
 
@@ -52,9 +55,6 @@ namespace eyegui
         // Input initialization
         mInput.mouseCursorX = width / 2;
         mInput.mouseCursorY = height / 2;
-
-        // Initialize OpenGL
-        mGLSetup.init();
 
         // Fetch render item for resize blending
         mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
