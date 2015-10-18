@@ -12,8 +12,6 @@
 //      atm it is starting at the bottom...
 //      - just say in the description: internally, that coordinate system,
 //      and for the interface that.
-//  - Actually, one would have to have one mesh per atlas texture. Todo for later
-//  when there could be more then one atlas texture
 //  - Future work: add "..." when no space left, make font smaller when not enough
 //  space available...
 
