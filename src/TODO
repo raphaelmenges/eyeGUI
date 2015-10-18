@@ -1,29 +1,32 @@
 At the moment:
-- Font with more than one atlas per size (when texture size for gpu too big)
-- Create empty default font to catch any null pointer
+-
 
-### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
+### VERSION 0.2
+- Function to define search folder or so
+- Notification into own class and layout as const pointer in elements
 - Create helper for de- and increasing of all values like alpha etc
+
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
 - Overwork CMakeLists! Probably, unnecessary sourcing instead of including
 	- Can one set visual to unicode in cmake?
-- Notification into own class and layout as const pointer in elements
 - Add version / date of externals
   - reintegrate glm (some files may be missing)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
-- Font has sometimes little rendering issues
-- Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
-- Function to define search folder or so
 - Common super class for all elements using text
 	- key, textflow
 
 Refactoring:
 	- Font.cpp and TextFlow.cpp refactoring...
 	- What happens with font when size too small (like zero)
+	- TODOs
+	- Fill wiki
+		- Frames
+		- TextBlock
+		- Localization
 
-### VERSION 0.3... [Input] ### (ready for eye browser)
+### VERSION 0.x
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
@@ -41,11 +44,11 @@ Refactoring:
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Audio
 - Right to left text (hebrew)
+- Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
+- Font has sometimes little rendering issues
 
 Notes:
 - Localization files MUST BE encoded in UTF-8
-- Determine maximum texture resolution and create more than one texture atlas for font rendering if necessary
-	- Save texture id in glyph.. (already done :))
 - Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Reminder: Parser responsible for value ranges!

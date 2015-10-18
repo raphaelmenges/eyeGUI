@@ -10,17 +10,9 @@
 #define FONT_H_
 
 #include "eyeGUI.h"
+#include "Defines.h"
 
-#include "externals/FreeType2/include/ft2build.h"
-#include "externals/OpenGLLoader/gl_core_3_3.h"
 #include "externals/GLM/glm/glm.hpp"
-
-#include <memory>
-#include <map>
-#include <set>
-#include <vector>
-
-#include FT_FREETYPE_H
 
 namespace eyegui
 {
@@ -36,72 +28,23 @@ namespace eyegui
     {
     public:
 
-        // Constructor (takes responsibility for face)
-        Font(
-            std::string filepath,
-            std::unique_ptr<FT_Face> upFace,
-            std::set<char16_t> characterSet,
-            int windowHeight);
+        // Constructor
+        Font() {}
 
         // Destructor
-        virtual ~Font();
+		virtual ~Font() {}
 
         // Resize font atlases
-        void resizeFontAtlases(int windowHeight);
+		virtual void resizeFontAtlases(int windowHeight) = 0;
 
         // Get glyph (may return NULL if not found)
-        Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
+		virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const = 0;
 
         // Get height of line
-        float getLineHeight(FontSize fontSize) const;
+		virtual float getLineHeight(FontSize fontSize) const = 0;
 
 		// Get handle of texture atlas
-		GLuint getAtlasTextureHandle(FontSize fontSize) const;
-
-    private:
-
-        // Get glyph (may return NULL if not found)
-        Glyph const * getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const;
-
-        // Calculate padding
-        int calculatePadding(int pixelHeight);
-
-        // Fill pixel heights
-        void fillPixelHeights(int windowHeight);
-
-        // Fill all atlases
-        void fillAtlases();
-
-        // Fill atlas
-        void fillAtlas(
-            int pixelHeight,
-            std::map<char16_t,Glyph>& rGlyphMap,
-            float& rLineHeight,
-            GLuint textureHandle,
-            int padding);
-
-        // Members
-        std::unique_ptr<FT_Face> mupFace;
-        std::set<char16_t> mCharacterSet;
-
-        std::map<char16_t, Glyph> mTallGlyphs;
-        std::map<char16_t, Glyph> mMediumGlyphs;
-        std::map<char16_t, Glyph> mSmallGlyphs;
-
-        float mTallLinePixelHeight;
-        float mMediumLinePixelHeight;
-        float mSmallLinePixelHeight;
-
-        GLuint mTallTexture;
-        GLuint mMediumTexture;
-        GLuint mSmallTexture;
-
-        int mTallPixelHeight;
-        int mMediumPixelHeight;
-        int mSmallPixelHeight;
-
-        std::string mFilepath;
-
+		virtual uint getAtlasTextureHandle(FontSize fontSize) const = 0;
     };
 }
 

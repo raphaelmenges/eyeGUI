@@ -22,6 +22,8 @@
 #include "Rendering/Shader.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
+#include <vector>
+
 namespace eyegui
 {
     // Forward declaration
@@ -93,7 +95,6 @@ namespace eyegui
         GLuint mTextureCoordinateBuffer;
         GLuint mVertexArrayObject;
         GLuint mAtlasTextureHandle;
-
     };
 }
 

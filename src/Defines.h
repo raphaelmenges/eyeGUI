@@ -21,6 +21,7 @@ namespace eyegui
     typedef unsigned char uchar;
 
     // Constants
+	static const std::string EMPTY_STRING = "";
     static const std::string EMPTY_STRING_ATTRIBUTE = "";
     static const int EMPTY_INT_ATTRIBUTE = 0;
     static const float EMPTY_PERCENTAGE_ATTRIBUTE = 0;

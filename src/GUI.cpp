@@ -34,20 +34,11 @@ namespace eyegui
         mResizing = false;
         mResizeWaitTime = 0;
 
-        // Initialize default font
-        if(fontFilepath != "")
-        {
-            mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
-        }
-        else
-        {
-            throwWarning(
-                OperationNotifier::Operation::RUNTIME,
-                "No default font set. Text rendering will not work");
-        }
+        // Initialize default font ("" handled by asset manager)
+		mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
 
 		// Load initial localization
-		if (localizationFilepath != "")
+		if (localizationFilepath != EMPTY_STRING)
 		{
 			mupLocalizationMap = std::move(localization_parser::parse(localizationFilepath));
 		}

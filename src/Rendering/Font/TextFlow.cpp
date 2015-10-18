@@ -36,7 +36,7 @@ namespace eyegui
         mContent = content;
         mFlowHeight = 0;
 
-        // Update have to done before usage
+        // TransformAndSize have to done before usage
         mX = 0;
         mY = 0;
         mWidth = 0;
@@ -74,7 +74,7 @@ namespace eyegui
         // Get handle of atlas texture
 		mAtlasTextureHandle = mpFont->getAtlasTextureHandle(mFontSize);
 
-        // UPDATE HAS TO BE CALLED ONCE AT LAST!
+        // TransformAndSize HAS TO BE CALLED ONCE AT LAST!
     }
 
     TextFlow::~TextFlow()
@@ -149,7 +149,19 @@ namespace eyegui
         glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
 
         // Get size of space
-        float pixelOfSpace = mpFont->getGlyph(mFontSize, u' ')->advance.x;
+		float pixelOfSpace = 0;
+
+		Glyph const * pGlyph = mpFont->getGlyph(mFontSize, u' ');
+		if (pGlyph == NULL)
+		{
+			throwWarning(
+				OperationNotifier::Operation::RUNTIME,
+				"TextFlow does not find space sign in font");
+		}
+		else
+		{
+			pixelOfSpace = pGlyph->advance.x;
+		}
 
         // Go over words in content
         std::u16string copyContent = mContent;
