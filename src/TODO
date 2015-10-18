@@ -1,5 +1,4 @@
 At the moment:
-- Localization using files
 - Create empty default font to catch any null pointer
 
 BUGS:
@@ -23,13 +22,13 @@ BUGS:
 - Function to define search folder or so
 - Common super class for all elements using text
 	- key, textflow
-- Localizatin files: detect encoding
 
 ### VERSION 0.3... [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)
 - Encoding stuff
-	- Different XML library
+	- Different XML library -> UTF8 works even in xeyegui
 	- Use UTF8 library also for config and stylesheet?
+	- UTF-8 enough for localization?
 - More complex input structure and configuration
   - Mouse
   - Keyboard

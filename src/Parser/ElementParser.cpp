@@ -10,8 +10,7 @@
 #include "Defines.h"
 #include "Layout.h"
 #include "OperationNotifier.h"
-
-#include <uchar.h>
+#include "externals/utfcpp/source/utf8.h"
 
 namespace eyegui
 {
@@ -407,19 +406,10 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Unknown vertical alignment used in text block: " + verticalAlignmentValue, filepath);
             }
 
-			// TODO: take a second look at what happens here
-            // Get content (only 8 bit are possible inside the xml layout)
-            std::string contentValue = parseStringAttribute("content", xmlTextBlock);
-            std::u16string content = u"";
-            char16_t c16str[3] = u"\0";
-            mbstate_t mbs;
-            for (const auto& it: contentValue)
-            {
-                memset(&mbs, 0, sizeof (mbs));
-                memmove(c16str, u"\0\0\0", 3);
-                mbrtoc16 (c16str, &it, 3, &mbs);
-                content.append(std::u16string(c16str));
-            }
+			// Get content
+			std::string contentValue = parseStringAttribute("content", xmlTextBlock);
+			std::u16string content;
+			utf8::utf8to16(contentValue.begin(), contentValue.end(), back_inserter(content));
 
 			// Get key for localization
 			std::string key = parseStringAttribute("key", xmlTextBlock);
