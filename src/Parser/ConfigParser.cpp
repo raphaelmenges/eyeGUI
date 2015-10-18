@@ -77,9 +77,7 @@ namespace eyegui
                     if ((pos = line.find(delimiter)) == std::string::npos)
                     {
                         throwError(OperationNotifier::Operation::PARSING, "Following line could not be parsed: " + line, filepath);
-
-                        // Reset config
-                        config = Config();
+						continue;
                     }
 
                     std::string left = line.substr(0, pos);
@@ -118,9 +116,6 @@ namespace eyegui
                     else
                     {
                         throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + left, filepath);
-
-                        // Reset config
-                        config = Config();
                     }
                 }
             }

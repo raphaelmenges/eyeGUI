@@ -114,6 +114,12 @@ endif ()
 # Including for FreeType
 include_directories("${FREETYPE2_DIR}/include")
 
+# Add UTF8-CPP
+set(UFTCPP_DIR "${EXTERNAL_DIR}/utfcpp/source")
+file(GLOB_RECURSE UTFCPP
+  "${UFTCPP_DIR}/*.h")
+include_directories("${UFTCPP_DIR}")
+
 # Collect all code
 set(ALL_CODE
     ${SOURCES}
@@ -123,7 +129,8 @@ set(ALL_CODE
     ${OpenGLLoader}
     ${PICO_PNG}
     ${NANO_SVG}
-    ${FREETYPE2})
+    ${FREETYPE2}
+    ${UTFCPP})
 
 # Filtering for Visual Studio
 IF(MSVC)

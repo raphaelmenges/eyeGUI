@@ -18,6 +18,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 * GLM: http://glm.g-truc.net/0.9.7/index.html (MIT license chosen)
 * picoPNG: http://lodev.org/lodepng/
 * FreeType 2.6.1: http://www.freetype.org/ (FreeType license chosen)
+* UTF8-CPP: https://github.com/nemtrif/utfcpp
 
 All dependencies are already included inside the folder "externals" and should be found by CMake. Keep the licenses in mind when you use this library in your project. The source code of this project itself in the folder "src" and the header "eyeGUI.h" is licensed under the MIT license.
 

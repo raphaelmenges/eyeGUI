@@ -27,6 +27,9 @@ BUGS:
 
 ### VERSION 0.3... [Input] ### (ready for eye browser)
 - New style member: FadeColorMutliplier (used when gaze is not upon the the element)
+- Encoding stuff
+	- Different XML library
+	- Use UTF8 library also for config and stylesheet?
 - More complex input structure and configuration
   - Mouse
   - Keyboard
