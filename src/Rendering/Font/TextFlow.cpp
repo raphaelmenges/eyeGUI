@@ -72,7 +72,7 @@ namespace eyegui
         glBindVertexArray(oldVAO);
 
         // TODO: just useable when only one atlas texture (whole member will be deleted)
-        mAtlasTextureId = mpFont->getGlyph(mFontSize, u'a')->atlasTextureHandle; // TODO
+        mAtlasTextureId = mpFont->getGlyph(mFontSize, u'a')->atlasTextureId; // TODO
 
         // UPDATE HAS TO BE CALLED ONCE AT LAST!
     }
