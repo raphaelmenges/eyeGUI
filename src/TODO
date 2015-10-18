@@ -1,9 +1,6 @@
 At the moment:
+- Font with more than one atlas per size (when texture size for gpu too big)
 - Create empty default font to catch any null pointer
-
-BUGS:
-- Scaling of frame via keystroke does not work (fault)
-	- When TextFlow width to small, error occurs
 
 ### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
 - Create helper for de- and increasing of all values like alpha etc
@@ -13,7 +10,6 @@ BUGS:
 - Overwork CMakeLists! Probably, unnecessary sourcing instead of including
 	- Can one set visual to unicode in cmake?
 - Notification into own class and layout as const pointer in elements
-- Font with more than one atlas per size (when texture size for gpu too big)
 - Add version / date of externals
   - reintegrate glm (some files may be missing)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
