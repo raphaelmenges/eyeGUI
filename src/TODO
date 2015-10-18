@@ -40,10 +40,10 @@ BUGS:
 - Text input
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Audio
+- Right to left text (hebrew)
 
 Notes:
 - Localization files MUST BE encoded in UTF-8
-- Remember: inside .xeyegui / .beyegui only 8bit chars are allowed so no umlaute in content of text block
 - Determine maximum texture resolution and create more than one texture atlas for font rendering if necessary
 	- Save texture id in glyph.. (already done :))
 - Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
