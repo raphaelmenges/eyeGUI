@@ -26,7 +26,6 @@ namespace eyegui
 {
     struct Glyph
     {
-        GLint       atlasTextureId; // Id of atlas texture
         glm::vec4	atlasPosition;	// Position in atlas (minU, minV, maxU, maxV)
         glm::ivec2  size;			// Size in pixel
         glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
@@ -56,6 +55,9 @@ namespace eyegui
         // Get height of line
         float getLineHeight(FontSize fontSize) const;
 
+		// Get handle of texture atlas
+		GLuint getAtlasTextureHandle(FontSize fontSize) const;
+
     private:
 
         // Get glyph (may return NULL if not found)
@@ -75,7 +77,7 @@ namespace eyegui
             int pixelHeight,
             std::map<char16_t,Glyph>& rGlyphMap,
             float& rLineHeight,
-            GLuint textureId,
+            GLuint textureHandle,
             int padding);
 
         // Members

@@ -24,11 +24,6 @@ namespace eyegui
         mupFace = std::move(upFace);
         mCharacterSet = characterSet;
 
-        // Initialize pixel heights (TODO)
-        mTallPixelHeight = 100;
-        mMediumPixelHeight = 32;
-        mSmallPixelHeight = 10;
-
         // Initilialize textures
         glGenTextures(1, &mTallTexture);
         glGenTextures(1, &mMediumTexture);
@@ -114,6 +109,25 @@ namespace eyegui
         }
     }
 
+	GLuint Font::getAtlasTextureHandle(FontSize fontSize) const
+	{
+		switch (fontSize)
+		{
+		case FontSize::TALL:
+			return mTallTexture;
+			break;
+		case FontSize::MEDIUM:
+			return mMediumTexture;
+			break;
+		case FontSize::SMALL:
+			return mSmallTexture;
+			break;
+		default:
+			return mMediumTexture;
+			break;
+		}
+	}
+
     Glyph const * Font::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
     {
         auto it = rGlyphMap.find(character);
@@ -168,7 +182,7 @@ namespace eyegui
         int pixelHeight,
         std::map<char16_t, Glyph>& rGlyphMap,
         float& rLineHeight,
-        GLuint textureId,
+        GLuint textureHandle,
         int padding)
     {
         // Some typedef, keep track of combination of each glyph and its bitmap
@@ -204,7 +218,6 @@ namespace eyegui
             int bitmapHeight = rFace->glyph->bitmap.rows;
 
             // Save some values of the glyph
-            rGlyphMap[c].atlasTextureId = textureId;
             rGlyphMap[c].advance = glm::vec2(
                 (float)(rFace->glyph->advance.x) / 64,   // Given in 1/64 pixel
 				(float)(rFace->glyph->advance.y) / 64);  // Given in 1/64 pixel
@@ -246,7 +259,19 @@ namespace eyegui
         }
         int xResolution = (int)pow(2, i);
 
-        // Try to fit it with given resolution, at least in columns
+		// Get the maximum resolution of textures to decide how big the atlases may be
+		int maxTextureResolution;
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureResolution);
+
+		if (xResolution > maxTextureResolution)
+		{
+			throwError(
+				OperationNotifier::Operation::RUNTIME,
+				"Too many and too big glyphs for texture atlas. GPU supported texture size insufficient",
+				mFilepath);
+		}
+
+        // Build up rows with vectors of words
         std::vector<int> rows;
         std::vector<std::vector<glyphBitmapPair const *> > bitmapOrder;
         for (const glyphBitmapPair& rGlyphBitmapPair : bitmaps)
@@ -267,7 +292,7 @@ namespace eyegui
             }
             if(!check)
             {
-                // No more room in rows, add more
+                // No more room in existing rows, add more
                 rows.push_back(width);
                 std::vector<glyphBitmapPair const *> rowBitmapOrder;
                 rowBitmapOrder.push_back(&rGlyphBitmapPair);
@@ -283,6 +308,15 @@ namespace eyegui
             i++;
         }
 
+		// Do check for vertical resolution as well
+		if (yResolution > maxTextureResolution)
+		{
+			throwError(
+				OperationNotifier::Operation::RUNTIME,
+				"Too many and too big glyphs for texture atlas. GPU supported texture size insufficient",
+				mFilepath);
+		}
+
         // Let's make y resolution also power of two
         yResolution = (int)pow(2, i);
 
@@ -292,7 +326,7 @@ namespace eyegui
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
         // Initialize texture for atlas
-        glBindTexture(GL_TEXTURE_2D, textureId);
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

@@ -71,8 +71,8 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
         glBindVertexArray(oldVAO);
 
-        // TODO: just useable when only one atlas texture (whole member will be deleted)
-        mAtlasTextureId = mpFont->getGlyph(mFontSize, u'a')->atlasTextureId; // TODO
+        // Get handle of atlas texture
+		mAtlasTextureHandle = mpFont->getAtlasTextureHandle(mFontSize);
 
         // UPDATE HAS TO BE CALLED ONCE AT LAST!
     }
@@ -133,7 +133,7 @@ namespace eyegui
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
 
         // TODO: TEST (only one atlas at the moment)
-        glBindTexture(GL_TEXTURE_2D, mAtlasTextureId);
+        glBindTexture(GL_TEXTURE_2D, mAtlasTextureHandle);
 
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("alpha", alpha);

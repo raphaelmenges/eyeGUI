@@ -42,21 +42,27 @@ namespace eyegui
         mInnerBorder = innerBorder;
 		mKey = key;
 
-		std::u16string localization = mpLayout->getContentFromLocalization(mKey);
-		if (localization == LOCALIZATION_NOT_FOUND)
+		// Create text flow
+		if (mKey != EMPTY_STRING_ATTRIBUTE)
 		{
-			throwWarning(
-				OperationNotifier::Operation::RUNTIME,
-				"No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
+			std::u16string localization = mpLayout->getContentFromLocalization(mKey);
+			if (localization == LOCALIZATION_NOT_FOUND)
+			{
+				throwWarning(
+					OperationNotifier::Operation::RUNTIME,
+					"No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
 
-			mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+				mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+			}
+			else
+			{
+				mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
+			}
 		}
 		else
 		{
-			mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
+			mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
 		}
-
-        
     }
 
     TextBlock::~TextBlock()
