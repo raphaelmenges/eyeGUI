@@ -15,10 +15,6 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
-#include <vector>
-
-// TODO: Testing
-#include <iostream>
 
 namespace eyegui
 {
@@ -91,8 +87,6 @@ namespace eyegui
 			std::string left = line.substr(0, pos);
 			line.erase(0, pos + delimiter.length());
 			std::string right = line;
-
-			std::cout << left << std::endl;
 
 			// Convert right side to utf-16
 			std::u16string utf16right;

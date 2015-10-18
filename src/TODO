@@ -43,7 +43,7 @@ BUGS:
 - Audio
 
 Notes:
-- Localization files MUST BE encoded in UTF-16
+- Localization files MUST BE encoded in UTF-8
 - Remember: inside .xeyegui / .beyegui only 8bit chars are allowed so no umlaute in content of text block
 - Determine maximum texture resolution and create more than one texture atlas for font rendering if necessary
 	- Save texture id in glyph.. (already done :))
