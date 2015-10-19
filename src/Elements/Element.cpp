@@ -22,6 +22,7 @@ namespace eyegui
         Layout* pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
+		NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border)
     {
@@ -33,6 +34,7 @@ namespace eyegui
         mpLayout = pLayout;
         mpFrame = pFrame;
         mpAssetManager = pAssetManager;
+		mpNotificationQueue = pNotificationQueue;
         mX, mY, mWidth, mHeight = 0;
         mRelativeScale = relativeScale;
         mBorder = border;
@@ -156,6 +158,11 @@ namespace eyegui
     {
         return mpAssetManager;
     }
+
+	NotificationQueue* Element::getNotificationQueue() const
+	{
+		return mpNotificationQueue;
+	}
 
     float Element::getBorder() const
     {

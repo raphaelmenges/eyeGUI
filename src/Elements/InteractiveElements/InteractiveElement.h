@@ -29,6 +29,7 @@ namespace eyegui
             Layout* pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
             std::string iconFilepath);
@@ -52,7 +53,7 @@ namespace eyegui
         void setIcon(std::string filepath);
 
         // Called by layout after updating
-        void pipeNotification(Notification notification);
+        void pipeNotification(Notification notification, Layout* pLayout);
 
         // Tries to fetch next interactive element for selecting, returns NULL if fails
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
@@ -72,7 +73,7 @@ namespace eyegui
         virtual void specialInteract() = 0;
 
         // Filled by subclass and called by layout after updating
-        virtual void specialPipeNotification(Notification notification) = 0;
+        virtual void specialPipeNotification(Notification notification, Layout* pLayout) = 0;
 
         // Calculate aspect ratio correction for icon on gizmo
         glm::vec2 iconAspectRatioCorrection() const;

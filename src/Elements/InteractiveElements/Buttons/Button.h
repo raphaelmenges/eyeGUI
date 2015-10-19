@@ -27,6 +27,7 @@ namespace eyegui
             Layout* pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
             std::string iconFilepath,
@@ -64,7 +65,7 @@ namespace eyegui
         virtual void specialInteract();
 
         // Filled by subclass and called by layout after updating and before drawing
-        virtual void specialPipeNotification(Notification notification);
+        virtual void specialPipeNotification(Notification notification, Layout* pLayout);
 
     private:
 

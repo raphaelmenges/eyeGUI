@@ -32,9 +32,10 @@ namespace eyegui
 {
     // Forward declaration
     class Layout;
+	class NotificationQueue;
     class Frame;
     class InteractiveElement;
-
+	
     class Element
     {
     public:
@@ -67,6 +68,7 @@ namespace eyegui
             Layout* pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border);
 
@@ -111,6 +113,9 @@ namespace eyegui
 
         // Get asset manager
         AssetManager* getAssetManager() const;
+
+		// Get notification queue
+		NotificationQueue* getNotificationQueue() const;
 
         // Get border
         float getBorder() const;
@@ -205,6 +210,7 @@ namespace eyegui
         Layout* mpLayout;
         Frame* mpFrame;
         AssetManager* mpAssetManager;
+		NotificationQueue* mpNotificationQueue;
         int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
         float mRelativeScale; // [0..]
         float mAlpha; // [0..1]

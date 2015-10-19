@@ -18,6 +18,7 @@ namespace eyegui
         Layout* pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
+		NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         int rows) : Block(
@@ -27,6 +28,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
+			pNotificationQueue,
             relativeScale,
             border)
     {

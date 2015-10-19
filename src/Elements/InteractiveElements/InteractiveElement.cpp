@@ -19,6 +19,7 @@ namespace eyegui
         Layout* pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
+		NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         std::string iconFilepath) : Element(
@@ -28,6 +29,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
+			pNotificationQueue,
             relativeScale,
             border)
     {
@@ -82,12 +84,12 @@ namespace eyegui
         }
     }
 
-    void InteractiveElement::pipeNotification(Notification notification)
+    void InteractiveElement::pipeNotification(Notification notification, Layout* pLayout)
     {
         // Only pipe if visible (so fading elements do not notify)
         if (mAlpha >= 1)
         {
-            specialPipeNotification(notification);
+            specialPipeNotification(notification, pLayout);
         }
     }
 

@@ -16,7 +16,7 @@ namespace eyegui
     namespace brick_parser
     {
         // Parsing
-        std::unique_ptr<elementsAndIds> parse(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, Element* pParent, std::string filepath);
+        std::unique_ptr<elementsAndIds> parse(Layout* pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, Element* pParent, std::string filepath);
     }
 }
 

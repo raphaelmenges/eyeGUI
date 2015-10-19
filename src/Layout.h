@@ -6,9 +6,9 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Layout manages frames with elements. There is one main frame which is
 // screen filling and a free number of floating frames. Does mapping of id to
-// element pointer. Enqueues notifications of elements occuring during updating
-// and works on them before the next update and drawing. Is owner of the
-// stylesheet used by the roots in frames and all their children.
+// element pointer. Is owner of the stylesheet used by the roots in frames 
+// and all their children. Has notification queue where elements in frames
+// can enqueue their notifications.
 
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
@@ -20,6 +20,7 @@
 #include "Config.h"
 #include "Parser/StylesheetParser.h"
 #include "Parser/BrickParser.h"
+#include "NotificationQueue.h"
 
 #include <memory>
 #include <map>
@@ -55,8 +56,8 @@ namespace eyegui
             std::unique_ptr<Element> upElement,
             std::unique_ptr<std::map<std::string, Element*> > upIds);
 
-        // Enqueue notification which is processed before next updating
-        void enqueueNotification(InteractiveElement* pNotifier, InteractiveElement::Notification notification);
+		// Get notificaton queue
+		NotificationQueue* getNotificationQueue() const;
 
         // Get pointer to config of owning GUI
         Config const * getConfig() const;
@@ -255,7 +256,7 @@ namespace eyegui
         bool mUseInput;
         std::unique_ptr<std::map<std::string, Style> > mStyles;
         InteractiveElement* mpSelectedInteractiveElement;
-        std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > > mupNotificatons;
+		std::unique_ptr<NotificationQueue> mupNotificationQueue;
     };
 }
 

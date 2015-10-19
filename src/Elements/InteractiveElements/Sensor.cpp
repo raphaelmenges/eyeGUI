@@ -8,27 +8,30 @@
 #include "Sensor.h"
 
 #include "Layout.h"
+#include "NotificationQueue.h"
 #include "OperationNotifier.h"
 #include "Helper.h"
 
 namespace eyegui
 {
-    Sensor::Sensor(
-        std::string id,
-        std::string styleName,
-        Element* pParent,
-        Layout* pLayout,
-        Frame* pFrame,
-        AssetManager* pAssetManager,
-        float relativeScale,
-        float border,
-        std::string iconFilepath) : InteractiveElement(
-            id,
-            styleName,
-            pParent,
-            pLayout,
-            pFrame,
-            pAssetManager,
+	Sensor::Sensor(
+		std::string id,
+		std::string styleName,
+		Element* pParent,
+		Layout* pLayout,
+		Frame* pFrame,
+		AssetManager* pAssetManager,
+		NotificationQueue* pNotificationQueue,
+		float relativeScale,
+		float border,
+		std::string iconFilepath) : InteractiveElement(
+			id,
+			styleName,
+			pParent,
+			pLayout,
+			pFrame,
+			pAssetManager,
+			pNotificationQueue,
             relativeScale,
             border,
             iconFilepath)
@@ -80,7 +83,7 @@ namespace eyegui
         // Inform listener after updating when penetrated
         if (mPenetration > 0)
         {
-            mpLayout->enqueueNotification(this, Notification::SENSOR_PENETRATED);
+            mpNotificationQueue->enqueue(this, Notification::SENSOR_PENETRATED);
         }
     }
 
@@ -120,13 +123,13 @@ namespace eyegui
         penetrate(mpLayout->getConfig()->sensorInteractionPenetrationAmount);
     }
 
-    void Sensor::specialPipeNotification(Notification notification)
+    void Sensor::specialPipeNotification(Notification notification, Layout* pLayout)
     {
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
         case Notification::SENSOR_PENETRATED:
-            notifyListener(&SensorListener::penetrated, mpLayout, getId(), mPenetration);
+            notifyListener(&SensorListener::penetrated, pLayout, getId(), mPenetration);
             break;
         default:
             throwWarning(

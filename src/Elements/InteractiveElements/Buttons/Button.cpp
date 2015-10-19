@@ -8,6 +8,7 @@
 #include "Button.h"
 
 #include "Layout.h"
+#include "NotificationQueue.h"
 #include "OperationNotifier.h"
 #include "Helper.h"
 
@@ -20,6 +21,7 @@ namespace eyegui
         Layout* pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
+		NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         std::string iconFilepath,
@@ -30,6 +32,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
+			pNotificationQueue,
             relativeScale,
             border,
             iconFilepath)
@@ -55,7 +58,7 @@ namespace eyegui
         if (mActive)
         {
             // Inform listener after updating
-            mpLayout->enqueueNotification(this, Notification::BUTTON_HIT);
+			mpNotificationQueue->enqueue(this, Notification::BUTTON_HIT);
 
             // Call context correct method
             if (mIsDown)
@@ -80,7 +83,7 @@ namespace eyegui
             mIsDown = true;
 
             // Inform listener after updating
-            mpLayout->enqueueNotification(this, Notification::BUTTON_DOWN);
+            mpNotificationQueue->enqueue(this, Notification::BUTTON_DOWN);
 
             // Immediately
             if (immediately)
@@ -101,7 +104,7 @@ namespace eyegui
             mIsDown = false;
 
             // Inform listener after updating
-            mpLayout->enqueueNotification(this, Notification::BUTTON_UP);
+			mpNotificationQueue->enqueue(this, Notification::BUTTON_UP);
 
             // Immediately
             if (immediately)
@@ -198,19 +201,19 @@ namespace eyegui
         hit();
     }
 
-    void Button::specialPipeNotification(Notification notification)
+    void Button::specialPipeNotification(Notification notification, Layout* pLayout)
     {
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
         case Notification::BUTTON_HIT:
-            notifyListener(&ButtonListener::hit, mpLayout, getId());
+            notifyListener(&ButtonListener::hit, pLayout, getId());
             break;
         case Notification::BUTTON_DOWN:
-            notifyListener(&ButtonListener::down, mpLayout, getId());
+            notifyListener(&ButtonListener::down, pLayout, getId());
             break;
         case Notification::BUTTON_UP:
-            notifyListener(&ButtonListener::up, mpLayout, getId());
+            notifyListener(&ButtonListener::up, pLayout, getId());
             break;
         default:
             throwWarning(

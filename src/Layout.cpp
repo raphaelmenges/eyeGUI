@@ -28,8 +28,8 @@ namespace eyegui
         mResizeNecessary = true;
         mUseInput = true;
         mpSelectedInteractiveElement = NULL;
-        mupNotificatons = std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > >(new std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> >);
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
+		mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
 
         // Parse style file
         mStyles = stylesheet_parser::parse(stylesheetFilepath);
@@ -43,42 +43,8 @@ namespace eyegui
     void Layout::update(float tpf, Input* pInput)
     {
         // *** NOTIFICATIONS ***
-
-        // Repeat working on the notifications
-        int loopCount = 0;
-        while (mupNotificatons->size() > 0)
-        {
-            if (loopCount == NOTIFICATION_MAX_LOOP_COUNT)
-            {
-                // Delete still existing notifications
-                mupNotificatons.reset(new std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> >);
-                throwWarning(OperationNotifier::Operation::RUNTIME, "Notifications are too nested and were cleared");
-
-                // Break the while loop
-                break;
-            }
-
-            else
-            {
-                // Transfer notifications to local pointer and replace with empty one
-                std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > > upNotifications = std::move(mupNotificatons);
-                mupNotificatons = std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > >(new std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> >);
-
-                // Work on notifications
-                for (int i = 0; i < upNotifications->size(); i++)
-                {
-                    // Listeners of notifications could fill the notifications in this layout again... (just a note)
-                    std::pair<InteractiveElement*, InteractiveElement::Notification> notification = upNotifications->at(i);
-
-                    // Piping takes care that replaced elements do not send notifications
-                    notification.first->pipeNotification(notification.second);
-                }
-
-                // count loops
-                loopCount++;
-            }
-        }
-
+		mupNotificationQueue->process();
+       
         // *** DELETION OF REMOVED FLOATING FRAMES ***
 
         for (int i : mDyingFloatingFramesIndices)
@@ -216,10 +182,10 @@ namespace eyegui
         // TODO: strange to call it attach root but to delegate it to a frame
     }
 
-    void Layout::enqueueNotification(InteractiveElement* pNotifier, InteractiveElement::Notification notification)
-    {
-        mupNotificatons->push_back(std::pair<InteractiveElement*, InteractiveElement::Notification>(pNotifier, notification));
-    }
+	NotificationQueue* Layout::getNotificationQueue() const
+	{
+		return mupNotificationQueue.get();
+	}
 
     Config const * Layout::getConfig() const
     {
@@ -693,6 +659,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
+				pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder()));
 
@@ -723,6 +690,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
+				pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 filepath,
@@ -755,6 +723,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
+				pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder()));
 
@@ -785,6 +754,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
+				pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 iconFilepath,
@@ -817,6 +787,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
+				pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 iconFilepath,
@@ -849,6 +820,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
+				pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 iconFilepath));
@@ -888,6 +860,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
+				pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 fontSize,
@@ -921,6 +894,7 @@ namespace eyegui
                     pElement->getLayout(),
                     pElement->getFrame(),
                     pElement->getAssetManager(),
+					pElement->getNotificationQueue(),
                     pElement->getParent(),
                     filepath));
             if (replaceElement(pElement, std::move(upPair->first), fade))
@@ -987,6 +961,7 @@ namespace eyegui
                     this,
                     pFrame,
                     mpAssetManager,
+					mupNotificationQueue.get(),
                     NULL,
                     filepath));
 

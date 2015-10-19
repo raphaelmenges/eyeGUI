@@ -26,6 +26,7 @@ namespace eyegui
 			Layout* pLayout,
 			Frame* pFrame,
 			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
 			float relativeScale,
 			float border,
 			FontSize fontSize,
