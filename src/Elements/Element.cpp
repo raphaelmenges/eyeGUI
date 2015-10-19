@@ -19,7 +19,7 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-        Layout* pLayout,
+		Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
 		NotificationQueue* pNotificationQueue,
@@ -144,7 +144,7 @@ namespace eyegui
         }
     }
 
-    Layout* Element::getLayout() const
+    Layout const * Element::getLayout() const
     {
         return mpLayout;
     }

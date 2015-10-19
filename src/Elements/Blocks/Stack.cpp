@@ -15,7 +15,7 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-        Layout* pLayout,
+		Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
 		NotificationQueue* pNotificationQueue,

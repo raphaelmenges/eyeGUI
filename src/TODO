@@ -1,16 +1,9 @@
-At the moment:
-- Notification into own class and layout as const pointer in elements
-- Overwork CMakeLists! Probably, unnecessary sourcing instead of including
-	- Can one set visual to unicode in cmake?
-
 ### VERSION 0.2
-
-
 - Create helper for de- and increasing of all values like alpha etc
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
-- Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
-- Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
+- Overwork CMakeLists! Probably, unnecessary sourcing instead of including
+	- Can one set visual to unicode in cmake?
 
 Refactoring:
 	- Font.cpp and TextFlow.cpp refactoring...
@@ -22,8 +15,11 @@ Refactoring:
 		- Localization
 	- Add version / date of externals
 	  - reintegrate glm (some files may be missing)
+	- TODOs in code
 
 ### VERSION 0.x
+- Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
+- Maybe make job queue in GUI to enable notification to move layouts
 - Common super class for all elements using text
 	- key, textflow
 	- only if more elements with text flows are planned

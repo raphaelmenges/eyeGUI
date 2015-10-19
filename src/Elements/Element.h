@@ -65,7 +65,7 @@ namespace eyegui
             std::string id,
             std::string styleName,
             Element* pParent,
-            Layout* pLayout,
+			Layout const * pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
 			NotificationQueue* pNotificationQueue,
@@ -106,7 +106,7 @@ namespace eyegui
         virtual void setActivity(bool active, bool fade);
 
         // Get layout
-        Layout* getLayout() const;
+        Layout const * getLayout() const;
 
         // Get frame
         Frame* getFrame() const;
@@ -207,7 +207,7 @@ namespace eyegui
 
         // Members
         Type mType;
-        Layout* mpLayout;
+        Layout const * mpLayout;
         Frame* mpFrame;
         AssetManager* mpAssetManager;
 		NotificationQueue* mpNotificationQueue;
