@@ -24,10 +24,10 @@ namespace eyegui
             std::string id,
             std::string styleName,
             Element* pParent,
-			Layout const * pLayout,
+            Layout const * pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
+            NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
             std::string iconFilepath,
@@ -72,7 +72,7 @@ namespace eyegui
 
         // Member
         float mSpace;
-        float mInnerAlpha;
+        LerpValue mInnerAlpha;
         bool mInnerElementVisible;
     };
 }

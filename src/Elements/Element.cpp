@@ -19,10 +19,10 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border)
     {
@@ -34,12 +34,12 @@ namespace eyegui
         mpLayout = pLayout;
         mpFrame = pFrame;
         mpAssetManager = pAssetManager;
-		mpNotificationQueue = pNotificationQueue;
+        mpNotificationQueue = pNotificationQueue;
         mX, mY, mWidth, mHeight = 0;
         mRelativeScale = relativeScale;
         mBorder = border;
         mActive = true;
-        mActivity = 1;
+        mActivity.setValue(1);
         mAlpha = 1;
         mBorderAspectRatio = 1;
 
@@ -115,7 +115,7 @@ namespace eyegui
                     // Do it immediatelly, maybe
                     if (!fade)
                     {
-                        mActivity = 1;
+                        mActivity.setValue(1);
                     }
 
                     // Do it for all children
@@ -132,7 +132,7 @@ namespace eyegui
                 // Do it immediately, maybe
                 if (!fade)
                 {
-                    mActivity = 0;
+                    mActivity.setValue(0);
                 }
 
                 // Do it for all children
@@ -159,10 +159,10 @@ namespace eyegui
         return mpAssetManager;
     }
 
-	NotificationQueue* Element::getNotificationQueue() const
-	{
-		return mpNotificationQueue;
-	}
+    NotificationQueue* Element::getNotificationQueue() const
+    {
+        return mpNotificationQueue;
+    }
 
     float Element::getBorder() const
     {
@@ -309,22 +309,14 @@ namespace eyegui
 
     void Element::update(float tpf, float alpha, Input* pInput)
     {
-        // Activity animation
-        if (mActive)
-        {
-            mActivity += tpf;
-        }
-        else
-        {
-            mActivity -= tpf;
-        }
-        mActivity = clamp(mActivity, 0, 1);
+        // Activity animationa
+        mActivity.update(tpf, !mActive);
 
         // Save current alpha (already animated by layout or other element)
         mAlpha = alpha;
 
         // Use activity and alpha to check whether input is necessary
-        if (mAlpha < 1 || mActivity < 1)
+        if (mAlpha < 1 || mActivity.getValue() < 1)
         {
             pInput = NULL;
         }
@@ -368,7 +360,7 @@ namespace eyegui
     void Element::reset()
     {
         mActive = true;
-        mActivity = 1;
+        mActivity.setValue(1);
 
         // Do own reset implemented by subclass
         specialReset();

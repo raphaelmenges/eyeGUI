@@ -26,10 +26,10 @@ namespace eyegui
             std::string id,
             std::string styleName,
             Element* pParent,
-			Layout const * pLayout,
+            Layout const * pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
+            NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
             std::string iconFilepath);
@@ -87,9 +87,9 @@ namespace eyegui
     private:
 
         // Members
-        float mHighlight;
+        LerpValue mHighlight;
         bool mIsHighlighted;
-        float mSelection;
+        LerpValue mSelection;
         bool mIsSelected;
         Texture const * mpIcon;
     };

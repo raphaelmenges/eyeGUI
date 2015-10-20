@@ -22,6 +22,7 @@
 #include "Rendering/AssetManager.h"
 #include "Input.h"
 #include "Style.h"
+#include "LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <memory>
@@ -32,10 +33,10 @@ namespace eyegui
 {
     // Forward declaration
     class Layout;
-	class NotificationQueue;
+    class NotificationQueue;
     class Frame;
     class InteractiveElement;
-	
+
     class Element
     {
     public:
@@ -65,10 +66,10 @@ namespace eyegui
             std::string id,
             std::string styleName,
             Element* pParent,
-			Layout const * pLayout,
+            Layout const * pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
+            NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border);
 
@@ -114,8 +115,8 @@ namespace eyegui
         // Get asset manager
         AssetManager* getAssetManager() const;
 
-		// Get notification queue
-		NotificationQueue* getNotificationQueue() const;
+        // Get notification queue
+        NotificationQueue* getNotificationQueue() const;
 
         // Get border
         float getBorder() const;
@@ -210,13 +211,13 @@ namespace eyegui
         Layout const * mpLayout;
         Frame* mpFrame;
         AssetManager* mpAssetManager;
-		NotificationQueue* mpNotificationQueue;
+        NotificationQueue* mpNotificationQueue;
         int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
         float mRelativeScale; // [0..]
         float mAlpha; // [0..1]
         float mBorderAspectRatio;
         glm::mat4 mDrawMatrix;
-        float mActivity; // [0..1]
+        LerpValue mActivity; // [0..1]
         bool mActive;
 
         // This vector is the owner of all possible children. May be empty!

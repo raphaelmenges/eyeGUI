@@ -16,10 +16,10 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         std::string iconFilepath) : Element(
@@ -29,7 +29,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
-			pNotificationQueue,
+            pNotificationQueue,
             relativeScale,
             border)
     {
@@ -38,9 +38,9 @@ namespace eyegui
         // Filling members
         setIcon(iconFilepath);
         mpRenderItem = NULL;
-        mHighlight = 0;
+        mHighlight.setValue(0);
         mIsHighlighted = false;
-        mSelection = 0;
+        mSelection.setValue(0);
         mIsSelected = false;
     }
 
@@ -101,36 +101,20 @@ namespace eyegui
     void InteractiveElement::specialUpdate(float tpf, Input* pInput)
     {
         // Highlight
-        if (mIsHighlighted)
-        {
-            mHighlight += tpf;
-        }
-        else
-        {
-            mHighlight -= tpf;
-        }
-        mHighlight = clamp(mHighlight, 0, 1);
+        mHighlight.update(tpf, !mIsHighlighted);
 
         // Selection
-        if (mIsSelected)
-        {
-            mSelection += tpf / mpLayout->getConfig()->animationDuration;
-        }
-        else
-        {
-            mSelection -= tpf / mpLayout->getConfig()->animationDuration;
-        }
-        mSelection = clamp(mSelection, 0, 1);
+        mSelection.update(tpf / mpLayout->getConfig()->animationDuration, !mIsSelected);
     }
 
     void InteractiveElement::specialDraw() const
     {
         // Fill shader
         mpRenderItem->getShader()->fillValue("matrix", mDrawMatrix);
-        mpRenderItem->getShader()->fillValue("highlight", mHighlight);
+        mpRenderItem->getShader()->fillValue("highlight", mHighlight.getValue());
         mpRenderItem->getShader()->fillValue("alpha", mAlpha);
-        mpRenderItem->getShader()->fillValue("activity", mActivity);
-        mpRenderItem->getShader()->fillValue("selection", mSelection);
+        mpRenderItem->getShader()->fillValue("activity", mActivity.getValue());
+        mpRenderItem->getShader()->fillValue("selection", mSelection.getValue());
         mpRenderItem->getShader()->fillValue("color", getStyle()->color);
         mpRenderItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
         mpRenderItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
@@ -143,9 +127,9 @@ namespace eyegui
 
     void InteractiveElement::specialReset()
     {
-        mHighlight = 0;
+        mHighlight.setValue(0);
         mIsHighlighted = false;
-        mSelection = 0;
+        mSelection.setValue(0);
         mIsSelected = false;
     }
 

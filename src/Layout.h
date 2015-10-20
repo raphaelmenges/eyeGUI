@@ -6,7 +6,7 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Layout manages frames with elements. There is one main frame which is
 // screen filling and a free number of floating frames. Does mapping of id to
-// element pointer. Is owner of the stylesheet used by the roots in frames 
+// element pointer. Is owner of the stylesheet used by the roots in frames
 // and all their children. Has notification queue where elements in frames
 // can enqueue their notifications.
 
@@ -21,6 +21,7 @@
 #include "Parser/StylesheetParser.h"
 #include "Parser/BrickParser.h"
 #include "NotificationQueue.h"
+#include "LerpValue.h"
 
 #include <memory>
 #include <map>
@@ -56,8 +57,8 @@ namespace eyegui
             std::unique_ptr<Element> upElement,
             std::unique_ptr<std::map<std::string, Element*> > upIds);
 
-		// Get notificaton queue
-		NotificationQueue* getNotificationQueue() const;
+        // Get notificaton queue
+        NotificationQueue* getNotificationQueue() const;
 
         // Get pointer to config of owning GUI
         Config const * getConfig() const;
@@ -75,8 +76,8 @@ namespace eyegui
         // Get pointer to styles of this layout
         Style const * getStyleFromStylesheet(std::string styleName) const;
 
-		// Get string content from localization
-		std::u16string getContentFromLocalization(std::string key) const;
+        // Get string content from localization
+        std::u16string getContentFromLocalization(std::string key) const;
 
         // Returns set of names of the available styles for this layout
         std::set<std::string> getNamesOfAvailableStyles() const;
@@ -178,7 +179,7 @@ namespace eyegui
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
-			std::string key,
+            std::string key,
             float innerBorder,
             bool fade);
 
@@ -250,13 +251,13 @@ namespace eyegui
         std::vector<std::unique_ptr<Frame> > mFloatingFrames;
         std::vector<int> mFloatingFramesOrderingIndices;
         std::vector<int> mDyingFloatingFramesIndices;
-        float mAlpha;
+        LerpValue mAlpha;
         bool mVisible;
         bool mResizeNecessary;
         bool mUseInput;
         std::unique_ptr<std::map<std::string, Style> > mStyles;
         InteractiveElement* mpSelectedInteractiveElement;
-		std::unique_ptr<NotificationQueue> mupNotificationQueue;
+        std::unique_ptr<NotificationQueue> mupNotificationQueue;
     };
 }
 

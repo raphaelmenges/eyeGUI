@@ -23,13 +23,13 @@ namespace eyegui
         mpGUI = pGUI;
         mpAssetManager = pAssetManager;
         mupIds = NULL;
-        mAlpha = 1;
+        mAlpha.setValue(1);
         mVisible = true;
         mResizeNecessary = true;
         mUseInput = true;
         mpSelectedInteractiveElement = NULL;
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
-		mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
+        mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
 
         // Parse style file
         mStyles = stylesheet_parser::parse(stylesheetFilepath);
@@ -43,8 +43,8 @@ namespace eyegui
     void Layout::update(float tpf, Input* pInput)
     {
         // *** NOTIFICATIONS ***
-		mupNotificationQueue->process();
-       
+        mupNotificationQueue->process();
+
         // *** DELETION OF REMOVED FLOATING FRAMES ***
 
         for (int i : mDyingFloatingFramesIndices)
@@ -66,23 +66,15 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update alpha
-        if (mVisible)
-        {
-            mAlpha += tpf / getConfig()->animationDuration;
-        }
-        else
-        {
-            mAlpha -= tpf / getConfig()->animationDuration;
-        }
-        mAlpha = clamp(mAlpha, 0, 1);
+        mAlpha.update(tpf / getConfig()->animationDuration, !mVisible);
 
         // *** UPDATE FRAMES ***
 
         // Update root only if own alpha greater zero
-        if (mAlpha > 0)
+        if (mAlpha.getValue() > 0)
         {
             // Do not use input if still fading
-            if (!mUseInput || mAlpha < 1)
+            if (!mUseInput || mAlpha.getValue() < 1)
             {
                 pInput = NULL;
             }
@@ -103,7 +95,7 @@ namespace eyegui
                         pFrame->setRemovedFadingAlpha(fadingAlpha);
 
                         // Update
-                        pFrame->update(tpf, mAlpha, NULL);
+                        pFrame->update(tpf, mAlpha.getValue(), NULL);
 
                         // Delete frame in next update
                         if (fadingAlpha <= 0)
@@ -114,20 +106,20 @@ namespace eyegui
                     else
                     {
                         // Standard update
-                        pFrame->update(tpf, mAlpha, pInput);
+                        pFrame->update(tpf, mAlpha.getValue(), pInput);
                     }
                 }
             }
 
             // Update main frame
-            mupMainFrame->update(tpf, mAlpha, pInput);
+            mupMainFrame->update(tpf, mAlpha.getValue(), pInput);
         }
     }
 
     void Layout::draw() const
     {
         // Use alpha because while fading it should still draw
-        if (mAlpha > 0)
+        if (mAlpha.getValue() > 0)
         {
             // Draw main frame
             mupMainFrame->draw();
@@ -146,7 +138,7 @@ namespace eyegui
 
     void Layout::resize(bool force)
     {
-        if (mAlpha > 0 || force)
+        if (mAlpha.getValue() > 0 || force)
         {
             // Resize main frame
             mupMainFrame->resize(force);
@@ -182,10 +174,10 @@ namespace eyegui
         // TODO: strange to call it attach root but to delegate it to a frame
     }
 
-	NotificationQueue* Layout::getNotificationQueue() const
-	{
-		return mupNotificationQueue.get();
-	}
+    NotificationQueue* Layout::getNotificationQueue() const
+    {
+        return mupNotificationQueue.get();
+    }
 
     Config const * Layout::getConfig() const
     {
@@ -218,10 +210,10 @@ namespace eyegui
         return &((*(mStyles.get())).at(styleName));
     }
 
-	std::u16string Layout::getContentFromLocalization(std::string key) const
-	{
-		return mpGUI->getContentFromLocalization(key);
-	}
+    std::u16string Layout::getContentFromLocalization(std::string key) const
+    {
+        return mpGUI->getContentFromLocalization(key);
+    }
 
     std::set<std::string> Layout::getNamesOfAvailableStyles() const
     {
@@ -242,11 +234,11 @@ namespace eyegui
         {
             if (mVisible)
             {
-                mAlpha = 1;
+                mAlpha.setValue(1);
             }
             else
             {
-                mAlpha = 0;
+                mAlpha.setValue(0);
             }
         }
     }
@@ -478,7 +470,7 @@ namespace eyegui
         deselectInteractiveElement();
 
         // Only select next, if visible
-        if (mAlpha >= 1 && pInteractiveElement->getAlpha() > 0)
+        if (mAlpha.getValue() >= 1 && pInteractiveElement->getAlpha() > 0)
         {
             mpSelectedInteractiveElement = pInteractiveElement;
             mpSelectedInteractiveElement->select(true);
@@ -501,7 +493,7 @@ namespace eyegui
 
     void Layout::interactWithSelectedInteractiveElement()
     {
-        if (mpSelectedInteractiveElement != NULL && mAlpha >= 1)
+        if (mpSelectedInteractiveElement != NULL && mAlpha.getValue() >= 1)
         {
             mpSelectedInteractiveElement->interact();
         }
@@ -659,7 +651,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
-				pElement->getNotificationQueue(),
+                pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder()));
 
@@ -690,7 +682,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
-				pElement->getNotificationQueue(),
+                pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 filepath,
@@ -723,7 +715,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
-				pElement->getNotificationQueue(),
+                pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder()));
 
@@ -754,7 +746,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
-				pElement->getNotificationQueue(),
+                pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 iconFilepath,
@@ -787,7 +779,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
-				pElement->getNotificationQueue(),
+                pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 iconFilepath,
@@ -820,7 +812,7 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
-				pElement->getNotificationQueue(),
+                pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 iconFilepath));
@@ -845,7 +837,7 @@ namespace eyegui
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
-			std::string key,
+            std::string key,
             float innerBorder,
             bool fade)
     {
@@ -860,14 +852,14 @@ namespace eyegui
                 pElement->getLayout(),
                 pElement->getFrame(),
                 pElement->getAssetManager(),
-				pElement->getNotificationQueue(),
+                pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 fontSize,
                 alignment,
                 verticalAlignment,
                 content,
-				key,
+                key,
                 innerBorder));
 
             Element* pTextBlock = upTextBlock.get();
@@ -894,7 +886,7 @@ namespace eyegui
                     pElement->getLayout(),
                     pElement->getFrame(),
                     pElement->getAssetManager(),
-					pElement->getNotificationQueue(),
+                    pElement->getNotificationQueue(),
                     pElement->getParent(),
                     filepath));
             if (replaceElement(pElement, std::move(upPair->first), fade))
@@ -961,7 +953,7 @@ namespace eyegui
                     this,
                     pFrame,
                     mpAssetManager,
-					mupNotificationQueue.get(),
+                    mupNotificationQueue.get(),
                     NULL,
                     filepath));
 

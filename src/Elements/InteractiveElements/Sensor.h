@@ -12,7 +12,6 @@
 
 #include "InteractiveElement.h"
 #include "Elements/NotifierTemplate.h"
-#include "LerpValue.h"
 
 namespace eyegui
 {

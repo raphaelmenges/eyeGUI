@@ -13,10 +13,10 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border) : Element(
             id,
@@ -25,7 +25,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
-			pNotificationQueue,
+            pNotificationQueue,
             relativeScale,
             border)
     {
@@ -80,7 +80,7 @@ namespace eyegui
             mpBackground->getShader()->fillValue("alpha", mAlpha);
 
             // Fill activity
-            mpBackground->getShader()->fillValue("activity", mActivity);
+            mpBackground->getShader()->fillValue("activity", mActivity.getValue());
 
             // Draw render item
             mpBackground->draw();

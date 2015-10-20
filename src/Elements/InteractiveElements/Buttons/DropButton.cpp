@@ -16,10 +16,10 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         std::string iconFilepath,
@@ -30,7 +30,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
-			pNotificationQueue,
+            pNotificationQueue,
             relativeScale,
             border,
             iconFilepath,
@@ -42,7 +42,7 @@ namespace eyegui
         mSpace = space;
 
         // Initial values
-        mInnerAlpha = 0;
+        mInnerAlpha.setValue(0);
         mInnerElementVisible = false;
     }
 
@@ -61,7 +61,7 @@ namespace eyegui
         // Immediately
         if (immediately)
         {
-            mInnerAlpha = 1;
+            mInnerAlpha.setValue(1);
         }
     }
 
@@ -75,7 +75,7 @@ namespace eyegui
         // Immediately
         if (immediately)
         {
-            mInnerAlpha = 0;
+            mInnerAlpha.setValue(0);
         }
     }
 
@@ -145,17 +145,9 @@ namespace eyegui
         BoxButton::specialUpdate(tpf, pInput);
 
         // Update alpha of inner element
-        if (mInnerElementVisible)
-        {
-            mInnerAlpha += tpf / mpLayout->getConfig()->animationDuration;
-        }
-        else
-        {
-            mInnerAlpha -= tpf / mpLayout->getConfig()->animationDuration;
-        }
-        mInnerAlpha = clamp(mInnerAlpha, 0, 1);
+        mInnerAlpha.update(tpf / mpLayout->getConfig()->animationDuration, !mInnerElementVisible);
 
-        mpFrame->setFrontElementAlpha(getInnerElement(), mInnerAlpha * mAlpha);
+        mpFrame->setFrontElementAlpha(getInnerElement(), mInnerAlpha.getValue() * mAlpha);
     }
 
     void DropButton::specialTransformAndSize()
@@ -228,7 +220,7 @@ namespace eyegui
         // Super call
         BoxButton::specialReset();
 
-        mInnerAlpha = 0;
+        mInnerAlpha.setValue(0);
         mInnerElementVisible = false;
     }
 

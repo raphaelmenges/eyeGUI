@@ -13,10 +13,10 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         std::string filepath,
@@ -27,7 +27,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
-			pNotificationQueue,
+            pNotificationQueue,
             relativeScale,
             border)
     {
@@ -113,7 +113,7 @@ namespace eyegui
         mpQuad->getShader()->fillValue("alpha", mAlpha);
 
         // Fill activity
-        mpQuad->getShader()->fillValue("activity", mActivity);
+        mpQuad->getShader()->fillValue("activity", mActivity.getValue());
 
         // Bind image
         mpImage->bind(0);
