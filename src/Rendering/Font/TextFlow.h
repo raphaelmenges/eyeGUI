@@ -4,16 +4,10 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO:
-//  - All values pixel values!
-//  - internal origin lower left but interface upper left...
-//      - element seems although to handle it at drawing only...
-//      - x y coordinate of flow is upper left corner. Flow has to be adjusted,
-//      atm it is starting at the bottom...
-//      - just say in the description: internally, that coordinate system,
-//      and for the interface that.
-//  - Future work: add "..." when no space left, make font smaller when not enough
-//  space available...
+// Creates geometry for given font and text content. Is delegated by elements
+// for font rendering in general. All values in this class are in pixel space,
+// even floats. Internal the origin is at lower left but all methods
+// expect values in a coordinate system with an origin at the upper left.
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_

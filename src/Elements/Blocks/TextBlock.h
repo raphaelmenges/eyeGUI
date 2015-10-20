@@ -4,7 +4,8 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Simple block for displaying text. Delegating a text flow object for this
+// task.
 
 #ifndef TEXT_BLOCK_H_
 #define TEXT_BLOCK_H_
@@ -19,21 +20,21 @@ namespace eyegui
     public:
 
         // Constructors
-		TextBlock(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout const * pLayout,
-			Frame* pFrame,
-			AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
-			float relativeScale,
-			float border,
-			FontSize fontSize,
-			TextFlowAlignment alignment,
-			TextFlowVerticalAlignment verticalAlignment,
-			std::u16string content,
-			std::string key,
+        TextBlock(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+            NotificationQueue* pNotificationQueue,
+            float relativeScale,
+            float border,
+            FontSize fontSize,
+            TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
+            std::u16string content,
+            std::string key,
             float innerBorder);
 
         // Destructor
@@ -50,7 +51,7 @@ namespace eyegui
     private:
 
         // Members
-		std::string mKey;
+        std::string mKey;
         float mInnerBorder;
         std::unique_ptr<TextFlow> mupTextFlow;
     };

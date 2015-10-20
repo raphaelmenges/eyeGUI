@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Parser for localization files.
 
 #ifndef LOCALIZATION_PARSER_H_
 #define LOCALIZATION_PARSER_H_
@@ -24,8 +24,8 @@ namespace eyegui
         // Parsing
         std::unique_ptr<localizationMap> parse(std::string filepath);
 
-		// Parse a line
-		void parseLine(localizationMap& rLocalizationMap, std::string line, std::string filepath);
+        // Parse a line
+        void parseLine(localizationMap& rLocalizationMap, std::string line, std::string filepath);
     }
 }
 

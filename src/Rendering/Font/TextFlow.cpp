@@ -12,9 +12,6 @@
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 #include <cmath>
 
-// TODO: Testing
-#include <iostream>
-
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -72,7 +69,7 @@ namespace eyegui
         glBindVertexArray(oldVAO);
 
         // Get handle of atlas texture
-		mAtlasTextureHandle = mpFont->getAtlasTextureHandle(mFontSize);
+        mAtlasTextureHandle = mpFont->getAtlasTextureHandle(mFontSize);
 
         // TransformAndSize HAS TO BE CALLED ONCE AT LAST!
     }
@@ -132,13 +129,15 @@ namespace eyegui
         glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - (mY + yOffset), 0));
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
 
-        // TODO: TEST (only one atlas at the moment)
+        // Bind atlas texture
         glBindTexture(GL_TEXTURE_2D, mAtlasTextureHandle);
 
+        // Fill uniforms
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("alpha", alpha);
         mpShader->fillValue("color", color);
 
+        // Draw flow
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
 
@@ -149,19 +148,19 @@ namespace eyegui
         glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
 
         // Get size of space
-		float pixelOfSpace = 0;
+        float pixelOfSpace = 0;
 
-		Glyph const * pGlyph = mpFont->getGlyph(mFontSize, u' ');
-		if (pGlyph == NULL)
-		{
-			throwWarning(
-				OperationNotifier::Operation::RUNTIME,
-				"TextFlow does not find space sign in font");
-		}
-		else
-		{
-			pixelOfSpace = pGlyph->advance.x;
-		}
+        Glyph const * pGlyph = mpFont->getGlyph(mFontSize, u' ');
+        if (pGlyph == NULL)
+        {
+            throwWarning(
+                OperationNotifier::Operation::RUNTIME,
+                "TextFlow does not find space sign in font");
+        }
+        else
+        {
+            pixelOfSpace = pGlyph->advance.x;
+        }
 
         // Go over words in content
         std::u16string copyContent = mContent;
@@ -198,82 +197,82 @@ namespace eyegui
                 rPargraph.erase(0, pos + wordDelimiter.length());
             }
             words.push_back(calculateWord(rPargraph)); // Last word (words never empty)
-			
-			// Check, whether all words can fit into given width
-			float maxWordPixelWidth = 0;
-			for (const Word& rWord : words)
-			{
-				maxWordPixelWidth = std::max(rWord.pixelWidth, maxWordPixelWidth);
-			}
 
-			// When all words could fit, try it
-			if ((int)maxWordPixelWidth <= mWidth)
-			{
-				// Prepare some values
-				int wordIndex = 0;
-				bool hasNext = true;
+            // Check, whether all words can fit into given width
+            float maxWordPixelWidth = 0;
+            for (const Word& rWord : words)
+            {
+                maxWordPixelWidth = std::max(rWord.pixelWidth, maxWordPixelWidth);
+            }
 
-				// Go over words in paragraph
-				while (hasNext && (abs(yPixelPen) <= mHeight))
-				{
-					// Collect words in one line
-					std::vector<Word const *> line;
-					float wordsPixelWidth = 0;
+            // When all words could fit, try it
+            if ((int)maxWordPixelWidth <= mWidth)
+            {
+                // Prepare some values
+                int wordIndex = 0;
+                bool hasNext = true;
 
-					while (
-						hasNext // Still words in the paragraph?
-						&& ((wordsPixelWidth + words[wordIndex].pixelWidth) + (((int)line.size()) - 1) * pixelOfSpace) <= mWidth) // Still space in line?
-					{
-						wordsPixelWidth += words[wordIndex].pixelWidth;
-						line.push_back(&words[wordIndex]);
-						wordIndex++;
+                // Go over words in paragraph
+                while (hasNext && (abs(yPixelPen) <= mHeight))
+                {
+                    // Collect words in one line
+                    std::vector<Word const *> line;
+                    float wordsPixelWidth = 0;
 
-						if (wordIndex >= words.size())
-						{
-							// No words in paragraph left
-							hasNext = false;
-						}
-					}
+                    while (
+                        hasNext // Still words in the paragraph?
+                        && ((wordsPixelWidth + words[wordIndex].pixelWidth) + (((int)line.size()) - 1) * pixelOfSpace) <= mWidth) // Still space in line?
+                    {
+                        wordsPixelWidth += words[wordIndex].pixelWidth;
+                        line.push_back(&words[wordIndex]);
+                        wordIndex++;
 
-					// Now decide xOffset
-					int xOffset = 0;
-					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
-					{
-						xOffset = mWidth - int((wordsPixelWidth + ((int)line.size() - 1) * pixelOfSpace));
-						if (mAlignment == TextFlowAlignment::CENTER)
-						{
-							xOffset = xOffset / 2;
-						}
-					}
+                        if (wordIndex >= words.size())
+                        {
+                            // No words in paragraph left
+                            hasNext = false;
+                        }
+                    }
 
-					// Decide dynamic space
-					int dynamicSpace = (int)pixelOfSpace;
-					if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext)
-					{
-						// Do not use dynamic space for last line
-						dynamicSpace = (mWidth - (int)wordsPixelWidth) / ((int)line.size() - 1);
-					}
+                    // Now decide xOffset
+                    int xOffset = 0;
+                    if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+                    {
+                        xOffset = mWidth - int((wordsPixelWidth + ((int)line.size() - 1) * pixelOfSpace));
+                        if (mAlignment == TextFlowAlignment::CENTER)
+                        {
+                            xOffset = xOffset / 2;
+                        }
+                    }
 
-					float xPixelPen = (float)xOffset;
-					for (int i = 0; i < line.size(); i++)
-					{
-						// Assuming, that the count of vertices and texture coordinates is equal
-						for (int j = 0; j < line[i]->spVertices->size(); j++)
-						{
-							glm::vec3& rVertex = line[i]->spVertices->at(j);
-							vertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
-							glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
-							textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
-						}
+                    // Decide dynamic space
+                    int dynamicSpace = (int)pixelOfSpace;
+                    if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext)
+                    {
+                        // Do not use dynamic space for last line
+                        dynamicSpace = (mWidth - (int)wordsPixelWidth) / ((int)line.size() - 1);
+                    }
 
-						// Advance xPen
-						xPixelPen += (float)dynamicSpace + line[i]->pixelWidth;
-					}
+                    float xPixelPen = (float)xOffset;
+                    for (int i = 0; i < line.size(); i++)
+                    {
+                        // Assuming, that the count of vertices and texture coordinates is equal
+                        for (int j = 0; j < line[i]->spVertices->size(); j++)
+                        {
+                            glm::vec3& rVertex = line[i]->spVertices->at(j);
+                            vertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
+                            glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
+                            textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+                        }
 
-					// Advance yPen
-					yPixelPen -= mpFont->getLineHeight(mFontSize);
-				}
-			}
+                        // Advance xPen
+                        xPixelPen += (float)dynamicSpace + line[i]->pixelWidth;
+                    }
+
+                    // Advance yPen
+                    yPixelPen -= mpFont->getLineHeight(mFontSize);
+                }
+            }
         }
 
         // Get height of all lines (yPixelPen is one line to low now)
@@ -327,7 +326,7 @@ namespace eyegui
             glm::vec2 textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
             glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
 
-			xPixelPen += pGlyph->advance.x;
+            xPixelPen += pGlyph->advance.x;
 
             // Fill into data blocks
             word.spVertices->push_back(vertexA);

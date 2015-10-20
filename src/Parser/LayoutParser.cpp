@@ -57,7 +57,7 @@ namespace eyegui
             // Create, parse further internal an attach
             std::unique_ptr<elementsAndIds> upPair;
             upPair = std::move(element_parser::parse(upLayout.get(), upLayout->getMainFrame(), pAssetManager, upLayout->getNotificationQueue(), xmlRoot, NULL, filepath));
-            upLayout->attachRoot(std::move(upPair->first), std::move(upPair->second));
+            upLayout->attachElementToMainFrameAsRoot(std::move(upPair->first), std::move(upPair->second));
 
             // Return ready to use layout
             return(std::move(upLayout));

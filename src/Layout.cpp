@@ -161,17 +161,15 @@ namespace eyegui
         }
     }
 
-    void Layout::attachRoot(
+    void Layout::attachElementToMainFrameAsRoot(
         std::unique_ptr<Element> upElement,
         std::unique_ptr<std::map<std::string, Element*> > upIds)
     {
-        // Set root element of frame
+        // Set root element of main frame
         mupMainFrame->attachRoot(std::move(upElement));
 
         // Keep track of ids
         mupIds = std::move(upIds);
-
-        // TODO: strange to call it attach root but to delegate it to a frame
     }
 
     NotificationQueue* Layout::getNotificationQueue() const

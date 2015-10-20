@@ -52,8 +52,8 @@ namespace eyegui
         // Resize function
         void resize(bool force = false);
 
-        // Attach root
-        void attachRoot(
+        // Attach element to main frame as root
+        void attachElementToMainFrameAsRoot(
             std::unique_ptr<Element> upElement,
             std::unique_ptr<std::map<std::string, Element*> > upIds);
 

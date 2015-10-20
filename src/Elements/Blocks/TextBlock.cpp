@@ -16,17 +16,17 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-		std::string key,
+        std::string key,
         float innerBorder) : Block(
             id,
             styleName,
@@ -34,7 +34,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
-			pNotificationQueue,
+            pNotificationQueue,
             relativeScale,
             border)
     {
@@ -42,29 +42,29 @@ namespace eyegui
 
         // Fill members
         mInnerBorder = innerBorder;
-		mKey = key;
+        mKey = key;
 
-		// Create text flow
-		if (mKey != EMPTY_STRING_ATTRIBUTE)
-		{
-			std::u16string localization = mpLayout->getContentFromLocalization(mKey);
-			if (localization == LOCALIZATION_NOT_FOUND)
-			{
-				throwWarning(
-					OperationNotifier::Operation::RUNTIME,
-					"No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
+        // Create text flow
+        if (mKey != EMPTY_STRING_ATTRIBUTE)
+        {
+            std::u16string localization = mpLayout->getContentFromLocalization(mKey);
+            if (localization == LOCALIZATION_NOT_FOUND)
+            {
+                throwWarning(
+                    OperationNotifier::Operation::RUNTIME,
+                    "No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
 
-				mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
-			}
-			else
-			{
-				mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
-			}
-		}
-		else
-		{
-			mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
-		}
+                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+            }
+            else
+            {
+                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
+            }
+        }
+        else
+        {
+            mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+        }
     }
 
     TextBlock::~TextBlock()
@@ -86,7 +86,7 @@ namespace eyegui
         // Super call
         Block::specialTransformAndSize();
 
-        // Use inner border (Copy code from Stack :-/) -> TODO: move to block?
+        // Use inner border (Copy code from Stack :-/) -> TODO: move to block? (grid could also use it)
         int usedBorder;
         int innerX, innerY, innerWidth, innerHeight;
         if (getOrientation() == Element::Orientation::HORIZONTAL)

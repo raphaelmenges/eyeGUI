@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Abstract superclass for fonts.
 
 #ifndef FONT_H_
 #define FONT_H_
@@ -32,19 +32,19 @@ namespace eyegui
         Font() {}
 
         // Destructor
-		virtual ~Font() {}
+        virtual ~Font() {}
 
         // Resize font atlases
-		virtual void resizeFontAtlases(int windowHeight) = 0;
+        virtual void resizeFontAtlases(int windowHeight) = 0;
 
         // Get glyph (may return NULL if not found)
-		virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const = 0;
+        virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const = 0;
 
         // Get height of line
-		virtual float getLineHeight(FontSize fontSize) const = 0;
+        virtual float getLineHeight(FontSize fontSize) const = 0;
 
-		// Get handle of texture atlas
-		virtual uint getAtlasTextureHandle(FontSize fontSize) const = 0;
+        // Get handle of texture atlas
+        virtual uint getAtlasTextureHandle(FontSize fontSize) const = 0;
     };
 }
 

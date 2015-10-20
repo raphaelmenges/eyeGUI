@@ -4,7 +4,8 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Implementation of font with nothing to display. Used as fallback when user
+// specifies no or wrong path to font file and default font ist needed.
 
 #ifndef EMPTY_FONT_H_
 #define EMPTY_FONT_H_
@@ -16,33 +17,33 @@
 
 namespace eyegui
 {
-	class EmptyFont : public Font
-	{
-	public:
+    class EmptyFont : public Font
+    {
+    public:
 
-		// Constructor
-		EmptyFont();
+        // Constructor
+        EmptyFont();
 
-		// Destructor
-		virtual ~EmptyFont();
+        // Destructor
+        virtual ~EmptyFont();
 
-		// Resize font atlases
-		virtual void resizeFontAtlases(int windowHeight);
+        // Resize font atlases
+        virtual void resizeFontAtlases(int windowHeight);
 
-		// Get glyph (may return NULL if not found)
-		virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
+        // Get glyph (may return NULL if not found)
+        virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
 
-		// Get height of line
-		virtual float getLineHeight(FontSize fontSize) const;
+        // Get height of line
+        virtual float getLineHeight(FontSize fontSize) const;
 
-		// Get handle of texture atlas
-		virtual uint getAtlasTextureHandle(FontSize fontSize) const;
-	
-	private:
+        // Get handle of texture atlas
+        virtual uint getAtlasTextureHandle(FontSize fontSize) const;
 
-		// Members
-		GLuint mTexture;
-	};
+    private:
+
+        // Members
+        GLuint mTexture;
+    };
 }
 
 #endif // EMPTY_FONT_H_

@@ -21,9 +21,6 @@
 
 #include <algorithm>
 
-// TODO testing
-#include <iostream>
-
 namespace eyegui
 {
     AssetManager::AssetManager(GUI const * pGUI)
@@ -42,8 +39,8 @@ namespace eyegui
 
     AssetManager::~AssetManager()
     {
-		// Get rid of fonts first because they have to delete FreeType faces
-		mFonts.clear();
+        // Get rid of fonts first because they have to delete FreeType faces
+        mFonts.clear();
 
         // Close FreeType Library
         FT_Done_FreeType(mFreeTypeLibrary);
@@ -170,61 +167,61 @@ namespace eyegui
         // Create font if not existing
         if (pFont == NULL)
         {
-			// Check whether empty font must be created
-			if (filepath == EMPTY_STRING)
-			{
-				// Empty font
-				rupFont = std::unique_ptr<Font>(
-					new EmptyFont());
+            // Check whether empty font must be created
+            if (filepath == EMPTY_STRING)
+            {
+                // Empty font
+                rupFont = std::unique_ptr<Font>(
+                    new EmptyFont());
 
-				// Tell the user about this
-				throwWarning(
-					OperationNotifier::Operation::RUNTIME,
-					"No default font set. Text rendering will not work");
-			}
-			else
-			{
-				// Check filepath
-				if (!checkFileNameExtension(filepath, "ttf"))
-				{
-					throwError(OperationNotifier::Operation::FONT_LOADING, "Font file has unknown format", filepath);
-				}
+                // Tell the user about this
+                throwWarning(
+                    OperationNotifier::Operation::RUNTIME,
+                    "No default font set. Text rendering will not work");
+            }
+            else
+            {
+                // Check filepath
+                if (!checkFileNameExtension(filepath, "ttf"))
+                {
+                    throwError(OperationNotifier::Operation::FONT_LOADING, "Font file has unknown format", filepath);
+                }
 
-				// Load font to FreeType face
-				std::unique_ptr<FT_Face> upFace = std::unique_ptr<FT_Face>(new FT_Face);
-				if (FT_New_Face(mFreeTypeLibrary, filepath.c_str(), 0, upFace.get()))
-				{
-					throwError(OperationNotifier::Operation::FONT_LOADING, "Failed to load font with FreeType Library", filepath);
-				}
-				else
-				{
-					// Decide character set
-					std::set<char16_t> characters = charsets::BASIC;
-					switch (mpGUI->getCharacterSet())
-					{
-					case CharacterSet::GERMANY_GERMAN:
-						characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
-						break;
-					case CharacterSet::US_ENGLISH:
-						// Are there any special characters in us english?
-						break;
-					}
+                // Load font to FreeType face
+                std::unique_ptr<FT_Face> upFace = std::unique_ptr<FT_Face>(new FT_Face);
+                if (FT_New_Face(mFreeTypeLibrary, filepath.c_str(), 0, upFace.get()))
+                {
+                    throwError(OperationNotifier::Operation::FONT_LOADING, "Failed to load font with FreeType Library", filepath);
+                }
+                else
+                {
+                    // Decide character set
+                    std::set<char16_t> characters = charsets::BASIC;
+                    switch (mpGUI->getCharacterSet())
+                    {
+                    case CharacterSet::GERMANY_GERMAN:
+                        characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
+                        break;
+                    case CharacterSet::US_ENGLISH:
+                        // Are there any special characters in us english?
+                        break;
+                    }
 
-					// Give face to a font object (it will delete it in the end)
-					rupFont = std::unique_ptr<Font>(
-						new AtlasFont(
-							filepath,
-							std::move(upFace),
-							characters,
-							mpGUI->getWindowHeight()));
-				}
+                    // Give face to a font object (it will delete it in the end)
+                    rupFont = std::unique_ptr<Font>(
+                        new AtlasFont(
+                            filepath,
+                            std::move(upFace),
+                            characters,
+                            mpGUI->getWindowHeight()));
+                }
             }
 
-			// Get raw pointer to font
-			pFont = rupFont.get();
+            // Get raw pointer to font
+            pFont = rupFont.get();
 
-			// Add font to own map
-			mFonts[filepath] = std::move(rupFont);
+            // Add font to own map
+            mFonts[filepath] = std::move(rupFont);
         }
 
         return pFont;
@@ -232,7 +229,6 @@ namespace eyegui
 
     void AssetManager::resizeFontAtlases()
     {
-        // TODO: maybe! does not work, but seems so. unique pointer reference?
         for (auto& rPair : mFonts)
         {
             rPair.second->resizeFontAtlases(mpGUI->getWindowHeight());
