@@ -1,5 +1,8 @@
 ### VERSION 0.2
 
+Bug:
+- Do not delete spaces from right side of localization
+
 Refactoring:
 	- Font.cpp and TextFlow.cpp refactoring...
 	- Add version / date of externals
