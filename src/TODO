@@ -1,6 +1,4 @@
 ### VERSION 0.2
-- Overwork CMakeLists! Probably, unnecessary sourcing instead of including
-	- Can one set visual to unicode in cmake?
 
 Refactoring:
 	- Font.cpp and TextFlow.cpp refactoring...
