@@ -33,7 +33,7 @@ namespace eyegui
         mContent = content;
         mFlowHeight = 0;
 
-        // TransformAndSize have to done before usage
+        // TransformAndSize has to be called before usage
         mX = 0;
         mY = 0;
         mWidth = 0;
@@ -70,8 +70,6 @@ namespace eyegui
 
         // Get handle of atlas texture
         mAtlasTextureHandle = mpFont->getAtlasTextureHandle(mFontSize);
-
-        // TransformAndSize HAS TO BE CALLED ONCE AT LAST!
     }
 
     TextFlow::~TextFlow()
@@ -206,7 +204,7 @@ namespace eyegui
             }
 
             // When all words could fit, try it
-            if ((int)maxWordPixelWidth <= mWidth)
+            if (std::ceil(maxWordPixelWidth) <= mWidth)
             {
                 // Prepare some values
                 int wordIndex = 0;
@@ -221,7 +219,10 @@ namespace eyegui
 
                     while (
                         hasNext // Still words in the paragraph?
-                        && ((wordsPixelWidth + words[wordIndex].pixelWidth) + (((int)line.size()) - 1) * pixelOfSpace) <= mWidth) // Still space in line?
+                        && std::ceil(
+                                (wordsPixelWidth + (float)words[wordIndex].pixelWidth) // Words size
+                                + (((float)line.size()) - 1.0f) * pixelOfSpace) // Spaces
+                            <= mWidth) // Still enough free pixels in in line?
                     {
                         wordsPixelWidth += words[wordIndex].pixelWidth;
                         line.push_back(&words[wordIndex]);
@@ -234,34 +235,34 @@ namespace eyegui
                         }
                     }
 
-                    // Now decide xOffset
+                    // Now decide xOffset for line
                     int xOffset = 0;
                     if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
                     {
-                        xOffset = mWidth - int((wordsPixelWidth + ((int)line.size() - 1) * pixelOfSpace));
+                        xOffset = mWidth - (int)((wordsPixelWidth + ((float)line.size() - 1.0) * pixelOfSpace));
                         if (mAlignment == TextFlowAlignment::CENTER)
                         {
                             xOffset = xOffset / 2;
                         }
                     }
 
-                    // Decide dynamic space
+                    // Decide dynamic space for line
                     int dynamicSpace = (int)pixelOfSpace;
-                    if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext)
+                    if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext) // Do not use dynamic space for last line
                     {
-                        // Do not use dynamic space for last line
                         dynamicSpace = (mWidth - (int)wordsPixelWidth) / ((int)line.size() - 1);
                     }
 
+                    // Combine word geometry to one line
                     float xPixelPen = (float)xOffset;
                     for (int i = 0; i < line.size(); i++)
                     {
                         // Assuming, that the count of vertices and texture coordinates is equal
                         for (int j = 0; j < line[i]->spVertices->size(); j++)
                         {
-                            glm::vec3& rVertex = line[i]->spVertices->at(j);
+                            const glm::vec3& rVertex = line[i]->spVertices->at(j);
                             vertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
-                            glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
+                            const glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
                             textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
                         }
 
@@ -299,7 +300,7 @@ namespace eyegui
         word.spVertices = std::shared_ptr<std::vector<glm::vec3> >(new std::vector<glm::vec3>);
         word.spTextureCoordinates = std::shared_ptr<std::vector<glm::vec2> >(new std::vector<glm::vec2>);
 
-        // Create data for text
+        // Fill word with data
         float xPixelPen = 0;
         for(int i = 0; i < content.size(); i++)
         {

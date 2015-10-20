@@ -43,7 +43,7 @@ namespace eyegui
         // Set content
         void setContent(std::u16string content);
 
-        // Transform and size
+        // Transform and size (has to be called before first usage)
         void transformAndSize(
             int x,
             int y,
@@ -75,7 +75,6 @@ namespace eyegui
         FontSize mFontSize;
         TextFlowAlignment mAlignment;
         TextFlowVerticalAlignment mVerticalAlignment;
-        Shader const * mpShader;
         int mX;
         int mY;
         int mWidth;
@@ -84,6 +83,7 @@ namespace eyegui
         std::u16string mContent;
         int mFlowHeight;
 
+        Shader const * mpShader;
         GLuint mVertexCount;
         GLuint mVertexBuffer;
         GLuint mTextureCoordinateBuffer;
