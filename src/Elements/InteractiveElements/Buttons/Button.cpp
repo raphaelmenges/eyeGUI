@@ -18,10 +18,10 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
         std::string iconFilepath,
@@ -32,7 +32,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
-			pNotificationQueue,
+            pNotificationQueue,
             relativeScale,
             border,
             iconFilepath)
@@ -44,8 +44,8 @@ namespace eyegui
 
         // Calling virtual reset method in constructor is not good
         mIsDown = false;
-        mThreshold = 0;
-        mPressing = 0;
+        mThreshold.setValue(0);
+        mPressing.setValue(0);
     }
 
     Button::~Button()
@@ -58,7 +58,7 @@ namespace eyegui
         if (mActive)
         {
             // Inform listener after updating
-			mpNotificationQueue->enqueue(this, Notification::BUTTON_HIT);
+            mpNotificationQueue->enqueue(this, Notification::BUTTON_HIT);
 
             // Call context correct method
             if (mIsDown)
@@ -88,7 +88,7 @@ namespace eyegui
             // Immediately
             if (immediately)
             {
-                mPressing = 1;
+                mPressing.setValue(1);
             }
         }
     }
@@ -104,12 +104,12 @@ namespace eyegui
             mIsDown = false;
 
             // Inform listener after updating
-			mpNotificationQueue->enqueue(this, Notification::BUTTON_UP);
+            mpNotificationQueue->enqueue(this, Notification::BUTTON_UP);
 
             // Immediately
             if (immediately)
             {
-                mPressing = 0;
+                mPressing.setValue(0);
             }
         }
     }
@@ -139,38 +139,36 @@ namespace eyegui
         }
 
         // Pressing animation
-        if (mIsDown && mPressing < 1)
+        if (mIsDown && mPressing.getValue() < 1)
         {
-            mPressing += tpf / mpLayout->getConfig()->buttonPressingDuration;
+            mPressing.update(tpf / mpLayout->getConfig()->buttonPressingDuration);
 
             // If pressed and no switch, go back
-            if (!mIsSwitch && mPressing >= 1)
+            if (!mIsSwitch && mPressing.getValue() >= 1)
             {
                 up();
             }
         }
-        else if (!mIsDown && mPressing > 0)
+        else if (!mIsDown && mPressing.getValue() > 0)
         {
-            mPressing -= tpf / mpLayout->getConfig()->buttonPressingDuration;
+            mPressing.update(-tpf / mpLayout->getConfig()->buttonPressingDuration);
         }
-        mPressing = clamp(mPressing, 0, 1);
 
         // Threshold
-        if ((mPressing == 0 || mPressing == 1) && penetrated)
+        if ((mPressing.getValue() == 0 || mPressing.getValue() == 1) && penetrated)
         {
-            mThreshold += tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration;
+            mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration);
 
-            if (mThreshold >= 1)
+            if (mThreshold.getValue() >= 1)
             {
                 hit();
-                mThreshold = 0;
+                mThreshold.setValue(0);
             }
         }
         else
         {
-            mThreshold -= tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration;
+            mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration);
         }
-        mThreshold = clamp(mThreshold, 0, 1);
     }
 
     void Button::specialDraw() const
@@ -178,8 +176,8 @@ namespace eyegui
         // Super call
         InteractiveElement::specialDraw();
 
-        mpRenderItem->getShader()->fillValue("threshold", mThreshold);
-        mpRenderItem->getShader()->fillValue("pressing", mPressing);
+        mpRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
+        mpRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
     }
 
     void Button::specialTransformAndSize()
@@ -192,8 +190,8 @@ namespace eyegui
         InteractiveElement::specialReset();
 
         mIsDown = false;
-        mThreshold = 0;
-        mPressing = 0;
+        mThreshold.setValue(0);
+        mPressing.setValue(0);
     }
 
     void Button::specialInteract()

@@ -12,6 +12,7 @@
 
 #include "InteractiveElement.h"
 #include "Elements/NotifierTemplate.h"
+#include "LerpValue.h"
 
 namespace eyegui
 {
@@ -24,10 +25,10 @@ namespace eyegui
             std::string id,
             std::string styleName,
             Element* pParent,
-			Layout const * pLayout,
+            Layout const * pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
+            NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
             std::string iconFilepath);
@@ -61,7 +62,7 @@ namespace eyegui
     private:
 
         // Members
-        float mPenetration; // [0..1]
+        LerpValue mPenetration; // [0..1]
     };
 }
 

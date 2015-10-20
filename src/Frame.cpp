@@ -21,7 +21,7 @@ namespace eyegui
     {
         // Initialize members
         mpLayout = pLayout;
-        mFrameAlpha = 1;
+        mFrameAlpha.setValue(1);
         mCombinedAlpha = 1;
         mRemovedFadingAlpha = 1;
         mVisible = true;
@@ -52,18 +52,10 @@ namespace eyegui
         }
 
         // Update own alpha
-        if (mVisible)
-        {
-            mFrameAlpha += tpf / mpLayout->getConfig()->animationDuration;
-        }
-        else
-        {
-            mFrameAlpha -= tpf / mpLayout->getConfig()->animationDuration;
-        }
-        mFrameAlpha = clamp(mFrameAlpha, 0, 1);
+        mFrameAlpha.update(tpf / mpLayout->getConfig()->animationDuration, !mVisible);
 
         // Combine own alpha with layout's
-        mCombinedAlpha = mFrameAlpha * mRemovedFadingAlpha * alpha;
+        mCombinedAlpha = mFrameAlpha.getValue() * mRemovedFadingAlpha * alpha;
 
         // Update root only if own alpha greater zero
         if (mCombinedAlpha > 0)
@@ -185,11 +177,11 @@ namespace eyegui
         {
             if (mVisible)
             {
-                mFrameAlpha = 1;
+                mFrameAlpha.setValue(1);
             }
             else
             {
-                mFrameAlpha = 0;
+                mFrameAlpha.setValue(0);
             }
         }
     }

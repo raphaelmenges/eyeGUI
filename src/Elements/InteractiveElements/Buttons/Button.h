@@ -12,6 +12,7 @@
 
 #include "Elements/InteractiveElements//InteractiveElement.h"
 #include "Elements/NotifierTemplate.h"
+#include "LerpValue.h"
 
 namespace eyegui
 {
@@ -24,10 +25,10 @@ namespace eyegui
             std::string id,
             std::string styleName,
             Element* pParent,
-			Layout const * pLayout,
+            Layout const * pLayout,
             Frame* pFrame,
             AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
+            NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
             std::string iconFilepath,
@@ -72,8 +73,8 @@ namespace eyegui
         // Members
         bool mIsDown;
         bool mIsSwitch;
-        float mThreshold; // [0..1]
-        float mPressing; // [0..1]
+        LerpValue mThreshold; // [0..1]
+        LerpValue mPressing; // [0..1]
     };
 }
 

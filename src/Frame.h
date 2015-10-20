@@ -5,7 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Frame is owner of elements. Elements can register child elements for
-// updating and rendering as front elements, which are then updated before 
+// updating and rendering as front elements, which are then updated before
 // the other elements and drawn on top by the frame.
 
 #ifndef FRAME_H_
@@ -13,6 +13,7 @@
 
 #include "eyeGUI.h"
 #include "Elements/Elements.h"
+#include "LerpValue.h"
 
 #include <memory>
 #include <map>
@@ -74,46 +75,46 @@ namespace eyegui
         // Remove front elements of a element
         void removeFrontElementsOfElement(Element* pTarget);
 
-		// Get pointer to all elements, recursively
-		std::set<Element*> getAllElements() const;
+        // Get pointer to all elements, recursively
+        std::set<Element*> getAllElements() const;
 
-		// Get all elements' ids
-		std::set<std::string> getAllElementsIds() const;
+        // Get all elements' ids
+        std::set<std::string> getAllElementsIds() const;
 
-		// Set removed fading alpha
-		void setRemovedFadingAlpha(float alpha);
+        // Set removed fading alpha
+        void setRemovedFadingAlpha(float alpha);
 
-		// Get removed fading alpha
-		float getRemovedFadingAlpha() const;
+        // Get removed fading alpha
+        float getRemovedFadingAlpha() const;
 
-		// Set removed
-		void setRemoved();
+        // Set removed
+        void setRemoved();
 
-		// Is removed?
-		bool isRemoved() const;
+        // Is removed?
+        bool isRemoved() const;
 
-		// Translation
-		void translate(float translateX, float translateY);
+        // Translation
+        void translate(float translateX, float translateY);
 
-		// Scaling
-		void scale(float scaleX, float scaleY);
+        // Scaling
+        void scale(float scaleX, float scaleY);
 
-		// Set position
-		void setPosition(float relativePositionX, float relativePositionY);
+        // Set position
+        void setPosition(float relativePositionX, float relativePositionY);
 
-		// Set size
-		void setSize(float relativeSizeX, float relativeSizeY);
+        // Set size
+        void setSize(float relativeSizeX, float relativeSizeY);
 
     private:
 
-		// Clamp size
-		void clampSize();
+        // Clamp size
+        void clampSize();
 
         // Members
         Layout const * mpLayout;
         std::unique_ptr<Element> mupRoot;
-        float mFrameAlpha;
-		float mCombinedAlpha;
+        LerpValue mFrameAlpha;
+        float mCombinedAlpha;
         bool mVisible;
         std::vector<Element*> mFrontElements;
         std::map<Element*, float> mFrontElementAlphas;
@@ -123,8 +124,8 @@ namespace eyegui
         float mRelativePositionY;
         float mRelativeSizeX;
         float mRelativeSizeY;
-		bool mRemoved;
-		float mRemovedFadingAlpha;
+        bool mRemoved;
+        float mRemovedFadingAlpha;
     };
 }
 

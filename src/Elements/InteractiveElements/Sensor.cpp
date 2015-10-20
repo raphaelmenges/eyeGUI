@@ -14,24 +14,24 @@
 
 namespace eyegui
 {
-	Sensor::Sensor(
-		std::string id,
-		std::string styleName,
-		Element* pParent,
-		Layout const * pLayout,
-		Frame* pFrame,
-		AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
-		float relativeScale,
-		float border,
-		std::string iconFilepath) : InteractiveElement(
-			id,
-			styleName,
-			pParent,
-			pLayout,
-			pFrame,
-			pAssetManager,
-			pNotificationQueue,
+    Sensor::Sensor(
+        std::string id,
+        std::string styleName,
+        Element* pParent,
+        Layout const * pLayout,
+        Frame* pFrame,
+        AssetManager* pAssetManager,
+        NotificationQueue* pNotificationQueue,
+        float relativeScale,
+        float border,
+        std::string iconFilepath) : InteractiveElement(
+            id,
+            styleName,
+            pParent,
+            pLayout,
+            pFrame,
+            pAssetManager,
+            pNotificationQueue,
             relativeScale,
             border,
             iconFilepath)
@@ -41,7 +41,7 @@ namespace eyegui
         mpRenderItem = mpAssetManager->fetchRenderItem(
             shaders::Type::SENSOR,
             meshes::Type::QUAD);
-        mPenetration = 0;
+        mPenetration.setValue(0);
     }
 
     Sensor::~Sensor()
@@ -51,8 +51,8 @@ namespace eyegui
 
     void Sensor::penetrate(float amount)
     {
-        mPenetration += amount;
-        mPenetration = clamp(mPenetration, 0, 1);
+        // Penetrate
+        mPenetration.update(amount);
 
         // Remove highlight
         highlight(false);
@@ -63,25 +63,20 @@ namespace eyegui
         // Super call
         InteractiveElement::specialUpdate(tpf, pInput);
 
-        // Penetration
-        if (penetratedByInput(pInput))
+        // Penetration by input
+        bool penetrated = penetratedByInput(pInput);
+        if (penetrated)
         {
             // TODO: ugly input killing
             pInput->mouseUsed = true;
 
-            mPenetration += tpf / mpLayout->getConfig()->sensorPenetrationIncreaseDuration;
-
             // Remove highlight
             highlight(false);
         }
-        else
-        {
-            mPenetration -= tpf / mpLayout->getConfig()->sensorPenetrationDecreaseDuration;
-        }
-        mPenetration = clamp(mPenetration, 0, 1);
+        mPenetration.update(tpf / mpLayout->getConfig()->sensorPenetrationDecreaseDuration, !penetrated);
 
         // Inform listener after updating when penetrated
-        if (mPenetration > 0)
+        if (mPenetration.getValue() > 0)
         {
             mpNotificationQueue->enqueue(this, Notification::SENSOR_PENETRATED);
         }
@@ -96,7 +91,7 @@ namespace eyegui
         InteractiveElement::specialDraw();
 
         // Fill other values
-        mpRenderItem->getShader()->fillValue("penetration", mPenetration);
+        mpRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
 
         // Scale of icon
         mpRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
@@ -115,7 +110,7 @@ namespace eyegui
         InteractiveElement::specialReset();
 
         // Reset some values
-        mPenetration = 0;
+        mPenetration.setValue(0);
     }
 
     void Sensor::specialInteract()
@@ -129,7 +124,7 @@ namespace eyegui
         switch (notification)
         {
         case Notification::SENSOR_PENETRATED:
-            notifyListener(&SensorListener::penetrated, pLayout, getId(), mPenetration);
+            notifyListener(&SensorListener::penetrated, pLayout, getId(), mPenetration.getValue());
             break;
         default:
             throwWarning(

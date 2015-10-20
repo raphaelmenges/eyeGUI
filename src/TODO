@@ -1,7 +1,5 @@
 ### VERSION 0.2
 - Create helper for de- and increasing of all values like alpha etc
-- Sensor: instead of real values for penetration: maybe acceleration would be a good idea
-- BoxButton: enable stretched icons
 - Overwork CMakeLists! Probably, unnecessary sourcing instead of including
 	- Can one set visual to unicode in cmake?
 
@@ -15,9 +13,10 @@ Refactoring:
 		- Localization
 	- Add version / date of externals
 	  - reintegrate glm (some files may be missing)
-	- TODOs in code
 
 ### VERSION 0.x
+- Sensor: instead of real values for penetration: maybe acceleration would be a good idea
+- BoxButton: enable stretched icons
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Maybe make job queue in GUI to enable notification to move layouts
 - Common super class for all elements using text
@@ -41,6 +40,7 @@ Refactoring:
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Audio
 - Right to left text (hebrew)
+	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Font has sometimes little rendering issues
 
