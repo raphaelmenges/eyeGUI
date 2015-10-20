@@ -2,12 +2,6 @@
 
 Refactoring:
 	- Font.cpp and TextFlow.cpp refactoring...
-	- What happens with font when size too small (like zero)
-	- TODOs
-	- Fill wiki
-		- Frames
-		- TextBlock
-		- Localization
 	- Add version / date of externals
 	  - reintegrate glm (some files may be missing)
 
