@@ -103,7 +103,7 @@ namespace eyegui
         calculateMesh();
     }
 
-    void TextFlow::draw(glm::vec4 color, float alpha) const
+    void TextFlow::draw(float scale, glm::vec4 color, float alpha) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
@@ -123,9 +123,13 @@ namespace eyegui
             break;
         }
 
-        // If matrix were not calculated every frame, this would have to be notified about resizing...
-        glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(mX, mpGUI->getWindowHeight() - (mY + yOffset), 0));
-        matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix;
+        // Calculate transformation matrix
+        glm::mat4 matrix = glm::mat4(1.0f);
+        matrix = glm::translate(matrix, glm::vec3(mX, mpGUI->getWindowHeight() - (mY + yOffset), 0)); // Change coordinate system and translate to position
+        matrix = glm::translate(matrix, glm::vec3(mWidth / 2, mHeight / 2, 0)); // Move back from center of scaling
+        matrix = glm::scale(matrix, glm::vec3(scale, scale, 1.0f)); // Scale
+        matrix = glm::translate(matrix, glm::vec3(- mWidth / 2, - mHeight / 2, 0)); // Move into center of scaling
+        matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
 
         // Bind atlas texture
         glBindTexture(GL_TEXTURE_2D, mAtlasTextureHandle);

@@ -78,7 +78,7 @@ namespace eyegui
         Block::specialDraw();
 
         // Draw text
-        mupTextFlow->draw(getStyle()->fontColor, mAlpha);
+        mupTextFlow->draw(1.0f, getStyle()->fontColor, mAlpha);
     }
 
     void TextBlock::specialTransformAndSize()
