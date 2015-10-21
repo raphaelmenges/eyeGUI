@@ -133,24 +133,24 @@ set(ALL_CODE
     ${UTFCPP})
 
 # Filtering for Visual Studio
-if(MSVC)
+IF(MSVC)
 
 	# http://stackoverflow.com/questions/9701387/cmake-source-group-multiple-files
 	foreach(f ${ALL_CODE})
 		# Get the path of the file relative to ${CMAKE_CURRENT_SOURCE_DIR},
 		# then alter it (not compulsory)
-		file(RELATIVE_PATH SRCGR ${CMAKE_CURRENT_SOURCE_DIR} ${f})
-		set(SRCGR ${APPNAME}/${SRCGR})
+		file(RELATIVE_PATH SRCGR "${CMAKE_CURRENT_SOURCE_DIR}" ${f})
+		set(SRCGR "${LIBNAME}/${SRCGR}")
 
 		# Extract the folder, ie remove the filename part
-		string(REGEX REPLACE (.*)(/[^/]*)$ \\1 SRCGR ${SRCGR})
+		string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
 
 		# Source_group expects \\ (double antislash), not / (slash)
 		string(REPLACE / \\ SRCGR ${SRCGR})
-		source_group(${SRCGR} FILES ${f})
+		source_group("${SRCGR}" FILES ${f})
 	endforeach()
 
-endif(MSVC)
+ENDIF(MSVC)
 
 # Add the interface header file
 set(ALL_CODE ${ALL_CODE} eyeGUI.h)
