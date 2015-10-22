@@ -9,7 +9,6 @@ Refactoring:
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - BoxButton: enable stretched icons
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
-- Maybe make job queue in GUI to enable notification to move layouts
 - Common super class for all elements using text
 	- key, textflow
 	- only if more elements with text flows are planned

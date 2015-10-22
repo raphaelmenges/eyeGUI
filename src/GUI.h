@@ -4,7 +4,10 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// GUI class owning the layouts.
+// GUI class owning the layouts. Most access through interface is handled
+// using special job objects, which are executed before rendering. This
+// ensures that the vector of layouts is not changed during rendering and
+// notifications from elements can trigger GUI jobs.
 
 #ifndef GUI_H_
 #define GUI_H_
@@ -29,9 +32,6 @@ namespace eyegui
     {
     public:
 
-        // Local constants
-        const std::string NO_CONFIG_TO_LOAD = "";
-
         // *** Methods accessed via interface ***
 
         // Constructor
@@ -40,7 +40,7 @@ namespace eyegui
             int height,
             std::string fontFilepath,
             CharacterSet characterSet,
-			std::string localizationFilepath);
+            std::string localizationFilepath);
 
         // Destructor
         virtual ~GUI();
@@ -87,10 +87,67 @@ namespace eyegui
         // Get set default font
         Font const * getDefaultFont() const;
 
-		// Get string content from localization
-		std::u16string getContentFromLocalization(std::string key) const;
+        // Get string content from localization
+        std::u16string getContentFromLocalization(std::string key) const;
 
     private:
+
+        // ### INNER CLASSES ###################################################
+
+        // Job for the gui to execute before rendering
+        class GUIJob
+        {
+        public:
+
+            GUIJob(GUI* pGUI);
+            virtual void execute() = 0;
+
+        protected:
+
+            GUI* mpGUI;
+        };
+
+        // Job to move layout
+        class MoveLayoutJob : public GUIJob
+        {
+        public:
+
+            MoveLayoutJob(GUI* pGUI, Layout* pLayout, bool toFront);
+            virtual void execute();
+
+        protected:
+
+            Layout* mpLayout;
+            bool mToFront; // otherwise to back
+        };
+
+        // Job to load config
+        class LoadConfigJob : public GUIJob
+        {
+        public:
+
+            LoadConfigJob(GUI* pGUI, std::string filepath);
+            virtual void execute();
+
+        protected:
+
+            std::string mFilepath;
+        };
+
+        // Job to add layout
+        class AddLayoutJob : public GUIJob
+        {
+        public:
+
+            AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout);
+            virtual void execute();
+
+        protected:
+
+            std::unique_ptr<Layout> mupLayout;
+        };
+
+        // #####################################################################
 
         // Find index of layout, returns -1 if fails
         int findLayout(Layout const * pLayout) const;
@@ -111,13 +168,12 @@ namespace eyegui
         Input mInput;
         float mAccPeriodicTime;
         Config mConfig;
-        bool mLayoutsLocked;
-        std::string mConfigToLoad;
         Font const * mpDefaultFont;
         bool mResizing;
         float mResizeWaitTime;
         RenderItem const * mpResizeBlend;
-		std::unique_ptr<localizationMap> mupLocalizationMap;
+        std::unique_ptr<localizationMap> mupLocalizationMap;
+        std::vector<std::unique_ptr<GUIJob> > mJobs;
     };
 }
 
