@@ -71,7 +71,7 @@ namespace eyegui
             {
                 // Alpha value final, do not multiply with mAlpha or combined alpha
                 Element* pElement = mFrontElements[i];
-                pElement->update(tpf, mFrontElementAlphas[pElement], pInput, 0); // TODO: dimming
+                pElement->update(tpf, mFrontElementAlphas[pElement], pInput, 0); // TODO: Intelligent decision to deactivate dimming here?
             }
 
             // Update standard elements
