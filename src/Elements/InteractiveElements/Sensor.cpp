@@ -24,6 +24,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         std::string iconFilepath) : InteractiveElement(
             id,
             styleName,
@@ -34,6 +35,7 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
+			dimmable,
             iconFilepath)
     {
         // Fill members

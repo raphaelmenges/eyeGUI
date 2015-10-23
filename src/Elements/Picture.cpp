@@ -19,6 +19,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         std::string filepath,
         PictureAlignment alignment) : Element(
             id,
@@ -29,7 +30,8 @@ namespace eyegui
             pAssetManager,
             pNotificationQueue,
             relativeScale,
-            border)
+            border,
+			dimmable)
     {
         mType = Type::PICTURE;
 
@@ -114,6 +116,10 @@ namespace eyegui
 
         // Fill activity
         mpQuad->getShader()->fillValue("activity", mActivity.getValue());
+
+		// Fill dimming
+		mpQuad->getShader()->fillValue("dimColor", getStyle()->dimColor);
+		mpQuad->getShader()->fillValue("dimming", mDimming.getValue());
 
         // Bind image
         mpImage->bind(0);

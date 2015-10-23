@@ -22,6 +22,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
@@ -36,7 +37,8 @@ namespace eyegui
             pAssetManager,
             pNotificationQueue,
             relativeScale,
-            border)
+            border,
+			dimmable)
     {
         mType = Type::TEXT_BLOCK;
 
@@ -77,9 +79,10 @@ namespace eyegui
         // Super call
         Block::specialDraw();
 
-        // Draw text
+        // Draw text (emulation of shader bevavior for color mixing)
 		glm::vec4 color = getStyle()->fontColor;
 		color.a *= mAlpha;
+		color *= (1.0f - mDimming.getValue()) + (mDimming.getValue() * getStyle()->dimColor);
         mupTextFlow->draw(1.0f, color);
     }
 

@@ -259,6 +259,10 @@ namespace eyegui
             {
                 rStyle.fontColor = value;
             }
+			else if (attribute == "dim-color")
+			{
+				rStyle.dimColor = value;
+			}
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, rStyle.filepath);

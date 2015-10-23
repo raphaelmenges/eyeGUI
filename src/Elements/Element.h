@@ -71,7 +71,8 @@ namespace eyegui
             AssetManager* pAssetManager,
             NotificationQueue* pNotificationQueue,
             float relativeScale,
-            float border);
+            float border,
+			bool dimmable);
 
         // Destructor
         virtual ~Element() = 0;
@@ -105,6 +106,12 @@ namespace eyegui
 
         // Activate or deactivate
         virtual void setActivity(bool active, bool fade);
+
+		// Setter for dimmable
+		void setDimmable(bool dimmable);
+
+		// Getter for dimmable
+		bool isDimmable() const;
 
         // Get layout
         Layout const * getLayout() const;
@@ -160,7 +167,7 @@ namespace eyegui
         float getRelativeSizeOnLayoutY() const;
 
         // Updating
-        void update(float tpf, float alpha, Input* pInput);
+        void update(float tpf, float alpha, Input* pInput, float dimming);
 
         // Drawing
         void draw() const;
@@ -206,6 +213,9 @@ namespace eyegui
         // Convert pixel space to drawing space
         glm::mat4 calculateDrawMatrix(int x, int y, int width, int height) const;
 
+		// Checks, whether element is penetrated by input
+		virtual bool penetratedByInput(Input const * pInput) const;
+
         // Members
         Type mType;
         Layout const * mpLayout;
@@ -218,6 +228,8 @@ namespace eyegui
         float mBorderAspectRatio;
         glm::mat4 mDrawMatrix;
         LerpValue mActivity; // [0..1]
+		bool mDimmable;
+		LerpValue mDimming; // [0..1] One means full dimming
         bool mActive;
 
         // This vector is the owner of all possible children. May be empty!

@@ -32,6 +32,7 @@ namespace eyegui
 			NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
+			bool dimmable,
             int rows);
 
         // Destructor

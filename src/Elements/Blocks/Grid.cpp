@@ -21,6 +21,7 @@ namespace eyegui
 		NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         int rows) : Block(
             id,
             styleName,
@@ -30,7 +31,8 @@ namespace eyegui
             pAssetManager,
 			pNotificationQueue,
             relativeScale,
-            border)
+            border,
+			dimmable)
     {
         mType = Type::GRID;
 
@@ -168,7 +170,7 @@ namespace eyegui
         // Update the elements
         for (std::unique_ptr<Element>& element : mChildren)
         {
-            element->update(tpf, mAlpha, pInput);
+            element->update(tpf, mAlpha, pInput, mDimming.getValue());
         }
 
         // Super call after children (may consume input first)

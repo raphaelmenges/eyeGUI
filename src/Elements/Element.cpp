@@ -24,7 +24,8 @@ namespace eyegui
         AssetManager* pAssetManager,
         NotificationQueue* pNotificationQueue,
         float relativeScale,
-        float border)
+        float border,
+		bool dimmable)
     {
         // Initialize members
         mType = Type::ELEMENT;
@@ -37,9 +38,11 @@ namespace eyegui
         mpNotificationQueue = pNotificationQueue;
         mX, mY, mWidth, mHeight = 0;
         mRelativeScale = relativeScale;
-        mBorder = border;
+		mBorder = border;
+		mDimmable = dimmable;
         mActive = true;
         mActivity.setValue(1);
+		mDimming.setValue(0);
         mAlpha = 1;
         mBorderAspectRatio = 1;
 
@@ -143,6 +146,16 @@ namespace eyegui
             }
         }
     }
+
+	void Element::setDimmable(bool dimmable)
+	{
+		mDimmable = dimmable;
+	}
+
+	bool Element::isDimmable() const
+	{
+		return mDimmable;
+	}
 
     Layout const * Element::getLayout() const
     {
@@ -307,7 +320,7 @@ namespace eyegui
         return (float)mHeight / mpLayout->getLayoutHeight();
     }
 
-    void Element::update(float tpf, float alpha, Input* pInput)
+    void Element::update(float tpf, float alpha, Input* pInput, float dimming)
     {
         // Activity animationa
         mActivity.update(tpf, !mActive);
@@ -321,13 +334,33 @@ namespace eyegui
             pInput = NULL;
         }
 
+		// Dimming
+		if (mDimmable)
+		{
+			// TODO: do something more intelligent for input testing
+			bool penetrated = penetratedByInput(pInput);
+			if (penetrated)
+			{
+				// Undim it
+				mDimming.update(-tpf / mpLayout->getConfig()->dimmingDecreaseDuration);
+			}
+			else
+			{
+				mDimming.update(tpf / mpLayout->getConfig()->dimmingIncreaseDuration);
+			}
+		}
+		else
+		{
+			mDimming.setValue(dimming);
+		}
+
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
         {
             float replacedAlpha = mAlpha * (mupReplacedElement->getAlpha()
                 - (tpf / mpLayout->getConfig()->animationDuration));
             replacedAlpha = clamp(replacedAlpha, 0, 1);
-            mupReplacedElement->update(tpf, replacedAlpha, NULL);
+            mupReplacedElement->update(tpf, replacedAlpha, NULL, mDimming.getValue());
 
             // Check, whether replacement is still visible
             if (replacedAlpha <= 0)
@@ -361,6 +394,8 @@ namespace eyegui
     {
         mActive = true;
         mActivity.setValue(1);
+
+		mDimming.setValue(0);
 
         // Do own reset implemented by subclass
         specialReset();
@@ -482,4 +517,20 @@ namespace eyegui
 
         return matrix;
     }
+
+	bool Element::penetratedByInput(Input const * pInput) const
+	{
+		// Standard check, testing whether cursor is above button
+		if (pInput != NULL && !pInput->mouseUsed)
+		{
+			if (pInput->mouseCursorX >= mX
+				&& pInput->mouseCursorX <= mX + mWidth
+				&& pInput->mouseCursorY >= mY
+				&& pInput->mouseCursorY <= mY + mHeight)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

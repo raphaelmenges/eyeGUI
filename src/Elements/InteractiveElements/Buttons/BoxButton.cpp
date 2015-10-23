@@ -19,6 +19,7 @@ namespace eyegui
 		NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         std::string iconFilepath,
         bool isSwitch) : Button(
             id,
@@ -30,6 +31,7 @@ namespace eyegui
 			pNotificationQueue,
             relativeScale,
             border,
+			dimmable,
             iconFilepath,
             isSwitch)
     {

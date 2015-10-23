@@ -24,6 +24,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         std::string iconFilepath,
         bool isSwitch) : InteractiveElement(
             id,
@@ -35,6 +36,7 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
+			dimmable,
             iconFilepath)
     {
         mType = Type::BUTTON;

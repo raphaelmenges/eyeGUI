@@ -18,7 +18,8 @@ namespace eyegui
         AssetManager* pAssetManager,
 		NotificationQueue* pNotificationQueue,
         float relativeScale,
-        float border) : Element(
+        float border,
+		bool dimmable) : Element(
             id,
             styleName,
             pParent,
@@ -27,7 +28,8 @@ namespace eyegui
             pAssetManager,
 			pNotificationQueue,
             relativeScale,
-            border)
+            border,
+			dimmable)
     {
         mType = Type::BLANK;
     }

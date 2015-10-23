@@ -30,6 +30,7 @@ namespace eyegui
             NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
+			bool dimmable,
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,

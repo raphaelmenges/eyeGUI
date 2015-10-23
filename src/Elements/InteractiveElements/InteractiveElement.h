@@ -32,6 +32,7 @@ namespace eyegui
             NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
+			bool dimmable,
             std::string iconFilepath);
 
         // Destructor
@@ -77,9 +78,6 @@ namespace eyegui
 
         // Calculate aspect ratio correction for icon on gizmo
         glm::vec2 iconAspectRatioCorrection() const;
-
-        // Checks, whether element is penetrated by input
-        virtual bool penetratedByInput(Input const * pInput) const;
 
         // Members
         RenderItem const * mpRenderItem; // has to be initialized by subclasses

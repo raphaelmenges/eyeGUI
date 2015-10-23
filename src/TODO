@@ -5,6 +5,7 @@ Refactoring:
 	  - reintegrate glm (some files may be missing)
 
 ### VERSION 0.x
+- Update calls to children of elements is strange (done in stack and grid, only...)
 - Resize is too often called
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - BoxButton: enable stretched icons
@@ -13,7 +14,6 @@ Refactoring:
 	- key, textflow
 	- only if more elements with text flows are planned
 - Function to define search folder or so
-- New style member: FadeColorMutliplier (used when gaze is not upon the the element)
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
 	- Use UTF8 library also for config and stylesheet?

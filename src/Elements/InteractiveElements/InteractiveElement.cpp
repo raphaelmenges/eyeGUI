@@ -22,6 +22,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         std::string iconFilepath) : Element(
             id,
             styleName,
@@ -31,7 +32,8 @@ namespace eyegui
             pAssetManager,
             pNotificationQueue,
             relativeScale,
-            border)
+            border,
+			dimmable)
     {
         mType = Type::INTERACTIVE_ELEMENT;
 
@@ -120,6 +122,8 @@ namespace eyegui
         mpRenderItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
         mpRenderItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
         mpRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
+		mpRenderItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
+		mpRenderItem->getShader()->fillValue("dimming", mDimming.getValue());
 
         // Bind icon texture
         mpIcon->bind(0);
@@ -151,21 +155,5 @@ namespace eyegui
         }
 
         return iconUVScale;
-    }
-
-    bool InteractiveElement::penetratedByInput(Input const * pInput) const
-    {
-        // Standard check, testing whether cursor is above button
-        if (pInput != NULL && !pInput->mouseUsed)
-        {
-            if (pInput->mouseCursorX >= mX
-                && pInput->mouseCursorX <= mX + mWidth
-                && pInput->mouseCursorY >= mY
-                && pInput->mouseCursorY <= mY + mHeight)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

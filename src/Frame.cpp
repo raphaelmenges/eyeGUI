@@ -71,11 +71,11 @@ namespace eyegui
             {
                 // Alpha value final, do not multiply with mAlpha or combined alpha
                 Element* pElement = mFrontElements[i];
-                pElement->update(tpf, mFrontElementAlphas[pElement], pInput);
+                pElement->update(tpf, mFrontElementAlphas[pElement], pInput, 0); // TODO: dimming
             }
 
             // Update standard elements
-            mupRoot->update(tpf, mCombinedAlpha, pInput);
+            mupRoot->update(tpf, mCombinedAlpha, pInput, 0);
         }
 
         // *** DELETION OF REPLACED ELEMENTS ***

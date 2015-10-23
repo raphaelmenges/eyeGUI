@@ -25,6 +25,7 @@ namespace eyegui
         glm::vec4 selectionColor = glm::vec4(0, 1, 1, 0.5f);
         glm::vec4 iconColor = glm::vec4(1, 1, 1, 1);
         glm::vec4 fontColor = glm::vec4(0, 0, 0, 1);
+		glm::vec4 dimColor = glm::vec4(0.5f, 0.5f, 0.5f, 0.2f);
     };
 }
 

@@ -27,7 +27,8 @@ namespace eyegui
             AssetManager* pAssetManager,
 			NotificationQueue* pNotificationQueue,
             float relativeScale,
-            float border);
+            float border,
+			bool dimmable);
 
         // Destructor
         virtual ~Block();

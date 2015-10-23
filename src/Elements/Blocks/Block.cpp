@@ -18,7 +18,8 @@ namespace eyegui
         AssetManager* pAssetManager,
         NotificationQueue* pNotificationQueue,
         float relativeScale,
-        float border) : Element(
+        float border,
+		bool dimmable) : Element(
             id,
             styleName,
             pParent,
@@ -27,7 +28,8 @@ namespace eyegui
             pAssetManager,
             pNotificationQueue,
             relativeScale,
-            border)
+            border,
+			dimmable)
     {
         mType = Type::BLOCK;
 
@@ -81,6 +83,10 @@ namespace eyegui
 
             // Fill activity
             mpBackground->getShader()->fillValue("activity", mActivity.getValue());
+
+			// Fill dimming
+			mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
+			mpBackground->getShader()->fillValue("dimming", mDimming.getValue());
 
             // Draw render item
             mpBackground->draw();

@@ -109,6 +109,19 @@ namespace eyegui
         return pLayout->isElementActive(id);
     }
 
+	void setElementDimmable(
+		Layout* pLayout,
+		std::string id,
+		bool dimmable)
+	{
+		pLayout->setElementDimmable(id, dimmable);
+	}
+
+	bool isElementDimmable(Layout const * pLayout, std::string id)
+	{
+		return pLayout->isElementDimmable(id);
+	}
+
     float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
     {
         return pLayout->getRelativePositionOfElementOnLayoutX(id);

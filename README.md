@@ -7,6 +7,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 
 ## Changelist
 #### Version 0.2 (in development)
+* Dimming
 * Localization
 * Font rendering
 * Floating frames

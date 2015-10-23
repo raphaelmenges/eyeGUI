@@ -113,6 +113,14 @@ namespace eyegui
                     {
                         config.sensorInteractionPenetrationAmount = std::stof(right);
                     }
+					else if (left == "dimming-increase-duration")
+					{
+						config.dimmingIncreaseDuration = std::stof(right);
+					}
+					else if (left == "dimming-decrease-duration")
+					{
+						config.dimmingDecreaseDuration = std::stof(right);
+					}
                     else
                     {
                         throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + left, filepath);

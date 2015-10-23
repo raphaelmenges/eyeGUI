@@ -21,6 +21,7 @@ namespace eyegui
 		NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
+		bool dimmable,
         RelativeScaling relativeScaling,
         Alignment alignment,
         float padding,
@@ -34,7 +35,8 @@ namespace eyegui
             pAssetManager,
 			pNotificationQueue,
             relativeScale,
-            border)
+            border,
+			dimmable)
     {
         mType = Type::STACK;
 
@@ -64,7 +66,7 @@ namespace eyegui
         // Update the elements
         for (std::unique_ptr<Element>& element : mChildren)
         {
-            element->update(tpf, mAlpha, pInput);
+            element->update(tpf, mAlpha, pInput, mDimming.getValue());
         }
 
         // Super call after children (may consume input first)
@@ -95,6 +97,10 @@ namespace eyegui
 
             // Fill alpha
             mpSeparator->getShader()->fillValue("alpha", mAlpha);
+
+			// Fill dimming
+			mpSeparator->getShader()->fillValue("dimColor", getStyle()->dimColor);
+			mpSeparator->getShader()->fillValue("dimming", mDimming.getValue());
 
             for (int i = 0; i < mSeparatorDrawMatrices.size(); i++)
             {

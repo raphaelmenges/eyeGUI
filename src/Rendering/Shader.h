@@ -42,6 +42,9 @@ namespace eyegui
 
     private:
 
+		// Evaluate shader compiling log
+		void evaluateShaderLog(GLuint handle) const;
+
         // Member
         GLuint mShaderProgram;
         std::map<std::string, int> mUniformLocationCache;

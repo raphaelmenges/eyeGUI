@@ -8,6 +8,7 @@
 #include "Shader.h"
 
 #include "externals/GLM/glm/gtc/type_ptr.hpp"
+#include "OperationNotifier.h"
 
 #include <fstream>
 
@@ -19,11 +20,13 @@ namespace eyegui
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &pVertexShaderSource, NULL);
         glCompileShader(vertexShader);
+		evaluateShaderLog(vertexShader);
 
         // Fragment shader
         GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, 1, &pFragmentShaderSource, NULL);
         glCompileShader(fragmentShader);
+		evaluateShaderLog(fragmentShader);
 
         // Create program
         mShaderProgram = glCreateProgram();
@@ -98,4 +101,24 @@ namespace eyegui
     {
         return mShaderProgram;
     }
+
+	void Shader::evaluateShaderLog(GLuint handle) const
+	{
+		// Get length of compiling log
+		GLint log_length = 0;
+		glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &log_length);
+
+		if (log_length > 1)
+		{
+			// Copy log to chars
+			GLchar *log = new GLchar[log_length];
+			glGetShaderInfoLog(handle, log_length, NULL, log);
+
+			// Print it
+			throwError(OperationNotifier::Operation::BUG, log);
+
+			// Delete chars
+			delete[] log;
+		}
+	}
 }

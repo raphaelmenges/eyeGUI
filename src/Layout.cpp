@@ -279,6 +279,33 @@ namespace eyegui
         return false;
     }
 
+	void Layout::setElementDimmable(std::string id, bool dimmable)
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			pElement->setDimmable(dimmable);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+		}
+	}
+
+	bool Layout::isElementDimmable(std::string id) const
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			return pElement->isDimmable();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+		}
+		return false;
+	}
+
     float Layout::getRelativePositionOfElementOnLayoutX(std::string id) const
     {
         Element* pElement = fetchElement(id);
@@ -651,7 +678,8 @@ namespace eyegui
                 pElement->getAssetManager(),
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
-                pElement->getBorder()));
+                pElement->getBorder(),
+				pElement->isDimmable()));
 
             Element* pBlock = upBlock.get();
 
@@ -683,6 +711,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
+				pElement->isDimmable(),
                 filepath,
                 alignment));
 
@@ -715,7 +744,8 @@ namespace eyegui
                 pElement->getAssetManager(),
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
-                pElement->getBorder()));
+                pElement->getBorder(),
+				pElement->isDimmable()));
 
             Element* pBlank = upBlank.get();
 
@@ -747,6 +777,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
+				pElement->isDimmable(),
                 iconFilepath,
                 isSwitch));
 
@@ -780,6 +811,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
+				pElement->isDimmable(),
                 iconFilepath,
                 isSwitch));
 
@@ -813,6 +845,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
+				pElement->isDimmable(),
                 iconFilepath));
 
             Element* pSensor = upSensor.get();
@@ -853,6 +886,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
+				pElement->isDimmable(),
                 fontSize,
                 alignment,
                 verticalAlignment,

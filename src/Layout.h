@@ -94,6 +94,12 @@ namespace eyegui
         // Check activity of element
         bool isElementActive(std::string id) const;
 
+		// Set whether element is dimmable
+		void setElementDimmable(std::string id, bool dimmable);
+
+		// Check whether element is dimmable
+		bool isElementDimmable(std::string id) const;
+
         // Relative position and size of elements
         float getRelativePositionOfElementOnLayoutX(std::string id) const;
         float getRelativePositionOfElementOnLayoutY(std::string id) const;
