@@ -6,7 +6,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 [![Screenshot](https://raw.githubusercontent.com/wiki/raphaelmenges/eyeGUI/DemoVideoLink.png)](https://youtu.be/niMRX65E7IE)
 
 ## Changelist
-#### Version 0.2 (in development)
+#### Version 0.2
 * Dimming
 * Localization
 * Font rendering
