@@ -103,7 +103,7 @@ namespace eyegui
         calculateMesh();
     }
 
-    void TextFlow::draw(float scale, glm::vec4 color, float alpha) const
+    void TextFlow::draw(float scale, glm::vec4 color) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
@@ -136,7 +136,6 @@ namespace eyegui
 
         // Fill uniforms
         mpShader->fillValue("matrix", matrix);
-        mpShader->fillValue("alpha", alpha);
         mpShader->fillValue("color", color);
 
         // Draw flow

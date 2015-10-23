@@ -51,7 +51,7 @@ namespace eyegui
             int height);
 
         // Draw (uses orthoprojection to scale to screen)
-        void draw(float scale, glm::vec4 color, float alpha) const;
+        void draw(float scale, glm::vec4 color) const;
 
     private:
 
