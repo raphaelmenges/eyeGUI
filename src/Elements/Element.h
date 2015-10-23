@@ -230,6 +230,8 @@ namespace eyegui
         LerpValue mActivity; // [0..1]
 		bool mDimmable;
 		LerpValue mDimming; // [0..1] One means full dimming
+		bool mForceUndim; // At the moment only used by drop button 
+						  // to be undimmed while showing inner elements
         bool mActive;
 
         // This vector is the owner of all possible children. May be empty!

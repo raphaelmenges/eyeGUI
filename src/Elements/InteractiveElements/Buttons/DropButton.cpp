@@ -59,6 +59,7 @@ namespace eyegui
         BoxButton::down(immediately);
 
         mInnerElementVisible = true;
+		mForceUndim = true;
 
         // Immediately
         if (immediately)
@@ -73,6 +74,7 @@ namespace eyegui
         BoxButton::up(immediately);
 
         mInnerElementVisible = false;
+		mForceUndim = false;
 
         // Immediately
         if (immediately)

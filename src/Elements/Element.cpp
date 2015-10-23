@@ -43,6 +43,7 @@ namespace eyegui
         mActive = true;
         mActivity.setValue(1);
 		mDimming.setValue(0);
+		mForceUndim = false;
         mAlpha = 1;
         mBorderAspectRatio = 1;
 
@@ -335,7 +336,12 @@ namespace eyegui
         }
 
 		// Dimming
-		if (mDimmable)
+		if (mForceUndim)
+		{
+			// Undim it
+			mDimming.update(-tpf / mpLayout->getConfig()->dimmingDecreaseDuration);
+		}
+		else if (mDimmable)
 		{
 			// TODO: do something more intelligent for input testing
 			bool penetrated = penetratedByInput(pInput);
@@ -346,11 +352,13 @@ namespace eyegui
 			}
 			else
 			{
+				// Dim it
 				mDimming.update(tpf / mpLayout->getConfig()->dimmingIncreaseDuration);
 			}
 		}
 		else
 		{
+			// Use dimming value of parent
 			mDimming.setValue(dimming);
 		}
 
@@ -396,8 +404,9 @@ namespace eyegui
         mActivity.setValue(1);
 
 		mDimming.setValue(0);
+		mForceUndim = false;
 
-        // Do own reset implemented by subclass
+        // Do reset implemented by subclass
         specialReset();
 
         // Go over chilren and reset
