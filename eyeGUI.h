@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.1
+ *  \version   0.2
  *  \license   This project is released under the MIT License (MIT)
  */
 
@@ -36,381 +36,673 @@
 
 namespace eyegui
 {
-	class GUI;
-	class Layout;
+    class GUI;
+    class Layout;
+    class Frame;
 
-	//! Enumeration of possible picture alignments.
-	/*! This enum is defined directly in the interface because it is needed by the replacing funtions. */
-	enum class PictureAlignment { ORIGINAL, STRETCHED };
+    //! Enumeration of possible character sets for font rendering.
+    /*! This enum is defined directly in the interface because it is needed by initialization. */
+    enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH };
 
-	//! Abstract listener class for buttons.
-	class ButtonListener
-	{
-	public:
+    //! Enumeration of possible font sizes.
+    /*! This enum is defined directly in the interface because it is needed by some functions. */
+    enum class FontSize { TALL, MEDIUM, SMALL };
 
-		//! Constructor.
-		ButtonListener();
+    //! Enumeration of possible text flow alignments
+    /*! This enum is defined directly in the interface because it is needed by some functions. */
+    enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY };
 
-		//! Destructor.
-		virtual ~ButtonListener();
+    //! Enumeration of possible vertical text flow alignments
+    /*! This enum is defined directly in the interface because it is needed by some functions. */
+    enum class TextFlowVerticalAlignment { TOP, CENTER, BOTTOM };
 
-		//! Callback for hitting of button.
-		/*!
-		  \param pLayout pointer to layout from which callback is coming.
-		  \param id is the unique id of the button which causes the callback.
-		*/
-		void virtual hit(Layout* pLayout, std::string id) = 0;
+    //! Enumeration of possible picture alignments.
+    /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */
+    enum class PictureAlignment { ORIGINAL, STRETCHED };
 
-		//! Callback for pushing button down.
-		/*!
-		  \param pLayout pointer to layout from which callback is coming.
-		  \param id is the unique id of the button which causes the callback.
-		*/
-		void virtual down(Layout* pLayout, std::string id) = 0;
+    //! Abstract listener class for buttons.
+    class ButtonListener
+    {
+    public:
 
-		//! Callback for pulling button up.
-		/*!
-		  \param pLayout pointer to layout from which callback is coming.
-		  \param id is the unique id of the button which causes the callback.
-		*/
-		void virtual up(Layout* pLayout, std::string id) = 0;
+        //! Constructor.
+        ButtonListener();
 
-	};
+        //! Destructor.
+        virtual ~ButtonListener();
 
-	//! Abstract listener class for sensors.
-	class SensorListener
-	{
-	public:
+        //! Callback for hitting of button.
+        /*!
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the button which causes the callback.
+        */
+        void virtual hit(Layout* pLayout, std::string id) = 0;
 
-		//! Constructor.
-		SensorListener();
+        //! Callback for pushing button down.
+        /*!
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the button which causes the callback.
+        */
+        void virtual down(Layout* pLayout, std::string id) = 0;
 
-		//! Destructor.
-		virtual ~SensorListener();
+        //! Callback for pulling button up.
+        /*!
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the button which causes the callback.
+        */
+        void virtual up(Layout* pLayout, std::string id) = 0;
 
-		//! Callback for penetration of sensor.
-		/*!
-		  \param pLayout pointer to layout from which callback is coming.
-		  \param id is the unique id of the sensor which causes the callback.
-		  \param amount is the value of penetration at time of callback.
-		*/
-		void virtual penetrated(Layout* pLayout, std::string id, float amount) = 0;
+    };
 
-	};
+    //! Abstract listener class for sensors.
+    class SensorListener
+    {
+    public:
 
-	//! Creates GUI and returns pointer to it.
+        //! Constructor.
+        SensorListener();
+
+        //! Destructor.
+        virtual ~SensorListener();
+
+        //! Callback for penetration of sensor.
+        /*!
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the sensor which causes the callback.
+          \param amount is the value of penetration at time of callback.
+        */
+        void virtual penetrated(Layout* pLayout, std::string id, float amount) = 0;
+
+    };
+
+    //! Creates GUI and returns pointer to it.
+    /*!
+      \param width of GUI as integer.
+      \param height of GUI as integer
+      \param fontFilepath is path to a .ttf font file
+      \param characterSet used to initialize font rendering.
+	  \param localizationFilepath is path to a .leyegui file
+      \return pointer to created GUI.
+    */
+    GUI* createGUI(
+        int width,
+        int height,
+        std::string fontFilepath = "",
+        CharacterSet characterSet = CharacterSet::US_ENGLISH,
+		std::string localizationFilepath = "");
+
+    //! Creates layout inside GUI and returns pointer to it.
+    /*!
+      \param pGUI pointer to GUI.
+      \param filepath is path to layout xml file.
+      \param visible shall added layout be visible.
+      \return pointer to added layout. Null if creation was not possible because layouts were locked.
+    */
+    Layout* addLayout(GUI* pGUI, std::string filepath, bool visible = true);
+
+    //! Render whole GUI.
+    /*!
+      \param pGUI pointer to GUI.
+      \param tpf passed time since last rendering in seconds as float.
+    */
+    void renderGUI(GUI* pGUI, float tpf);
+
+    //! Terminate GUI.
+    /*!
+      \param pGUI pointer to GUI which should be termianted.
+    */
+    void terminateGUI(GUI* pGUI);
+
+    //! Resize GUI.
+    /*!
+      \param pGUI pointer to GUI.
+      \param width of GUI as integer.
+      \param height of GUI as integer.
+    */
+    void resizeGUI(GUI* pGUI, int width, int height);
+
+    //! Load config.
+    /*!
+      \param pGUI pointer to GUI.
+      \param filepath is path to config file.
+    */
+    void loadConfig(GUI* pGUI, std::string filepath);
+
+    //! Set mouse cursor.
+    /*!
+      \param pGUI pointer to GUI.
+      \param x is horizontal coordinate of mouse cursor.
+      \param y is vertical coordinate of mouse cursor.
+    */
+    void setMouseCursor(GUI* pGUI, int x, int y);
+
+    //! Prefetch image to avoid lags.
+    /*!
+      \param pGUI pointer to GUI.
+      \param filepath is path to image which should be prefetched.
+    */
+    void prefetchImage(GUI* pGUI, std::string filepath);
+
+    //! Control layout's input usage.
+    /*!
+      \param pLayout pointer to layout.
+      \param useInput indicates whether layout may use input or ignore it.
+    */
+    void setInputUsageOfLayout(Layout* pLayout, bool useInput);
+
+    //! Set visibility of layout.
+    /*!
+      \param pLayout pointer to layout.
+      \param visible is a bool value to set visibility.
+      \param reset indicates whether all elements in layout should be reset.
+      \param fade indicates, whether layer should fade.
+    */
+    void setVisibilityOfLayout(
+        Layout* pLayout,
+        bool visible,
+        bool reset = false,
+        bool fade = false);
+
+    //! Move layout to front.
+    /*!
+      \param pGUI pointer to GUI.
+      \param pLayout pointer to layout.
+    */
+    void moveLayoutToFront(GUI* pGUI, Layout* pLayout);
+
+    //! Move layout to back.
+    /*!
+      \param pGUI pointer to GUI.
+      \param pLayout pointer to layout.
+    */
+    void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
+
+    //! Activity of element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param active indicates the state of acitvity.
+      \param fade indicates, whether activity should fade.
+    */
+    void setElementActivity(
+        Layout* pLayout,
+        std::string id,
+        bool active,
+        bool fade = false);
+
+    //! Toggle activity of element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param fade indicates, whether activity should fade.
+    */
+    void toggleElementActivity(
+        Layout* pLayout,
+        std::string id,
+        bool fade = false);
+
+    //! Get activity of element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return true if element with given id is active and false else
+    */
+    bool isElementActive(Layout const * pLayout, std::string id);
+
+	//! Set whether element is dimmable.
 	/*!
-	  \param width of GUI as integer.
-	  \param height of GUI as integer.
-	  \return pointer to created GUI.
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param dimmable is the new choice.
 	*/
-	GUI* createGUI(int width, int height);
+	void setElementDimmable(
+		Layout* pLayout,
+		std::string id,
+		bool dimmable);
 
-	//! Creates layout inside GUI and returns pointer to it.
+	//! Get whether element is dimmable.
 	/*!
-	  \param pGUI pointer to GUI.
-	  \param filepath is path to layout xml file.
-	  \param visible shall added layout be visible.
-	  \return pointer to added layout. Null if creation was not possible because layouts were locked.
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return true if element with given id is dimmable and false else
 	*/
-	Layout* addLayout(GUI* pGUI, std::string filepath, bool visible = true);
+	bool isElementDimmable(Layout const * pLayout, std::string id);
 
-	//! Render whole GUI.
-	/*!
-	  \param pGUI pointer to GUI.
-	  \param tpf passed time since last rendering in seconds as float.
-	*/
-	void renderGUI(GUI* pGUI, float tpf);
+    //! Get relative x position of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative x position on layout.
+    */
+    float getRelativePositionOfElementOnLayoutX(
+        Layout const * pLayout,
+        std::string id);
 
-	//! Terminate GUI.
-	/*!
-	  \param pGUI pointer to GUI which should be termianted.
-	*/
-	void terminateGUI(GUI* pGUI);
+    //! Get relative y position of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative y position on layout.
+    */
+    float getRelativePositionOfElementOnLayoutY(
+        Layout const * pLayout,
+        std::string id);
 
-	//! Resize GUI.
-	/*!
-	  \param pGUI pointer to GUI.
-	  \param width of GUI as integer.
-	  \param height of GUI as integer.
-	*/
-	void resizeGUI(GUI* pGUI, int width, int height);
+    //! Get relative size in x direction of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative size in x direction on layout.
+    */
+    float getRelativeSizeOfElementOnLayoutX(
+        Layout const * pLayout,
+        std::string id);
 
-	//! Load config.
-	/*!
-	  \param pGUI pointer to GUI.
-	  \param filepath is path to config file.
-	*/
-	void loadConfig(GUI* pGUI, std::string filepath);
+    //! Get relative size in y direction of element on its layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative size in y direction on layout.
+    */
+    float getRelativeSizeOfElementOnLayoutY(
+        Layout const * pLayout,
+        std::string id);
 
-	//! Set mouse cursor.
-	/*!
-	  \param pGUI pointer to GUI.
-	  \param x is horizontal coordinate of mouse cursor.
-	  \param y is vertical coordinate of mouse cursor.
-	*/
-	void setMouseCursor(GUI* pGUI, int x, int y);
+    //! Check for existence of id.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return true if element with given id is found and false else
+    */
+    bool checkForId(Layout const * pLayout, std::string id);
 
-	//! Prefetch image to avoid lags.
-	/*!
-	  \param pGUI pointer to GUI.
-	  \param filepath is path to image which should be prefetched.
-	*/
-	void prefetchImage(GUI* pGUI, std::string filepath);
+    //! Set interactive element as highlighted.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param doHighlight indicates, whether elemen with given id should be highlighted or not.
+    */
+    void highlightInteractiveElement(
+        Layout* pLayout,
+        std::string id,
+        bool doHighlight);
 
-	//! Control layout's input usage.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param useInput indicated whether layout may use input or ignore it.
-	*/
-	void setInputUsageOfLayout(Layout* pLayout, bool useInput);
+    //! Toggle highlighting of interactive element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+    */
+    void toggleHighlightInteractiveElement(Layout* pLayout, std::string id);
 
-	//! Set visibility of layout.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param visible is a bool value to set visibility.
-	  \param reset indicates whether all elements in layout should be reset.
-	  \param setImmediately prohibits fading.
-	*/
-	void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset = false, bool setImmediately = false);
+    //! Check whether interactive element is highlighted.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return true if interactive element with given id is highlighted.
+    */
+    bool isInteractiveElementHighlighted(Layout const * pLayout, std::string id);
 
-	//! Move layout to front.
-	/*!
-	  \param pGUI pointer to GUI.
-	  \param pLayout pointer to layout.
-	*/
-	void moveLayoutToFront(GUI* pGUI, Layout* pLayout);
+    //! Sets value of style attribute.
+    /*!
+      \param pLayout pointer to layout.
+      \param styleName is name of style in used stylesheet.
+      \param attribute is name of attribute which shall be changed.
+      \param r is red color value.
+      \param g is green color value.
+      \param b is blue color value.
+      \param a is alpha color value.
+    */
+    void setValueOfStyleAttribute(
+        Layout* pLayout,
+        std::string styleName,
+         std::string attribute,
+         float r,
+         float g,
+         float b,
+         float a);
 
-	//! Move layout to back.
-	/*!
-	  \param pGUI pointer to GUI.
-	  \param pLayout pointer to layout.
-	*/
-	void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
+    //! Set icon of interactive element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param iconFilepath path to image which should be used as icon.
+    */
+    void setIconOfInteractiveElement(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath);
 
-	//! Activity of element.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param active indicates the state of acitvity.
-	  \param setImmediately prohibits fading.
-	*/
-	void setElementActivity(Layout* pLayout, std::string id, bool active, bool setImmediately = false);
+    //! Select interactive element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+    */
+    void selectInteractiveElement(Layout* pLayout, std::string id);
 
-	//! Toogle activity of element.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param setImmediately prohibits fading.
-	*/
-	void toggleElementActivity(Layout* pLayout, std::string id, bool setImmediately = false);
+    //! Deselect currently selected element.
+    /*!
+      \param pLayout pointer to layout.
+    */
+    void deselectInteractiveElement(Layout* pLayout);
 
-	//! Get activity of element.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \return true if element with given id is active and false else
-	*/
-	bool isElementActive(Layout const * pLayout, std::string id);
+    //! Interact with currently selected interactive element.
+    /*!
+      \param pLayout pointer to layout.
+    */
+    void interactWithSelectedInteractiveElement(Layout* pLayout);
 
-	//! Check for existence of id.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \return true if element with given id is found and false else
-	*/
-	bool checkForId(Layout const * pLayout, std::string id);
+    //! Select next interactive element, returns whether reached end of layout. If so, nothing is selected.
+    /*!
+      \param pLayout pointer to layout.
+    */
+    bool selectNextInteractiveElement(Layout* pLayout);
 
-	//! Set interactive element as highlighted.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param doHighlight indicates, whether elemen with given id should be highlighted or not.
-	*/
-	void highlightInteractiveElement(Layout* pLayout, std::string id, bool doHighlight);
+    //! Hit button.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+    */
+    void hitButton(Layout* pLayout, std::string id);
 
-	//! Toggle highlighting of interactive element.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	*/
-	void toggleHighlightInteractiveElement(Layout* pLayout, std::string id);
+    //! Button down.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+    */
+    void buttonDown(Layout* pLayout, std::string id);
 
-	//! Check whether interactive element is highlighted.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \return true if interactive element with given id is highlighted.
-	*/
-	bool isInteractiveElementHighlighted(Layout const * pLayout, std::string id);
+    //! Button up.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+    */
+    void buttonUp(Layout* pLayout, std::string id);
 
-	//! Set icon of interactive element.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param iconFilepath path to image which should be used as icon.
-	*/
-	void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath);
+    //! Is button a switch?
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return true if element found by id exists, is a button and switch. Else false.
+    */
+    bool isButtonSwitch(Layout const * pLayout, std::string id);
 
-	//! Select interactive element.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	*/
-	void selectInteractiveElement(Layout* pLayout, std::string id);
+    //! Penetrate sensor.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param amount is value of peneteration.
+    */
+    void penetrateSensor(Layout* pLayout, std::string id, float amount);
 
-	//! Deselect currently selected element.
-	/*!
-	  \param pLayout pointer to layout.
-	*/
-	void deselectInteractiveElement(Layout* pLayout);
+    //! Register listener to button.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param wpListener is weak pointer to listener that should be registered.
+    */
+    void registerButtonListener(
+        Layout* pLayout,
+        std::string id,
+        std::weak_ptr<ButtonListener> wpListener);
 
-	//! Interact with currently selected interactive element.
-	/*!
-	  \param pLayout pointer to layout.
-	*/
-	void interactWithSelectedInteractiveElement(Layout* pLayout);
+    //! Register listener to sensor.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param wpListener is weak pointer to listener that should be registered.
+    */
+    void registerSensorListener(
+        Layout* pLayout,
+        std::string id,
+        std::weak_ptr<SensorListener> wpListener);
 
-	//! Select next interactive element, returns whether reached end of layout. If so, nothing is selected.
-	/*!
-	  \param pLayout pointer to layout.
-	*/
-	bool selectNextInteractiveElement(Layout* pLayout);
+    //! Replace element with block.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithBlock(
+        Layout* pLayout,
+        std::string id,
+        bool fade = false);
 
-	//! Hit button.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	*/
-	void hitButton(Layout* pLayout, std::string id);
+    //! Replace element with picture.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param filepath is the path to the image used in the picture element.
+      \param alignment is the inner alignment of the picture.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithPicture(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath,
+        PictureAlignment
+        alignment,
+        bool fade = false);
 
-	//! Button down.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	*/
-	void buttonDown(Layout* pLayout, std::string id);
+    //! Replace element with blank.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithBlank(
+        Layout* pLayout,
+        std::string id,
+        bool fade = false);
 
-	//! Button up.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	*/
-	void buttonUp(Layout* pLayout, std::string id);
+    //! Replace element with circle button.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param iconFilepath path to image which should be used as icon.
+      \param isSwitch indicates, whether button should be a switch.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithCircleButton(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        bool isSwitch = false,
+        bool fade = false);
 
-	//! Is button a switch?
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \return true if element found by id exists, is a button and switch. Else false.
-	*/
-	bool isButtonSwitch(Layout const * pLayout, std::string id);
+    //! Replace element with box button.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param iconFilepath path to image which should be used as icon.
+      \param isSwitch indicates, whether button should be a switch.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithBoxButton(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        bool isSwitch = false,
+        bool fade = false);
 
-	//! Penetrate sensor.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param amount is value of peneteration.
-	*/
-	void penetrateSensor(Layout* pLayout, std::string id, float amount);
+    //! Replace element with sensor.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param iconFilepath path to image which should be used as icon.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithSensor(
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        bool fade = false);
 
-	//! Register listener to button.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param wpListener is weak pointer to listener that should be registered.
-	*/
-	void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener);
+    //! Replace element with text block.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param fontSize is size of used font.
+      \param alignment is alignment of text.
+      \param verticalAlignment is vertical alignment of text.
+      \param content is the content of the displayed text.
+      \param innerBorder is space between border and text.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithTextBlock(
+        Layout* pLayout,
+        std::string id,
+        FontSize fontSize,
+        TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
+        std::u16string content,
+		std::string key,
+        float innerBorder,
+        bool fade = false);
 
-	//! Register listener to sensor.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param wpListener is weak pointer to listener that should be registered.
-	*/
-	void registerSensorListener(Layout* pLayout, std::string id, std::weak_ptr<SensorListener> wpListener);
+    //! Replace element with brick.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param filepath is path to brick xml file.
+      \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithBrick(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath,
+        bool fade);
 
-	//! Replace element with block.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param dpFading indicated, whether replaced element should fade.
-	*/
-	void replaceElementWithBlock(Layout* pLayout, std::string id, bool doFading);
+    //! Creates floating frame with brick inside
+    /*!
+      \param pLayout pointer to layout.
+      \param filepath is path to brick xml file.
+      \param relativePositionX initial relative x position.
+      \param relativePositionY initial relative y position.
+      \param relativeSizeX initial relative x size.
+      \param relativeSizeY initial relative y size.
+      \param visible indicates, whether frame should be visible or not.
+      \param fade indicates, whether frame should fade in.
+      \return index of created floating frame.
+    */
+    unsigned int addFloatingFrameWithBrick(
+        Layout* pLayout,
+        std::string filepath,
+        float relativePositionX,
+        float relativePositionY,
+        float relativeSizeX,
+        float relativeSizeY,
+        bool visible = true,
+        bool fade = false);
 
-	//! Replace element with picture.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param dpFading indicated, whether replaced element should fade.
-	  \param filepath is the path to the image used in the picture element.
-	  \param alignment is the inner alignment of the picture.
-	*/
-	void replaceElementWithPicture(Layout* pLayout, std::string id, bool doFading, std::string filepath, PictureAlignment alignment);
+    //! Set visibility of floating frame.
+    /*!
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \param visible is a bool value to set visibility.
+      \param reset indicates whether all elements in layout should be reset.
+      \param fade indicates, whether frame should fade.
+    */
+    void setVisibilityOFloatingfFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        bool visible,
+        bool reset = false,
+        bool fade = false);
 
-	//! Replace element with blank.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param dpFading indicated, whether replaced element should fade.
-	*/
-	void replaceElementWithBlank(Layout* pLayout, std::string id, bool doFading);
+    //! Removes floating frame from layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param fade indicates, whether floating frame should fade out.
+    */
+    void removeFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        bool fade = false);
 
-	//! Replace element with circle button.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param dpFading indicated, whether replaced element should fade.
-	  \param iconFilepath path to image which should be used as icon.
-	  \param isSwitch indicated, whether button should be a switch.
-	*/
-	void replaceElementWithCircleButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch = false);
+    //! Translates floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param translateX amount of translation in x direction.
+    \param translateY amount of translation in y direction.
+    */
+    void translateFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float translateX,
+        float translateY);
 
-	//! Replace element with box button.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param dpFading indicated, whether replaced element should fade.
-	  \param iconFilepath path to image which should be used as icon.
-	  \param isSwitch indicated, whether button should be a switch.
-	*/
-	void replaceElementWitBoxButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch = false);
+    //! Scales floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param scaleX scaling in x direction.
+    \param scaleY scaling in y direction.
+    */
+    void scaleFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float scaleX,
+        float scaleY);
 
-	//! Replace element with sensor.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param dpFading indicated, whether replaced element should fade.
-	  \param iconFilepath path to image which should be used as icon.
-	*/
-	void replaceElementWitSensor(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath);
+    //! Set relative position of floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param relativePositionX relative x position.
+    \param relativePositionY relative y position.
+    */
+    void setPositionOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float relativePositionX,
+        float relativePositionY);
 
-	//! Replace element with brick.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param dpFading indicated, whether replaced element should fade.
-	  \param filepath is path to brick xml file.
-	*/
-	void replaceElementWithBrick(Layout* pLayout, std::string id, bool doFading, std::string filepath);
+    //! Set relative size of floating frame
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \param relativeSizeX relative x size.
+    \param relativeSizeY relative y size.
+    */
+    void setSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex,
+        float relativeSizeX,
+        float relativeSizeY);
 
-	//! Set error callback function.
-	/*!
-	  \param pCallbackFunction is function pointer to function which should be called back.
-	*/
-	void setErrorCallback(void(*pCallbackFunction)(std::string));
+    //! Move frame to front.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    */
+    void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex);
 
-	//! Set warning callback function.
-	/*!
-	  \param pCallbackFunction is function pointer to function which should be called back.
-	*/
-	void setWarningCallback(void(*pCallbackFunction)(std::string));
+    //! Move frame to back.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    */
+    void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
 
-	//! Return string describing the version of the linked library.
-	/*!
-	  \return version given as string.
-	*/
-	std::string getLibraryVersion();
+    //! Set error callback function.
+    /*!
+      \param pCallbackFunction is function pointer to function which should be called back.
+    */
+    void setErrorCallback(void(*pCallbackFunction)(std::string));
+
+    //! Set warning callback function.
+    /*!
+      \param pCallbackFunction is function pointer to function which should be called back.
+    */
+    void setWarningCallback(void(*pCallbackFunction)(std::string));
+
+    //! Return string describing the version of the linked library.
+    /*!
+      \return version given as string.
+    */
+    std::string getLibraryVersion();
 }
 
 #endif // EYE_GUI_H_

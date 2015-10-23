@@ -23,7 +23,7 @@ namespace eyegui
 	public:
 
 		// Enumeration of operations which could occur
-		enum class Operation { PARSING, IMAGE_LOADING, RUNTIME, BUG };
+		enum class Operation { PARSING, IMAGE_LOADING, FONT_LOADING, RUNTIME, BUG };
 
 		// Send error to callback
 		static void notifyAboutError(Operation operation, std::string message = "", std::string filepath = "")
@@ -137,6 +137,9 @@ namespace eyegui
 				break;
 			case Operation::IMAGE_LOADING:
 				operationString = "Image Loading " + typeString + ": ";
+				break;
+			case Operation::FONT_LOADING:
+				operationString = "Font Loading " + typeString + ": ";
 				break;
 			case Operation::RUNTIME:
 				operationString = "Runtime " + typeString + ": ";

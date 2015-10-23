@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -13,53 +13,56 @@
 
 namespace eyegui
 {
-	class Picture : public Element
-	{
-	public:
+    class Picture : public Element
+    {
+    public:
 
-		// Constructors
-		Picture(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout* pLayout,
-			AssetManager* pAssetManager,
-			float relativeScale,
+        // Constructors
+        Picture(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+			Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+            float relativeScale,
 			float border,
-			std::string filepath,
-			PictureAlignment alignment);
+			bool dimmable,
+            std::string filepath,
+            PictureAlignment alignment);
 
-		// Destructor
-		virtual ~Picture();
+        // Destructor
+        virtual ~Picture();
 
-		// Check before transformation, how much space is needed
-		virtual void evaluateSize(
-			int availableWidth,
-			int availableHeight,
-			int& rWidth,
-			int& rHeight) const;
+        // Check before transformation, how much space is needed
+        virtual void evaluateSize(
+            int availableWidth,
+            int availableHeight,
+            int& rWidth,
+            int& rHeight) const;
 
-	protected:
+    protected:
 
-		// Updating filled by subclasses
-		virtual void specialUpdate(float tpf, Input* pInput);
+        // Updating filled by subclasses
+        virtual void specialUpdate(float tpf, Input* pInput);
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize();
 
-		// Reset filld by subclasses
-		virtual void specialReset();
+        // Reset filld by subclasses
+        virtual void specialReset();
 
-	private:
+    private:
 
-		// Members
-		RenderItem* mpQuad;
-		Texture* mpImage;
-		PictureAlignment mAlignment;
-	};
+        // Members
+        RenderItem const * mpQuad;
+        Texture const * mpImage;
+        PictureAlignment mAlignment;
+    };
 }
 
 #endif // PICTURE_H_

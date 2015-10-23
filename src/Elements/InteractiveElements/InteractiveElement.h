@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -14,83 +14,83 @@
 
 namespace eyegui
 {
-	class InteractiveElement : public Element
-	{
-	public:
+    class InteractiveElement : public Element
+    {
+    public:
 
-		// Ugly enumeration, but somehow layout must remember to call correct noficiaton
-		enum class Notification { BUTTON_HIT, BUTTON_DOWN, BUTTON_UP, SENSOR_PENETRATED };
+        // Ugly enumeration, but somehow layout must remember to call correct noficiaton
+        enum class Notification { BUTTON_HIT, BUTTON_DOWN, BUTTON_UP, SENSOR_PENETRATED };
 
-		// Constructors
-		InteractiveElement(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout* pLayout,
-			AssetManager* pAssetManager,
-			float relativeScale,
-			float border,
-			std::string iconFilepath);
+        // Constructors
+        InteractiveElement(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+            NotificationQueue* pNotificationQueue,
+            float relativeScale,
+            float border,
+			bool dimmable,
+            std::string iconFilepath);
 
-		// Destructor
-		virtual ~InteractiveElement() = 0;
+        // Destructor
+        virtual ~InteractiveElement() = 0;
 
-		// Check, whether highlighted
-		bool isHighlighted() const;
+        // Check, whether highlighted
+        bool isHighlighted() const;
 
-		// Interaction
-		void interact();
+        // Interaction
+        void interact();
 
-		// Highlight button, returns whether successful
-		void highlight(bool doHighlight);
+        // Highlight button, returns whether successful
+        void highlight(bool doHighlight);
 
-		// Select button, returns whether successful
-		void select(bool doSelect);
+        // Select button, returns whether successful
+        void select(bool doSelect);
 
-		// Set icon
-		void setIcon(std::string filepath);
+        // Set icon
+        void setIcon(std::string filepath);
 
-		// Called by layout after updating
-		void pipeNotification(Notification notification);
+        // Called by layout after updating
+        void pipeNotification(Notification notification, Layout* pLayout);
 
-		// Tries to fetch next interactive element for selecting, returns NULL if fails
-		virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
+        // Tries to fetch next interactive element for selecting, returns NULL if fails
+        virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
-	protected:
+    protected:
 
-		// Updating filled by subclasses
-		virtual void specialUpdate(float tpf, Input* pInput);
+        // Updating filled by subclasses
+        virtual void specialUpdate(float tpf, Input* pInput);
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
 
-		// Reset filld by subclasses
-		virtual void specialReset();
+        // Reset filld by subclasses
+        virtual void specialReset();
 
-		// Interaction fill by subclasses
-		virtual void specialInteract() = 0;
+        // Interaction fill by subclasses
+        virtual void specialInteract() = 0;
 
-		// Filled by subclass and called by layout after updating
-		virtual void specialPipeNotification(Notification notification) = 0;
+        // Filled by subclass and called by layout after updating
+        virtual void specialPipeNotification(Notification notification, Layout* pLayout) = 0;
 
-		// Calculate aspect ratio correction for icon on gizmo
-		glm::vec2 iconAspectRatioCorrection() const;
+        // Calculate aspect ratio correction for icon on gizmo
+        glm::vec2 iconAspectRatioCorrection() const;
 
-		// Checks, whether element is penetrated by input
-		virtual bool penetratedByInput(Input const * pInput) const;
+        // Members
+        RenderItem const * mpRenderItem; // has to be initialized by subclasses
 
-		// Members
-		RenderItem* mpRenderItem; // has to be initialized by subclasses
+    private:
 
-	private:
-
-		// Members
-		float mHighlight;
-		bool mIsHighlighted;
-		float mSelection;
-		bool mIsSelected;
-		Texture* mpIcon;
-	};
+        // Members
+        LerpValue mHighlight;
+        bool mIsHighlighted;
+        LerpValue mSelection;
+        bool mIsSelected;
+        Texture const * mpIcon;
+    };
 }
 
 #endif // INTERACTIVE_ELEMENT_H_

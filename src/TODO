@@ -1,20 +1,17 @@
-### VERSION 0.2 [Text and floating elements] ### (ready for "Praktikum")
-- Text rendering using freetype
-- New elements using text rendering
-- Localization using files
-- Floating elements
-  - Extra id map in layout for faster access
-    - Move updating and drawing from layout to new class frame and each layout can have multiple floating frames and one for the layout
-- Changing styles through programming interface
-- New style member: FadeColorMutliplier (used when gaze is not upon the the element)
-- HelloEyeGUI and eyeGUIDemo refactoring..
+### VERSION 0.x
+- Update calls to children of elements is strange (done in stack and grid, only...)
+- Resize is too often called
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
-- Maybe make job queue in GUI to enable notification to move layouts
 - BoxButton: enable stretched icons
-- Text input
-- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
-
-### VERSION 0.3 [Input] ### (ready for eye browser)
+- Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
+- Common super class for all elements using text
+	- key, textflow
+	- only if more elements with text flows are planned
+- Function to define search folder or so
+- Encoding stuff
+	- Different XML library -> UTF8 works even in xeyegui
+	- Use UTF8 library also for config and stylesheet?
+	- UTF-8 enough for localization?
 - More complex input structure and configuration
   - Mouse
   - Keyboard
@@ -22,11 +19,17 @@
   - Brain-computer-interface
   - Buttons?
   - Other...
-
-### VERSION 0.4 ### (improvements)
+- More complex elements with text (menu)
+- Text input
+- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Audio
+- Right to left text (hebrew)
+	- Maybe detect hebrew characters and react
+- Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
+- Font has sometimes little rendering issues
 
 Notes:
+- Localization files MUST BE encoded in UTF-8
 - Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Reminder: Parser responsible for value ranges!
@@ -52,6 +55,7 @@ Notes:
 		- Should have look field for activation -> this field could be box / circle button with icon :)
 	- Tooltips
 	- Make listening elements (analog to notifier template) using pointer, function or method getter to get values like floats or strings for displaying
+- If one wants to add brick more than one time: id replacement at loading
 
 If bored:
 - Some members of element could be private but getters necessary..

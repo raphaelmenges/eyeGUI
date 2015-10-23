@@ -1,10 +1,13 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// GUI class owning the layouts.
+// GUI class owning the layouts. Most access through interface is handled
+// using special job objects, which are executed before rendering. This
+// ensures that the vector of layouts is not changed during rendering and
+// notifications from elements can trigger GUI jobs.
 
 #ifndef GUI_H_
 #define GUI_H_
@@ -14,6 +17,7 @@
 #include "Layout.h"
 #include "Parser/LayoutParser.h"
 #include "Parser/ConfigParser.h"
+#include "Parser/LocalizationParser.h"
 #include "Rendering/AssetManager.h"
 #include "Rendering/GLSetup.h"
 #include "Input.h"
@@ -24,78 +28,153 @@
 
 namespace eyegui
 {
-	class GUI
-	{
-	public:
+    class GUI
+    {
+    public:
 
-		// Local constants
-		const std::string NO_CONFIG_TO_LOAD = "";
+        // *** Methods accessed via interface ***
 
-		// *** Methods accessed by layout ***
+        // Constructor
+        GUI(
+            int width,
+            int height,
+            std::string fontFilepath,
+            CharacterSet characterSet,
+            std::string localizationFilepath);
 
-		// Getter for window size
-		int getWindowWidth() const;
-		int getWindowHeight() const;
+        // Destructor
+        virtual ~GUI();
 
-		// Get time since start (gets reset if too big)
-		float getAccPeriodicTime() const;
+        // Load layout from xml, returns NULL if fails
+        Layout* addLayout(std::string filepath, bool visible);
 
-		// Get pointer to config of this GUI
-		Config const * getConfig() const;
+        // Resize whole gui
+        void resize(int width, int height);
 
-		// *** Methods accessed via interface ***
+        // Render all layouts
+        void render(float tpf);
 
-		// Constructor
-		GUI(int width, int height);
+        // Set mouse cursor position
+        void setMouseCursor(int x, int y);
 
-		// Destructor
-		virtual ~GUI();
+        // Move layout to front
+        void moveLayoutToFront(Layout* pLayout);
 
-		// Load layout from xml, returns NULL if fails
-		Layout* addLayout(std::string filepath, bool visible);
+        // Move layout to back
+        void moveLayoutToBack(Layout* pLayout);
 
-		// Resize whole gui
-		void resize(int width, int height);
+        // Load a config
+        void loadConfig(std::string filepath);
 
-		// Render all layouts
-		void render(float tpf);
+        // Prefatch image to avoid lag
+        void prefetchImage(std::string filepath);
 
-		// Set mouse cursor position
-		void setMouseCursor(int x, int y);
+        // *** Methods accessed by other classes ***
 
-		// Move layout to front
-		void moveLayoutToFront(Layout* pLayout);
+        // Getter for window size
+        int getWindowWidth() const;
+        int getWindowHeight() const;
 
-		// Move layout to back
-		void moveLayoutToBack(Layout* pLayout);
+        // Get time since start (gets reset if too big)
+        float getAccPeriodicTime() const;
 
-		// Load a config
-		void loadConfig(std::string filepath);
+        // Get pointer to config of this GUI
+        Config const * getConfig() const;
 
-		// Prefatch image to avoid lag
-		void prefetchImage(std::string filepath);
+        // Get used character set
+        CharacterSet getCharacterSet() const;
 
-	private:
+        // Get set default font
+        Font const * getDefaultFont() const;
 
-		// Find index of layout, returns -1 if fails
-		int findLayout(Layout const * pLayout) const;
+        // Get string content from localization
+        std::u16string getContentFromLocalization(std::string key) const;
 
-		// Move layout
-		void moveLayout(int oldIndex, int newIndex);
+    private:
 
-		// Members
-		std::vector<std::unique_ptr<Layout> > mLayouts;
-		int mWidth, mHeight;
-		LayoutParser mLayoutParser;
-		ConfigParser mConfigParser;
-		AssetManager mAssetManager;
-		GLSetup mGLSetup;
-		Input mInput;
-		float mAccPeriodicTime;
-		Config mConfig;
-		bool mLayoutsLocked;
-		std::string mConfigToLoad;
-	};
+        // ### INNER CLASSES ###################################################
+
+        // Job for the gui to execute before rendering
+        class GUIJob
+        {
+        public:
+
+            GUIJob(GUI* pGUI);
+            virtual void execute() = 0;
+
+        protected:
+
+            GUI* mpGUI;
+        };
+
+        // Job to move layout
+        class MoveLayoutJob : public GUIJob
+        {
+        public:
+
+            MoveLayoutJob(GUI* pGUI, Layout* pLayout, bool toFront);
+            virtual void execute();
+
+        protected:
+
+            Layout* mpLayout;
+            bool mToFront; // otherwise to back
+        };
+
+        // Job to load config
+        class LoadConfigJob : public GUIJob
+        {
+        public:
+
+            LoadConfigJob(GUI* pGUI, std::string filepath);
+            virtual void execute();
+
+        protected:
+
+            std::string mFilepath;
+        };
+
+        // Job to add layout
+        class AddLayoutJob : public GUIJob
+        {
+        public:
+
+            AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout);
+            virtual void execute();
+
+        protected:
+
+            std::unique_ptr<Layout> mupLayout;
+        };
+
+        // #####################################################################
+
+        // Find index of layout, returns -1 if fails
+        int findLayout(Layout const * pLayout) const;
+
+        // Move layout
+        void moveLayout(int oldIndex, int newIndex);
+
+        // Internal resizing
+        void internalResizing();
+
+        // Members
+        std::vector<std::unique_ptr<Layout> > mLayouts;
+        int mWidth, mHeight;
+        int mNewWidth, mNewHeight;
+        CharacterSet mCharacterSet;
+        std::unique_ptr<AssetManager> mupAssetManager;
+        GLSetup mGLSetup;
+        Input mInput;
+        float mAccPeriodicTime;
+        Config mConfig;
+        Font const * mpDefaultFont;
+        bool mResizing;
+        float mResizeWaitTime;
+        RenderItem const * mpResizeBlend;
+        std::unique_ptr<localizationMap> mupLocalizationMap;
+        std::vector<std::unique_ptr<GUIJob> > mJobs;
+    };
 }
 
 #endif // GUI_H_

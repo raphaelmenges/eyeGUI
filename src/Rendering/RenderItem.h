@@ -12,7 +12,7 @@
 
 #include "Shader.h"
 #include "Mesh.h"
-#include "External/OpenGLLoader/gl_core_3_3.h"
+#include "externals/OpenGLLoader/gl_core_3_3.h"
 
 namespace eyegui
 {
@@ -21,7 +21,7 @@ namespace eyegui
     public:
 
         // Constructor
-        RenderItem(Shader* pShader, Mesh* pMesh);
+        RenderItem(Shader const * pShader, Mesh const * pMesh);
 
         // Destructor
         virtual ~RenderItem();
@@ -33,16 +33,16 @@ namespace eyegui
         void draw() const;
 
         // Get pointer to shader
-        Shader* getShader();
+        Shader const * getShader() const;
 
         // Get pointer to mesh
-        Mesh* getMesh();
+        Mesh const * getMesh() const;
 
     private:
 
         // Member
-        Shader* mpShader;
-        Mesh* mpMesh;
+        Shader const * mpShader;
+        Mesh const * mpMesh;
         GLuint mVertexArrayObject;
     };
 }

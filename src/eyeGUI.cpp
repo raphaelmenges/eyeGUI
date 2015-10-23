@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -12,225 +12,347 @@
 #include "OperationNotifier.h"
 
 // Version
-static const std::string VERSION_STRING = "0.1";
+static const std::string VERSION_STRING = "0.2";
 
 namespace eyegui
 {
-	GUI* createGUI(int width, int height)
+    GUI* createGUI(
+        int width,
+        int height,
+        std::string fontFilepath,
+        CharacterSet characterSet,
+		std::string localizationFilepath)
+    {
+        return (new GUI(width, height, fontFilepath, characterSet, localizationFilepath));
+    }
+
+    Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
+    {
+        return pGUI->addLayout(filepath, visible);
+    }
+
+    void renderGUI(GUI* pGUI, float tpf)
+    {
+        pGUI->render(tpf);
+    }
+
+    void terminateGUI(GUI* pGUI)
+    {
+        if (pGUI != NULL)
+        {
+            delete pGUI;
+            pGUI = NULL;
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "GUI was tried to terminate but is already terminated");
+        }
+    }
+
+    void resizeGUI(GUI* pGUI, int width, int height)
+    {
+        pGUI->resize(width, height);
+    }
+
+    void loadConfig(GUI* pGUI, std::string filepath)
+    {
+        pGUI->loadConfig(filepath);
+    }
+
+    void setMouseCursor(GUI* pGUI, int x, int y)
+    {
+        pGUI->setMouseCursor(x, y);
+    }
+
+    void prefetchImage(GUI* pGUI, std::string filepath)
+    {
+        pGUI->prefetchImage(filepath);
+    }
+
+    void setInputUsageOfLayout(Layout* pLayout, bool useInput)
+    {
+        pLayout->useInput(useInput);
+    }
+
+    void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset, bool fade)
+    {
+        pLayout->setVisibility(visible, fade);
+
+        if (reset)
+        {
+            pLayout->resetElements();
+        }
+    }
+
+    void moveLayoutToFront(GUI* pGUI, Layout* pLayout)
+    {
+        pGUI->moveLayoutToFront(pLayout);
+    }
+
+    void moveLayoutToBack(GUI* pGUI, Layout* pLayout)
+    {
+        pGUI->moveLayoutToBack(pLayout);
+    }
+
+    void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade)
+    {
+        pLayout->setElementActivity(id, active, fade);
+    }
+
+    void toggleElementActivity(Layout* pLayout, std::string id, bool fade)
+    {
+        pLayout->setElementActivity(id, !pLayout->isElementActive(id), fade);
+    }
+
+    bool isElementActive(Layout const * pLayout, std::string id)
+    {
+        return pLayout->isElementActive(id);
+    }
+
+	void setElementDimmable(
+		Layout* pLayout,
+		std::string id,
+		bool dimmable)
 	{
-		return (new GUI(width, height));
+		pLayout->setElementDimmable(id, dimmable);
 	}
 
-	Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
+	bool isElementDimmable(Layout const * pLayout, std::string id)
 	{
-		return pGUI->addLayout(filepath, visible);
+		return pLayout->isElementDimmable(id);
 	}
 
-	void renderGUI(GUI* pGUI, float tpf)
-	{
-		pGUI->render(tpf);
-	}
+    float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativePositionOfElementOnLayoutX(id);
+    }
 
-	void terminateGUI(GUI* pGUI)
-	{
-		if (pGUI != NULL)
-		{
-			delete pGUI;
-			pGUI = NULL;
-		}
-		else
-		{
-			throwWarning(OperationNotifier::Operation::RUNTIME, "GUI was tried to terminate but is already terminated");
-		}
-	}
+    float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativePositionOfElementOnLayoutY(id);
+    }
 
-	void resizeGUI(GUI* pGUI, int width, int height)
-	{
-		pGUI->resize(width, height);
-	}
+    float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativeSizeOfElementOnLayoutX(id);
+    }
 
-	void loadConfig(GUI* pGUI, std::string filepath)
-	{
-		pGUI->loadConfig(filepath);
-	}
+    float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getRelativeSizeOfElementOnLayoutY(id);
+    }
 
-	void setMouseCursor(GUI* pGUI, int x, int y)
-	{
-		pGUI->setMouseCursor(x, y);
-	}
+    bool checkForId(Layout const * pLayout, std::string id)
+    {
+        return pLayout->checkForId(id);
+    }
 
-	void prefetchImage(GUI* pGUI, std::string filepath)
-	{
-		pGUI->prefetchImage(filepath);
-	}
+    void highlightInteractiveElement(Layout* pLayout, std::string id, bool doHighlight)
+    {
+        pLayout->highlightInteractiveElement(id, doHighlight);
+    }
 
-	void setInputUsageOfLayout(Layout* pLayout, bool useInput)
-	{
-		pLayout->useInput(useInput);
-	}
+    void toggleHighlightInteractiveElement(Layout* pLayout, std::string id)
+    {
+        pLayout->highlightInteractiveElement(id, pLayout->isInteractiveElementHighlighted(id));
+    }
 
-	void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset, bool setImmediately)
-	{
-		pLayout->setVisibility(visible, setImmediately);
+    bool isInteractiveElementHighlighted(Layout const * pLayout, std::string id)
+    {
+        return pLayout->isInteractiveElementHighlighted(id);
+    }
 
-		if (reset)
-		{
-			pLayout->reset();
-		}
-	}
+    void setValueOfStyleAttribute(
+        Layout* pLayout,
+        std::string styleName,
+         std::string attribute,
+         float r,
+         float g,
+         float b,
+         float a)
+     {
+        pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r,g,b,a));
+     }
 
-	void moveLayoutToFront(GUI* pGUI, Layout* pLayout)
-	{
-		pGUI->moveLayoutToFront(pLayout);
-	}
+    void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
+    {
+        pLayout->setIconOfInteractiveElement(id, iconFilepath);
+    }
 
-	void moveLayoutToBack(GUI* pGUI, Layout* pLayout)
-	{
-		pGUI->moveLayoutToBack(pLayout);
-	}
+    void selectInteractiveElement(Layout* pLayout, std::string id)
+    {
+        pLayout->selectInteractiveElement(id);
+    }
 
-	void setElementActivity(Layout* pLayout, std::string id, bool active, bool setImmediately)
-	{
-		pLayout->setElementActivity(id, active, setImmediately);
-	}
+    void deselectInteractiveElement(Layout* pLayout)
+    {
+        pLayout->deselectInteractiveElement();
+    }
 
-	void toggleElementActivity(Layout* pLayout, std::string id, bool setImmediately)
-	{
-		pLayout->setElementActivity(id, !pLayout->isElementActive(id), setImmediately);
-	}
+    void interactWithSelectedInteractiveElement(Layout* pLayout)
+    {
+        pLayout->interactWithSelectedInteractiveElement();
+    }
 
-	bool isElementActive(Layout const * pLayout, std::string id)
-	{
-		return pLayout->isElementActive(id);
-	}
+    bool selectNextInteractiveElement(Layout* pLayout)
+    {
+        return pLayout->selectNextInteractiveElement();
+    }
 
-	bool checkForId(Layout const * pLayout, std::string id)
-	{
-		return pLayout->checkForId(id);
-	}
+    void hitButton(Layout* pLayout, std::string id)
+    {
+        pLayout->hitButton(id);
+    }
 
-	void highlightInteractiveElement(Layout* pLayout, std::string id, bool doHighlight)
-	{
-		pLayout->highlightInteractiveElement(id, doHighlight);
-	}
+    void buttonDown(Layout* pLayout, std::string id)
+    {
+        pLayout->buttonDown(id);
+    }
 
-	void toggleHighlightInteractiveElement(Layout* pLayout, std::string id)
-	{
-		pLayout->highlightInteractiveElement(id, pLayout->isInteractiveElementHighlighted(id));
-	}
+    void buttonUp(Layout* pLayout, std::string id)
+    {
+        pLayout->buttonUp(id);
+    }
 
-	bool isInteractiveElementHighlighted(Layout const * pLayout, std::string id)
-	{
-		return pLayout->isInteractiveElementHighlighted(id);
-	}
+    bool isButtonSwitch(Layout const * pLayout, std::string id)
+    {
+        return pLayout->isButtonSwitch(id);
+    }
 
-	void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
-	{
-		pLayout->setIconOfInteractiveElement(id, iconFilepath);
-	}
+    void penetrateSensor(Layout* pLayout, std::string id, float amount)
+    {
+        pLayout->penetrateSensor(id, amount);
+    }
 
-	void selectInteractiveElement(Layout* pLayout, std::string id)
-	{
-		pLayout->selectInteractiveElement(id);
-	}
+    void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
+    {
+        pLayout->registerButtonListener(id, wpListener);
+    }
 
-	void deselectInteractiveElement(Layout* pLayout)
-	{
-		pLayout->deselectInteractiveElement();
-	}
+    void registerSensorListener(Layout* pLayout, std::string id, std::weak_ptr<SensorListener> wpListener)
+    {
+        pLayout->registerSensorListener(id, wpListener);
+    }
 
-	void interactWithSelectedInteractiveElement(Layout* pLayout)
-	{
-		pLayout->interactWithSelectedInteractiveElement();
-	}
+    void replaceElementWithBlock(Layout* pLayout, std::string id, bool fade)
+    {
+        pLayout->replaceElementWithBlock(id, fade);
+    }
 
-	bool selectNextInteractiveElement(Layout* pLayout)
-	{
-		return pLayout->selectNextInteractiveElement();
-	}
+    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, PictureAlignment alignment, bool fade)
+    {
+        pLayout->replaceElementWithPicture(id, filepath, alignment, fade);
+    }
 
-	void hitButton(Layout* pLayout, std::string id)
-	{
-		pLayout->hitButton(id);
-	}
+    void replaceElementWithBlank(Layout* pLayout, std::string id, bool fade)
+    {
+        pLayout->replaceElementWithBlank(id, fade);
+    }
 
-	void buttonDown(Layout* pLayout, std::string id)
-	{
-		pLayout->buttonDown(id);
-	}
+    void replaceElementWithCircleButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    {
+        pLayout->replaceElementWithCircleButton(id, iconFilepath, isSwitch, fade);
+    }
 
-	void buttonUp(Layout* pLayout, std::string id)
-	{
-		pLayout->buttonUp(id);
-	}
+    void replaceElementWithBoxButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    {
+        pLayout->replaceElementWithBoxButton(id, iconFilepath, isSwitch, fade);
+    }
 
-	bool isButtonSwitch(Layout const * pLayout, std::string id)
-	{
-		return pLayout->isButtonSwitch(id);
-	}
+    void replaceElementWithSensor(Layout* pLayout, std::string id, std::string iconFilepath, bool fade)
+    {
+        pLayout->replaceElementWithSensor(id, iconFilepath, fade);
+    }
 
-	void penetrateSensor(Layout* pLayout, std::string id, float amount)
-	{
-		pLayout->penetrateSensor(id, amount);
-	}
+    void replaceElementWithTextBlock(
+        Layout* pLayout,
+        std::string id,
+        FontSize fontSize,
+        TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
+        std::u16string content,
+		std::string key,
+        float innerBorder,
+        bool fade)
+    {
+        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, key, innerBorder, fade);
+    }
 
-	void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
-	{
-		pLayout->registerButtonListener(id, wpListener);
-	}
+    void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)
+    {
+        pLayout->replaceElementWithBrick(id, filepath, fade);
+    }
 
-	void registerSensorListener(Layout* pLayout, std::string id, std::weak_ptr<SensorListener> wpListener)
-	{
-		pLayout->registerSensorListener(id, wpListener);
-	}
+    unsigned int addFloatingFrameWithBrick(
+        Layout* pLayout,
+        std::string filepath,
+        float relativePositionX,
+        float relativePositionY,
+        float relativeSizeX,
+        float relativeSizeY,
+        bool visible,
+        bool fade)
+    {
+        return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, visible, fade);
+    }
 
-	void replaceElementWithBlock(Layout* pLayout, std::string id, bool doFading)
-	{
-		pLayout->replaceElementWithBlock(id, doFading);
-	}
+    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool fade)
+    {
+        pLayout->setVisibiltyOfFloatingFrame(frameIndex, visible, fade);
 
-	void replaceElementWithPicture(Layout* pLayout, std::string id, bool doFading, std::string filepath, PictureAlignment alignment)
-	{
-		pLayout->replaceElementWithPicture(id, doFading, filepath, alignment);
-	}
+        if (reset)
+        {
+            pLayout->resetFloatingFramesElements(frameIndex);
+        }
+    }
 
-	void replaceElementWithBlank(Layout* pLayout, std::string id, bool doFading)
-	{
-		pLayout->replaceElementWithBlank(id, doFading);
-	}
+    void removeFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool fade)
+    {
+        pLayout->removeFloatingFrame(frameIndex, fade);
+    }
 
-	void replaceElementWithCircleButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch)
-	{
-		pLayout->replaceElementWithCircleButton(id, doFading, iconFilepath, isSwitch);
-	}
+    void translateFloatingFrame(Layout* pLayout, unsigned int frameIndex, float translateX, float translateY)
+    {
+        pLayout->translateFloatingFrame(frameIndex, translateX, translateY);
+    }
 
-	void replaceElementWitBoxButton(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath, bool isSwitch)
-	{
-		pLayout->replaceElementWitBoxButton(id, doFading, iconFilepath, isSwitch);
-	}
+    void scaleFloatingFrame(Layout* pLayout, unsigned int frameIndex, float scaleX, float scaleY)
+    {
+        pLayout->scaleFloatingFrame(frameIndex, scaleX, scaleY);
+    }
 
-	void replaceElementWitSensor(Layout* pLayout, std::string id, bool doFading, std::string iconFilepath)
-	{
-		pLayout->replaceElementWitSensor(id, doFading, iconFilepath);
-	}
+    void setPositionOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativePositionX, float relativePositionY)
+    {
+        pLayout->setPositionOfFloatingFrame(frameIndex, relativePositionX, relativePositionY);
+    }
 
-	void replaceElementWithBrick(Layout* pLayout, std::string id, bool doFading, std::string filepath)
-	{
-		pLayout->replaceElementWithBrick(id, doFading, filepath);
-	}
+    void setSizeOfFloatingFrame(Layout* pLayout, unsigned int frameIndex, float relativeSizeX, float relativeSizeY)
+    {
+        pLayout->setSizeOfFloatingFrame(frameIndex, relativeSizeX, relativeSizeY);
+    }
 
-	void setErrorCallback(void(*pCallbackFunction)(std::string))
-	{
-		OperationNotifier::setErrorCallback(pCallbackFunction);
-	}
+    void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex)
+    {
+        pLayout->moveFloatingFrameToFront(frameIndex);
+    }
 
-	void setWarningCallback(void(*pCallbackFunction)(std::string))
-	{
-		OperationNotifier::setWarningCallback(pCallbackFunction);
-	}
+    void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex)
+    {
+        pLayout->moveFloatingFrameToBack(frameIndex);
+    }
 
-	std::string getLibraryVersion()
-	{
-		return VERSION_STRING;
-	}
+    void setErrorCallback(void(*pCallbackFunction)(std::string))
+    {
+        OperationNotifier::setErrorCallback(pCallbackFunction);
+    }
+
+    void setWarningCallback(void(*pCallbackFunction)(std::string))
+    {
+        OperationNotifier::setWarningCallback(pCallbackFunction);
+    }
+
+    std::string getLibraryVersion()
+    {
+        return VERSION_STRING;
+    }
 }

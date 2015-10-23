@@ -9,7 +9,7 @@
 #ifndef MESH_H_
 #define MESH_H_
 
-#include "External/OpenGLLoader/gl_core_3_3.h"
+#include "externals/OpenGLLoader/gl_core_3_3.h"
 
 #include <vector>
 

@@ -12,7 +12,7 @@
 #include "eyeGUI.h"
 
 #include "Defines.h"
-#include "External/OpenGLLoader/gl_core_3_3.h"
+#include "externals/OpenGLLoader/gl_core_3_3.h"
 
 #include <string>
 #include <vector>
