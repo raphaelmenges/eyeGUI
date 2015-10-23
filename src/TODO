@@ -1,9 +1,3 @@
-### VERSION 0.2
-
-Refactoring:
-	- Add version / date of externals
-	  - reintegrate glm (some files may be missing)
-
 ### VERSION 0.x
 - Update calls to children of elements is strange (done in stack and grid, only...)
 - Resize is too often called
