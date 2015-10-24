@@ -1,12 +1,16 @@
-### VERSION 0.x
-- Update calls to children of elements is strange (done in stack and grid, only...)
+### VERSION 0.3
+- RelativeScale only used in stack, grid would be good too
 - Resize is too often called
+- Update calls to children of elements is strange (done in stack and grid, only...)
+- More complex elements with text (menu)
+	- Common super class for all elements using text
+		- key, textflow
+- If one wants to add brick more than one time: id replacement at loading
+
+### VERSION 0.x
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - BoxButton: enable stretched icons
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
-- Common super class for all elements using text
-	- key, textflow
-	- only if more elements with text flows are planned
 - Function to define search folder or so
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
@@ -19,7 +23,6 @@
   - Brain-computer-interface
   - Buttons?
   - Other...
-- More complex elements with text (menu)
 - Text input
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Audio
@@ -46,7 +49,6 @@ Notes:
 - Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
 - Input
   - Reminder: can be NULL if irrelevant for Element
-  - At the moment: everything taking place in specialUpdate
   - Maybe blocks have an option: kill or not kill input (both possible)
   - is selecting via keyboard input? (at the moment it is not blocked if input is disabled for layout)
 - Text
@@ -55,7 +57,6 @@ Notes:
 		- Should have look field for activation -> this field could be box / circle button with icon :)
 	- Tooltips
 	- Make listening elements (analog to notifier template) using pointer, function or method getter to get values like floats or strings for displaying
-- If one wants to add brick more than one time: id replacement at loading
 
 If bored:
 - Some members of element could be private but getters necessary..
