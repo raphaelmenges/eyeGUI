@@ -17,12 +17,12 @@ namespace eyegui
     {
     public:
 
-        // Constructor
+        // Constructors
         LerpValue(float value, float min, float max)
         {
-            mValue = value;
             mMin = min;
             mMax = max;
+            setValue(value);
         }
         LerpValue(float value) : LerpValue(value, 0 , 1) {}
         LerpValue() : LerpValue(0, 0 , 1) {}
@@ -61,6 +61,7 @@ namespace eyegui
         void setValue(float value)
         {
             mValue = value;
+            mValue = clamp(mValue, mMin, mMax);
         }
 
     private:
