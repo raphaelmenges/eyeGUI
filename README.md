@@ -5,7 +5,7 @@ This library enables one to load, manipulate and render user interfaces for eyet
 Video hosted on YouTube, click on the preview for watching. Turn on subtitles for some explanations.
 [![Screenshot](https://raw.githubusercontent.com/wiki/raphaelmenges/eyeGUI/DemoVideoLink.png)](https://youtu.be/niMRX65E7IE)
 
-## Changelist
+## Features
 #### Version 0.2
 * Dimming
 * Localization

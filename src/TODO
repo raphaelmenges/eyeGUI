@@ -2,11 +2,12 @@
 - RelativeScale only used in stack, grid would be good too
 - Resize is too often called
 - Update calls to children of elements is strange (done in stack and grid, only...)
-- More complex elements with text (menu)
-	- Common super class for all elements using text
-		- key, textflow
+- Set content of textblock via interface
 - If one wants to add brick more than one time: id replacement at loading
 - Floating frame: one pixel too wide or narrow?
+
+### VERSION 0.4
+- TextInput
 
 ### VERSION 0.x
 - Sensor: instead of real values for penetration: maybe acceleration would be a good idea
@@ -31,6 +32,9 @@
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Font has sometimes little rendering issues
+- More complex elements with text (menu)
+	- Common super class for all elements using text
+		- key, textflow
 
 Notes:
 - Localization files MUST BE encoded in UTF-8
