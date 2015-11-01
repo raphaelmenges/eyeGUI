@@ -169,7 +169,7 @@ namespace eyegui
         {
             float relativeScale = element->getRelativeScale();
             completeScale += relativeScale;
-            maxRelativeScale = maxRelativeScale < relativeScale ? relativeScale : maxRelativeScale;
+			maxRelativeScale = std::max(relativeScale, maxRelativeScale);
         }
 
         // Determine direction of stacking

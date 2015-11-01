@@ -172,6 +172,31 @@ namespace eyegui
         // Super call
         Container::specialTransformAndSize();
 
+		// Calculate relative sizes
+		std::vector<float> maxRelativeScaleOfColumns;
+		std::vector<float> completeScaleOfColumns;
+		float completeScaleOfRows = 0;
+		for (int i = 0; i < mRows; i++)
+		{
+			int columnCount = mColumns[i];
+			float maxRelativeScale = -1;
+			float completeScale = 0;
+
+			// Go over columns
+			for (int j = 0; j < columnCount; j++)
+			{
+				Element* ptr = mChildren[(mCellIndices[i][j])].get();
+				float relativeScale = ptr->getRelativeScale();
+				completeScale += relativeScale;
+				maxRelativeScale = std::max(relativeScale, maxRelativeScale);
+			}
+
+			// Save maximal relative scale for this row
+			maxRelativeScaleOfColumns.push_back(maxRelativeScale);
+			completeScaleOfColumns.push_back(completeScale);
+			completeScaleOfRows += maxRelativeScale;
+		}
+
         // Initialize some values
         float currentRelativeYEnd = 0;
         int elemY = mInnerY;
@@ -181,7 +206,7 @@ namespace eyegui
         for (int i = 0; i < mRows; i++)
         {
             // Necessary to calculate height of element
-            currentRelativeYEnd += mElementRelativeHeights[i];
+            currentRelativeYEnd += mElementRelativeHeights[i] * (maxRelativeScaleOfColumns[i] / completeScaleOfRows) * mRows;
 
             // Initalize values per row
             int columnCount = mColumns[i];
@@ -203,8 +228,11 @@ namespace eyegui
             // Go over columns and accumulate x
             for (int j = 0; j < columnCount; j++)
             {
+				// Pointer to element in cell
+				Element* ptr = mChildren[(mCellIndices[i][j])].get();
+
                 // Necessary to calculate width of element
-                currentRelativeXEnd += mElementRelativeWidths[i][j];
+                currentRelativeXEnd += mElementRelativeWidths[i][j] * (ptr->getRelativeScale() / completeScaleOfColumns[i]) * columnCount;
 
                 // Calculate available space
                 if ((j + 1) == columnCount)
@@ -220,7 +248,7 @@ namespace eyegui
 
                 // Now ask the element, how much space is actually used
                 int usedWidth, usedHeight;
-                Element* ptr = mChildren[(mCellIndices[i][j])].get();
+                
                 ptr->evaluateSize(elemWidth, elemHeight, usedWidth, usedHeight);
 
                 // Recalculate values to place element in center of cell

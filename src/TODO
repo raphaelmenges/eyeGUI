@@ -1,12 +1,11 @@
 ### VERSION 0.3
-- RelativeScale only used in stack, grid would be good too
+- Bug: input not working
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 
 ### VERSION 0.4
 - TextInput
 
 ### VERSION 0.x
-- BoxButton: enable stretched icons
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Function to define search folder or so
 - Encoding stuff
