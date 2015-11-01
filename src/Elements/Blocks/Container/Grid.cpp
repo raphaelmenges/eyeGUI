@@ -173,7 +173,7 @@ namespace eyegui
         Container::specialTransformAndSize();
 
 		// Calculate relative sizes
-		std::vector<float> maxRelativeScaleOfColumns;
+		std::vector<float> maxRelativeScaleInColumns;
 		std::vector<float> completeScaleOfColumns;
 		float completeScaleOfRows = 0;
 		for (int i = 0; i < mRows; i++)
@@ -192,7 +192,7 @@ namespace eyegui
 			}
 
 			// Save maximal relative scale for this row
-			maxRelativeScaleOfColumns.push_back(maxRelativeScale);
+			maxRelativeScaleInColumns.push_back(maxRelativeScale);
 			completeScaleOfColumns.push_back(completeScale);
 			completeScaleOfRows += maxRelativeScale;
 		}
@@ -206,7 +206,7 @@ namespace eyegui
         for (int i = 0; i < mRows; i++)
         {
             // Necessary to calculate height of element
-            currentRelativeYEnd += mElementRelativeHeights[i] * (maxRelativeScaleOfColumns[i] / completeScaleOfRows) * mRows;
+            currentRelativeYEnd += mElementRelativeHeights[i] * (maxRelativeScaleInColumns[i] / completeScaleOfRows) * mRows;
 
             // Initalize values per row
             int columnCount = mColumns[i];
