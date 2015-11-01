@@ -121,6 +121,18 @@ namespace eyegui
 					{
 						config.dimmingDecreaseDuration = std::stof(right);
 					}
+					else if (left == "maximal-adaptive-scale-increase")
+					{
+						config.maximalAdaptiveScaleIncrease = std::stof(right);
+					}
+					else if (left == "adaptive-scale-increase-duration")
+					{
+						config.adaptiveScaleIncreaseDuration = std::stof(right);
+					}
+					else if (left == "adaptive-scale-decrease-duration")
+					{
+						config.adaptiveScaleDecreaseDuration = std::stof(right);
+					}
                     else
                     {
                         throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + left, filepath);

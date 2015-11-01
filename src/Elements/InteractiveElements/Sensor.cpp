@@ -60,7 +60,7 @@ namespace eyegui
         highlight(false);
     }
 
-    void Sensor::specialUpdate(float tpf, Input* pInput)
+    float Sensor::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
         InteractiveElement::specialUpdate(tpf, pInput);
@@ -82,6 +82,8 @@ namespace eyegui
         {
             mpNotificationQueue->enqueue(this, Notification::SENSOR_PENETRATED);
         }
+
+		return 0;
     }
 
     void Sensor::specialDraw() const

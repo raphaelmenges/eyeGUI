@@ -23,6 +23,9 @@ namespace eyegui
 		float sensorInteractionPenetrationAmount = 0.5f;
 		float dimmingIncreaseDuration = 1.5f;
 		float dimmingDecreaseDuration = 0.25f;
+		float maximalAdaptiveScaleIncrease = 1.0f; // TODO: add to wiki
+		float adaptiveScaleIncreaseDuration = 1.0f; // TODO: add to wiki
+		float adaptiveScaleDecreaseDuration = 1.0f; // TODO: add to wiki
 	};
 }
 

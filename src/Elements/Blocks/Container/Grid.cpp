@@ -172,29 +172,29 @@ namespace eyegui
         // Super call
         Container::specialTransformAndSize();
 
-		// Calculate relative sizes
+		// Calculate dynamic scales
 		std::vector<float> maxRelativeScaleInColumns;
 		std::vector<float> completeScaleOfColumns;
 		float completeScaleOfRows = 0;
 		for (int i = 0; i < mRows; i++)
 		{
 			int columnCount = mColumns[i];
-			float maxRelativeScale = -1;
+			float maxDynamicScale = -1;
 			float completeScale = 0;
 
 			// Go over columns
 			for (int j = 0; j < columnCount; j++)
 			{
 				Element* ptr = mChildren[(mCellIndices[i][j])].get();
-				float relativeScale = ptr->getRelativeScale();
-				completeScale += relativeScale;
-				maxRelativeScale = std::max(relativeScale, maxRelativeScale);
+				float dynamicScale = ptr->getDynamicScale();
+				completeScale += dynamicScale;
+				maxDynamicScale = std::max(dynamicScale, maxDynamicScale);
 			}
 
-			// Save maximal relative scale for this row
-			maxRelativeScaleInColumns.push_back(maxRelativeScale);
+			// Save maximal dynamic scale for this row
+			maxRelativeScaleInColumns.push_back(maxDynamicScale);
 			completeScaleOfColumns.push_back(completeScale);
-			completeScaleOfRows += maxRelativeScale;
+			completeScaleOfRows += maxDynamicScale;
 		}
 
         // Initialize some values
@@ -232,7 +232,7 @@ namespace eyegui
 				Element* ptr = mChildren[(mCellIndices[i][j])].get();
 
                 // Necessary to calculate width of element
-                currentRelativeXEnd += mElementRelativeWidths[i][j] * (ptr->getRelativeScale() / completeScaleOfColumns[i]) * columnCount;
+                currentRelativeXEnd += mElementRelativeWidths[i][j] * (ptr->getDynamicScale() / completeScaleOfColumns[i]) * columnCount;
 
                 // Calculate available space
                 if ((j + 1) == columnCount)

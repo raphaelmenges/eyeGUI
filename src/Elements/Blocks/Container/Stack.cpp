@@ -162,14 +162,14 @@ namespace eyegui
             }
         }
 
-        // Get all relative scales together if necessary
+        // Get all dynamic scales together if necessary
         float completeScale = 0;
-        float maxRelativeScale = 0;
+        float maxDynamicScale = 0;
         for (const std::unique_ptr<Element>& element : mChildren)
         {
-            float relativeScale = element->getRelativeScale();
-            completeScale += relativeScale;
-			maxRelativeScale = std::max(relativeScale, maxRelativeScale);
+            float dynamicScale = element->getDynamicScale();
+            completeScale += dynamicScale;
+			maxDynamicScale = std::max(dynamicScale, maxDynamicScale);
         }
 
         // Determine direction of stacking
@@ -201,7 +201,7 @@ namespace eyegui
                 {
                     // Use relative scale
                     localElemWidth = (int)((float)mInnerWidth
-                        * (element->getRelativeScale() / completeScale));
+                        * (element->getDynamicScale() / completeScale));
                     sumElemWidth += localElemWidth;
                 }
 
@@ -209,7 +209,7 @@ namespace eyegui
                 if (mRelativeScaling == RelativeScaling::BOTH_AXES)
                 {
                     localElemHeight = (int)((float)mInnerHeight
-                        * (element->getRelativeScale() / maxRelativeScale));
+                        * (element->getDynamicScale() / maxDynamicScale));
                 }
                 else
                 {
@@ -316,7 +316,7 @@ namespace eyegui
                 if (mRelativeScaling == RelativeScaling::BOTH_AXES)
                 {
                     localElemWidth = (int)((float)mInnerWidth
-                        * (element->getRelativeScale() / maxRelativeScale));
+                        * (element->getDynamicScale() / maxDynamicScale));
                 }
                 else
                 {
@@ -331,9 +331,9 @@ namespace eyegui
                 }
                 else
                 {
-                    // Use relative scale
+                    // Use dynamic scale
                     localElemHeight = (int)((float)mInnerHeight
-                        * (element->getRelativeScale() / completeScale));
+                        * (element->getDynamicScale() / completeScale));
                     sumElemHeight += localElemHeight;
                 }
 

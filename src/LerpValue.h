@@ -64,6 +64,20 @@ namespace eyegui
             mValue = clamp(mValue, mMin, mMax);
         }
 
+		// Setter for min value
+		void setMin(float min)
+		{
+			mMin = min;
+			mValue = clamp(mValue, mMin, mMax);
+		}
+
+		// Setter for max value
+		void setMax(float max)
+		{
+			mMax = max;
+			mValue = clamp(mValue, mMin, mMax);
+		}
+
     private:
 
         // If not private, gcc allows assigning simple float

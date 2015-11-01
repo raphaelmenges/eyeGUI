@@ -49,7 +49,7 @@ namespace eyegui
     }
 
     // Updating
-    void Block::specialUpdate(float tpf, Input* pInput)
+    float Block::specialUpdate(float tpf, Input* pInput)
     {
         // If mouse over block, consume input (copied from INTERACTIVE element)
         // TODO: Using the alpha is somehow..strange
@@ -65,6 +65,8 @@ namespace eyegui
                 pInput->mouseUsed = true;
             }
         }
+
+		return 0;
     }
 
     void Block::specialDraw() const

@@ -39,9 +39,9 @@ namespace eyegui
         // Nothing to do
     }
 
-    void Blank::specialUpdate(float tpf, Input* pInput)
+    float Blank::specialUpdate(float tpf, Input* pInput)
     {
-        // Nothing to do
+		return 0;
     }
 
     void Blank::specialDraw() const

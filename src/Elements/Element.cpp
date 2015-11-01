@@ -46,6 +46,8 @@ namespace eyegui
 		mForceUndim = false;
         mAlpha = 1;
         mBorderAspectRatio = 1;
+		mAdaptiveScaling = true;
+		mAdaptiveScale.setValue(0);
 
         // Fetch style from layout
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
@@ -296,10 +298,15 @@ namespace eyegui
         return mHeight;
     }
 
-    float Element::getRelativeScale() const
+    float Element::getDynamicScale() const
     {
-        return mRelativeScale;
+        return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->maximalAdaptiveScaleIncrease);
     }
+
+	float Element::getRelativeScale() const
+	{
+		return mRelativeScale;
+	}
 
     float Element::getRelativePositionOnLayoutX() const
     {
@@ -321,7 +328,7 @@ namespace eyegui
         return (float)mHeight / mpLayout->getLayoutHeight();
     }
 
-    void Element::update(float tpf, float alpha, Input* pInput, float dimming)
+    float Element::update(float tpf, float alpha, Input* pInput, float dimming)
     {
         // Activity animationa
         mActivity.update(tpf, !mActive);
@@ -335,6 +342,9 @@ namespace eyegui
             pInput = NULL;
         }
 
+		// Simple test whether mouse is over element (TODO: only mouse at the moment)
+		bool penetrated = penetratedByInput(pInput);
+
 		// Dimming
 		if (mForceUndim)
 		{
@@ -344,7 +354,6 @@ namespace eyegui
 		else if (mDimmable)
 		{
 			// TODO: do something more intelligent for input testing
-			bool penetrated = penetratedByInput(pInput);
 			if (penetrated)
 			{
 				// Undim it
@@ -360,6 +369,22 @@ namespace eyegui
 		{
 			// Use dimming value of parent
 			mDimming.setValue(dimming);
+		}
+
+		// Adaptive scaling
+		if (mAdaptiveScaling)
+		{
+			// Set maximum of adaptive scale
+			if (penetrated)
+			{
+				// Scale it up
+				mAdaptiveScale.update(tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
+			}
+			else
+			{
+				// Scale it down
+				mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration);
+			}
 		}
 
         // Update replaced element if there is some
@@ -379,7 +404,11 @@ namespace eyegui
         }
 
         // Call specialized update of subclasses
-        specialUpdate(tpf, pInput);
+        float specialAdaptiveScale = specialUpdate(tpf, pInput);
+
+		// Return adaptive scale. Either own or calculated in special update with children
+		mAdaptiveScale.setValue(std::max(mAdaptiveScale.getValue(), specialAdaptiveScale));
+		return mAdaptiveScale.getValue();
     }
 
     void Element::draw() const
@@ -405,6 +434,8 @@ namespace eyegui
 
 		mDimming.setValue(0);
 		mForceUndim = false;
+
+		mAdaptiveScale.setValue(0);
 
         // Do reset implemented by subclass
         specialReset();

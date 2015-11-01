@@ -143,15 +143,17 @@ namespace eyegui
         BoxButton::setActivity(active, fade);
     }
 
-    void DropButton::specialUpdate(float tpf, Input * pInput)
+    float DropButton::specialUpdate(float tpf, Input * pInput)
     {
         // Super call
-        BoxButton::specialUpdate(tpf, pInput);
+        float adaptiveScale = BoxButton::specialUpdate(tpf, pInput);
 
         // Update alpha of inner element
         mInnerAlpha.update(tpf / mpLayout->getConfig()->animationDuration, !mInnerElementVisible);
 
         mpFrame->setFrontElementAlpha(getInnerElement(), mInnerAlpha.getValue() * mAlpha);
+
+		return adaptiveScale;
     }
 
     void DropButton::specialTransformAndSize()

@@ -126,10 +126,10 @@ namespace eyegui
         return mIsDown;
     }
 
-    void Button::specialUpdate(float tpf, Input* pInput)
+    float Button::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
-        InteractiveElement::specialUpdate(tpf, pInput);
+		float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
         // TODO: more abstract (not only mouse) -> Settings, to say on which input it should react?
 
@@ -171,6 +171,8 @@ namespace eyegui
         {
             mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration);
         }
+
+		return adaptiveScale;
     }
 
     void Button::specialDraw() const

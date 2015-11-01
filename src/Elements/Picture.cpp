@@ -88,7 +88,7 @@ namespace eyegui
         }
     }
 
-    void Picture::specialUpdate(float tpf, Input* pInput)
+    float Picture::specialUpdate(float tpf, Input* pInput)
     {
         // If mouse over picture, consume input (copied from INTERACTIVE element)
         if (pInput != NULL && !pInput->mouseUsed)
@@ -101,6 +101,8 @@ namespace eyegui
                 pInput->mouseUsed = true;
             }
         }
+
+		return 0;
     }
 
     void Picture::specialDraw() const

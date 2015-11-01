@@ -57,8 +57,8 @@ namespace eyegui
 
     protected:
 
-        // Updating filled by subclasses
-        virtual void specialUpdate(float tpf, Input* pInput);
+        // Updating filled by subclasses, returns adaptive scale
+        virtual float specialUpdate(float tpf, Input* pInput);
 
         // Transformation
         virtual void specialTransformAndSize();

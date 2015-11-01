@@ -157,8 +157,11 @@ namespace eyegui
         int getWidth() const;
         int getHeight() const;
 
-        // Get relative scale
-        float getRelativeScale() const;
+        // Get relative and adaptive scale combined to dynamic scale
+        float getDynamicScale() const;
+
+		// Get relative scale
+		float getRelativeScale() const;
 
         // Get relative screen position and size
         float getRelativePositionOnLayoutX() const;
@@ -166,8 +169,8 @@ namespace eyegui
         float getRelativeSizeOnLayoutX() const;
         float getRelativeSizeOnLayoutY() const;
 
-        // Updating
-        void update(float tpf, float alpha, Input* pInput, float dimming);
+        // Updating, returns adaptive scale
+        float update(float tpf, float alpha, Input* pInput, float dimming);
 
         // Drawing
         void draw() const;
@@ -198,8 +201,8 @@ namespace eyegui
 
     protected:
 
-        // Updating filled by subclasses
-        virtual void specialUpdate(float tpf, Input* pInput) = 0;
+        // Updating filled by subclasses, returns adaptive scale
+        virtual float specialUpdate(float tpf, Input* pInput) = 0;
 
         // Drawing filled by subclasses
         virtual void specialDraw() const = 0;
@@ -233,6 +236,8 @@ namespace eyegui
 		bool mForceUndim; // At the moment only used by drop button 
 						  // to be undimmed while showing inner elements
         bool mActive;
+		bool mAdaptiveScaling;
+		LerpValue mAdaptiveScale; // [0..1]
 
         // This vector is the owner of all possible children. May be empty!
         std::vector<std::unique_ptr<Element> > mChildren;

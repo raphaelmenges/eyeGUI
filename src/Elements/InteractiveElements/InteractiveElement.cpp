@@ -100,13 +100,15 @@ namespace eyegui
         return this;
     }
 
-    void InteractiveElement::specialUpdate(float tpf, Input* pInput)
+    float InteractiveElement::specialUpdate(float tpf, Input* pInput)
     {
         // Highlight
         mHighlight.update(tpf, !mIsHighlighted);
 
         // Selection
         mSelection.update(tpf / mpLayout->getConfig()->animationDuration, !mIsSelected);
+
+		return 0;
     }
 
     void InteractiveElement::specialDraw() const

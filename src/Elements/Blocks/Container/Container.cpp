@@ -41,16 +41,22 @@ namespace eyegui
 		// Nothing to do
 	}
 
-	void Container::specialUpdate(float tpf, Input* pInput)
+	float Container::specialUpdate(float tpf, Input* pInput)
 	{
+		float maxAdaptiveScaleOfChildren = 0;
+
 		// Update the elements
 		for (std::unique_ptr<Element>& element : mChildren)
 		{
-			element->update(tpf, mAlpha, pInput, mDimming.getValue());
+			float childAdaptiveScale = element->update(tpf, mAlpha, pInput, mDimming.getValue());
+			maxAdaptiveScaleOfChildren = std::max(maxAdaptiveScaleOfChildren, childAdaptiveScale);
 		}
 
 		// Super call after children (may consume input first)
-		Block::specialUpdate(tpf, pInput);
+		float adaptiveScale =  Block::specialUpdate(tpf, pInput);
+
+		// Return adaptive scale
+		return std::max(adaptiveScale, maxAdaptiveScaleOfChildren);
 	}
 
 	void Container::specialDraw() const

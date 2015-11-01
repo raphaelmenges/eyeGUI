@@ -77,7 +77,11 @@ namespace eyegui
             }
 
             // Update standard elements
-            mupRoot->update(tpf, mCombinedAlpha, pInput, 0);
+            float adaptiveScale = mupRoot->update(tpf, mCombinedAlpha, pInput, 0);
+			if (adaptiveScale > 0)
+			{
+				mResizeNecessary = true;
+			}
         }
 
         // *** DELETION OF REPLACED ELEMENTS ***
