@@ -10,6 +10,8 @@
 #include "Layout.h"
 #include "Helper.h"
 
+#include <cmath>
+
 namespace eyegui
 {
     Frame::Frame(
@@ -111,8 +113,8 @@ namespace eyegui
             int layoutHeight = mpLayout->getLayoutHeight();
 
             // Calculate available width and height
-            int width = (int)(mRelativeSizeX * layoutWidth);
-            int height = (int)(mRelativeSizeY * layoutHeight);
+            int width = (int)std::round(mRelativeSizeX * (float)layoutWidth);
+            int height = (int)std::round(mRelativeSizeY * (float)layoutHeight);
             int usedWidth, usedHeight;
 
             // Show attached element centered
@@ -120,8 +122,8 @@ namespace eyegui
             float deltaX = (width - usedWidth) / 2.0f;
             float deltaY = (height - usedHeight) / 2.0f;
             mupRoot->transformAndSize(
-                (int)(mRelativePositionX * layoutWidth + deltaX),
-                (int)(mRelativePositionY * layoutHeight + deltaY),
+				(int)std::round(mRelativePositionX * (float)layoutWidth + deltaX),
+				(int)std::round(mRelativePositionY * (float)layoutHeight + deltaY),
                 usedWidth,
                 usedHeight);
             mResizeNecessary = false;

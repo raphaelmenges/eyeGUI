@@ -2,7 +2,6 @@
 - RelativeScale only used in stack, grid would be good too
 - Update calls to children of elements is strange (done in stack and grid, only...)
 - If one wants to add brick more than one time: id replacement at loading
-- Floating frame: one pixel too wide or narrow?
 
 ### VERSION 0.4
 - TextInput
