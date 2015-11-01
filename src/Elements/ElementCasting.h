@@ -62,6 +62,20 @@ namespace eyegui
 		}
 		return NULL;
 	}
+
+	// Tries to cast pointer, returns NULL if fails
+	TextBlock* toTextBlock(Element* pElement)
+	{
+		if (pElement != NULL)
+		{
+			Element::Type type = pElement->getType();
+			if (type == Element::Type::TEXT_BLOCK)
+			{
+				return static_cast<TextBlock*>(pElement);
+			}
+		}
+		return NULL;
+	}
 }
 
 #endif // ELEMENT_CASTING_H_

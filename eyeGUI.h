@@ -434,6 +434,22 @@ namespace eyegui
     */
     void penetrateSensor(Layout* pLayout, std::string id, float amount);
 
+	//! Set content of text block. Works only if no key is used for localization.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param content is new content for text block.
+	*/
+	void setContentOfTextBlock(Layout* pLayout, std::string id, std::u16string content);
+
+	//! Set key of text block. Works only if used localization file includes key.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param key is new key for text block.
+	*/
+	void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key);
+
     //! Register listener to button.
     /*!
       \param pLayout pointer to layout.
@@ -546,6 +562,7 @@ namespace eyegui
       \param verticalAlignment is vertical alignment of text.
       \param content is the content of the displayed text.
       \param innerBorder is space between border and text.
+	  \param key is used for localization.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithTextBlock(
@@ -555,8 +572,8 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-		std::string key,
-        float innerBorder,
+		float innerBorder,
+		std::string key = "",
         bool fade = false);
 
     //! Replace element with brick.

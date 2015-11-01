@@ -127,6 +127,12 @@ namespace eyegui
         // Penetrate sensor
         void penetrateSensor(std::string id, float amount);
 
+		// Set content of text block
+		void setContentOfTextBlock(std::string id, std::u16string content);
+
+		// Set key of text block
+		void setKeyOfTextBlock(std::string id, std::string key);
+
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
 
@@ -185,8 +191,8 @@ namespace eyegui
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
-            std::string key,
             float innerBorder,
+			std::string key,
             bool fade);
 
         // Replace any element with a brick of elements

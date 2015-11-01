@@ -421,7 +421,7 @@ namespace eyegui
 			std::string key = parseStringAttribute("key", xmlTextBlock);
 
             // Create text block
-            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, fontSize, alignment, verticalAlignment, content, key, innerBorder));
+            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, innerBorder, fontSize, alignment, verticalAlignment, content, key));
 
             // Return text block
             return std::move(upTextBlock);

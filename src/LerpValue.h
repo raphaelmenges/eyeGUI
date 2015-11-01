@@ -31,23 +31,23 @@ namespace eyegui
         virtual ~LerpValue() {}
 
         // Update, returns updated raw value
-        float update(float amount)
+        float update(float delta)
         {
-            mValue += amount;
+            mValue += delta;
             mValue = clamp(mValue, mMin, mMax);
             return mValue;
         }
 
         // Update, returns updated raw value
-        float update(float amount, bool subtract)
+        float update(float delta, bool subtract)
         {
             if(subtract)
             {
-                return update(-amount);
+                return update(-delta);
             }
             else
             {
-                return update(amount);
+                return update(delta);
             }
         }
 

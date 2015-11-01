@@ -23,12 +23,12 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		float innerBorder,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-        std::string key,
-        float innerBorder) : Block(
+        std::string key) : Block(
             id,
             styleName,
             pParent,
@@ -73,6 +73,46 @@ namespace eyegui
     {
         // Nothing to do
     }
+
+	void TextBlock::setContent(std::u16string content)
+	{
+		// TODO: somehow strange, maybe save the usage of the key in a bool
+		if (mKey != EMPTY_STRING_ATTRIBUTE && mpLayout->getContentFromLocalization(mKey) != LOCALIZATION_NOT_FOUND)
+		{
+			throwWarning(
+				OperationNotifier::Operation::RUNTIME,
+				"Content of TextBlock could not be set because value from key is in use");
+		}
+		else
+		{
+			mupTextFlow->setContent(content);
+		}
+	}
+
+	void TextBlock::setKey(std::string key)
+	{
+		if (key == EMPTY_STRING_ATTRIBUTE)
+		{
+			throwWarning(
+				OperationNotifier::Operation::RUNTIME,
+				"Tried to use empty key for localization");
+		}
+		else
+		{
+			std::u16string localization = mpLayout->getContentFromLocalization(key);
+			if (localization == LOCALIZATION_NOT_FOUND)
+			{
+				throwWarning(
+					OperationNotifier::Operation::RUNTIME,
+					"No localization found for following key: " + key + ". Element has following id: " + getId());
+			}
+			else
+			{
+				mKey = key;
+				mupTextFlow->setContent(localization);
+			}
+		}
+	}
 
     void TextBlock::specialDraw() const
     {

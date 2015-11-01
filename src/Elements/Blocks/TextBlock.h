@@ -31,15 +31,21 @@ namespace eyegui
             float relativeScale,
             float border,
 			bool dimmable,
+			float innerBorder,
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
-            std::string key,
-            float innerBorder);
+			std::string key);
 
         // Destructor
         virtual ~TextBlock();
+
+		// Setter for content
+		void setContent(std::u16string content);
+
+		// Setter for key
+		void setKey(std::string key);
 
     protected:
 

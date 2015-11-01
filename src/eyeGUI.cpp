@@ -224,6 +224,16 @@ namespace eyegui
         pLayout->penetrateSensor(id, amount);
     }
 
+	void setContentOfTextBlock(Layout* pLayout, std::string id, std::u16string content)
+	{
+		pLayout->setContentOfTextBlock(id, content);
+	}
+
+	void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key)
+	{
+		pLayout->setKeyOfTextBlock(id, key);
+	}
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);
@@ -271,11 +281,11 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-		std::string key,
         float innerBorder,
+		std::string key,
         bool fade)
     {
-        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, key, innerBorder, fade);
+        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, innerBorder, key, fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)

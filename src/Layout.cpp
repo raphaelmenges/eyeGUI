@@ -450,6 +450,32 @@ namespace eyegui
         }
     }
 
+	void Layout::setContentOfTextBlock(std::string id, std::u16string content)
+	{
+		TextBlock* pTextBlock = toTextBlock(fetchElement(id));
+		if (pTextBlock != NULL)
+		{
+			pTextBlock->setContent(content);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text block with id: " + id);
+		}
+	}
+
+	void Layout::setKeyOfTextBlock(std::string id, std::string key)
+	{
+		TextBlock* pTextBlock = toTextBlock(fetchElement(id));
+		if (pTextBlock != NULL)
+		{
+			pTextBlock->setKey(key);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text block with id: " + id);
+		}
+	}
+
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         Button* pButton = toButton(fetchElement(id));
@@ -583,7 +609,6 @@ namespace eyegui
                                 break;
                             }
                         }
-
                     }
                 }
             }
@@ -868,8 +893,8 @@ namespace eyegui
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content,
-            std::string key,
             float innerBorder,
+			std::string key,
             bool fade)
     {
         Element* pElement = fetchElement(id);
@@ -887,12 +912,12 @@ namespace eyegui
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
 				pElement->isDimmable(),
+				innerBorder,
                 fontSize,
                 alignment,
                 verticalAlignment,
                 content,
-                key,
-                innerBorder));
+                key));
 
             Element* pTextBlock = upTextBlock.get();
 
