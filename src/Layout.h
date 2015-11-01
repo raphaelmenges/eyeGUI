@@ -196,7 +196,7 @@ namespace eyegui
             bool fade);
 
         // Replace any element with a brick of elements
-        void replaceElementWithBrick(std::string id, std::string filepath, bool fade);
+        void replaceElementWithBrick(std::string id, std::string filepath, std::map<std::string, std::string> idMapper, bool fade);
 
         // Add floating frame with brick
         uint addFloatingFrameWithBrick(
@@ -205,6 +205,7 @@ namespace eyegui
             float relativePositionY,
             float relativeSizeX,
             float relativeSizeY,
+			std::map<std::string, std::string> idMapper,
             bool visible,
             bool fade);
 

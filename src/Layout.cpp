@@ -933,7 +933,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithBrick(std::string id, std::string filepath, bool fade)
+    void Layout::replaceElementWithBrick(std::string id, std::string filepath, std::map<std::string, std::string> idMapper, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -945,7 +945,8 @@ namespace eyegui
                     pElement->getAssetManager(),
                     pElement->getNotificationQueue(),
                     pElement->getParent(),
-                    filepath));
+                    filepath,
+					idMapper));
             if (replaceElement(pElement, std::move(upPair->first), fade))
             {
                 insertIds(std::move(upPair->second));
@@ -963,6 +964,7 @@ namespace eyegui
             float relativePositionY,
             float relativeSizeX,
             float relativeSizeY,
+			std::map<std::string, std::string> idMapper,
             bool visible,
             bool fade)
     {
@@ -1012,7 +1014,8 @@ namespace eyegui
                     mpAssetManager,
                     mupNotificationQueue.get(),
                     NULL,
-                    filepath));
+                    filepath,
+					idMapper));
 
         // Attach elements to root of frame
         pFrame->attachRoot(std::move(upPair->first));

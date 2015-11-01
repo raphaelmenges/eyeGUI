@@ -6,6 +6,10 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 [![Screenshot](https://raw.githubusercontent.com/wiki/raphaelmenges/eyeGUI/DemoVideoLink.png)](https://youtu.be/niMRX65E7IE)
 
 ## Features
+
+#### Version 0.3
+* Id replacement at brick loading
+
 #### Version 0.2
 * Dimming
 * Localization

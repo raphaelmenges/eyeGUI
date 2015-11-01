@@ -290,8 +290,14 @@ namespace eyegui
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)
     {
-        pLayout->replaceElementWithBrick(id, filepath, fade);
+		// Delegate to other function with empty id mapper
+		replaceElementWithBrick(pLayout, id, filepath, std::map<std::string, std::string>(), fade);
     }
+
+	void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, std::map<std::string, std::string> idMapper, bool fade)
+	{
+		pLayout->replaceElementWithBrick(id, filepath, idMapper, fade);
+	}
 
     unsigned int addFloatingFrameWithBrick(
         Layout* pLayout,
@@ -303,8 +309,32 @@ namespace eyegui
         bool visible,
         bool fade)
     {
-        return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, visible, fade);
+		// Delegate to other function with empty id mapper
+		return addFloatingFrameWithBrick(
+			pLayout,
+			filepath,
+			relativePositionX,
+			relativePositionY,
+			relativeSizeX,
+			relativeSizeY,
+			std::map<std::string, std::string>(),
+			visible,
+			fade);
     }
+
+	unsigned int addFloatingFrameWithBrick(
+		Layout* pLayout,
+		std::string filepath,
+		float relativePositionX,
+		float relativePositionY,
+		float relativeSizeX,
+		float relativeSizeY,
+		std::map<std::string, std::string> idMapper,
+		bool visible,
+		bool fade)
+	{
+		return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, idMapper, visible, fade);
+	}
 
     void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool fade)
     {

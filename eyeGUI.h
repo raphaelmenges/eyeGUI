@@ -33,6 +33,7 @@
 
 #include <string>
 #include <memory>
+#include <map>
 
 namespace eyegui
 {
@@ -583,11 +584,26 @@ namespace eyegui
       \param filepath is path to brick xml file.
       \param fade indicates, whether replaced element should fade.
     */
-    void replaceElementWithBrick(
-        Layout* pLayout,
-        std::string id,
-        std::string filepath,
-        bool fade);
+	void replaceElementWithBrick(
+		Layout* pLayout,
+		std::string id,
+		std::string filepath,
+        bool fade = false);
+
+	//! Replace element with brick.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param filepath is path to brick xml file.
+	\param idMapper changes ids inside brick to ones in map.
+	\param fade indicates, whether replaced element should fade.
+	*/
+	void replaceElementWithBrick(
+		Layout* pLayout,
+		std::string id,
+		std::string filepath,
+		std::map<std::string, std::string> idMapper,
+		bool fade = false);
 
     //! Creates floating frame with brick inside
     /*!
@@ -610,6 +626,30 @@ namespace eyegui
         float relativeSizeY,
         bool visible = true,
         bool fade = false);
+
+	//! Creates floating frame with brick inside
+	/*!
+	\param pLayout pointer to layout.
+	\param filepath is path to brick xml file.
+	\param relativePositionX initial relative x position.
+	\param relativePositionY initial relative y position.
+	\param relativeSizeX initial relative x size.
+	\param relativeSizeY initial relative y size.
+	\param idMapper changes ids inside brick to ones in map.
+	\param visible indicates, whether frame should be visible or not.
+	\param fade indicates, whether frame should fade in.
+	\return index of created floating frame.
+	*/
+	unsigned int addFloatingFrameWithBrick(
+		Layout* pLayout,
+		std::string filepath,
+		float relativePositionX,
+		float relativePositionY,
+		float relativeSizeX,
+		float relativeSizeY,
+		std::map<std::string, std::string> idMapper,
+		bool visible = true,
+		bool fade = false);
 
     //! Set visibility of floating frame.
     /*!

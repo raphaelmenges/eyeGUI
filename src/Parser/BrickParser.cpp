@@ -14,7 +14,7 @@ namespace eyegui
 {
     namespace brick_parser
     {
-        std::unique_ptr<elementsAndIds> parse(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, Element* pParent, std::string filepath)
+        std::unique_ptr<elementsAndIds> parse(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, Element* pParent, std::string filepath, std::map<std::string, std::string> idMapper)
         {
             // Check file name
             if (!checkFileNameExtension(filepath, BRICK_EXTENSION))
@@ -35,7 +35,7 @@ namespace eyegui
 
             // Collect values to return
             std::unique_ptr<elementsAndIds> upPair = std::unique_ptr<elementsAndIds>(new elementsAndIds);
-            upPair = std::move(element_parser::parse(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, pParent, filepath));
+            upPair = std::move(element_parser::parse(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, pParent, filepath, idMapper));
 
             // Return the pair
             return std::move(upPair);
