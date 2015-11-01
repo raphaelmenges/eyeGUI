@@ -23,7 +23,7 @@ namespace eyegui
         float border,
 		bool dimmable,
         int rows,
-		float innerBorder) : Block(
+		float innerBorder) : Container(
             id,
             styleName,
             pParent,
@@ -164,37 +164,13 @@ namespace eyegui
         }
 
         // Nothing found in grid
-        return Block::internalNextInteractiveElement(NULL);
-    }
-
-    void Grid::specialUpdate(float tpf, Input* pInput)
-    {
-        // Update the elements
-        for (std::unique_ptr<Element>& element : mChildren)
-        {
-            element->update(tpf, mAlpha, pInput, mDimming.getValue());
-        }
-
-        // Super call after children (may consume input first)
-        Block::specialUpdate(tpf, pInput);
-    }
-
-    void Grid::specialDraw() const
-    {
-        // Super call
-        Block::specialDraw();
-
-        // Draw the elements
-        for (const std::unique_ptr<Element>& element : mChildren)
-        {
-            element->draw();
-        }
+        return Container::internalNextInteractiveElement(NULL);
     }
 
     void Grid::specialTransformAndSize()
     {
         // Super call
-        Block::specialTransformAndSize();
+        Container::specialTransformAndSize();
 
         // Initialize some values
         float currentRelativeYEnd = 0;

@@ -10,14 +10,14 @@
 #ifndef GRID_H_
 #define GRID_H_
 
-#include "Block.h"
+#include "Container.h"
 
 #include <vector>
 #include <memory>
 
 namespace eyegui
 {
-    class Grid : public Block
+    class Grid : public Container
     {
     public:
 
@@ -64,12 +64,6 @@ namespace eyegui
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
     protected:
-
-        // Updating filled by subclasses
-        virtual void specialUpdate(float tpf, Input* pInput);
-
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
 
         // Transformation filled by subclasses
         virtual void specialTransformAndSize();

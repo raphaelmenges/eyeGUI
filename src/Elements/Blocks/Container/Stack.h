@@ -9,7 +9,7 @@
 #ifndef STACK_H_
 #define STACK_H_
 
-#include "Block.h"
+#include "Container.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <vector>
@@ -17,7 +17,7 @@
 
 namespace eyegui
 {
-    class Stack : public Block
+    class Stack : public Container
     {
     public:
 
@@ -59,9 +59,6 @@ namespace eyegui
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
     protected:
-
-        // Updating filled by subclasses
-        virtual void specialUpdate(float tpf, Input* pInput);
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;

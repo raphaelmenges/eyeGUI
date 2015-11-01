@@ -1,6 +1,5 @@
 ### VERSION 0.3
 - RelativeScale only used in stack, grid would be good too
-- Update calls to children of elements is strange (done in stack and grid, only...)
 
 ### VERSION 0.4
 - TextInput
