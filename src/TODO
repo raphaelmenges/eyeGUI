@@ -1,18 +1,17 @@
 ### VERSION 0.3
 - RelativeScale only used in stack, grid would be good too
+- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 
 ### VERSION 0.4
 - TextInput
 
 ### VERSION 0.x
-- Sensor: instead of real values for penetration: maybe acceleration would be a good idea
 - BoxButton: enable stretched icons
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Function to define search folder or so
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
 	- Use UTF8 library also for config and stylesheet?
-	- UTF-8 enough for localization?
 - More complex input structure and configuration
   - Mouse
   - Keyboard
@@ -20,16 +19,11 @@
   - Brain-computer-interface
   - Buttons?
   - Other...
-- Text input
-- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Audio
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Font has sometimes little rendering issues
-- More complex elements with text (menu)
-	- Common super class for all elements using text
-		- key, textflow
 
 Notes:
 - Localization files MUST BE encoded in UTF-8
