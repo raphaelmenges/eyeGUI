@@ -20,6 +20,7 @@ namespace eyegui
 		float relativeScale,
 		float border,
 		bool dimmable,
+		bool adaptiveScaling,
 		float innerBorder) : Block(
 			id,
 			styleName,
@@ -31,6 +32,7 @@ namespace eyegui
 			relativeScale,
 			border,
 			dimmable,
+			adaptiveScaling,
 			innerBorder)
 	{
 		// Nothing to do

@@ -25,6 +25,7 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		bool adaptiveScaling,
         std::string iconFilepath,
         bool isSwitch) : InteractiveElement(
             id,
@@ -37,6 +38,7 @@ namespace eyegui
             relativeScale,
             border,
 			dimmable,
+			adaptiveScaling,
             iconFilepath)
     {
         mType = Type::BUTTON;

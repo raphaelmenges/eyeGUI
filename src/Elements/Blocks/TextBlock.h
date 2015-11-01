@@ -31,6 +31,7 @@ namespace eyegui
             float relativeScale,
             float border,
 			bool dimmable,
+			bool adaptiveScaling,
 			float innerBorder,
             FontSize fontSize,
             TextFlowAlignment alignment,

@@ -25,7 +25,8 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-		bool dimmable)
+		bool dimmable,
+		bool adaptiveScaling)
     {
         // Initialize members
         mType = Type::ELEMENT;
@@ -46,7 +47,7 @@ namespace eyegui
 		mForceUndim = false;
         mAlpha = 1;
         mBorderAspectRatio = 1;
-		mAdaptiveScaling = true;
+		mAdaptiveScaling = adaptiveScaling;
 		mAdaptiveScale.setValue(0);
 
         // Fetch style from layout
@@ -306,6 +307,11 @@ namespace eyegui
 	float Element::getRelativeScale() const
 	{
 		return mRelativeScale;
+	}
+
+	bool Element::getAdaptiveScaling() const
+	{
+		return mAdaptiveScaling;
 	}
 
     float Element::getRelativePositionOnLayoutX() const

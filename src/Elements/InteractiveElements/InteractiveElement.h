@@ -33,6 +33,7 @@ namespace eyegui
             float relativeScale,
             float border,
 			bool dimmable,
+			bool adaptiveScaling,
             std::string iconFilepath);
 
         // Destructor

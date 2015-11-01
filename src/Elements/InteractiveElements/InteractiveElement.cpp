@@ -23,6 +23,7 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		bool adaptiveScaling,
         std::string iconFilepath) : Element(
             id,
             styleName,
@@ -33,7 +34,8 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-			dimmable)
+			dimmable,
+			adaptiveScaling)
     {
         mType = Type::INTERACTIVE_ELEMENT;
 

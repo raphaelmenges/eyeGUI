@@ -1,6 +1,6 @@
 ### VERSION 0.3
-- AdaptiveScale as paramater in constructor of elements / xml's
 - Bug with grid and dynamic scale
+  - Somehow, grid grows and stay that size...
 
 ### VERSION 0.4
 - TextInput

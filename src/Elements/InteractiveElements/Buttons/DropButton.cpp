@@ -23,6 +23,7 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		bool adaptiveScaling,
         std::string iconFilepath,
         float space) : BoxButton(
             id,
@@ -35,6 +36,7 @@ namespace eyegui
             relativeScale,
             border,
 			dimmable,
+			adaptiveScaling,
             iconFilepath,
             true)
     {

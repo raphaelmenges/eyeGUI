@@ -72,7 +72,8 @@ namespace eyegui
             NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
-			bool dimmable);
+			bool dimmable,
+			bool adaptiveScaling);
 
         // Destructor
         virtual ~Element() = 0;
@@ -162,6 +163,9 @@ namespace eyegui
 
 		// Get relative scale
 		float getRelativeScale() const;
+
+		// Get adaptive scaling
+		bool getAdaptiveScaling() const;
 
         // Get relative screen position and size
         float getRelativePositionOnLayoutX() const;

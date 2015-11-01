@@ -23,6 +23,7 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		bool adaptiveScaling,
 		float innerBorder,
         FontSize fontSize,
         TextFlowAlignment alignment,
@@ -39,6 +40,7 @@ namespace eyegui
             relativeScale,
             border,
 			dimmable,
+			adaptiveScaling,
 			innerBorder)
     {
         mType = Type::TEXT_BLOCK;

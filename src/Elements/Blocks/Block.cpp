@@ -20,6 +20,7 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		bool adaptiveScaling,
 		float innerBorder) : Element(
             id,
             styleName,
@@ -30,7 +31,8 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-			dimmable)
+			dimmable,
+			adaptiveScaling)
     {
         mType = Type::BLOCK;
 

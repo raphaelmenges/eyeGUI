@@ -20,6 +20,7 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		bool adaptiveScaling,
         std::string filepath,
         PictureAlignment alignment) : Element(
             id,
@@ -31,7 +32,8 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-			dimmable)
+			dimmable,
+			adaptiveScaling)
     {
         mType = Type::PICTURE;
 

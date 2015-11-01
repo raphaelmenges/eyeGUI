@@ -25,6 +25,7 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
+		bool adaptiveScaling,
         std::string iconFilepath) : InteractiveElement(
             id,
             styleName,
@@ -36,6 +37,7 @@ namespace eyegui
             relativeScale,
             border,
 			dimmable,
+			adaptiveScaling,
             iconFilepath)
     {
         // Fill members

@@ -704,7 +704,8 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-				pElement->isDimmable()));
+				pElement->isDimmable(),
+				pElement->getAdaptiveScaling()));
 
             Element* pBlock = upBlock.get();
 
@@ -737,6 +738,7 @@ namespace eyegui
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
 				pElement->isDimmable(),
+				pElement->getAdaptiveScaling(),
                 filepath,
                 alignment));
 
@@ -770,7 +772,8 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-				pElement->isDimmable()));
+				pElement->isDimmable(),
+				pElement->getAdaptiveScaling()));
 
             Element* pBlank = upBlank.get();
 
@@ -803,6 +806,7 @@ namespace eyegui
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
 				pElement->isDimmable(),
+				pElement->getAdaptiveScaling(),
                 iconFilepath,
                 isSwitch));
 
@@ -837,6 +841,7 @@ namespace eyegui
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
 				pElement->isDimmable(),
+				pElement->getAdaptiveScaling(),
                 iconFilepath,
                 isSwitch));
 
@@ -871,6 +876,7 @@ namespace eyegui
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
 				pElement->isDimmable(),
+				pElement->getAdaptiveScaling(),
                 iconFilepath));
 
             Element* pSensor = upSensor.get();
@@ -912,6 +918,7 @@ namespace eyegui
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
 				pElement->isDimmable(),
+				pElement->getAdaptiveScaling(),
 				innerBorder,
                 fontSize,
                 alignment,
