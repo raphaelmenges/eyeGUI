@@ -36,7 +36,8 @@ namespace eyegui
 			pNotificationQueue,
             relativeScale,
             border,
-			dimmable)
+			dimmable,
+			innerBorder)
     {
         mType = Type::STACK;
 
@@ -44,7 +45,6 @@ namespace eyegui
         mRelativeScaling = relativeScaling;
         mAlignment = alignment;
         mPadding = padding;
-        mInnerBorder = innerBorder;
         mSeparator = separator;
         mpSeparator = mpAssetManager->fetchRenderItem(
             shaders::Type::SEPARATOR,
@@ -156,22 +156,6 @@ namespace eyegui
         // Super call
         Block::specialTransformAndSize();
 
-        // Use inner border
-        int usedBorder;
-        int innerX, innerY, innerWidth, innerHeight;
-        if (getOrientation() == Element::Orientation::HORIZONTAL)
-        {
-            usedBorder = (int)((float)mHeight * mInnerBorder);
-        }
-        else
-        {
-            usedBorder = (int)((float)mWidth * mInnerBorder);
-        }
-        innerX = mX + usedBorder / 2;
-        innerY = mY + usedBorder / 2;
-        innerWidth = mWidth - usedBorder;
-        innerHeight = mHeight - usedBorder;
-
         // Calculate separator sizes and adjust inner sizes
         int separatorCount = (int)mChildren.size() - 1;
         int separatorSize = 0;
@@ -182,17 +166,17 @@ namespace eyegui
         {
             // Test even if enough pixels are there to render the separators
             if (getOrientation() == Element::Orientation::HORIZONTAL
-                && separatorCount <= innerWidth)
+                && separatorCount <= mInnerWidth)
             {
-                separatorSize = (int)(innerWidth * mSeparator);
+                separatorSize = (int)(mInnerWidth * mSeparator);
                 separatorSize = separatorSize < 1 ? 1 : separatorSize;
-                innerWidth -= separatorSize * separatorCount;
+                mInnerWidth -= separatorSize * separatorCount;
             }
-            else if (separatorCount <= innerHeight)
+            else if (separatorCount <= mInnerHeight)
             {
-                separatorSize = (int)(innerHeight * mSeparator);
+                separatorSize = (int)(mInnerHeight * mSeparator);
                 separatorSize = separatorSize < 1 ? 1 : separatorSize;
-                innerHeight -= separatorSize * separatorCount;
+                mInnerHeight -= separatorSize * separatorCount;
             }
         }
 
@@ -229,12 +213,12 @@ namespace eyegui
                 if (elementNumber == mChildren.size())
                 {
                     // Fill stack with last element
-                    localElemWidth = innerWidth - sumElemWidth;
+                    localElemWidth = mInnerWidth - sumElemWidth;
                 }
                 else
                 {
                     // Use relative scale
-                    localElemWidth = (int)((float)innerWidth
+                    localElemWidth = (int)((float)mInnerWidth
                         * (element->getRelativeScale() / completeScale));
                     sumElemWidth += localElemWidth;
                 }
@@ -242,12 +226,12 @@ namespace eyegui
                 // Element height
                 if (mRelativeScaling == RelativeScaling::BOTH_AXES)
                 {
-                    localElemHeight = (int)((float)innerHeight
+                    localElemHeight = (int)((float)mInnerHeight
                         * (element->getRelativeScale() / maxRelativeScale));
                 }
                 else
                 {
-                    localElemHeight = innerHeight;
+                    localElemHeight = mInnerHeight;
                 }
                 elemWidths.push_back(localElemWidth);
                 element->evaluateSize(localElemWidth, localElemHeight, usedWidth, usedHeight);
@@ -262,7 +246,7 @@ namespace eyegui
 
             // Alignment
             int i = 0;
-            int usedPadding = (int)((float)(innerWidth - sumUsedWidth) * mPadding);
+            int usedPadding = (int)((float)(mInnerWidth - sumUsedWidth) * mPadding);
             int usedElemPadding = usedPadding / (int)mChildren.size();
 
             // No padding when alignment is filled
@@ -276,7 +260,7 @@ namespace eyegui
             for (const std::unique_ptr<Element>& element : mChildren)
             {
                 int deltaX;
-                int deltaY = innerHeight - usedHeights[i];
+                int deltaY = mInnerHeight - usedHeights[i];
                 int offsetX;
 
                 int finalX, finalY, finalWidth, finalHeight;
@@ -286,25 +270,25 @@ namespace eyegui
                 {
                 case Alignment::FILL:
                     deltaX = elemWidths[i] - usedWidths[i];
-                    offsetX = innerX;
+                    offsetX = mInnerX;
                     break;
                 case Alignment::TAIL:
                     deltaX = usedElemPadding;
-                    offsetX = innerX;
+                    offsetX = mInnerX;
                     break;
                 case Alignment::HEAD:
                     deltaX = usedElemPadding;
-                    offsetX = innerX + (innerWidth - (sumUsedWidth + usedPadding));
+                    offsetX = mInnerX + (mInnerWidth - (sumUsedWidth + usedPadding));
                     break;
                 default: // Alignment::CENTER
                     deltaX = usedElemPadding;
-                    offsetX = innerX + (innerWidth - (sumUsedWidth + usedPadding)) / 2;
+                    offsetX = mInnerX + (mInnerWidth - (sumUsedWidth + usedPadding)) / 2;
                     break;
                 }
 
                 // Those values are for all alignments the same
                 finalX = usedElemX;
-                finalY = innerY + (deltaY / 2);
+                finalY = mInnerY + (deltaY / 2);
                 finalWidth = usedWidths[i];
                 finalHeight = usedHeights[i];
 
@@ -349,24 +333,24 @@ namespace eyegui
                 // Element width
                 if (mRelativeScaling == RelativeScaling::BOTH_AXES)
                 {
-                    localElemWidth = (int)((float)innerWidth
+                    localElemWidth = (int)((float)mInnerWidth
                         * (element->getRelativeScale() / maxRelativeScale));
                 }
                 else
                 {
-                    localElemWidth = innerWidth;
+                    localElemWidth = mInnerWidth;
                 }
 
                 // Element height
                 if (elementNumber == mChildren.size())
                 {
                     // Fill stack with last element
-                    localElemHeight = innerHeight - sumElemHeight;
+                    localElemHeight = mInnerHeight - sumElemHeight;
                 }
                 else
                 {
                     // Use relative scale
-                    localElemHeight = (int)((float)innerHeight
+                    localElemHeight = (int)((float)mInnerHeight
                         * (element->getRelativeScale() / completeScale));
                     sumElemHeight += localElemHeight;
                 }
@@ -384,7 +368,7 @@ namespace eyegui
 
             // Alignment
             int i = 0;
-            int usedPadding = (int)((float)(innerHeight - sumUsedHeight) * mPadding);
+            int usedPadding = (int)((float)(mInnerHeight - sumUsedHeight) * mPadding);
             int usedElemPadding = usedPadding / (int)mChildren.size();
 
             // No padding when alignment is filled
@@ -397,7 +381,7 @@ namespace eyegui
             // Determine final values and assign them
             for (const std::unique_ptr<Element>& element : mChildren)
             {
-                int deltaX = innerWidth - usedWidths[i];
+                int deltaX = mInnerWidth - usedWidths[i];
                 int deltaY;
                 int offsetY;
 
@@ -408,24 +392,24 @@ namespace eyegui
                 {
                 case Alignment::FILL:
                     deltaY = elemHeights[i] - usedHeights[i];
-                    offsetY = innerY;
+                    offsetY = mInnerY;
                     break;
                 case Alignment::TAIL:
                     deltaY = usedElemPadding;
-                    offsetY = innerY;
+                    offsetY = mInnerY;
                     break;
                 case Alignment::HEAD:
                     deltaY = usedElemPadding;
-                    offsetY = innerY + (innerHeight - (sumUsedHeight + usedPadding));
+                    offsetY = mInnerY + (mInnerHeight - (sumUsedHeight + usedPadding));
                     break;
                 default: // Alignment::CENTER
                     deltaY = usedElemPadding;
-                    offsetY = innerY + (innerHeight - (sumUsedHeight + usedPadding)) / 2;
+                    offsetY = mInnerY + (mInnerHeight - (sumUsedHeight + usedPadding)) / 2;
                     break;
                 }
 
                 // Those values are for all alignments the same
-                finalX = innerX + (deltaX / 2);
+                finalX = mInnerX + (deltaX / 2);
                 finalY = usedElemY;
                 finalWidth = usedWidths[i];
                 finalHeight = usedHeights[i];

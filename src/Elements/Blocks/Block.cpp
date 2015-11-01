@@ -19,7 +19,8 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-		bool dimmable) : Element(
+		bool dimmable,
+		float innerBorder) : Element(
             id,
             styleName,
             pParent,
@@ -32,6 +33,9 @@ namespace eyegui
 			dimmable)
     {
         mType = Type::BLOCK;
+
+		// Fill members
+		mInnerBorder = innerBorder;
 
         // Fetch render item
         mpBackground = pAssetManager->fetchRenderItem(
@@ -95,7 +99,20 @@ namespace eyegui
 
     void Block::specialTransformAndSize()
     {
-        // Nothing to do
+		// Use inner border
+		int usedBorder;
+		if (getOrientation() == Element::Orientation::HORIZONTAL)
+		{
+			usedBorder = (int)((float)mHeight * mInnerBorder);
+		}
+		else
+		{
+			usedBorder = (int)((float)mWidth * mInnerBorder);
+		}
+		mInnerX = mX + usedBorder / 2;
+		mInnerY = mY + usedBorder / 2;
+		mInnerWidth = mWidth - usedBorder;
+		mInnerHeight = mHeight - usedBorder;
     }
 
     void Block::specialReset()

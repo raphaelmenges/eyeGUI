@@ -119,6 +119,9 @@ namespace eyegui
 
         std::unique_ptr<Grid> parseGrid(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimmable, tinyxml2::XMLElement const * xmlGrid, Element* pParent, std::string filepath, idMap& rIdMap)
         {
+			// Get inner border
+			float innerBorder = parsePercentAttribute("innerborder", xmlGrid);
+
             // Get first row
             tinyxml2::XMLElement const * xmlRow = xmlGrid->FirstChildElement();
             if (!validateElement(xmlRow, "row"))
@@ -138,7 +141,7 @@ namespace eyegui
             }
 
             // Create grid
-            std::unique_ptr<Grid> upGrid = std::unique_ptr<Grid>(new Grid(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, rows));
+            std::unique_ptr<Grid> upGrid = std::unique_ptr<Grid>(new Grid(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, rows, innerBorder));
 
             // Go over rows
             for (int i = 0; i < rows; i++)

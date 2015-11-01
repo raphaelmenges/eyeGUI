@@ -28,7 +28,8 @@ namespace eyegui
 			NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
-			bool dimmable);
+			bool dimmable,
+			float innerBorder = 0);
 
         // Destructor
         virtual ~Block();
@@ -47,10 +48,17 @@ namespace eyegui
         // Reset filld by subclasses
         virtual void specialReset();
 
+		// Members
+		int mInnerX;
+		int mInnerY;
+		int mInnerWidth;
+		int mInnerHeight;
+
     private:
 
         // Members
         RenderItem const * mpBackground;
+		float mInnerBorder; // [0..1]
     };
 }
 

@@ -38,12 +38,12 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-			dimmable)
+			dimmable,
+			innerBorder)
     {
         mType = Type::TEXT_BLOCK;
 
         // Fill members
-        mInnerBorder = innerBorder;
         mKey = key;
 
         // Create text flow
@@ -91,23 +91,7 @@ namespace eyegui
         // Super call
         Block::specialTransformAndSize();
 
-        // Use inner border (Copy code from Stack :-/) -> TODO: move to block? (grid could also use it)
-        int usedBorder;
-        int innerX, innerY, innerWidth, innerHeight;
-        if (getOrientation() == Element::Orientation::HORIZONTAL)
-        {
-            usedBorder = (int)((float)mHeight * mInnerBorder);
-        }
-        else
-        {
-            usedBorder = (int)((float)mWidth * mInnerBorder);
-        }
-        innerX = mX + usedBorder / 2;
-        innerY = mY + usedBorder / 2;
-        innerWidth = mWidth - usedBorder;
-        innerHeight = mHeight - usedBorder;
-
         // Tell text flow about transformation
-        mupTextFlow->transformAndSize(innerX, innerY, innerWidth, innerHeight);
+        mupTextFlow->transformAndSize(mInnerX, mInnerY, mInnerWidth, mInnerHeight);
     }
 }

@@ -33,7 +33,8 @@ namespace eyegui
             float relativeScale,
             float border,
 			bool dimmable,
-            int rows);
+            int rows,
+			float innerBorder);
 
         // Destructor
         virtual ~Grid();

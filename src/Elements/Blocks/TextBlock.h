@@ -53,7 +53,6 @@ namespace eyegui
 
         // Members
         std::string mKey;
-        float mInnerBorder;
         std::unique_ptr<TextFlow> mupTextFlow;
     };
 }

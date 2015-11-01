@@ -22,7 +22,8 @@ namespace eyegui
         float relativeScale,
         float border,
 		bool dimmable,
-        int rows) : Block(
+        int rows,
+		float innerBorder) : Block(
             id,
             styleName,
             pParent,
@@ -32,7 +33,8 @@ namespace eyegui
 			pNotificationQueue,
             relativeScale,
             border,
-			dimmable)
+			dimmable,
+			innerBorder)
     {
         mType = Type::GRID;
 
@@ -196,7 +198,7 @@ namespace eyegui
 
         // Initialize some values
         float currentRelativeYEnd = 0;
-        int elemY = mY;
+        int elemY = mInnerY;
         int elemWidth, elemHeight = 0;
 
         // Go over rows and accumulate y
@@ -208,18 +210,18 @@ namespace eyegui
             // Initalize values per row
             int columnCount = mColumns[i];
             float currentRelativeXEnd = 0;
-            int elemX = mX;
+            int elemX = mInnerX;
 
             // Height is the same for one row
             if ((i + 1) == mRows)
             {
                 // Fill until last pixel
-                elemHeight = (mHeight + mY) - elemY;
+                elemHeight = (mInnerHeight + mInnerY) - elemY;
             }
             else
             {
                 // Fill until end of grid cell
-                elemHeight = (int)(currentRelativeYEnd * mHeight) - elemY + mY;
+                elemHeight = (int)(currentRelativeYEnd * mInnerHeight) - elemY + mInnerY;
             }
 
             // Go over columns and accumulate x
@@ -232,12 +234,12 @@ namespace eyegui
                 if ((j + 1) == columnCount)
                 {
                     // Fill until last pixel
-                    elemWidth = (mWidth + mX) - elemX;
+                    elemWidth = (mInnerWidth + mInnerX) - elemX;
                 }
                 else
                 {
                     // Fill until end of grid cell
-                    elemWidth = (int)(currentRelativeXEnd * mWidth) - elemX + mX;
+                    elemWidth = (int)(currentRelativeXEnd * mInnerWidth) - elemX + mInnerX;
                 }
 
                 // Now ask the element, how much space is actually used
