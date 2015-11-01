@@ -1,5 +1,4 @@
 ### VERSION 0.3
-- Bug: input not working
 - AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 
 ### VERSION 0.4

@@ -43,13 +43,14 @@ namespace eyegui
 
 	void Container::specialUpdate(float tpf, Input* pInput)
 	{
-		Block::specialUpdate(tpf, pInput);
-
 		// Update the elements
 		for (std::unique_ptr<Element>& element : mChildren)
 		{
 			element->update(tpf, mAlpha, pInput, mDimming.getValue());
 		}
+
+		// Super call after children (may consume input first)
+		Block::specialUpdate(tpf, pInput);
 	}
 
 	void Container::specialDraw() const
