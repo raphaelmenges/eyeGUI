@@ -134,8 +134,8 @@ namespace eyegui
 
     void Frame::attachRoot(std::unique_ptr<Element> upElement)
     {
+		// Initial resize is done at first update
         mupRoot = std::move(upElement);
-        resize();
     }
 
     std::unique_ptr<Element> Frame::replaceRoot(std::unique_ptr<Element> upElement)

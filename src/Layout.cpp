@@ -42,9 +42,6 @@ namespace eyegui
 
     void Layout::update(float tpf, Input* pInput)
     {
-        // *** NOTIFICATIONS ***
-        mupNotificationQueue->process();
-
         // *** DELETION OF REMOVED FLOATING FRAMES ***
 
         for (int i : mDyingFloatingFramesIndices)
@@ -62,6 +59,9 @@ namespace eyegui
         {
             resize(true);
         }
+
+		// *** NOTIFICATIONS ***
+		mupNotificationQueue->process();
 
         // *** OWN UPDATE ***
 
