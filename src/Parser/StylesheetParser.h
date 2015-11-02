@@ -17,20 +17,20 @@
 
 namespace eyegui
 {
-    namespace stylesheet_parser
-    {
-        // Parsing
-        std::unique_ptr<std::map<std::string, Style> > parse(std::string filepath);
+	namespace stylesheet_parser
+	{
+		// Parsing
+		std::unique_ptr<std::map<std::string, Style> > parse(std::string filepath);
 
-        // Parses whole line and fills value in style struct
-        void parseLine(std::string line, Style& rStyle);
+		// Parses whole line and fills value in style struct
+		void parseLine(std::string line, Style& rStyle);
 
-        // Fill value (also used by interface et
-        void fillValue(Style& rStyle, std::string attribute, glm::vec4 value);
+		// Fill value (also used by interface et
+		void fillValue(Style& rStyle, std::string attribute, glm::vec4 value);
 
-        // Parse color
-        glm::vec4 parseColor(std::string value);
-    }
+		// Parse color
+		glm::vec4 parseColor(std::string value);
+	}
 }
 
 #endif // STYLESHEET_PARSER_H_

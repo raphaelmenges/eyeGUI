@@ -15,68 +15,68 @@
 
 namespace eyegui
 {
-    class DropButton : public BoxButton
-    {
-    public:
+	class DropButton : public BoxButton
+	{
+	public:
 
-        // Constructor
-        DropButton(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
+		// Constructor
+		DropButton(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
 			float border,
 			bool dimmable,
 			bool adaptiveScaling,
-            std::string iconFilepath,
-            float space);
+			std::string iconFilepath,
+			float space);
 
-        // Deconstructor
-        ~DropButton();
+		// Deconstructor
+		~DropButton();
 
-        // Up and down
-        virtual void down(bool immediately = false);
-        virtual void up(bool immediately = false);
+		// Up and down
+		virtual void down(bool immediately = false);
+		virtual void up(bool immediately = false);
 
-        // Attach inner element
-        void attachInnerElement(std::unique_ptr<Element> upElement);
+		// Attach inner element
+		void attachInnerElement(std::unique_ptr<Element> upElement);
 
-        // Replace an attached element, returns NULL if not found
-        virtual std::unique_ptr<Element> replaceAttachedElement(
-            Element* pTarget,
-            std::unique_ptr<Element> upReplacement);
+		// Replace an attached element, returns NULL if not found
+		virtual std::unique_ptr<Element> replaceAttachedElement(
+			Element* pTarget,
+			std::unique_ptr<Element> upReplacement);
 
-        // Starts the getting of the next interactive element, returns NULL if no available
-        virtual InteractiveElement* nextInteractiveElement();
+		// Starts the getting of the next interactive element, returns NULL if no available
+		virtual InteractiveElement* nextInteractiveElement();
 
-        // Activate or deactivate
-        virtual void setActivity(bool active, bool fade);
+		// Activate or deactivate
+		virtual void setActivity(bool active, bool fade);
 
-    protected:
+	protected:
 
-        // Updating filled by subclasses, returns adaptive scale
-        virtual float specialUpdate(float tpf, Input* pInput);
+		// Updating filled by subclasses, returns adaptive scale
+		virtual float specialUpdate(float tpf, Input* pInput);
 
-        // Transformation
-        virtual void specialTransformAndSize();
+		// Transformation
+		virtual void specialTransformAndSize();
 
-        // Reset filld by subclasses
-        virtual void specialReset();
+		// Reset filld by subclasses
+		virtual void specialReset();
 
-    private:
+	private:
 
-        // Getter for inner element
-        Element* getInnerElement();
+		// Getter for inner element
+		Element* getInnerElement();
 
-        // Member
-        float mSpace;
-        LerpValue mInnerAlpha;
-        bool mInnerElementVisible;
-    };
+		// Member
+		float mSpace;
+		LerpValue mInnerAlpha;
+		bool mInnerElementVisible;
+	};
 }
 
 #endif // DROP_BUTTON_H_

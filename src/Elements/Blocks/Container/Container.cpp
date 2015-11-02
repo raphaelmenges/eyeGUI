@@ -55,7 +55,7 @@ namespace eyegui
 		}
 
 		// Super call after children (may consume input first)
-		float adaptiveScale =  Block::specialUpdate(tpf, pInput);
+		float adaptiveScale = Block::specialUpdate(tpf, pInput);
 
 		// Return adaptive scale
 		return std::max(adaptiveScale, maxAdaptiveScaleOfChildren);

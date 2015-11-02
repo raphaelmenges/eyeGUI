@@ -13,41 +13,41 @@
 
 namespace eyegui
 {
-    class CircleButton : public Button
-    {
-    public:
+	class CircleButton : public Button
+	{
+	public:
 
-        // Constructor
-        CircleButton(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
+		// Constructor
+		CircleButton(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
 			Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
 			NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
+			float relativeScale,
+			float border,
 			bool dimmable,
 			bool adaptiveScaling,
-            std::string iconFilepath,
-            bool isSwitch);
+			std::string iconFilepath,
+			bool isSwitch);
 
-        // Deconstructor
-        ~CircleButton();
+		// Deconstructor
+		~CircleButton();
 
-        // Check before transformation, how much space is needed
-        virtual void evaluateSize(
-            int availableWidth,
-            int availableHeight,
-            int& rWidth,
-            int& rHeight) const;
+		// Check before transformation, how much space is needed
+		virtual void evaluateSize(
+			int availableWidth,
+			int availableHeight,
+			int& rWidth,
+			int& rHeight) const;
 
-    protected:
+	protected:
 
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
-    };
+		// Drawing filled by subclasses
+		virtual void specialDraw() const;
+	};
 }
 
 #endif // CIRCLE_BUTTON_H_

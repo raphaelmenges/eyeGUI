@@ -16,36 +16,36 @@
 
 namespace eyegui
 {
-    class GLSetup
-    {
-    public:
+	class GLSetup
+	{
+	public:
 
-        // Initialization
-        void init();
+		// Initialization
+		void init();
 
-        // Store current state and set own
-        void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
+		// Store current state and set own
+		void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
 
-        // Reset stored state
-        void restore();
+		// Reset stored state
+		void restore();
 
-    private:
+	private:
 
-        // Set boolean capability
-        void setCapability(GLenum cap, GLboolean enable) const;
+		// Set boolean capability
+		void setCapability(GLenum cap, GLboolean enable) const;
 
-        // Member
-        GLint mViewport[4];
-        GLboolean mBlend;
-        GLboolean mDepthMask;
-        GLint mBlendSrc;
-        GLint mBlendDst;
-        GLint mShaderProgram;
-        GLint mVertexArrayObject;
-        GLboolean mTexture2D;
-        GLint mActiveTexture;
-        GLboolean mCulling;
-    };
+		// Member
+		GLint mViewport[4];
+		GLboolean mBlend;
+		GLboolean mDepthMask;
+		GLint mBlendSrc;
+		GLint mBlendDst;
+		GLint mShaderProgram;
+		GLint mVertexArrayObject;
+		GLboolean mTexture2D;
+		GLint mActiveTexture;
+		GLboolean mCulling;
+	};
 }
 
 #endif // GL_SETUP_H_

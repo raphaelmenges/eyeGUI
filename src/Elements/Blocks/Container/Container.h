@@ -13,36 +13,36 @@
 
 namespace eyegui
 {
-    class Container : public Block
-    {
-    public:
+	class Container : public Block
+	{
+	public:
 
-        // Constructor
-        Container(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
+		// Constructor
+		Container(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
 			Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
 			NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
+			float relativeScale,
+			float border,
 			bool dimmable,
 			bool adaptiveScaling,
-            float innerBorder);
+			float innerBorder);
 
-        // Destructor
-        virtual ~Container() = 0;
+		// Destructor
+		virtual ~Container() = 0;
 
-    protected:
+	protected:
 
-        // Updating filled by subclasses, returns adaptive scale
-        virtual float specialUpdate(float tpf, Input* pInput);
+		// Updating filled by subclasses, returns adaptive scale
+		virtual float specialUpdate(float tpf, Input* pInput);
 
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
-    };
+		// Drawing filled by subclasses
+		virtual void specialDraw() const;
+	};
 }
 
 #endif // CONTAINER_H_

@@ -15,32 +15,32 @@
 
 namespace eyegui
 {
-    class TextBlock : public Block
-    {
-    public:
+	class TextBlock : public Block
+	{
+	public:
 
-        // Constructors
-        TextBlock(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
+		// Constructors
+		TextBlock(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
 			bool dimmable,
 			bool adaptiveScaling,
 			float innerBorder,
-            FontSize fontSize,
-            TextFlowAlignment alignment,
-            TextFlowVerticalAlignment verticalAlignment,
-            std::u16string content,
+			FontSize fontSize,
+			TextFlowAlignment alignment,
+			TextFlowVerticalAlignment verticalAlignment,
+			std::u16string content,
 			std::string key);
 
-        // Destructor
-        virtual ~TextBlock();
+		// Destructor
+		virtual ~TextBlock();
 
 		// Setter for content
 		void setContent(std::u16string content);
@@ -48,20 +48,20 @@ namespace eyegui
 		// Setter for key
 		void setKey(std::string key);
 
-    protected:
+	protected:
 
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
+		// Drawing filled by subclasses
+		virtual void specialDraw() const;
 
-        // Transformation
-        virtual void specialTransformAndSize();
+		// Transformation
+		virtual void specialTransformAndSize();
 
-    private:
+	private:
 
-        // Members
-        std::string mKey;
-        std::unique_ptr<TextFlow> mupTextFlow;
-    };
+		// Members
+		std::string mKey;
+		std::unique_ptr<TextFlow> mupTextFlow;
+	};
 }
 
 #endif // TEXT_BLOCK_H_

@@ -13,15 +13,15 @@
 
 namespace eyegui
 {
-    // Forward declaration
-    class GUI;
-    class Layout;
+	// Forward declaration
+	class GUI;
+	class Layout;
 
-    namespace layout_parser
-    {
-        // Parsing
-        std::unique_ptr<Layout> parse(GUI* pGUI, AssetManager* pAssetManager, std::string filepath);
-    }
+	namespace layout_parser
+	{
+		// Parsing
+		std::unique_ptr<Layout> parse(GUI* pGUI, AssetManager* pAssetManager, std::string filepath);
+	}
 }
 
 #endif // LAYOUT_PARSER_H_

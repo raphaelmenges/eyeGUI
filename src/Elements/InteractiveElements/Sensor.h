@@ -15,56 +15,56 @@
 
 namespace eyegui
 {
-    class Sensor : public InteractiveElement, public NotifierTemplate<SensorListener>
-    {
-    public:
+	class Sensor : public InteractiveElement, public NotifierTemplate<SensorListener>
+	{
+	public:
 
-        // Constructor
-        Sensor(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
+		// Constructor
+		Sensor(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
 			bool dimmable,
 			bool adaptiveScaling,
-            std::string iconFilepath);
+			std::string iconFilepath);
 
-        // Deconstructor
-        ~Sensor();
+		// Deconstructor
+		~Sensor();
 
-        // Penetrating
-        virtual void penetrate(float amount);
+		// Penetrating
+		virtual void penetrate(float amount);
 
-    protected:
+	protected:
 
-        // Updating filled by subclasses, returns adaptive scale
-        virtual float specialUpdate(float tpf, Input* pInput);
+		// Updating filled by subclasses, returns adaptive scale
+		virtual float specialUpdate(float tpf, Input* pInput);
 
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
+		// Drawing filled by subclasses
+		virtual void specialDraw() const;
 
-        // Transformation filled by subclasses
-        virtual void specialTransformAndSize();
+		// Transformation filled by subclasses
+		virtual void specialTransformAndSize();
 
-        // Reset filld by subclasses
-        virtual void specialReset();
+		// Reset filld by subclasses
+		virtual void specialReset();
 
-        // Interaction fill by subclasses
-        virtual void specialInteract();
+		// Interaction fill by subclasses
+		virtual void specialInteract();
 
-        // Filled by subclass and called by layout after updating and before drawing
-        virtual void specialPipeNotification(Notification notification, Layout* pLayout);
+		// Filled by subclass and called by layout after updating and before drawing
+		virtual void specialPipeNotification(Notification notification, Layout* pLayout);
 
-    private:
+	private:
 
-        // Members
-        LerpValue mPenetration; // [0..1]
-    };
+		// Members
+		LerpValue mPenetration; // [0..1]
+	};
 }
 
 #endif // CIRCLE_BUTTON_H_

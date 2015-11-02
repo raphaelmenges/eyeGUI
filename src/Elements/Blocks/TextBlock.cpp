@@ -12,69 +12,69 @@
 
 namespace eyegui
 {
-    TextBlock::TextBlock(
-        std::string id,
-        std::string styleName,
-        Element* pParent,
-        Layout const * pLayout,
-        Frame* pFrame,
-        AssetManager* pAssetManager,
-        NotificationQueue* pNotificationQueue,
-        float relativeScale,
-        float border,
+	TextBlock::TextBlock(
+		std::string id,
+		std::string styleName,
+		Element* pParent,
+		Layout const * pLayout,
+		Frame* pFrame,
+		AssetManager* pAssetManager,
+		NotificationQueue* pNotificationQueue,
+		float relativeScale,
+		float border,
 		bool dimmable,
 		bool adaptiveScaling,
 		float innerBorder,
-        FontSize fontSize,
-        TextFlowAlignment alignment,
-        TextFlowVerticalAlignment verticalAlignment,
-        std::u16string content,
-        std::string key) : Block(
-            id,
-            styleName,
-            pParent,
-            pLayout,
-            pFrame,
-            pAssetManager,
-            pNotificationQueue,
-            relativeScale,
-            border,
+		FontSize fontSize,
+		TextFlowAlignment alignment,
+		TextFlowVerticalAlignment verticalAlignment,
+		std::u16string content,
+		std::string key) : Block(
+			id,
+			styleName,
+			pParent,
+			pLayout,
+			pFrame,
+			pAssetManager,
+			pNotificationQueue,
+			relativeScale,
+			border,
 			dimmable,
 			adaptiveScaling,
 			innerBorder)
-    {
-        mType = Type::TEXT_BLOCK;
+	{
+		mType = Type::TEXT_BLOCK;
 
-        // Fill members
-        mKey = key;
+		// Fill members
+		mKey = key;
 
-        // Create text flow
-        if (mKey != EMPTY_STRING_ATTRIBUTE)
-        {
-            std::u16string localization = mpLayout->getContentFromLocalization(mKey);
-            if (localization == LOCALIZATION_NOT_FOUND)
-            {
-                throwWarning(
-                    OperationNotifier::Operation::RUNTIME,
-                    "No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
+		// Create text flow
+		if (mKey != EMPTY_STRING_ATTRIBUTE)
+		{
+			std::u16string localization = mpLayout->getContentFromLocalization(mKey);
+			if (localization == LOCALIZATION_NOT_FOUND)
+			{
+				throwWarning(
+					OperationNotifier::Operation::RUNTIME,
+					"No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
 
-                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
-            }
-            else
-            {
-                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
-            }
-        }
-        else
-        {
-            mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
-        }
-    }
+				mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+			}
+			else
+			{
+				mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
+			}
+		}
+		else
+		{
+			mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+		}
+	}
 
-    TextBlock::~TextBlock()
-    {
-        // Nothing to do
-    }
+	TextBlock::~TextBlock()
+	{
+		// Nothing to do
+	}
 
 	void TextBlock::setContent(std::u16string content)
 	{
@@ -116,24 +116,24 @@ namespace eyegui
 		}
 	}
 
-    void TextBlock::specialDraw() const
-    {
-        // Super call
-        Block::specialDraw();
+	void TextBlock::specialDraw() const
+	{
+		// Super call
+		Block::specialDraw();
 
-        // Draw text (emulation of shader bevavior for color mixing)
+		// Draw text (emulation of shader bevavior for color mixing)
 		glm::vec4 color = getStyle()->fontColor;
 		color.a *= mAlpha;
 		color *= (1.0f - mDimming.getValue()) + (mDimming.getValue() * getStyle()->dimColor);
-        mupTextFlow->draw(1.0f, color);
-    }
+		mupTextFlow->draw(1.0f, color);
+	}
 
-    void TextBlock::specialTransformAndSize()
-    {
-        // Super call
-        Block::specialTransformAndSize();
+	void TextBlock::specialTransformAndSize()
+	{
+		// Super call
+		Block::specialTransformAndSize();
 
-        // Tell text flow about transformation
-        mupTextFlow->transformAndSize(mInnerX, mInnerY, mInnerWidth, mInnerHeight);
-    }
+		// Tell text flow about transformation
+		mupTextFlow->transformAndSize(mInnerX, mInnerY, mInnerWidth, mInnerHeight);
+	}
 }

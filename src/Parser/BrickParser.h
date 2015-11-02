@@ -13,11 +13,11 @@
 
 namespace eyegui
 {
-    namespace brick_parser
-    {
-        // Parsing
-        std::unique_ptr<elementsAndIds> parse(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, Element* pParent, std::string filepath, std::map<std::string, std::string> idMapper);
-    }
+	namespace brick_parser
+	{
+		// Parsing
+		std::unique_ptr<elementsAndIds> parse(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, Element* pParent, std::string filepath, std::map<std::string, std::string> idMapper);
+	}
 }
 
 #endif // BRICK_PARSER_H_
