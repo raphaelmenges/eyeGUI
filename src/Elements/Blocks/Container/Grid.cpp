@@ -191,7 +191,7 @@ namespace eyegui
 				completeScale += ptr->getDynamicScale();
 			}
 
-			// Save maximal dynamic scale for this row
+			// Save median dynamic scale for this row
 			medianDynamicScaleInColumns.push_back(completeScale / columnCount);
 			completeScaleOfColumns.push_back(completeScale);
 			completeScaleOfRows += completeScale / columnCount;

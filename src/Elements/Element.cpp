@@ -384,18 +384,18 @@ namespace eyegui
 			if (penetrated)
 			{
 				// Scale it up
-				mAdaptiveScale.update(tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
+				mAdaptiveScale.update(tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration);
 			}
 			else
 			{
 				// Scale it down
-				mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration);
+				mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
 			}
 		}
 		else
 		{
 			// Scale it down
-			mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration);
+			mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
 		}
 
 		// Update replaced element if there is some
