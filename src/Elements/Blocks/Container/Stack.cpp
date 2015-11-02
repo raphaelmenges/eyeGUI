@@ -201,7 +201,7 @@ namespace eyegui
                 }
                 else
                 {
-                    // Use relative scale
+                    // Use dynamic scale
                     localElemWidth = (int)((float)mInnerWidth
                         * (element->getDynamicScale() / completeScale));
                     sumElemWidth += localElemWidth;

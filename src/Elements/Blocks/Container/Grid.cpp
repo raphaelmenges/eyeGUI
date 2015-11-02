@@ -175,7 +175,7 @@ namespace eyegui
         Container::specialTransformAndSize();
 
 		// Calculate dynamic scales
-		std::vector<float> maxRelativeScaleInColumns;
+		std::vector<float> maxDynamicScaleInColumns;
 		std::vector<float> completeScaleOfColumns;
 		float completeScaleOfRows = 0;
 		for (int i = 0; i < mRows; i++)
@@ -194,7 +194,7 @@ namespace eyegui
 			}
 
 			// Save maximal dynamic scale for this row
-			maxRelativeScaleInColumns.push_back(maxDynamicScale);
+			maxDynamicScaleInColumns.push_back(maxDynamicScale);
 			completeScaleOfColumns.push_back(completeScale);
 			completeScaleOfRows += maxDynamicScale;
 		}
@@ -208,7 +208,7 @@ namespace eyegui
         for (int i = 0; i < mRows; i++)
         {
             // Necessary to calculate height of element
-            currentRelativeYEnd += mElementRelativeHeights[i] * (maxRelativeScaleInColumns[i] / completeScaleOfRows) * mRows;
+            currentRelativeYEnd += mElementRelativeHeights[i] * (maxDynamicScaleInColumns[i] / completeScaleOfRows) * mRows;
 
             // Initalize values per row
             int columnCount = mColumns[i];
