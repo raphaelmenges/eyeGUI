@@ -1,6 +1,5 @@
 ### VERSION 0.3
 - Bug with grid and dynamic scale
-  - Fails when container in container and inner element does adaptive scaling
   - Even relative scaling alone does not always works for grid
 
 ### VERSION 0.4

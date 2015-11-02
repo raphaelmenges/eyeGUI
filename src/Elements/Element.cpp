@@ -394,7 +394,7 @@ namespace eyegui
 		}
 		else
 		{
-			// Scale it down
+			// Scale it down, because could have been set by using scale from special update (children!)
 			mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
 		}
 
@@ -417,8 +417,12 @@ namespace eyegui
 		// Call specialized update of subclasses
 		float specialAdaptiveScale = specialUpdate(tpf, pInput);
 
-		// Return adaptive scale. Either own or calculated in special update with children
-		return std::max(mAdaptiveScale.getValue(), specialAdaptiveScale);
+		// Decide, which adaptive scale to save. Own adaptive scale decreases if adaptive scaling is deactivated!
+		// If it would be not saved in member, nobody would know about it at rendering.
+		mAdaptiveScale.setValue(std::max(mAdaptiveScale.getValue(), specialAdaptiveScale));
+
+		// Return adaptive scale
+		return mAdaptiveScale.getValue();
 	}
 
 	void Element::draw() const
