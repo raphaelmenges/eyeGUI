@@ -175,28 +175,26 @@ namespace eyegui
         Container::specialTransformAndSize();
 
 		// Calculate dynamic scales
-		std::vector<float> maxDynamicScaleInColumns;
+		std::vector<float> medianDynamicScaleInColumns;
 		std::vector<float> completeScaleOfColumns;
 		float completeScaleOfRows = 0;
 		for (int i = 0; i < mRows; i++)
 		{
 			int columnCount = mColumns[i];
-			float maxDynamicScale = -1;
+			float medianDynamicScale = 0;
 			float completeScale = 0;
 
 			// Go over columns
 			for (int j = 0; j < columnCount; j++)
 			{
 				Element* ptr = mChildren[(mCellIndices[i][j])].get();
-				float dynamicScale = ptr->getDynamicScale();
-				completeScale += dynamicScale;
-				maxDynamicScale = std::max(dynamicScale, maxDynamicScale);
+				completeScale += ptr->getDynamicScale();
 			}
 
 			// Save maximal dynamic scale for this row
-			maxDynamicScaleInColumns.push_back(maxDynamicScale);
+			medianDynamicScaleInColumns.push_back(completeScale / columnCount);
 			completeScaleOfColumns.push_back(completeScale);
-			completeScaleOfRows += maxDynamicScale;
+			completeScaleOfRows += completeScale / columnCount;
 		}
 
         // Initialize some values
@@ -208,7 +206,7 @@ namespace eyegui
         for (int i = 0; i < mRows; i++)
         {
             // Necessary to calculate height of element
-            currentRelativeYEnd += mElementRelativeHeights[i] * (maxDynamicScaleInColumns[i] / completeScaleOfRows) * mRows;
+            currentRelativeYEnd += mElementRelativeHeights[i] * (medianDynamicScaleInColumns[i] / completeScaleOfRows) * mRows;
 
             // Initalize values per row
             int columnCount = mColumns[i];

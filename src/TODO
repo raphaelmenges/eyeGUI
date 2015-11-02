@@ -1,9 +1,10 @@
 ### VERSION 0.3
 - Bug with grid and dynamic scale
-  - Somehow, grid grows and stay that size...
+  - Fails when container in container and inner element does adaptive scaling
 
 ### VERSION 0.4
 - TextInput
+- Code cleanup with visual
 
 ### VERSION 0.x
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
@@ -45,9 +46,6 @@ Notes:
   - Maybe blocks have an option: kill or not kill input (both possible)
   - is selecting via keyboard input? (at the moment it is not blocked if input is disabled for layout)
 - Text
-	- Tab like button with text (ok, however I decided to make no sensitive area with text...)
-	- Menu
-		- Should have look field for activation -> this field could be box / circle button with icon :)
 	- Tooltips
 	- Make listening elements (analog to notifier template) using pointer, function or method getter to get values like floats or strings for displaying
 
