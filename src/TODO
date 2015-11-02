@@ -1,10 +1,9 @@
 ### VERSION 0.3
-- Bug with grid and dynamic scale
-  - Even relative scaling alone does not always works for grid
+- finished?
+	- Test combination border and adaptive scaling for grid and stack
 
 ### VERSION 0.4
 - TextInput
-- Code cleanup with visual
 
 ### VERSION 0.x
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)

@@ -174,6 +174,8 @@ namespace eyegui
         // Super call
         Container::specialTransformAndSize();
 
+        // *** DYNAMIC SCALES (RELATIVE + ADAPTIVE SCALE) ***
+
         // Calculate dynamic scales
         std::vector<float> medianDynamicScaleInColumns; // used for height as value
         std::vector<float> completeScaleOfColumns; // used for width to normalize
@@ -197,6 +199,55 @@ namespace eyegui
             completeScaleOfRows += medianScaleOfColumn;
         }
 
+        // *** SCALED RELATIVE VALUES ***
+
+        // Calculate scaled relative values
+        std::vector<std::vector<float> > scaledRelativeWidths;
+        std::vector<float> scaledRelativeHeights;
+        float completeRelativeHeight = 0;
+        for (int i = 0; i < mRows; i++)
+        {
+            // New relative heights
+            float scaledRelativeHeight =
+                mElementRelativeHeights[i]
+                * (medianDynamicScaleInColumns[i] / completeScaleOfRows) * mRows;
+            scaledRelativeHeights.push_back(scaledRelativeHeight);
+            completeRelativeHeight += scaledRelativeHeight;
+
+            // New relative widths
+            int columnCount = mColumns[i];
+            std::vector<float> temp;
+            float completeRelativeWidth = 0;
+            for (int j = 0; j < columnCount; j++)
+            {
+                Element* ptr = mChildren[(mCellIndices[i][j])].get();
+                float scaledRelativeWidth =
+                    mElementRelativeWidths[i][j]
+                    * (ptr->getDynamicScale() / completeScaleOfColumns[i]) * columnCount;
+                temp.push_back(scaledRelativeWidth);
+                completeRelativeWidth += scaledRelativeWidth;
+            }
+
+            // Scale sum of relative widths back to 100 percent
+            float normalization = 1.0f / completeRelativeWidth;
+            for (int j = 0; j < temp.size(); j++)
+            {
+                temp[j] = temp[j] * normalization;
+            }
+
+            // Save information about scaled relative width
+            scaledRelativeWidths.push_back(temp);
+        }
+
+        // Scale sum of relative heights back to 100 percent
+        float normalization = 1.0f / completeRelativeHeight;
+        for (int i = 0; i < mRows; i++)
+        {
+            scaledRelativeHeights[i] = scaledRelativeHeights[i] * normalization;
+        }
+
+        // *** TRANSFORM AND SIZE ***
+
         // Initialize some values
         float currentRelativeYEnd = 0;
         int elemY = mInnerY;
@@ -206,7 +257,7 @@ namespace eyegui
         for (int i = 0; i < mRows; i++)
         {
             // Necessary to calculate height of element
-            currentRelativeYEnd += mElementRelativeHeights[i] * (medianDynamicScaleInColumns[i] / completeScaleOfRows) * mRows;
+            currentRelativeYEnd += scaledRelativeHeights[i];
 
             // Initalize values per row
             int columnCount = mColumns[i];
@@ -232,7 +283,7 @@ namespace eyegui
                 Element* ptr = mChildren[(mCellIndices[i][j])].get();
 
                 // Necessary to calculate width of element
-                currentRelativeXEnd += mElementRelativeWidths[i][j] * (ptr->getDynamicScale() / completeScaleOfColumns[i]) * columnCount;
+                currentRelativeXEnd += scaledRelativeWidths[i][j];
 
                 // Calculate available space
                 if ((j + 1) == columnCount)
