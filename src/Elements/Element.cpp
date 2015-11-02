@@ -392,6 +392,11 @@ namespace eyegui
 				mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration);
 			}
 		}
+		else
+		{
+			// Scale it down
+			mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration);
+		}
 
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
@@ -413,8 +418,7 @@ namespace eyegui
         float specialAdaptiveScale = specialUpdate(tpf, pInput);
 
 		// Return adaptive scale. Either own or calculated in special update with children
-		mAdaptiveScale.setValue(std::max(mAdaptiveScale.getValue(), specialAdaptiveScale));
-		return mAdaptiveScale.getValue();
+		return std::max(mAdaptiveScale.getValue(), specialAdaptiveScale);
     }
 
     void Element::draw() const
