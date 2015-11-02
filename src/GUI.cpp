@@ -233,6 +233,11 @@ namespace eyegui
 		}
 	}
 
+	void GUI::setValueOfConfigAttribute(std::string attribute, float value)
+	{
+		mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
+	}
+
 	int GUI::findLayout(Layout const * pLayout) const
 	{
 		// Try to find index of layout in vector
@@ -334,5 +339,16 @@ namespace eyegui
 	void GUI::AddLayoutJob::execute()
 	{
 		mpGUI->mLayouts.push_back(std::move(mupLayout));
+	}
+
+	GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, float value) : GUIJob(pGUI)
+	{
+		mAttribute = attribute;
+		mValue = value;
+	}
+
+	void GUI::SetValueOfConfigAttributeJob::execute()
+	{
+		config_parser::fillValue(mpGUI->mConfig, mAttribute, mValue, mpGUI->mConfig.filepath);
 	}
 }

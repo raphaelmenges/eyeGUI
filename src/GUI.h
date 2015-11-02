@@ -90,6 +90,9 @@ namespace eyegui
 		// Get string content from localization
 		std::u16string getContentFromLocalization(std::string key) const;
 
+		// Set value of config attribute
+		void setValueOfConfigAttribute(std::string attribute, float value);
+
 	private:
 
 		// ### INNER CLASSES ###################################################
@@ -145,6 +148,20 @@ namespace eyegui
 		protected:
 
 			std::unique_ptr<Layout> mupLayout;
+		};
+
+		// Job to change value of config attribute
+		class SetValueOfConfigAttributeJob : public GUIJob
+		{
+		public:
+
+			SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, float value);
+			virtual void execute();
+
+		protected:
+
+			std::string mAttribute;
+			float mValue;
 		};
 
 		// #####################################################################

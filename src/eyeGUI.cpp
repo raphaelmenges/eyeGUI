@@ -12,7 +12,7 @@
 #include "OperationNotifier.h"
 
 // Version
-static const std::string VERSION_STRING = "0.2";
+static const std::string VERSION_STRING = "0.3";
 
 namespace eyegui
 {
@@ -172,6 +172,14 @@ namespace eyegui
 		float a)
 	{
 		pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r, g, b, a));
+	}
+
+	void setValueOfStyleAttribute(
+		GUI* pGUI,
+		std::string attribute,
+		float value)
+	{
+		pGUI->setValueOfConfigAttribute(attribute, value);
 	}
 
 	void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)

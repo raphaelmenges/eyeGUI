@@ -29,6 +29,7 @@ namespace eyegui
 
 			// Create config files with fallback values
 			Config config;
+			config.filepath = filepath;
 
 			// Read file
 			std::ifstream in(filepath.c_str(), std::ios::in);
@@ -84,63 +85,68 @@ namespace eyegui
 					line.erase(0, pos + delimiter.length());
 					std::string right = line;
 
-					// Go through the cases
-					if (left == "animation-duration")
-					{
-						config.animationDuration = std::stof(right);
-					}
-					else if (left == "sensor-penetration-increase-duration")
-					{
-						config.sensorPenetrationIncreaseDuration = std::stof(right);
-					}
-					else if (left == "sensor-penetration-decrease-duration")
-					{
-						config.sensorPenetrationDecreaseDuration = std::stof(right);
-					}
-					else if (left == "button-threshold-increase-duration")
-					{
-						config.buttonThresholdIncreaseDuration = std::stof(right);
-					}
-					else if (left == "button-threshold-decrease-duration")
-					{
-						config.buttonThresholdDecreaseDuration = std::stof(right);
-					}
-					else if (left == "button-pressing-duration")
-					{
-						config.buttonPressingDuration = std::stof(right);
-					}
-					else if (left == "sensor-interaction-penetration-amount")
-					{
-						config.sensorInteractionPenetrationAmount = std::stof(right);
-					}
-					else if (left == "dimming-increase-duration")
-					{
-						config.dimmingIncreaseDuration = std::stof(right);
-					}
-					else if (left == "dimming-decrease-duration")
-					{
-						config.dimmingDecreaseDuration = std::stof(right);
-					}
-					else if (left == "maximal-adaptive-scale-increase")
-					{
-						config.maximalAdaptiveScaleIncrease = std::stof(right);
-					}
-					else if (left == "adaptive-scale-increase-duration")
-					{
-						config.adaptiveScaleIncreaseDuration = std::stof(right);
-					}
-					else if (left == "adaptive-scale-decrease-duration")
-					{
-						config.adaptiveScaleDecreaseDuration = std::stof(right);
-					}
-					else
-					{
-						throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + left, filepath);
-					}
+					fillValue(config, left, std::stof(right), filepath);
 				}
 			}
 
 			return config;
+		}
+
+		void fillValue(Config& rConfig, std::string attribute, float value, std::string filepath)
+		{
+			// Go through the cases
+			if (attribute == "animation-duration")
+			{
+				rConfig.animationDuration = value;
+			}
+			else if (attribute == "sensor-penetration-increase-duration")
+			{
+				rConfig.sensorPenetrationIncreaseDuration = value;
+			}
+			else if (attribute == "sensor-penetration-decrease-duration")
+			{
+				rConfig.sensorPenetrationDecreaseDuration = value;
+			}
+			else if (attribute == "button-threshold-increase-duration")
+			{
+				rConfig.buttonThresholdIncreaseDuration = value;
+			}
+			else if (attribute == "button-threshold-decrease-duration")
+			{
+				rConfig.buttonThresholdDecreaseDuration = value;
+			}
+			else if (attribute == "button-pressing-duration")
+			{
+				rConfig.buttonPressingDuration = value;
+			}
+			else if (attribute == "sensor-interaction-penetration-amount")
+			{
+				rConfig.sensorInteractionPenetrationAmount = value;
+			}
+			else if (attribute == "dimming-increase-duration")
+			{
+				rConfig.dimmingIncreaseDuration = value;
+			}
+			else if (attribute == "dimming-decrease-duration")
+			{
+				rConfig.dimmingDecreaseDuration = value;
+			}
+			else if (attribute == "maximal-adaptive-scale-increase")
+			{
+				rConfig.maximalAdaptiveScaleIncrease = value;
+			}
+			else if (attribute == "adaptive-scale-increase-duration")
+			{
+				rConfig.adaptiveScaleIncreaseDuration = value;
+			}
+			else if (attribute == "adaptive-scale-decrease-duration")
+			{
+				rConfig.adaptiveScaleDecreaseDuration = value;
+			}
+			else
+			{
+				throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);
+			}
 		}
 	}
 }

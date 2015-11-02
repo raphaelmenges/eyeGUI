@@ -25,7 +25,7 @@ namespace eyegui
 		// Parses whole line and fills value in style struct
 		void parseLine(std::string line, Style& rStyle);
 
-		// Fill value (also used by interface et
+		// Fill value (also used by interface etc)
 		void fillValue(Style& rStyle, std::string attribute, glm::vec4 value);
 
 		// Parse color

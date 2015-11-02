@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.2
+ *  \version   0.3
  *  \license   This project is released under the MIT License (MIT)
  */
 
@@ -361,6 +361,17 @@ namespace eyegui
 		float g,
 		float b,
 		float a);
+
+	//! Sets value of config attribute.
+	/*!
+	\param pLayout pointer to layout.
+	\param attribute is name of attribute which shall be changed.
+	\param value if new value of attribute.
+	*/
+	void setValueOfStyleAttribute(
+		GUI* pGUI,
+		std::string attribute,
+		float value);
 
 	//! Set icon of interactive element.
 	/*!

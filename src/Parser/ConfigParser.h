@@ -18,6 +18,9 @@ namespace eyegui
 	{
 		// Parsing
 		Config parse(std::string filepath);
+
+		// Fill value
+		void fillValue(Config& rConfig, std::string attribute, float value, std::string filepath);
 	}
 }
 
