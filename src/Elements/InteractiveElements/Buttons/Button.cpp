@@ -14,216 +14,219 @@
 
 namespace eyegui
 {
-	Button::Button(
-		std::string id,
-		std::string styleName,
-		Element* pParent,
-		Layout const * pLayout,
-		Frame* pFrame,
-		AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
-		float relativeScale,
-		float border,
-		bool dimmable,
-		bool adaptiveScaling,
-		std::string iconFilepath,
-		bool isSwitch) : InteractiveElement(
-			id,
-			styleName,
-			pParent,
-			pLayout,
-			pFrame,
-			pAssetManager,
-			pNotificationQueue,
-			relativeScale,
-			border,
-			dimmable,
-			adaptiveScaling,
-			iconFilepath)
-	{
-		mType = Type::BUTTON;
+    Button::Button(
+        std::string id,
+        std::string styleName,
+        Element* pParent,
+        Layout const * pLayout,
+        Frame* pFrame,
+        AssetManager* pAssetManager,
+        NotificationQueue* pNotificationQueue,
+        float relativeScale,
+        float border,
+        bool dimmable,
+        bool adaptiveScaling,
+        std::string iconFilepath,
+        bool isSwitch) : InteractiveElement(
+            id,
+            styleName,
+            pParent,
+            pLayout,
+            pFrame,
+            pAssetManager,
+            pNotificationQueue,
+            relativeScale,
+            border,
+            dimmable,
+            adaptiveScaling,
+            iconFilepath)
+    {
+        mType = Type::BUTTON;
 
-		// Fill members
-		mIsSwitch = isSwitch;
+        // Fill members
+        mIsSwitch = isSwitch;
 
-		// Calling virtual reset method in constructor is not good
-		mIsDown = false;
-		mThreshold.setValue(0);
-		mPressing.setValue(0);
-	}
+        // Calling virtual reset method in constructor is not good
+        mIsDown = false;
+        mThreshold.setValue(0);
+        mPressing.setValue(0);
+    }
 
-	Button::~Button()
-	{
-		// Nothing to do so far
-	}
+    Button::~Button()
+    {
+        // Nothing to do so far
+    }
 
-	void Button::hit(bool immediately)
-	{
-		if (mActive)
-		{
-			// Inform listener after updating
-			mpNotificationQueue->enqueue(this, Notification::BUTTON_HIT);
+    void Button::hit(bool immediately)
+    {
+        if (mActive)
+        {
+            // Inform listener after updating
+            mpNotificationQueue->enqueue(this, Notification::BUTTON_HIT);
 
-			// Call context correct method
-			if (mIsDown)
-			{
-				up(immediately);
-			}
-			else
-			{
-				down(immediately);
-			}
-		}
-	}
+            // Call context correct method
+            if (mIsDown)
+            {
+                up(immediately);
+            }
+            else
+            {
+                down(immediately);
+            }
+        }
+    }
 
-	void Button::down(bool immediately)
-	{
-		if (!mIsDown && mActive)
-		{
-			// Remove highlight
-			highlight(false);
+    void Button::down(bool immediately)
+    {
+        if (!mIsDown && mActive)
+        {
+            // Remove highlight
+            highlight(false);
 
-			// Save state
-			mIsDown = true;
+            // Save state
+            mIsDown = true;
 
-			// Inform listener after updating
-			mpNotificationQueue->enqueue(this, Notification::BUTTON_DOWN);
+            // Inform listener after updating
+            mpNotificationQueue->enqueue(this, Notification::BUTTON_DOWN);
 
-			// Immediately
-			if (immediately)
-			{
-				mPressing.setValue(1);
-			}
-		}
-	}
+            // Immediately
+            if (immediately)
+            {
+                mPressing.setValue(1);
+            }
+        }
+    }
 
-	void Button::up(bool immediately)
-	{
-		if (mIsDown && mActive)
-		{
-			// Remove highlight
-			highlight(false);
+    void Button::up(bool immediately)
+    {
+        if (mIsDown && mActive)
+        {
+            // Remove highlight
+            highlight(false);
 
-			// Save state
-			mIsDown = false;
+            // Save state
+            mIsDown = false;
 
-			// Inform listener after updating
-			mpNotificationQueue->enqueue(this, Notification::BUTTON_UP);
+            // Inform listener after updating
+            mpNotificationQueue->enqueue(this, Notification::BUTTON_UP);
 
-			// Immediately
-			if (immediately)
-			{
-				mPressing.setValue(0);
-			}
-		}
-	}
+            // Immediately
+            if (immediately)
+            {
+                mPressing.setValue(0);
+            }
+        }
+    }
 
-	bool Button::isSwitch() const
-	{
-		return mIsSwitch;
-	}
+    bool Button::isSwitch() const
+    {
+        return mIsSwitch;
+    }
 
-	bool Button::isDown() const
-	{
-		return mIsDown;
-	}
+    bool Button::isDown() const
+    {
+        return mIsDown;
+    }
 
-	float Button::specialUpdate(float tpf, Input* pInput)
-	{
-		// Super call
-		float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
+    float Button::specialUpdate(float tpf, Input* pInput)
+    {
+        // Super call
+        float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
-		// TODO: more abstract (not only mouse) -> Settings, to say on which input it should react?
+        // TODO: more abstract (not only mouse) -> Settings, to say on which input it should react?
 
-		bool penetrated = penetratedByInput(pInput);
-		if (penetrated)
-		{
-			// TODO: Just special testcase for mouse input
-			pInput->mouseUsed = true;
-		}
+        bool penetrated = penetratedByInput(pInput);
+        if (penetrated)
+        {
+            // TODO: Just special testcase for mouse input
+            pInput->mouseUsed = true;
+        }
 
-		// Pressing animation
-		if (mIsDown && mPressing.getValue() < 1)
-		{
-			mPressing.update(tpf / mpLayout->getConfig()->buttonPressingDuration);
+        // Pressing animation
+        if (mIsDown && mPressing.getValue() < 1)
+        {
+            mPressing.update(tpf / mpLayout->getConfig()->buttonPressingDuration);
 
-			// If pressed and no switch, go back
-			if (!mIsSwitch && mPressing.getValue() >= 1)
-			{
-				up();
-			}
-		}
-		else if (!mIsDown && mPressing.getValue() > 0)
-		{
-			mPressing.update(-tpf / mpLayout->getConfig()->buttonPressingDuration);
-		}
+            // If pressed and no switch, go back
+            if (!mIsSwitch && mPressing.getValue() >= 1)
+            {
+                up();
+            }
+        }
+        else if (!mIsDown && mPressing.getValue() > 0)
+        {
+            mPressing.update(-tpf / mpLayout->getConfig()->buttonPressingDuration);
+        }
 
-		// Threshold
-		if ((mPressing.getValue() == 0 || mPressing.getValue() == 1) && penetrated)
-		{
-			mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration);
+        // Threshold
+        if (
+            (mPressing.getValue() == 0 || mPressing.getValue() == 1) // Only when completey up or down
+            && penetrated // Penetration
+            && !(!mIsSwitch && mPressing.getValue() > 0)) // Avoids to add threshold for none switch when at down position
+        {
+            mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration);
 
-			if (mThreshold.getValue() >= 1)
-			{
-				hit();
-				mThreshold.setValue(0);
-			}
-		}
-		else
-		{
-			mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration);
-		}
+            if (mThreshold.getValue() >= 1)
+            {
+                hit();
+                mThreshold.setValue(0);
+            }
+        }
+        else
+        {
+            mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration);
+        }
 
-		return adaptiveScale;
-	}
+        return adaptiveScale;
+    }
 
-	void Button::specialDraw() const
-	{
-		// Super call
-		InteractiveElement::specialDraw();
+    void Button::specialDraw() const
+    {
+        // Super call
+        InteractiveElement::specialDraw();
 
-		mpRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
-		mpRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
-	}
+        mpRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
+        mpRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
+    }
 
-	void Button::specialTransformAndSize()
-	{
-		// Do nothing
-	}
+    void Button::specialTransformAndSize()
+    {
+        // Do nothing
+    }
 
-	void Button::specialReset()
-	{
-		InteractiveElement::specialReset();
+    void Button::specialReset()
+    {
+        InteractiveElement::specialReset();
 
-		mIsDown = false;
-		mThreshold.setValue(0);
-		mPressing.setValue(0);
-	}
+        mIsDown = false;
+        mThreshold.setValue(0);
+        mPressing.setValue(0);
+    }
 
-	void Button::specialInteract()
-	{
-		hit();
-	}
+    void Button::specialInteract()
+    {
+        hit();
+    }
 
-	void Button::specialPipeNotification(Notification notification, Layout* pLayout)
-	{
-		// Pipe notifications to notifier template including own data
-		switch (notification)
-		{
-		case Notification::BUTTON_HIT:
-			notifyListener(&ButtonListener::hit, pLayout, getId());
-			break;
-		case Notification::BUTTON_DOWN:
-			notifyListener(&ButtonListener::down, pLayout, getId());
-			break;
-		case Notification::BUTTON_UP:
-			notifyListener(&ButtonListener::up, pLayout, getId());
-			break;
-		default:
-			throwWarning(
-				OperationNotifier::Operation::BUG,
-				"Button got notification which is not thought for it.");
-			break;
-		}
-	}
+    void Button::specialPipeNotification(Notification notification, Layout* pLayout)
+    {
+        // Pipe notifications to notifier template including own data
+        switch (notification)
+        {
+        case Notification::BUTTON_HIT:
+            notifyListener(&ButtonListener::hit, pLayout, getId());
+            break;
+        case Notification::BUTTON_DOWN:
+            notifyListener(&ButtonListener::down, pLayout, getId());
+            break;
+        case Notification::BUTTON_UP:
+            notifyListener(&ButtonListener::up, pLayout, getId());
+            break;
+        default:
+            throwWarning(
+                OperationNotifier::Operation::BUG,
+                "Button got notification which is not thought for it.");
+            break;
+        }
+    }
 }
