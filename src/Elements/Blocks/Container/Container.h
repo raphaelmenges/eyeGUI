@@ -4,21 +4,21 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Block is a simple, uniform colored element.
+// Virtual container that updates and draws its children.
 
-#ifndef BLOCK_H_
-#define BLOCK_H_
+#ifndef CONTAINER_H_
+#define CONTAINER_H_
 
-#include "Elements/Element.h"
+#include "Elements/Blocks/Block.h"
 
 namespace eyegui
 {
-	class Block : public Element
+	class Container : public Block
 	{
 	public:
 
 		// Constructor
-		Block(
+		Container(
 			std::string id,
 			std::string styleName,
 			Element* pParent,
@@ -30,10 +30,10 @@ namespace eyegui
 			float border,
 			bool dimmable,
 			bool adaptiveScaling,
-			float innerBorder = 0);
+			float innerBorder);
 
 		// Destructor
-		virtual ~Block();
+		virtual ~Container() = 0;
 
 	protected:
 
@@ -42,25 +42,7 @@ namespace eyegui
 
 		// Drawing filled by subclasses
 		virtual void specialDraw() const;
-
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
-
-		// Reset filld by subclasses
-		virtual void specialReset();
-
-		// Members
-		int mInnerX;
-		int mInnerY;
-		int mInnerWidth;
-		int mInnerHeight;
-
-	private:
-
-		// Members
-		RenderItem const * mpBackground;
-		float mInnerBorder; // [0..1]
 	};
 }
 
-#endif // BLOCK_H_
+#endif // CONTAINER_H_

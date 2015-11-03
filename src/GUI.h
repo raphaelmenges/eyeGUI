@@ -28,153 +28,170 @@
 
 namespace eyegui
 {
-    class GUI
-    {
-    public:
+	class GUI
+	{
+	public:
 
-        // *** Methods accessed via interface ***
+		// *** Methods accessed via interface ***
 
-        // Constructor
-        GUI(
-            int width,
-            int height,
-            std::string fontFilepath,
-            CharacterSet characterSet,
-            std::string localizationFilepath);
+		// Constructor
+		GUI(
+			int width,
+			int height,
+			std::string fontFilepath,
+			CharacterSet characterSet,
+			std::string localizationFilepath);
 
-        // Destructor
-        virtual ~GUI();
+		// Destructor
+		virtual ~GUI();
 
-        // Load layout from xml, returns NULL if fails
-        Layout* addLayout(std::string filepath, bool visible);
+		// Load layout from xml, returns NULL if fails
+		Layout* addLayout(std::string filepath, bool visible);
 
-        // Resize whole gui
-        void resize(int width, int height);
+		// Resize whole gui
+		void resize(int width, int height);
 
-        // Render all layouts
-        void render(float tpf);
+		// Render all layouts
+		void render(float tpf);
 
-        // Set mouse cursor position
-        void setMouseCursor(int x, int y);
+		// Set mouse cursor position
+		void setMouseCursor(int x, int y);
 
-        // Move layout to front
-        void moveLayoutToFront(Layout* pLayout);
+		// Move layout to front
+		void moveLayoutToFront(Layout* pLayout);
 
-        // Move layout to back
-        void moveLayoutToBack(Layout* pLayout);
+		// Move layout to back
+		void moveLayoutToBack(Layout* pLayout);
 
-        // Load a config
-        void loadConfig(std::string filepath);
+		// Load a config
+		void loadConfig(std::string filepath);
 
-        // Prefatch image to avoid lag
-        void prefetchImage(std::string filepath);
+		// Prefatch image to avoid lag
+		void prefetchImage(std::string filepath);
 
-        // *** Methods accessed by other classes ***
+		// *** Methods accessed by other classes ***
 
-        // Getter for window size
-        int getWindowWidth() const;
-        int getWindowHeight() const;
+		// Getter for window size
+		int getWindowWidth() const;
+		int getWindowHeight() const;
 
-        // Get time since start (gets reset if too big)
-        float getAccPeriodicTime() const;
+		// Get time since start (gets reset if too big)
+		float getAccPeriodicTime() const;
 
-        // Get pointer to config of this GUI
-        Config const * getConfig() const;
+		// Get pointer to config of this GUI
+		Config const * getConfig() const;
 
-        // Get used character set
-        CharacterSet getCharacterSet() const;
+		// Get used character set
+		CharacterSet getCharacterSet() const;
 
-        // Get set default font
-        Font const * getDefaultFont() const;
+		// Get set default font
+		Font const * getDefaultFont() const;
 
-        // Get string content from localization
-        std::u16string getContentFromLocalization(std::string key) const;
+		// Get string content from localization
+		std::u16string getContentFromLocalization(std::string key) const;
 
-    private:
+		// Set value of config attribute
+		void setValueOfConfigAttribute(std::string attribute, float value);
 
-        // ### INNER CLASSES ###################################################
+	private:
 
-        // Job for the gui to execute before rendering
-        class GUIJob
-        {
-        public:
+		// ### INNER CLASSES ###################################################
 
-            GUIJob(GUI* pGUI);
-            virtual void execute() = 0;
+		// Job for the gui to execute before rendering
+		class GUIJob
+		{
+		public:
 
-        protected:
+			GUIJob(GUI* pGUI);
+			virtual void execute() = 0;
 
-            GUI* mpGUI;
-        };
+		protected:
 
-        // Job to move layout
-        class MoveLayoutJob : public GUIJob
-        {
-        public:
+			GUI* mpGUI;
+		};
 
-            MoveLayoutJob(GUI* pGUI, Layout* pLayout, bool toFront);
-            virtual void execute();
+		// Job to move layout
+		class MoveLayoutJob : public GUIJob
+		{
+		public:
 
-        protected:
+			MoveLayoutJob(GUI* pGUI, Layout* pLayout, bool toFront);
+			virtual void execute();
 
-            Layout* mpLayout;
-            bool mToFront; // otherwise to back
-        };
+		protected:
 
-        // Job to load config
-        class LoadConfigJob : public GUIJob
-        {
-        public:
+			Layout* mpLayout;
+			bool mToFront; // otherwise to back
+		};
 
-            LoadConfigJob(GUI* pGUI, std::string filepath);
-            virtual void execute();
+		// Job to load config
+		class LoadConfigJob : public GUIJob
+		{
+		public:
 
-        protected:
+			LoadConfigJob(GUI* pGUI, std::string filepath);
+			virtual void execute();
 
-            std::string mFilepath;
-        };
+		protected:
 
-        // Job to add layout
-        class AddLayoutJob : public GUIJob
-        {
-        public:
+			std::string mFilepath;
+		};
 
-            AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout);
-            virtual void execute();
+		// Job to add layout
+		class AddLayoutJob : public GUIJob
+		{
+		public:
 
-        protected:
+			AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout);
+			virtual void execute();
 
-            std::unique_ptr<Layout> mupLayout;
-        };
+		protected:
 
-        // #####################################################################
+			std::unique_ptr<Layout> mupLayout;
+		};
 
-        // Find index of layout, returns -1 if fails
-        int findLayout(Layout const * pLayout) const;
+		// Job to change value of config attribute
+		class SetValueOfConfigAttributeJob : public GUIJob
+		{
+		public:
 
-        // Move layout
-        void moveLayout(int oldIndex, int newIndex);
+			SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, float value);
+			virtual void execute();
 
-        // Internal resizing
-        void internalResizing();
+		protected:
 
-        // Members
-        std::vector<std::unique_ptr<Layout> > mLayouts;
-        int mWidth, mHeight;
-        int mNewWidth, mNewHeight;
-        CharacterSet mCharacterSet;
-        std::unique_ptr<AssetManager> mupAssetManager;
-        GLSetup mGLSetup;
-        Input mInput;
-        float mAccPeriodicTime;
-        Config mConfig;
-        Font const * mpDefaultFont;
-        bool mResizing;
-        float mResizeWaitTime;
-        RenderItem const * mpResizeBlend;
-        std::unique_ptr<localizationMap> mupLocalizationMap;
-        std::vector<std::unique_ptr<GUIJob> > mJobs;
-    };
+			std::string mAttribute;
+			float mValue;
+		};
+
+		// #####################################################################
+
+		// Find index of layout, returns -1 if fails
+		int findLayout(Layout const * pLayout) const;
+
+		// Move layout
+		void moveLayout(int oldIndex, int newIndex);
+
+		// Internal resizing
+		void internalResizing();
+
+		// Members
+		std::vector<std::unique_ptr<Layout> > mLayouts;
+		int mWidth, mHeight;
+		int mNewWidth, mNewHeight;
+		CharacterSet mCharacterSet;
+		std::unique_ptr<AssetManager> mupAssetManager;
+		GLSetup mGLSetup;
+		Input mInput;
+		float mAccPeriodicTime;
+		Config mConfig;
+		Font const * mpDefaultFont;
+		bool mResizing;
+		float mResizeWaitTime;
+		RenderItem const * mpResizeBlend;
+		std::unique_ptr<localizationMap> mupLocalizationMap;
+		std::vector<std::unique_ptr<GUIJob> > mJobs;
+	};
 }
 
 #endif // GUI_H_

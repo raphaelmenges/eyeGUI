@@ -14,6 +14,7 @@ namespace eyegui
 	struct Config
 	{
 		// Initialize with fallback values
+		std::string filepath;
 		float animationDuration = 0.2f;
 		float sensorPenetrationIncreaseDuration = 3.0f;
 		float sensorPenetrationDecreaseDuration = 1.5f;
@@ -23,6 +24,9 @@ namespace eyegui
 		float sensorInteractionPenetrationAmount = 0.5f;
 		float dimmingIncreaseDuration = 1.5f;
 		float dimmingDecreaseDuration = 0.25f;
+		float maximalAdaptiveScaleIncrease = 0.5f;
+		float adaptiveScaleIncreaseDuration = 1.0f;
+		float adaptiveScaleDecreaseDuration = 1.0f;
 	};
 }
 

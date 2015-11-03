@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.2
+ *  \version   0.3
  *  \license   This project is released under the MIT License (MIT)
  */
 
@@ -33,6 +33,7 @@
 
 #include <string>
 #include <memory>
+#include <map>
 
 namespace eyegui
 {
@@ -121,7 +122,7 @@ namespace eyegui
       \param height of GUI as integer
       \param fontFilepath is path to a .ttf font file
       \param characterSet used to initialize font rendering.
-	  \param localizationFilepath is path to a .leyegui file
+      \param localizationFilepath is path to a .leyegui file
       \return pointer to created GUI.
     */
     GUI* createGUI(
@@ -129,7 +130,7 @@ namespace eyegui
         int height,
         std::string fontFilepath = "",
         CharacterSet characterSet = CharacterSet::US_ENGLISH,
-		std::string localizationFilepath = "");
+        std::string localizationFilepath = "");
 
     //! Creates layout inside GUI and returns pointer to it.
     /*!
@@ -256,9 +257,9 @@ namespace eyegui
     \param dimmable is the new choice.
     */
     void setElementDimmable(
-    	Layout* pLayout,
-    	std::string id,
-    	bool dimmable);
+        Layout* pLayout,
+        std::string id,
+        bool dimmable);
 
     //! Get whether element is dimmable.
     /*!
@@ -355,11 +356,22 @@ namespace eyegui
     void setValueOfStyleAttribute(
         Layout* pLayout,
         std::string styleName,
-         std::string attribute,
-         float r,
-         float g,
-         float b,
-         float a);
+        std::string attribute,
+        float r,
+        float g,
+        float b,
+        float a);
+
+    //! Sets value of config attribute.
+    /*!
+    \param pLayout pointer to layout.
+    \param attribute is name of attribute which shall be changed.
+    \param value if new value of attribute.
+    */
+    void setValueOfConfigAttribute(
+        GUI* pGUI,
+        std::string attribute,
+        float value);
 
     //! Set icon of interactive element.
     /*!
@@ -433,6 +445,22 @@ namespace eyegui
       \param amount is value of peneteration.
     */
     void penetrateSensor(Layout* pLayout, std::string id, float amount);
+
+    //! Set content of text block. Works only if no key is used for localization.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param content is new content for text block.
+    */
+    void setContentOfTextBlock(Layout* pLayout, std::string id, std::u16string content);
+
+    //! Set key of text block. Works only if used localization file includes key.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param key is new key for text block.
+    */
+    void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key);
 
     //! Register listener to button.
     /*!
@@ -546,6 +574,7 @@ namespace eyegui
       \param verticalAlignment is vertical alignment of text.
       \param content is the content of the displayed text.
       \param innerBorder is space between border and text.
+      \param key is used for localization.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithTextBlock(
@@ -555,8 +584,8 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-		std::string key,
         float innerBorder,
+        std::string key = "",
         bool fade = false);
 
     //! Replace element with brick.
@@ -570,7 +599,22 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::string filepath,
-        bool fade);
+        bool fade = false);
+
+    //! Replace element with brick.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param filepath is path to brick xml file.
+    \param idMapper changes ids inside brick to ones in map.
+    \param fade indicates, whether replaced element should fade.
+    */
+    void replaceElementWithBrick(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath,
+        std::map<std::string, std::string> idMapper,
+        bool fade = false);
 
     //! Creates floating frame with brick inside
     /*!
@@ -591,6 +635,30 @@ namespace eyegui
         float relativePositionY,
         float relativeSizeX,
         float relativeSizeY,
+        bool visible = true,
+        bool fade = false);
+
+    //! Creates floating frame with brick inside
+    /*!
+    \param pLayout pointer to layout.
+    \param filepath is path to brick xml file.
+    \param relativePositionX initial relative x position.
+    \param relativePositionY initial relative y position.
+    \param relativeSizeX initial relative x size.
+    \param relativeSizeY initial relative y size.
+    \param idMapper changes ids inside brick to ones in map.
+    \param visible indicates, whether frame should be visible or not.
+    \param fade indicates, whether frame should fade in.
+    \return index of created floating frame.
+    */
+    unsigned int addFloatingFrameWithBrick(
+        Layout* pLayout,
+        std::string filepath,
+        float relativePositionX,
+        float relativePositionY,
+        float relativeSizeX,
+        float relativeSizeY,
+        std::map<std::string, std::string> idMapper,
         bool visible = true,
         bool fade = false);
 

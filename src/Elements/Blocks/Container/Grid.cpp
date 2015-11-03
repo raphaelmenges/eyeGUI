@@ -15,24 +15,28 @@ namespace eyegui
         std::string id,
         std::string styleName,
         Element* pParent,
-		Layout const * pLayout,
+        Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
+        NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-		bool dimmable,
-        int rows) : Block(
+        bool dimmable,
+        bool adaptiveScaling,
+        int rows,
+        float innerBorder) : Container(
             id,
             styleName,
             pParent,
             pLayout,
             pFrame,
             pAssetManager,
-			pNotificationQueue,
+            pNotificationQueue,
             relativeScale,
             border,
-			dimmable)
+            dimmable,
+            adaptiveScaling,
+            innerBorder)
     {
         mType = Type::GRID;
 
@@ -162,87 +166,140 @@ namespace eyegui
         }
 
         // Nothing found in grid
-        return Block::internalNextInteractiveElement(NULL);
-    }
-
-    void Grid::specialUpdate(float tpf, Input* pInput)
-    {
-        // Update the elements
-        for (std::unique_ptr<Element>& element : mChildren)
-        {
-            element->update(tpf, mAlpha, pInput, mDimming.getValue());
-        }
-
-        // Super call after children (may consume input first)
-        Block::specialUpdate(tpf, pInput);
-    }
-
-    void Grid::specialDraw() const
-    {
-        // Super call
-        Block::specialDraw();
-
-        // Draw the elements
-        for (const std::unique_ptr<Element>& element : mChildren)
-        {
-            element->draw();
-        }
+        return Container::internalNextInteractiveElement(NULL);
     }
 
     void Grid::specialTransformAndSize()
     {
         // Super call
-        Block::specialTransformAndSize();
+        Container::specialTransformAndSize();
+
+        // *** DYNAMIC SCALES (RELATIVE + ADAPTIVE SCALE) ***
+
+        // Calculate dynamic scales
+        std::vector<float> medianDynamicScaleInColumns; // used for height as value
+        std::vector<float> completeScaleOfColumns; // used for width to normalize
+        float completeScaleOfRows = 0; // used for height to normalize
+        for (int i = 0; i < mRows; i++)
+        {
+            int columnCount = mColumns[i];
+            float completeScale = 0;
+
+            // Go over columns
+            for (int j = 0; j < columnCount; j++)
+            {
+                Element* ptr = mChildren[(mCellIndices[i][j])].get();
+                completeScale += ptr->getDynamicScale();
+            }
+
+            // Save median dynamic scale for this row
+            float medianScaleOfColumn = completeScale / columnCount;
+            medianDynamicScaleInColumns.push_back(medianScaleOfColumn);
+            completeScaleOfColumns.push_back(completeScale);
+            completeScaleOfRows += medianScaleOfColumn;
+        }
+
+        // *** SCALED RELATIVE VALUES ***
+
+        // Calculate scaled relative values
+        std::vector<std::vector<float> > scaledRelativeWidths;
+        std::vector<float> scaledRelativeHeights;
+        float completeRelativeHeight = 0;
+        for (int i = 0; i < mRows; i++)
+        {
+            // New relative heights
+            float scaledRelativeHeight =
+                mElementRelativeHeights[i]
+                * (medianDynamicScaleInColumns[i] / completeScaleOfRows) * mRows;
+            scaledRelativeHeights.push_back(scaledRelativeHeight);
+            completeRelativeHeight += scaledRelativeHeight;
+
+            // New relative widths
+            int columnCount = mColumns[i];
+            std::vector<float> temp;
+            float completeRelativeWidth = 0;
+            for (int j = 0; j < columnCount; j++)
+            {
+                Element* ptr = mChildren[(mCellIndices[i][j])].get();
+                float scaledRelativeWidth =
+                    mElementRelativeWidths[i][j]
+                    * (ptr->getDynamicScale() / completeScaleOfColumns[i]) * columnCount;
+                temp.push_back(scaledRelativeWidth);
+                completeRelativeWidth += scaledRelativeWidth;
+            }
+
+            // Scale sum of relative widths back to 100 percent
+            float normalization = 1.0f / completeRelativeWidth;
+            for (int j = 0; j < temp.size(); j++)
+            {
+                temp[j] = temp[j] * normalization;
+            }
+
+            // Save information about scaled relative width
+            scaledRelativeWidths.push_back(temp);
+        }
+
+        // Scale sum of relative heights back to 100 percent
+        float normalization = 1.0f / completeRelativeHeight;
+        for (int i = 0; i < mRows; i++)
+        {
+            scaledRelativeHeights[i] = scaledRelativeHeights[i] * normalization;
+        }
+
+        // *** TRANSFORM AND SIZE ***
 
         // Initialize some values
         float currentRelativeYEnd = 0;
-        int elemY = mY;
+        int elemY = mInnerY;
         int elemWidth, elemHeight = 0;
 
         // Go over rows and accumulate y
         for (int i = 0; i < mRows; i++)
         {
             // Necessary to calculate height of element
-            currentRelativeYEnd += mElementRelativeHeights[i];
+            currentRelativeYEnd += scaledRelativeHeights[i];
 
             // Initalize values per row
             int columnCount = mColumns[i];
             float currentRelativeXEnd = 0;
-            int elemX = mX;
+            int elemX = mInnerX;
 
             // Height is the same for one row
             if ((i + 1) == mRows)
             {
                 // Fill until last pixel
-                elemHeight = (mHeight + mY) - elemY;
+                elemHeight = (mInnerHeight + mInnerY) - elemY;
             }
             else
             {
                 // Fill until end of grid cell
-                elemHeight = (int)(currentRelativeYEnd * mHeight) - elemY + mY;
+                elemHeight = (int)(currentRelativeYEnd * mInnerHeight) - elemY + mInnerY;
             }
 
             // Go over columns and accumulate x
             for (int j = 0; j < columnCount; j++)
             {
+                // Pointer to element in cell
+                Element* ptr = mChildren[(mCellIndices[i][j])].get();
+
                 // Necessary to calculate width of element
-                currentRelativeXEnd += mElementRelativeWidths[i][j];
+                currentRelativeXEnd += scaledRelativeWidths[i][j];
 
                 // Calculate available space
                 if ((j + 1) == columnCount)
                 {
                     // Fill until last pixel
-                    elemWidth = (mWidth + mX) - elemX;
+                    elemWidth = (mInnerWidth + mInnerX) - elemX;
                 }
                 else
                 {
                     // Fill until end of grid cell
-                    elemWidth = (int)(currentRelativeXEnd * mWidth) - elemX + mX;
+                    elemWidth = (int)(currentRelativeXEnd * mInnerWidth) - elemX + mInnerX;
                 }
 
                 // Now ask the element, how much space is actually used
                 int usedWidth, usedHeight;
-                Element* ptr = mChildren[(mCellIndices[i][j])].get();
+
                 ptr->evaluateSize(elemWidth, elemHeight, usedWidth, usedHeight);
 
                 // Recalculate values to place element in center of cell

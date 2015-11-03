@@ -20,76 +20,76 @@
 
 namespace eyegui
 {
-    // Forward declaration
-    class GUI;
+	// Forward declaration
+	class GUI;
 
-    class TextFlow
-    {
-    public:
+	class TextFlow
+	{
+	public:
 
-        // Constructor
-        TextFlow(
-            GUI const * pGUI,
-            Font const * pFont,
-            FontSize fontSize,
-            TextFlowAlignment alignment,
-            TextFlowVerticalAlignment verticalAlignment,
-            Shader const * pShader,
-            std::u16string content);
+		// Constructor
+		TextFlow(
+			GUI const * pGUI,
+			Font const * pFont,
+			FontSize fontSize,
+			TextFlowAlignment alignment,
+			TextFlowVerticalAlignment verticalAlignment,
+			Shader const * pShader,
+			std::u16string content);
 
-        // Destructor
-        virtual ~TextFlow();
+		// Destructor
+		virtual ~TextFlow();
 
-        // Set content
-        void setContent(std::u16string content);
+		// Set content
+		void setContent(std::u16string content);
 
-        // Transform and size (has to be called before first usage)
-        void transformAndSize(
-            int x,
-            int y,
-            int width,
-            int height);
+		// Transform and size (has to be called before first usage)
+		void transformAndSize(
+			int x,
+			int y,
+			int width,
+			int height);
 
-        // Draw (uses orthoprojection to scale to screen)
-        void draw(float scale, glm::vec4 color) const;
+		// Draw (uses orthoprojection to scale to screen)
+		void draw(float scale, glm::vec4 color) const;
 
-    private:
+	private:
 
-        // Some struct for easier alignment
-        struct Word
-        {
-            std::shared_ptr<std::vector<glm::vec3> > spVertices;
-            std::shared_ptr<std::vector<glm::vec2> > spTextureCoordinates;
-            float pixelWidth;
-        };
+		// Some struct for easier alignment
+		struct Word
+		{
+			std::shared_ptr<std::vector<glm::vec3> > spVertices;
+			std::shared_ptr<std::vector<glm::vec2> > spTextureCoordinates;
+			float pixelWidth;
+		};
 
-        // Calculate mesh (in pixel coordinates)
-        void calculateMesh();
+		// Calculate mesh (in pixel coordinates)
+		void calculateMesh();
 
-        // Calculate word
-        Word calculateWord(std::u16string content);
+		// Calculate word
+		Word calculateWord(std::u16string content);
 
-        // Members
-        GUI const * mpGUI;
-        Font const * mpFont;
-        FontSize mFontSize;
-        TextFlowAlignment mAlignment;
-        TextFlowVerticalAlignment mVerticalAlignment;
-        int mX;
-        int mY;
-        int mWidth;
-        int mHeight;
-        glm::vec4 mColor;
-        std::u16string mContent;
-        int mFlowHeight;
+		// Members
+		GUI const * mpGUI;
+		Font const * mpFont;
+		FontSize mFontSize;
+		TextFlowAlignment mAlignment;
+		TextFlowVerticalAlignment mVerticalAlignment;
+		int mX;
+		int mY;
+		int mWidth;
+		int mHeight;
+		glm::vec4 mColor;
+		std::u16string mContent;
+		int mFlowHeight;
 
-        Shader const * mpShader;
-        GLuint mVertexCount;
-        GLuint mVertexBuffer;
-        GLuint mTextureCoordinateBuffer;
-        GLuint mVertexArrayObject;
-        GLuint mAtlasTextureHandle;
-    };
+		Shader const * mpShader;
+		GLuint mVertexCount;
+		GLuint mVertexBuffer;
+		GLuint mTextureCoordinateBuffer;
+		GLuint mVertexArrayObject;
+		GLuint mAtlasTextureHandle;
+	};
 }
 
 #endif // TEXT_FLOW_H_

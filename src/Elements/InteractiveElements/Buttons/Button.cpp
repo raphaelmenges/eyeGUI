@@ -24,7 +24,8 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-		bool dimmable,
+        bool dimmable,
+        bool adaptiveScaling,
         std::string iconFilepath,
         bool isSwitch) : InteractiveElement(
             id,
@@ -36,7 +37,8 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-			dimmable,
+            dimmable,
+            adaptiveScaling,
             iconFilepath)
     {
         mType = Type::BUTTON;
@@ -126,10 +128,10 @@ namespace eyegui
         return mIsDown;
     }
 
-    void Button::specialUpdate(float tpf, Input* pInput)
+    float Button::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
-        InteractiveElement::specialUpdate(tpf, pInput);
+        float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
         // TODO: more abstract (not only mouse) -> Settings, to say on which input it should react?
 
@@ -157,7 +159,10 @@ namespace eyegui
         }
 
         // Threshold
-        if ((mPressing.getValue() == 0 || mPressing.getValue() == 1) && penetrated)
+        if (
+            (mPressing.getValue() == 0 || mPressing.getValue() == 1) // Only when completey up or down
+            && penetrated // Penetration
+            && !(!mIsSwitch && mPressing.getValue() > 0)) // Avoids to add threshold for none switch when at down position
         {
             mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration);
 
@@ -171,6 +176,8 @@ namespace eyegui
         {
             mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration);
         }
+
+        return adaptiveScale;
     }
 
     void Button::specialDraw() const

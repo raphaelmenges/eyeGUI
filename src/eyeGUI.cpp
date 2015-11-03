@@ -12,7 +12,7 @@
 #include "OperationNotifier.h"
 
 // Version
-static const std::string VERSION_STRING = "0.2";
+static const std::string VERSION_STRING = "0.3";
 
 namespace eyegui
 {
@@ -21,7 +21,7 @@ namespace eyegui
         int height,
         std::string fontFilepath,
         CharacterSet characterSet,
-		std::string localizationFilepath)
+        std::string localizationFilepath)
     {
         return (new GUI(width, height, fontFilepath, characterSet, localizationFilepath));
     }
@@ -109,18 +109,18 @@ namespace eyegui
         return pLayout->isElementActive(id);
     }
 
-	void setElementDimmable(
-		Layout* pLayout,
-		std::string id,
-		bool dimmable)
-	{
-		pLayout->setElementDimmable(id, dimmable);
-	}
+    void setElementDimmable(
+        Layout* pLayout,
+        std::string id,
+        bool dimmable)
+    {
+        pLayout->setElementDimmable(id, dimmable);
+    }
 
-	bool isElementDimmable(Layout const * pLayout, std::string id)
-	{
-		return pLayout->isElementDimmable(id);
-	}
+    bool isElementDimmable(Layout const * pLayout, std::string id)
+    {
+        return pLayout->isElementDimmable(id);
+    }
 
     float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
     {
@@ -165,14 +165,22 @@ namespace eyegui
     void setValueOfStyleAttribute(
         Layout* pLayout,
         std::string styleName,
-         std::string attribute,
-         float r,
-         float g,
-         float b,
-         float a)
-     {
-        pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r,g,b,a));
-     }
+        std::string attribute,
+        float r,
+        float g,
+        float b,
+        float a)
+    {
+        pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r, g, b, a));
+    }
+
+    void setValueOfConfigAttribute(
+        GUI* pGUI,
+        std::string attribute,
+        float value)
+    {
+        pGUI->setValueOfConfigAttribute(attribute, value);
+    }
 
     void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
     {
@@ -224,6 +232,16 @@ namespace eyegui
         pLayout->penetrateSensor(id, amount);
     }
 
+    void setContentOfTextBlock(Layout* pLayout, std::string id, std::u16string content)
+    {
+        pLayout->setContentOfTextBlock(id, content);
+    }
+
+    void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key)
+    {
+        pLayout->setKeyOfTextBlock(id, key);
+    }
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);
@@ -271,16 +289,22 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-		std::string key,
         float innerBorder,
+        std::string key,
         bool fade)
     {
-        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, key, innerBorder, fade);
+        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, innerBorder, key, fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)
     {
-        pLayout->replaceElementWithBrick(id, filepath, fade);
+        // Delegate to other function with empty id mapper
+        replaceElementWithBrick(pLayout, id, filepath, std::map<std::string, std::string>(), fade);
+    }
+
+    void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, std::map<std::string, std::string> idMapper, bool fade)
+    {
+        pLayout->replaceElementWithBrick(id, filepath, idMapper, fade);
     }
 
     unsigned int addFloatingFrameWithBrick(
@@ -293,7 +317,31 @@ namespace eyegui
         bool visible,
         bool fade)
     {
-        return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, visible, fade);
+        // Delegate to other function with empty id mapper
+        return addFloatingFrameWithBrick(
+            pLayout,
+            filepath,
+            relativePositionX,
+            relativePositionY,
+            relativeSizeX,
+            relativeSizeY,
+            std::map<std::string, std::string>(),
+            visible,
+            fade);
+    }
+
+    unsigned int addFloatingFrameWithBrick(
+        Layout* pLayout,
+        std::string filepath,
+        float relativePositionX,
+        float relativePositionY,
+        float relativeSizeX,
+        float relativeSizeY,
+        std::map<std::string, std::string> idMapper,
+        bool visible,
+        bool fade)
+    {
+        return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, idMapper, visible, fade);
     }
 
     void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool fade)

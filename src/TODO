@@ -1,22 +1,12 @@
-### VERSION 0.3
-- RelativeScale only used in stack, grid would be good too
-- Resize is too often called
-- Update calls to children of elements is strange (done in stack and grid, only...)
-- More complex elements with text (menu)
-	- Common super class for all elements using text
-		- key, textflow
-- If one wants to add brick more than one time: id replacement at loading
-- Floating frame: one pixel too wide or narrow?
+### VERSION 0.4
+- TextInput
 
 ### VERSION 0.x
-- Sensor: instead of real values for penetration: maybe acceleration would be a good idea
-- BoxButton: enable stretched icons
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Function to define search folder or so
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
 	- Use UTF8 library also for config and stylesheet?
-	- UTF-8 enough for localization?
 - More complex input structure and configuration
   - Mouse
   - Keyboard
@@ -24,13 +14,15 @@
   - Brain-computer-interface
   - Buttons?
   - Other...
-- Text input
-- AdaptiveRelativeScale: Increase it when gaze is upon the element (recursive resizing necessary) or patient gets sleepy
 - Audio
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Font has sometimes little rendering issues
+- Adaptive scaling is not that smooth
+- Overlay
+	- When eyetracking input is lost
+	- Gaze visualization
 
 Notes:
 - Localization files MUST BE encoded in UTF-8
@@ -53,9 +45,6 @@ Notes:
   - Maybe blocks have an option: kill or not kill input (both possible)
   - is selecting via keyboard input? (at the moment it is not blocked if input is disabled for layout)
 - Text
-	- Tab like button with text (ok, however I decided to make no sensitive area with text...)
-	- Menu
-		- Should have look field for activation -> this field could be box / circle button with icon :)
 	- Tooltips
 	- Make listening elements (analog to notifier template) using pointer, function or method getter to get values like floats or strings for displaying
 

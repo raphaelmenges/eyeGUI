@@ -15,47 +15,53 @@
 
 namespace eyegui
 {
-    class TextBlock : public Block
-    {
-    public:
+	class TextBlock : public Block
+	{
+	public:
 
-        // Constructors
-        TextBlock(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
+		// Constructors
+		TextBlock(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
 			bool dimmable,
-            FontSize fontSize,
-            TextFlowAlignment alignment,
-            TextFlowVerticalAlignment verticalAlignment,
-            std::u16string content,
-            std::string key,
-            float innerBorder);
+			bool adaptiveScaling,
+			float innerBorder,
+			FontSize fontSize,
+			TextFlowAlignment alignment,
+			TextFlowVerticalAlignment verticalAlignment,
+			std::u16string content,
+			std::string key);
 
-        // Destructor
-        virtual ~TextBlock();
+		// Destructor
+		virtual ~TextBlock();
 
-    protected:
+		// Setter for content
+		void setContent(std::u16string content);
 
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
+		// Setter for key
+		void setKey(std::string key);
 
-        // Transformation
-        virtual void specialTransformAndSize();
+	protected:
 
-    private:
+		// Drawing filled by subclasses
+		virtual void specialDraw() const;
 
-        // Members
-        std::string mKey;
-        float mInnerBorder;
-        std::unique_ptr<TextFlow> mupTextFlow;
-    };
+		// Transformation
+		virtual void specialTransformAndSize();
+
+	private:
+
+		// Members
+		std::string mKey;
+		std::unique_ptr<TextFlow> mupTextFlow;
+	};
 }
 
 #endif // TEXT_BLOCK_H_

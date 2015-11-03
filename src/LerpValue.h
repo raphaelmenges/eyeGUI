@@ -13,67 +13,81 @@
 
 namespace eyegui
 {
-    class LerpValue
-    {
-    public:
+	class LerpValue
+	{
+	public:
 
-        // Constructors
-        LerpValue(float value, float min, float max)
-        {
-            mMin = min;
-            mMax = max;
-            setValue(value);
-        }
-        LerpValue(float value) : LerpValue(value, 0 , 1) {}
-        LerpValue() : LerpValue(0, 0 , 1) {}
+		// Constructors
+		LerpValue(float value, float min, float max)
+		{
+			mMin = min;
+			mMax = max;
+			setValue(value);
+		}
+		LerpValue(float value) : LerpValue(value, 0, 1) {}
+		LerpValue() : LerpValue(0, 0, 1) {}
 
-        // Destructor
-        virtual ~LerpValue() {}
+		// Destructor
+		virtual ~LerpValue() {}
 
-        // Update, returns updated raw value
-        float update(float amount)
-        {
-            mValue += amount;
-            mValue = clamp(mValue, mMin, mMax);
-            return mValue;
-        }
+		// Update, returns updated raw value
+		float update(float delta)
+		{
+			mValue += delta;
+			mValue = clamp(mValue, mMin, mMax);
+			return mValue;
+		}
 
-        // Update, returns updated raw value
-        float update(float amount, bool subtract)
-        {
-            if(subtract)
-            {
-                return update(-amount);
-            }
-            else
-            {
-                return update(amount);
-            }
-        }
+		// Update, returns updated raw value
+		float update(float delta, bool subtract)
+		{
+			if (subtract)
+			{
+				return update(-delta);
+			}
+			else
+			{
+				return update(delta);
+			}
+		}
 
-        // Getter for value
-        float getValue() const
-        {
-            return mValue;
-        }
+		// Getter for value
+		float getValue() const
+		{
+			return mValue;
+		}
 
-        // Setter for value
-        void setValue(float value)
-        {
-            mValue = value;
-            mValue = clamp(mValue, mMin, mMax);
-        }
+		// Setter for value
+		void setValue(float value)
+		{
+			mValue = value;
+			mValue = clamp(mValue, mMin, mMax);
+		}
 
-    private:
+		// Setter for min value
+		void setMin(float min)
+		{
+			mMin = min;
+			mValue = clamp(mValue, mMin, mMax);
+		}
 
-        // If not private, gcc allows assigning simple float
-        LerpValue& operator=(LerpValue other) {}
+		// Setter for max value
+		void setMax(float max)
+		{
+			mMax = max;
+			mValue = clamp(mValue, mMin, mMax);
+		}
 
-        // Members
-        float mValue;
-        float mMin;
-        float mMax;
-    };
+	private:
+
+		// If not private, gcc allows assigning simple float
+		LerpValue& operator=(LerpValue other) {}
+
+		// Members
+		float mValue;
+		float mMin;
+		float mMax;
+	};
 }
 
 #endif // LERP_VALUE_H_

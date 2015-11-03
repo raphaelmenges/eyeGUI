@@ -14,40 +14,41 @@
 
 namespace eyegui
 {
-    class Blank : public Element
-    {
-    public:
+	class Blank : public Element
+	{
+	public:
 
-        // Constructor
-        Blank(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
+		// Constructor
+		Blank(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
 			Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
 			NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-			bool dimmable);
+			float relativeScale,
+			float border,
+			bool dimmable,
+			bool adaptiveScaling);
 
-        // Destructor
-        virtual ~Blank();
+		// Destructor
+		virtual ~Blank();
 
-    protected:
+	protected:
 
-        // Updating filled by subclasses
-        virtual void specialUpdate(float tpf, Input* pInput);
+		// Updating filled by subclasses, returns adaptive scale
+		virtual float specialUpdate(float tpf, Input* pInput);
 
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
+		// Drawing filled by subclasses
+		virtual void specialDraw() const;
 
-        // Transformation filled by subclasses
-        virtual void specialTransformAndSize();
+		// Transformation filled by subclasses
+		virtual void specialTransformAndSize();
 
-        // Reset filld by subclasses
-        virtual void specialReset();
-    };
+		// Reset filld by subclasses
+		virtual void specialReset();
+	};
 }
 
 #endif // BLANK_H_

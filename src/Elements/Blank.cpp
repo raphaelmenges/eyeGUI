@@ -9,53 +9,55 @@
 
 namespace eyegui
 {
-    Blank::Blank(
-        std::string id,
-        std::string styleName,
-        Element* pParent,
+	Blank::Blank(
+		std::string id,
+		std::string styleName,
+		Element* pParent,
 		Layout const * pLayout,
-        Frame* pFrame,
-        AssetManager* pAssetManager,
+		Frame* pFrame,
+		AssetManager* pAssetManager,
 		NotificationQueue* pNotificationQueue,
-        float relativeScale,
-        float border,
-		bool dimmable) : Element(
-            id,
-            styleName,
-            pParent,
-            pLayout,
-            pFrame,
-            pAssetManager,
+		float relativeScale,
+		float border,
+		bool dimmable,
+		bool adaptiveScaling) : Element(
+			id,
+			styleName,
+			pParent,
+			pLayout,
+			pFrame,
+			pAssetManager,
 			pNotificationQueue,
-            relativeScale,
-            border,
-			dimmable)
-    {
-        mType = Type::BLANK;
-    }
+			relativeScale,
+			border,
+			dimmable,
+			adaptiveScaling)
+	{
+		mType = Type::BLANK;
+	}
 
-    Blank::~Blank()
-    {
-        // Nothing to do
-    }
+	Blank::~Blank()
+	{
+		// Nothing to do
+	}
 
-    void Blank::specialUpdate(float tpf, Input* pInput)
-    {
-        // Nothing to do
-    }
+	float Blank::specialUpdate(float tpf, Input* pInput)
+	{
+		return 0;
+	}
 
-    void Blank::specialDraw() const
-    {
-        // Nothing to do
-    }
+	void Blank::specialDraw() const
+	{
+		// Nothing to do
+	}
 
-    void Blank::specialTransformAndSize()
-    {
-        // Nothing to do
-    }
+	void Blank::specialTransformAndSize()
+	{
+		// Nothing to do
+	}
 
-    void Blank::specialReset()
-    {
-        // Nothing to do
-    }
+	void Blank::specialReset()
+	{
+		// Nothing to do
+	}
 }

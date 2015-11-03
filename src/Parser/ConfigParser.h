@@ -14,11 +14,14 @@
 
 namespace eyegui
 {
-    namespace config_parser
-    {
-        // Parsing
-        Config parse(std::string filepath);
-    }
+	namespace config_parser
+	{
+		// Parsing
+		Config parse(std::string filepath);
+
+		// Fill value
+		void fillValue(Config& rConfig, std::string attribute, float value, std::string filepath);
+	}
 }
 
 #endif // CONFIG_PARSER_H_
