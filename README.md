@@ -8,6 +8,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 ## Features
 
 #### Version 0.3
+* Adaptive scaling
 * Id replacement at brick loading
 
 #### Version 0.2

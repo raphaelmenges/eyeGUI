@@ -1,7 +1,3 @@
-### VERSION 0.3
-- finished?
-	- Test combination border and adaptive scaling for grid and stack
-
 ### VERSION 0.4
 - TextInput
 
@@ -23,6 +19,10 @@
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Font has sometimes little rendering issues
+- Adaptive scaling is not that smooth
+- Overlay
+	- When eyetracking input is lost
+	- Gaze visualization
 
 Notes:
 - Localization files MUST BE encoded in UTF-8
