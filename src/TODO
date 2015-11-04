@@ -1,52 +1,67 @@
-### VERSION 0.4
+### VERSION 0.4 (December 2015)
+- Input
+  - Eyetracking input
+  - Mouse input
+  - Scenarios
+    - Gaze selects button, interaction via key
+    - Mouse increases threshold on button and selects it, interaction via key
+    - How can all of this abstracted?
+      - Pointing input maybe even completely abstracted? -> better just mouse and gaze (and head? and eyes?)
+  - Overlay
+	- When eyetracking input is lost? -> boolean indication that
+	- Gaze visualization
+  - Different callbacks or one big struct? -> different callbacks are better for programming
+  - Tell user somehow about input usage. Return input struct after rendering? Devide update and draw again?
+- Function to define search folder or so
+- Use automatically smaller fonts in textflow if not enough space
+
+### VERSION 0.5 (January/February 2016)
 - TextInput
+  - Keyboard and "Guesser" (tries to goes what you want to write)
+  - Both are indepenend
+  - Should support unicode...
+  - Different modes: Fullscreen, OnScreen, With/Without guesser
+  - Differet speeds
+    - Letters get bigger and after threshold: selection
+    - Only last letter focused for longer time
+
+### VERSION 0.6 (?)
+- Audio (PortAudio library?)
+  - Audo effects defined in style sheet
 
 ### VERSION 0.x
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
-- Function to define search folder or so
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
 	- Use UTF8 library also for config and stylesheet?
-- More complex input structure and configuration
-  - Mouse
-  - Keyboard
-  - Eyetracker
-  - Brain-computer-interface
-  - Buttons?
-  - Other...
-- Audio
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Font has sometimes little rendering issues
 - Adaptive scaling is not that smooth
-- Overlay
-	- When eyetracking input is lost
-	- Gaze visualization
 
 Notes:
 - Localization files MUST BE encoded in UTF-8
 - Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
-- Reminder: Parser responsible for value ranges!
 - Precaching of textures (maybe write something to an text file)
-- Event functions, which return boolean telling whether input was processed (mouse, keyboard...eye? brain...? multitouch) -> how to make flexible -> using transferobject?
 - Maybe use sampler states for textures instead of per texture settings
-- Reminder: XML may not contain information about current state (activity, hiding etc!!!)
 - Rasterization of SVGs are depending on DPI at the moment
-- No mixing of buttons / sensors and text. Text should be never penetrateable by gaze (but maybe clickable)
 - Strange or hacky: Since OGL functions are loaded already by the library, what happens in the main program doing the same? Seems to work at least...
 - Stack
   - Non used pixels should be better shared among all elements not only the head in stack -> very difficult stuff
-- Reminder: Namespaces easier because Layout and GUI is visible to outer space
+- Reminder: N
 - Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
+- Tooltips? -> mouse hovering oder gaze when using keyboard...
 - Input
-  - Reminder: can be NULL if irrelevant for Element
   - Maybe blocks have an option: kill or not kill input (both possible)
   - is selecting via keyboard input? (at the moment it is not blocked if input is disabled for layout)
-- Text
-	- Tooltips
-	- Make listening elements (analog to notifier template) using pointer, function or method getter to get values like floats or strings for displaying
+
+Reminders:
+- Parser responsible for value ranges!
+- XML may not contain information about current state (activity, hiding etc!!!)
+- namespaces easier because Layout and GUI is visible to outer space
+- Input: can be NULL if irrelevant for Element
 
 If bored:
 - Some members of element could be private but getters necessary..
