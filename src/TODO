@@ -14,6 +14,8 @@
   - Tell user somehow about input usage. Return input struct after rendering? Devide update and draw again?
 - Function to define search folder or so
 - Use automatically smaller fonts in textflow if not enough space
+- Getter for pixel values of position and size of element (better use struct as return value)
+- Getter position / size for floating frames
 
 ### VERSION 0.5 (January/February 2016)
 - TextInput
