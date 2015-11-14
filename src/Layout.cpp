@@ -1158,6 +1158,28 @@ namespace eyegui
 		}
 	}
 
+	RelativePositionAndSize Layout::getRelativePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const
+	{
+		RelativePositionAndSize result;
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+		if (pFrame != NULL)
+		{
+			// TODO
+		}
+		return result;
+	}
+
+	AbsolutePositionAndSize Layout::getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const
+	{
+		AbsolutePositionAndSize result;
+		Frame* pFrame = fetchFloatingFrame(frameIndex);
+		if (pFrame != NULL)
+		{
+			// TODO
+		}
+		return result;
+	}
+
 	Element* Layout::fetchElement(std::string id) const
 	{
 		auto it = mupIds->find(id);
@@ -1287,7 +1309,7 @@ namespace eyegui
 		}
 	}
 
-	Frame* Layout::fetchFloatingFrame(uint frameIndex)
+	Frame* Layout::fetchFloatingFrame(uint frameIndex) const
 	{
 		Frame* pFrame = NULL;
 		if (frameIndex < mFloatingFrames.size())

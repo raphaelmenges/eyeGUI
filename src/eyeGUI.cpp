@@ -383,6 +383,20 @@ namespace eyegui
         pLayout->moveFloatingFrameToBack(frameIndex);
     }
 
+	RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
+		Layout* pLayout,
+		unsigned int frameIndex)
+	{
+		return pLayout->getRelativePositionAndSizeOfFloatingFrame(frameIndex);
+	}
+
+	AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
+		Layout* pLayout,
+		unsigned int frameIndex)
+	{
+		return pLayout->getAbsolutePositionAndSizeOfFloatingFrame(frameIndex);
+	}
+
     void setErrorCallback(void(*pCallbackFunction)(std::string))
     {
         OperationNotifier::setErrorCallback(pCallbackFunction);

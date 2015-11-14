@@ -279,7 +279,6 @@ namespace eyegui
 		mDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
 	}
 
-
 	int Element::getX() const
 	{
 		return mX;

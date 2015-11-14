@@ -236,6 +236,12 @@ namespace eyegui
 		// Move floating frame to back
 		void moveFloatingFrameToBack(uint frameIndex);
 
+		// Get relative position and size of floating frame
+		RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
+
+		// Get absolute position and size of floating frame
+		AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
+
 	private:
 
 		// Fetch pointer to element by id
@@ -251,7 +257,7 @@ namespace eyegui
 		void insertIds(std::unique_ptr<idMap> upIdMap);
 
 		// Fetch pointer to frame
-		Frame* fetchFloatingFrame(uint frameIndex);
+		Frame* fetchFloatingFrame(uint frameIndex) const;
 
 		// Move floating frame by id
 		void moveFloatingFrame(int oldIndex, int newIndex);

@@ -244,7 +244,7 @@ namespace eyegui
 		Layout* pLayout,
 		std::string id);
 
-	//! Getter for absolute pixel position and size of element. Values are in space of GUI.
+	//! Getter for absolute pixel position and size of element. Values are in pixel space of GUI.
 	/*!
 	\param pLayout pointer to layout.
 	\param id is the unique id of an element.
@@ -749,6 +749,26 @@ namespace eyegui
     \param frameIndex index of frame in layout.
     */
     void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
+
+	//! Getter for relative position and size of floating frame. Values are relative in respect to layout.
+	/*!
+	\param pLayout pointer to layout.
+	\param frameIndex index of frame in layout.
+	\return relative position and size of floating frame. Filled with initial values if not found.
+	*/
+	RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
+		Layout* pLayout,
+		unsigned int frameIndex);
+
+	//! Getter for absolute pixel position and size of floating frame. Values are in pixel space of GUI.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return absolute position and size of floating frame. Filled with initial values if not found.
+	*/
+	AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
+		Layout* pLayout,
+		unsigned int frameIndex);
 
     //! Set error callback function.
     /*!
