@@ -246,6 +246,42 @@ namespace eyegui
 		mUseInput = useInput;
 	}
 
+	RelativePositionAndSize Layout::getRelativePositionAndSizeOfElement(std::string id) const
+	{
+		RelativePositionAndSize result;
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			result.x = pElement->getRelativeSizeOnLayoutX();
+			result.y = pElement->getRelativeSizeOnLayoutY();
+			result.width = pElement->getRelativeSizeOnLayoutX();
+			result.height = pElement->getRelativeSizeOnLayoutY();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+		}
+		return result;
+	}
+
+	AbsolutePositionAndSize Layout::getAbsolutePositionAndSizeOfElement(std::string id) const
+	{
+		AbsolutePositionAndSize result;
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			result.x = pElement->getX();
+			result.y = pElement->getY();
+			result.width = pElement->getWidth();
+			result.height = pElement->getHeight();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+		}
+		return result;
+	}
+
 	void Layout::setElementActivity(std::string id, bool active, bool fade)
 	{
 		Element* pElement = fetchElement(id);
@@ -304,58 +340,6 @@ namespace eyegui
 			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
 		}
 		return false;
-	}
-
-	float Layout::getRelativePositionOfElementOnLayoutX(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativePositionOnLayoutX();
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	float Layout::getRelativePositionOfElementOnLayoutY(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativePositionOnLayoutY();
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	float Layout::getRelativeSizeOfElementOnLayoutX(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativeSizeOnLayoutX();
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	float Layout::getRelativeSizeOfElementOnLayoutY(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->getRelativeSizeOnLayoutY();
-		}
-		else
-		{
-			return 0;
-		}
 	}
 
 	void Layout::highlightInteractiveElement(std::string id, bool doHighlight)

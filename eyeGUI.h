@@ -92,7 +92,6 @@ namespace eyegui
           \param id is the unique id of the button which causes the callback.
         */
         void virtual up(Layout* pLayout, std::string id) = 0;
-
     };
 
     //! Abstract listener class for sensors.
@@ -113,8 +112,25 @@ namespace eyegui
           \param amount is the value of penetration at time of callback.
         */
         void virtual penetrated(Layout* pLayout, std::string id, float amount) = 0;
-
     };
+
+	//! Struct for relative values of position and size
+	struct RelativePositionAndSize
+	{
+		float x = 0;
+		float y = 0;
+		float width = 0;
+		float height = 0;
+	};
+
+	//! Struct for absolute pixel values of position and size
+	struct AbsolutePositionAndSize
+	{
+		int x = 0;
+		int y = 0;
+		int width = 0;
+		int height = 0;
+	};
 
     //! Creates GUI and returns pointer to it.
     /*!
@@ -218,6 +234,26 @@ namespace eyegui
     */
     void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
 
+	//! Getter for relative position and size of element. Values are relative in respect to layout.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return relative position and size of element. Filled with initial values if element not found.
+	*/
+	RelativePositionAndSize getRelativePositionAndSizeOfElement(
+		Layout* pLayout,
+		std::string id);
+
+	//! Getter for absolute pixel position and size of element. Values are in space of GUI.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return absolute position and size of element. Filled with initial values if element not found.
+	*/
+	AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
+		Layout* pLayout,
+		std::string id);
+
     //! Activity of element.
     /*!
       \param pLayout pointer to layout.
@@ -268,46 +304,6 @@ namespace eyegui
     \return true if element with given id is dimmable and false else
     */
     bool isElementDimmable(Layout const * pLayout, std::string id);
-
-    //! Get relative x position of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative x position on layout.
-    */
-    float getRelativePositionOfElementOnLayoutX(
-        Layout const * pLayout,
-        std::string id);
-
-    //! Get relative y position of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative y position on layout.
-    */
-    float getRelativePositionOfElementOnLayoutY(
-        Layout const * pLayout,
-        std::string id);
-
-    //! Get relative size in x direction of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative size in x direction on layout.
-    */
-    float getRelativeSizeOfElementOnLayoutX(
-        Layout const * pLayout,
-        std::string id);
-
-    //! Get relative size in y direction of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative size in y direction on layout.
-    */
-    float getRelativeSizeOfElementOnLayoutY(
-        Layout const * pLayout,
-        std::string id);
 
     //! Check for existence of id.
     /*!

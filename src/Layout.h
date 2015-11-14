@@ -88,6 +88,12 @@ namespace eyegui
 		// One may want not to use input for this layout
 		void useInput(bool useInput);
 
+		// Get relative position and size of element
+		RelativePositionAndSize getRelativePositionAndSizeOfElement(std::string id) const;
+
+		// Get absolute pixel position and size of element
+		AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(std::string id) const;
+
 		// Set element activity
 		void setElementActivity(std::string id, bool active, bool fade);
 
@@ -99,12 +105,6 @@ namespace eyegui
 
 		// Check whether element is dimmable
 		bool isElementDimmable(std::string id) const;
-
-		// Relative position and size of elements
-		float getRelativePositionOfElementOnLayoutX(std::string id) const;
-		float getRelativePositionOfElementOnLayoutY(std::string id) const;
-		float getRelativeSizeOfElementOnLayoutX(std::string id) const;
-		float getRelativeSizeOfElementOnLayoutY(std::string id) const;
 
 		// Set interactive element as highlighted
 		void highlightInteractiveElement(std::string id, bool doHighlight);

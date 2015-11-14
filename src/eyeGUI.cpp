@@ -94,6 +94,20 @@ namespace eyegui
         pGUI->moveLayoutToBack(pLayout);
     }
 
+	RelativePositionAndSize getRelativePositionAndSizeOfElement(
+		Layout* pLayout,
+		std::string id)
+	{
+		return pLayout->getRelativePositionAndSizeOfElement(id);
+	}
+
+	AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
+		Layout* pLayout,
+		std::string id)
+	{
+		return pLayout->getAbsolutePositionAndSizeOfElement(id);
+	}
+
     void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade)
     {
         pLayout->setElementActivity(id, active, fade);
@@ -120,26 +134,6 @@ namespace eyegui
     bool isElementDimmable(Layout const * pLayout, std::string id)
     {
         return pLayout->isElementDimmable(id);
-    }
-
-    float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativePositionOfElementOnLayoutX(id);
-    }
-
-    float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativePositionOfElementOnLayoutY(id);
-    }
-
-    float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativeSizeOfElementOnLayoutX(id);
-    }
-
-    float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativeSizeOfElementOnLayoutY(id);
     }
 
     bool checkForId(Layout const * pLayout, std::string id)
