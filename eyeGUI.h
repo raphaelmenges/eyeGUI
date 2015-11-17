@@ -221,6 +221,17 @@ namespace eyegui
     */
     void prefetchImage(GUI* pGUI, std::string filepath);
 
+    //! Sets value of config attribute.
+    /*!
+    \param pLayout pointer to layout.
+    \param attribute is name of attribute which shall be changed.
+    \param value is new value of attribute.
+    */
+    void setValueOfConfigAttribute(
+        GUI* pGUI,
+        std::string attribute,
+        std::string value);
+
     //! Control layout's input usage.
     /*!
       \param pLayout pointer to layout.
@@ -378,17 +389,6 @@ namespace eyegui
         float g,
         float b,
         float a);
-
-    //! Sets value of config attribute.
-    /*!
-    \param pLayout pointer to layout.
-    \param attribute is name of attribute which shall be changed.
-    \param value if new value of attribute.
-    */
-    void setValueOfConfigAttribute(
-        GUI* pGUI,
-        std::string attribute,
-        float value);
 
     //! Set icon of interactive element.
     /*!

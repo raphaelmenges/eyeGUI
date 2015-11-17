@@ -1,11 +1,5 @@
 ### VERSION 0.4 (December 2015)
-- Update wiki (important: getting started example)
-- Function to define search folder or so
 - Use automatically smaller fonts in textflow if not enough space
-- Visualize gaze input
- - Turn on and off via interface
- - Config stuff
- 	- add to wiki
 - Bug: Replace has to trigger resize in Frame
 
 ### VERSION 0.5 (January/February 2016)
@@ -33,6 +27,7 @@
 - Font has sometimes little rendering issues
 - Adaptive scaling is not that smooth
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
+- Function to define search folder or so
 
 Notes:
 - Reminder: Getter for transform and size do only work after first update

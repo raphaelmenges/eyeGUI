@@ -205,6 +205,11 @@ namespace eyegui
         mupAssetManager->fetchTexture(filepath);
     }
 
+    void GUI::setValueOfConfigAttribute(std::string attribute, std::string value)
+    {
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
+    }
+
     int GUI::getWindowWidth() const
     {
         return mWidth;
@@ -247,11 +252,6 @@ namespace eyegui
         {
             return LOCALIZATION_NOT_FOUND;
         }
-    }
-
-    void GUI::setValueOfConfigAttribute(std::string attribute, float value)
-    {
-        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
     }
 
     int GUI::findLayout(Layout const * pLayout) const
@@ -357,7 +357,7 @@ namespace eyegui
         mpGUI->mLayouts.push_back(std::move(mupLayout));
     }
 
-    GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, float value) : GUIJob(pGUI)
+    GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, std::string value) : GUIJob(pGUI)
     {
         mAttribute = attribute;
         mValue = value;

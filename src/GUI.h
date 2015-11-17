@@ -75,6 +75,9 @@ namespace eyegui
         // Prefatch image to avoid lag
         void prefetchImage(std::string filepath);
 
+        // Set value of config attribute
+        void setValueOfConfigAttribute(std::string attribute, std::string value);
+
         // *** Methods accessed by other classes ***
 
         // Getter for window size
@@ -95,9 +98,6 @@ namespace eyegui
 
         // Get string content from localization
         std::u16string getContentFromLocalization(std::string key) const;
-
-        // Set value of config attribute
-        void setValueOfConfigAttribute(std::string attribute, float value);
 
     private:
 
@@ -161,13 +161,13 @@ namespace eyegui
         {
         public:
 
-            SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, float value);
+            SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, std::string value);
             virtual void execute();
 
         protected:
 
             std::string mAttribute;
-            float mValue;
+            std::string mValue;
         };
 
         // #####################################################################

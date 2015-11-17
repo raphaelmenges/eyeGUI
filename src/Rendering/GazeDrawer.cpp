@@ -33,8 +33,8 @@ namespace eyegui
         float GUIHeight = (float)(mpGUI->getWindowHeight());
 
         // Maximal and minimal size of points
-        float minGazePointRelativeSize = 0.02f; // TODO: config
-        float maxGazePointRelativeSize = 0.075f; // TODO: config
+        float minGazePointRelativeSize = mpGUI->getConfig()->gazeVisualizationMinSize;
+        float maxGazePointRelativeSize = mpGUI->getConfig()->gazeVisualizationMaxSize;
 
         if (GUIWidth > GUIHeight)
         {
@@ -59,7 +59,7 @@ namespace eyegui
         else if(glm::distance(gazePoint.point, mPoints.back().originalPoint) > calculateDiameterOfGazePoint(mPoints.back()) / 2.0f)
         {
             // Add new gaze point to points when distance is bigger than old point's radius
-            if(mPoints.back().focus.getValue() < 0.25f) // TODO: maybe something for the config?
+            if(mPoints.back().focus.getValue() < mpGUI->getConfig()->gazeVisualizationRejectThreshold)
             {
                 // Last gaze point was not really a focus, forget it
                 mPoints.back() = gazePoint;
@@ -73,7 +73,7 @@ namespace eyegui
         else
         {
             // Increase focus of last point
-            mPoints.back().focus.update(tpf); // TODO: speed in config
+            mPoints.back().focus.update(tpf / mpGUI->getConfig()->gazeVisualizationFocusDuration);
 
             // Move towards new position along distance vector
             mPoints.back().point +=  tpf * (gazePoint.point - mPoints.back().point);
@@ -83,7 +83,7 @@ namespace eyegui
         int pointsToRemoveIndex = -1;
         for (int i = 0; i < mPoints.size() - 1; i++)
         {
-            mPoints[i].alpha.update(-tpf * 0.25f); // TODO: config...
+            mPoints[i].alpha.update(-tpf / mpGUI->getConfig()->gazeVisualizationFadeDuration);
 
             // Remember which points to remove
             if (mPoints[i].alpha.getValue() <= 0)
@@ -144,7 +144,7 @@ namespace eyegui
             matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f) * matrix;
 
             mpLine->getShader()->fillValue("matrix", matrix);
-            mpLine->getShader()->fillValue("color", glm::vec4(1,0,0,0.5f)); // TODO: config
+            mpLine->getShader()->fillValue("color", mpGUI->getConfig()->gazeVisualizationColor);
             mpLine->getShader()->fillValue("alpha", mPoints[i].alpha.getValue());
             mpLine->draw(GL_LINES);
         }
@@ -178,7 +178,7 @@ namespace eyegui
 
             // Set values
             mpCircle->getShader()->fillValue("matrix", matrix);
-            mpCircle->getShader()->fillValue("color", glm::vec4(1,0,0,0.5f)); // TODO: config
+            mpCircle->getShader()->fillValue("color", mpGUI->getConfig()->gazeVisualizationColor);
             mpCircle->getShader()->fillValue("alpha", rGazePoint.alpha.getValue());
 
             // Draw

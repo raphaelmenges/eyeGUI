@@ -79,6 +79,14 @@ namespace eyegui
         pGUI->prefetchImage(filepath);
     }
 
+    void setValueOfConfigAttribute(
+        GUI* pGUI,
+        std::string attribute,
+        std::string value)
+    {
+        pGUI->setValueOfConfigAttribute(attribute, value);
+    }
+
     void setInputUsageOfLayout(Layout* pLayout, bool useInput)
     {
         pLayout->useInput(useInput);
@@ -176,14 +184,6 @@ namespace eyegui
         float a)
     {
         pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r, g, b, a));
-    }
-
-    void setValueOfConfigAttribute(
-        GUI* pGUI,
-        std::string attribute,
-        float value)
-    {
-        pGUI->setValueOfConfigAttribute(attribute, value);
     }
 
     void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
