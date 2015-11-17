@@ -229,7 +229,7 @@ namespace eyegui
 		bool mAdaptiveScaling;
 		LerpValue mAdaptiveScale; // [0..1]
 
-		// This vector is the owner of all possible children. May be empty!
+		// This vector is the owner of all children. May be empty!
 		std::vector<std::unique_ptr<Element> > mChildren;
 
 	private:
