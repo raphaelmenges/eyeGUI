@@ -19,7 +19,7 @@ namespace eyegui
 		float relativePositionX,
 		float relativePositionY,
 		float relativeSizeX,
-		float relativeSizeY)
+		float relativeSizeY) : Object()
 	{
 		// Initialize members
 		mpLayout = pLayout;
@@ -43,9 +43,48 @@ namespace eyegui
 		// Nothing to do
 	}
 
+	int Frame::getX() const
+	{
+		return mRelativePositionX * mpLayout->getLayoutWidth();
+	}
+	int Frame::getY() const
+	{
+		return mRelativePositionY * mpLayout->getLayoutHeight();
+	}
+
+	int Frame::getWidth() const
+	{
+		return mRelativeSizeX * mpLayout->getLayoutWidth();;
+	}
+
+	int Frame::getHeight() const
+	{
+		return mRelativeSizeY * mpLayout->getLayoutHeight();
+	}
+
+	float Frame::getRelativePositionOnLayoutX() const
+	{
+		return mRelativePositionX;
+	}
+
+	float Frame::getRelativePositionOnLayoutY() const
+	{
+		return mRelativePositionY;
+	}
+
+	float Frame::getRelativeSizeOnLayoutX() const
+	{
+		return mRelativeSizeX;
+	}
+
+	float Frame::getRelativeSizeOnLayoutY() const
+	{
+		return mRelativeSizeY;
+	}
+
 	void Frame::update(float tpf, float alpha, Input* pInput)
 	{
-		// *** OWN UPDATE ***
+		// *** UPDATE ***
 
 		// If visible now and resize is necessary, resize!
 		if (mVisible && mResizeNecessary)

@@ -61,6 +61,7 @@ namespace eyegui
 		}
 
 		// *** NOTIFICATIONS ***
+
 		mupNotificationQueue->process();
 
 		// *** OWN UPDATE ***
@@ -252,8 +253,8 @@ namespace eyegui
 		Element* pElement = fetchElement(id);
 		if (pElement != NULL)
 		{
-			result.x = pElement->getRelativeSizeOnLayoutX();
-			result.y = pElement->getRelativeSizeOnLayoutY();
+			result.x = pElement->getRelativePositionOnLayoutX();
+			result.y = pElement->getRelativePositionOnLayoutY();
 			result.width = pElement->getRelativeSizeOnLayoutX();
 			result.height = pElement->getRelativeSizeOnLayoutY();
 		}
@@ -1164,7 +1165,10 @@ namespace eyegui
 		Frame* pFrame = fetchFloatingFrame(frameIndex);
 		if (pFrame != NULL)
 		{
-			// TODO
+			result.x = pFrame->getRelativePositionOnLayoutX();
+			result.y = pFrame->getRelativePositionOnLayoutY();
+			result.width = pFrame->getRelativeSizeOnLayoutX();
+			result.height = pFrame->getRelativeSizeOnLayoutY();
 		}
 		return result;
 	}
@@ -1175,7 +1179,10 @@ namespace eyegui
 		Frame* pFrame = fetchFloatingFrame(frameIndex);
 		if (pFrame != NULL)
 		{
-			// TODO
+			result.x = pFrame->getX();
+			result.y = pFrame->getY();
+			result.width = pFrame->getWidth();
+			result.height = pFrame->getHeight();
 		}
 		return result;
 	}

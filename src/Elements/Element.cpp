@@ -26,9 +26,10 @@ namespace eyegui
 		float relativeScale,
 		float border,
 		bool dimmable,
-		bool adaptiveScaling)
+		bool adaptiveScaling) : Object()
 	{
 		// Initialize members
+		mX, mY, mWidth, mHeight = 0;
 		mType = Type::ELEMENT;
 		mId = id;
 		mStyleName = styleName;
@@ -37,7 +38,6 @@ namespace eyegui
 		mpFrame = pFrame;
 		mpAssetManager = pAssetManager;
 		mpNotificationQueue = pNotificationQueue;
-		mX, mY, mWidth, mHeight = 0;
 		mRelativeScale = relativeScale;
 		mBorder = border;
 		mDimmable = dimmable;
@@ -57,6 +57,45 @@ namespace eyegui
 	Element::~Element()
 	{
 		// Nothing to do so far
+	}
+
+	int Element::getX() const
+	{
+		return mX;
+	}
+	int Element::getY() const
+	{
+		return mY;
+	}
+
+	int Element::getWidth() const
+	{
+		return mWidth;
+	}
+
+	int Element::getHeight() const
+	{
+		return mHeight;
+	}
+
+	float Element::getRelativePositionOnLayoutX() const
+	{
+		return (float)mX / mpLayout->getLayoutWidth();
+	}
+
+	float Element::getRelativePositionOnLayoutY() const
+	{
+		return (float)mY / mpLayout->getLayoutHeight();
+	}
+
+	float Element::getRelativeSizeOnLayoutX() const
+	{
+		return (float)mWidth / mpLayout->getLayoutWidth();
+	}
+
+	float Element::getRelativeSizeOnLayoutY() const
+	{
+		return (float)mHeight / mpLayout->getLayoutHeight();
 	}
 
 	Element::Type Element::getType() const
@@ -279,25 +318,6 @@ namespace eyegui
 		mDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
 	}
 
-	int Element::getX() const
-	{
-		return mX;
-	}
-	int Element::getY() const
-	{
-		return mY;
-	}
-
-	int Element::getWidth() const
-	{
-		return mWidth;
-	}
-
-	int Element::getHeight() const
-	{
-		return mHeight;
-	}
-
 	float Element::getDynamicScale() const
 	{
 		return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->maximalAdaptiveScaleIncrease);
@@ -311,26 +331,6 @@ namespace eyegui
 	bool Element::getAdaptiveScaling() const
 	{
 		return mAdaptiveScaling;
-	}
-
-	float Element::getRelativePositionOnLayoutX() const
-	{
-		return (float)mX / mpLayout->getLayoutWidth();
-	}
-
-	float Element::getRelativePositionOnLayoutY() const
-	{
-		return (float)mY / mpLayout->getLayoutHeight();
-	}
-
-	float Element::getRelativeSizeOnLayoutX() const
-	{
-		return (float)mWidth / mpLayout->getLayoutWidth();
-	}
-
-	float Element::getRelativeSizeOnLayoutY() const
-	{
-		return (float)mHeight / mpLayout->getLayoutHeight();
 	}
 
 	float Element::update(float tpf, float alpha, Input* pInput, float dimming)

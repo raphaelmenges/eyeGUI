@@ -12,6 +12,7 @@
 #define FRAME_H_
 
 #include "eyeGUI.h"
+#include "Object.h"
 #include "Elements/Elements.h"
 #include "LerpValue.h"
 
@@ -24,7 +25,7 @@ namespace eyegui
 	// Forward declaration
 	class Layout;
 
-	class Frame
+	class Frame : public Object
 	{
 	public:
 
@@ -38,6 +39,18 @@ namespace eyegui
 
 		// Destuctor
 		virtual ~Frame();
+
+		// Transformation and size in pixels
+		virtual int getX() const;
+		virtual int getY() const;
+		virtual int getWidth() const;
+		virtual int getHeight() const;
+
+		// Get relative screen position and size
+		virtual float getRelativePositionOnLayoutX() const;
+		virtual float getRelativePositionOnLayoutY() const;
+		virtual float getRelativeSizeOnLayoutX() const;
+		virtual float getRelativeSizeOnLayoutY() const;
 
 		// Updating
 		void update(float tpf, float alpha, Input* pInput);
