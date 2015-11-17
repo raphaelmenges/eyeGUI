@@ -15,7 +15,6 @@
 
 #include "eyeGUI.h"
 #include "Frame.h"
-#include "Input.h"
 #include "Style.h"
 #include "Config.h"
 #include "Parser/StylesheetParser.h"

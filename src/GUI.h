@@ -20,7 +20,6 @@
 #include "Parser/LocalizationParser.h"
 #include "Rendering/AssetManager.h"
 #include "Rendering/GLSetup.h"
-#include "Input.h"
 #include "Config.h"
 
 #include <memory>
@@ -51,11 +50,11 @@ namespace eyegui
 		// Resize whole gui
 		void resize(int width, int height);
 
-		// Render all layouts
-		void render(float tpf);
+		// Updating
+		Input update(float tpf, Input input);
 
-		// Set mouse cursor position
-		void setMouseCursor(int x, int y);
+		// Drawing
+		void draw();
 
 		// Move layout to front
 		void moveLayoutToFront(Layout* pLayout);
@@ -182,7 +181,6 @@ namespace eyegui
 		CharacterSet mCharacterSet;
 		std::unique_ptr<AssetManager> mupAssetManager;
 		GLSetup mGLSetup;
-		Input mInput;
 		float mAccPeriodicTime;
 		Config mConfig;
 		Font const * mpDefaultFont;

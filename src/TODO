@@ -1,17 +1,9 @@
 ### VERSION 0.4 (December 2015)
 - Input
-  - Eyetracking input
-  - Mouse input
   - Scenarios
     - Gaze selects button, interaction via key
     - Mouse increases threshold on button and selects it, interaction via key
-    - How can all of this abstracted?
-      - Pointing input maybe even completely abstracted? -> better just mouse and gaze (and head? and eyes?)
-  - Overlay
-	- When eyetracking input is lost? -> boolean indication that
-	- Gaze visualization
-  - Different callbacks or one big struct? -> different callbacks are better for programming
-  - Tell user somehow about input usage. Return input struct after rendering? Devide update and draw again?
+- Update wiki (important: getting started example)
 - Function to define search folder or so
 - Use automatically smaller fonts in textflow if not enough space
 
@@ -39,6 +31,7 @@
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Font has sometimes little rendering issues
 - Adaptive scaling is not that smooth
+- Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
 
 Notes:
 - Reminder: Getter for transform and size do only work after first update

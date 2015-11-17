@@ -31,10 +31,15 @@ namespace eyegui
         return pGUI->addLayout(filepath, visible);
     }
 
-    void renderGUI(GUI* pGUI, float tpf)
-    {
-        pGUI->render(tpf);
-    }
+	Input updateGUI(GUI* pGUI, float tpf, Input input)
+	{
+		return pGUI->update(tpf, input);
+	}
+
+	void drawGUI(GUI* pGUI)
+	{
+		pGUI->draw();
+	}
 
     void terminateGUI(GUI* pGUI)
     {
@@ -57,11 +62,6 @@ namespace eyegui
     void loadConfig(GUI* pGUI, std::string filepath)
     {
         pGUI->loadConfig(filepath);
-    }
-
-    void setMouseCursor(GUI* pGUI, int x, int y)
-    {
-        pGUI->setMouseCursor(x, y);
     }
 
     void prefetchImage(GUI* pGUI, std::string filepath)

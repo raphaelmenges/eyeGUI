@@ -347,7 +347,8 @@ namespace eyegui
 			pInput = NULL;
 		}
 
-		// Simple test whether mouse is over element (TODO: only mouse at the moment)
+		// Check wether cursor is over element
+		// Used for dimming etc, not affected by consumption of input
 		bool penetrated = penetratedByInput(pInput);
 
 		// Dimming
@@ -358,7 +359,6 @@ namespace eyegui
 		}
 		else if (mDimmable)
 		{
-			// TODO: do something more intelligent for input testing
 			if (penetrated)
 			{
 				// Undim it
@@ -573,13 +573,13 @@ namespace eyegui
 
 	bool Element::penetratedByInput(Input const * pInput) const
 	{
-		// Standard check, testing whether cursor is above button
-		if (pInput != NULL && !pInput->mouseUsed)
+		// Check whether gaze is upon element
+		if (pInput != NULL && !pInput->gazeUsed)
 		{
-			if (pInput->mouseCursorX >= mX
-				&& pInput->mouseCursorX <= mX + mWidth
-				&& pInput->mouseCursorY >= mY
-				&& pInput->mouseCursorY <= mY + mHeight)
+			if (pInput->gazeX >= mX
+				&& pInput->gazeX <= mX + mWidth
+				&& pInput->gazeY >= mY
+				&& pInput->gazeY <= mY + mHeight)
 			{
 				return true;
 			}

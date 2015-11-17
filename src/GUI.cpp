@@ -50,10 +50,6 @@ namespace eyegui
 				"No localization filepath set. Localization will not work");
 		}
 
-		// Input initialization
-		mInput.mouseCursorX = width / 2;
-		mInput.mouseCursorY = height / 2;
-
 		// Fetch render item for resize blending
 		mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
 	}
@@ -99,7 +95,7 @@ namespace eyegui
 		}
 	}
 
-	void GUI::render(float tpf)
+	Input GUI::update(float tpf, Input input)
 	{
 		// Execute all jobs
 		for (std::unique_ptr<GUIJob>& rupJob : mJobs)
@@ -129,15 +125,19 @@ namespace eyegui
 			mAccPeriodicTime -= ACCUMULATED_TIME_PERIOD;
 		}
 
-		// TODO: just testing with mouse input
-		mInput.mouseUsed = false;
-
 		// Update all layouts in reversed order
 		for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
 		{
-			mLayouts[i]->update(tpf, &mInput);
+			// Update and use input
+			mLayouts[i]->update(tpf, &input);
 		}
 
+		// Return copy of used input
+		return input;
+	}
+
+	void GUI::draw()
+	{
 		// Setup OpenGL (therefore is draw not const)
 		mGLSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
 
@@ -161,12 +161,6 @@ namespace eyegui
 
 		// Restore OpenGL state of application
 		mGLSetup.restore();
-	}
-
-	void GUI::setMouseCursor(int x, int y)
-	{
-		mInput.mouseCursorX = x;
-		mInput.mouseCursorY = y;
 	}
 
 	void GUI::moveLayoutToFront(Layout* pLayout)

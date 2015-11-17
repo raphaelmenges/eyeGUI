@@ -132,6 +132,14 @@ namespace eyegui
 		int height = 0;
 	};
 
+	//! Struct for input
+	struct Input
+	{
+		int gazeX = 0;
+		int gazeY = 0;
+		bool gazeUsed = false;
+	};
+
     //! Creates GUI and returns pointer to it.
     /*!
       \param width of GUI as integer.
@@ -157,12 +165,20 @@ namespace eyegui
     */
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible = true);
 
-    //! Render whole GUI.
+    //! Update whole GUI.
     /*!
       \param pGUI pointer to GUI.
       \param tpf passed time since last rendering in seconds as float.
+	  \param input struct.
+	  \return input struct with information about usage.
     */
-    void renderGUI(GUI* pGUI, float tpf);
+    Input updateGUI(GUI* pGUI, float tpf, Input input);
+
+	//! Draw whole GUI.
+	/*!
+	\param pGUI pointer to GUI.
+	*/
+	void drawGUI(GUI* pGUI);
 
     //! Terminate GUI.
     /*!
@@ -184,14 +200,6 @@ namespace eyegui
       \param filepath is path to config file.
     */
     void loadConfig(GUI* pGUI, std::string filepath);
-
-    //! Set mouse cursor.
-    /*!
-      \param pGUI pointer to GUI.
-      \param x is horizontal coordinate of mouse cursor.
-      \param y is vertical coordinate of mouse cursor.
-    */
-    void setMouseCursor(GUI* pGUI, int x, int y);
 
     //! Prefetch image to avoid lags.
     /*!

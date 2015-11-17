@@ -133,13 +133,12 @@ namespace eyegui
         // Super call
         float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
-        // TODO: more abstract (not only mouse) -> Settings, to say on which input it should react?
-
+		// Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
         if (penetrated)
         {
-            // TODO: Just special testcase for mouse input
-            pInput->mouseUsed = true;
+			// Will be used by this button
+            pInput->gazeUsed = true;
         }
 
         // Pressing animation
