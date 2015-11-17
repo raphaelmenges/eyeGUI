@@ -114,31 +114,31 @@ namespace eyegui
         void virtual penetrated(Layout* pLayout, std::string id, float amount) = 0;
     };
 
-	//! Struct for relative values of position and size
-	struct RelativePositionAndSize
-	{
-		float x = 0;
-		float y = 0;
-		float width = 0;
-		float height = 0;
-	};
+    //! Struct for relative values of position and size
+    struct RelativePositionAndSize
+    {
+        float x = 0;
+        float y = 0;
+        float width = 0;
+        float height = 0;
+    };
 
-	//! Struct for absolute pixel values of position and size
-	struct AbsolutePositionAndSize
-	{
-		int x = 0;
-		int y = 0;
-		int width = 0;
-		int height = 0;
-	};
+    //! Struct for absolute pixel values of position and size
+    struct AbsolutePositionAndSize
+    {
+        int x = 0;
+        int y = 0;
+        int width = 0;
+        int height = 0;
+    };
 
-	//! Struct for input
-	struct Input
-	{
-		int gazeX = 0;
-		int gazeY = 0;
-		bool gazeUsed = false;
-	};
+    //! Struct for input
+    struct Input
+    {
+        int gazeX = 0;
+        int gazeY = 0;
+        bool gazeUsed = false;
+    };
 
     //! Creates GUI and returns pointer to it.
     /*!
@@ -169,16 +169,16 @@ namespace eyegui
     /*!
       \param pGUI pointer to GUI.
       \param tpf passed time since last rendering in seconds as float.
-	  \param input struct.
-	  \return input struct with information about usage.
+      \param input struct.
+      \return input struct with information about usage.
     */
     Input updateGUI(GUI* pGUI, float tpf, Input input);
 
-	//! Draw whole GUI.
-	/*!
-	\param pGUI pointer to GUI.
-	*/
-	void drawGUI(GUI* pGUI);
+    //! Draw whole GUI.
+    /*!
+    \param pGUI pointer to GUI.
+    */
+    void drawGUI(GUI* pGUI);
 
     //! Terminate GUI.
     /*!
@@ -200,6 +200,19 @@ namespace eyegui
       \param filepath is path to config file.
     */
     void loadConfig(GUI* pGUI, std::string filepath);
+
+    //! Set gaze visualization drawing.
+    /*!
+      \param pGUI pointer to GUI.
+      \param draw indicates whether gaze visualization should be drawn.
+    */
+    void setGazeVisualizationDrawing(GUI* pGUI, bool draw);
+
+    //! Toggle gaze visualization drawing.
+    /*!
+      \param pGUI pointer to GUI.
+    */
+    void toggleGazeVisualizationDrawing(GUI* pGUI);
 
     //! Prefetch image to avoid lags.
     /*!
@@ -242,25 +255,25 @@ namespace eyegui
     */
     void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
 
-	//! Getter for relative position and size of element. Values are relative in respect to layout.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return relative position and size of element. Filled with initial values if element not found.
-	*/
-	RelativePositionAndSize getRelativePositionAndSizeOfElement(
-		Layout* pLayout,
-		std::string id);
+    //! Getter for relative position and size of element. Values are relative in respect to layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative position and size of element. Filled with initial values if element not found.
+    */
+    RelativePositionAndSize getRelativePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id);
 
-	//! Getter for absolute pixel position and size of element. Values are in pixel space of GUI.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return absolute position and size of element. Filled with initial values if element not found.
-	*/
-	AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
-		Layout* pLayout,
-		std::string id);
+    //! Getter for absolute pixel position and size of element. Values are in pixel space of GUI.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return absolute position and size of element. Filled with initial values if element not found.
+    */
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id);
 
     //! Activity of element.
     /*!
@@ -758,25 +771,25 @@ namespace eyegui
     */
     void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
 
-	//! Getter for relative position and size of floating frame. Values are relative in respect to layout.
-	/*!
-	\param pLayout pointer to layout.
-	\param frameIndex index of frame in layout.
-	\return relative position and size of floating frame. Filled with initial values if not found.
-	*/
-	RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
-		Layout* pLayout,
-		unsigned int frameIndex);
+    //! Getter for relative position and size of floating frame. Values are relative in respect to layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \return relative position and size of floating frame. Filled with initial values if not found.
+    */
+    RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex);
 
-	//! Getter for absolute pixel position and size of floating frame. Values are in pixel space of GUI.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return absolute position and size of floating frame. Filled with initial values if not found.
-	*/
-	AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
-		Layout* pLayout,
-		unsigned int frameIndex);
+    //! Getter for absolute pixel position and size of floating frame. Values are in pixel space of GUI.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return absolute position and size of floating frame. Filled with initial values if not found.
+    */
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex);
 
     //! Set error callback function.
     /*!

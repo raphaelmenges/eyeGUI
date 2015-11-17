@@ -13,344 +13,358 @@
 
 namespace eyegui
 {
-	GUI::GUI(
-		int width,
-		int height,
-		std::string fontFilepath,
-		CharacterSet characterSet,
-		std::string localizationFilepath)
-	{
-		// Initialize members
-		mWidth = width;
-		mHeight = height;
-		mNewWidth = 0;
-		mNewHeight = 0;
-		mCharacterSet = characterSet;
-		mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
-		mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
-		mpDefaultFont = NULL;
-		mResizing = false;
-		mResizeWaitTime = 0;
-		mupGazeDrawer = std::unique_ptr<GazeDrawer>(new GazeDrawer(this, mupAssetManager.get()));
+    GUI::GUI(
+        int width,
+        int height,
+        std::string fontFilepath,
+        CharacterSet characterSet,
+        std::string localizationFilepath)
+    {
+        // Initialize members
+        mWidth = width;
+        mHeight = height;
+        mNewWidth = 0;
+        mNewHeight = 0;
+        mCharacterSet = characterSet;
+        mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
+        mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
+        mpDefaultFont = NULL;
+        mResizing = false;
+        mResizeWaitTime = 0;
+        mupGazeDrawer = std::unique_ptr<GazeDrawer>(new GazeDrawer(this, mupAssetManager.get()));
+        mDrawGazeVisualization = false;
 
-		// Initialize OpenGL
-		mGLSetup.init();
+        // Initialize OpenGL
+        mGLSetup.init();
 
-		// Initialize default font ("" handled by asset manager)
-		mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
+        // Initialize default font ("" handled by asset manager)
+        mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
 
-		// Load initial localization
-		if (localizationFilepath != EMPTY_STRING)
-		{
-			mupLocalizationMap = std::move(localization_parser::parse(localizationFilepath));
-		}
-		else
-		{
-			throwWarning(
-				OperationNotifier::Operation::RUNTIME,
-				"No localization filepath set. Localization will not work");
-		}
+        // Load initial localization
+        if (localizationFilepath != EMPTY_STRING)
+        {
+            mupLocalizationMap = std::move(localization_parser::parse(localizationFilepath));
+        }
+        else
+        {
+            throwWarning(
+                OperationNotifier::Operation::RUNTIME,
+                "No localization filepath set. Localization will not work");
+        }
 
-		// Fetch render item for resize blending
-		mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
-	}
+        // Fetch render item for resize blending
+        mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+    }
 
-	GUI::~GUI()
-	{
-		// Nothing to do so far
-	}
+    GUI::~GUI()
+    {
+        // Nothing to do so far
+    }
 
-	Layout* GUI::addLayout(std::string filepath, bool visible)
-	{
+    Layout* GUI::addLayout(std::string filepath, bool visible)
+    {
 
-		// Parse layout
-		std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), filepath);
+        // Parse layout
+        std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), filepath);
 
-		// Get raw pointer to return
-		Layout* pLayout = upLayout.get();
+        // Get raw pointer to return
+        Layout* pLayout = upLayout.get();
 
-		// Set visibility
-		pLayout->setVisibility(visible, false);
+        // Set visibility
+        pLayout->setVisibility(visible, false);
 
-		// Give unique pointer to job so it will be pushed back before next rendering but not during
-		mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new AddLayoutJob(this, std::move(upLayout)))));
+        // Give unique pointer to job so it will be pushed back before next rendering but not during
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new AddLayoutJob(this, std::move(upLayout)))));
 
-		return pLayout;
-	}
+        return pLayout;
+    }
 
-	void GUI::resize(int width, int height)
-	{
-		// Not necessary but saves one from resizing after minimizing
-		if (width > 0 && height > 0)
-		{
-			if (mWidth != width || mHeight != height)
-			{
-				// Initializes resizing, piped to layouts during updating
-				mResizing = true;
-				mResizeWaitTime = RESIZE_WAIT_DURATION;
+    void GUI::resize(int width, int height)
+    {
+        // Not necessary but saves one from resizing after minimizing
+        if (width > 0 && height > 0)
+        {
+            if (mWidth != width || mHeight != height)
+            {
+                // Initializes resizing, piped to layouts during updating
+                mResizing = true;
+                mResizeWaitTime = RESIZE_WAIT_DURATION;
 
-				// Save to members
-				mNewWidth = width;
-				mNewHeight = height;
-			}
-		}
-	}
+                // Save to members
+                mNewWidth = width;
+                mNewHeight = height;
+            }
+        }
+    }
 
-	Input GUI::update(float tpf, Input input)
-	{
-		// Execute all jobs
-		for (std::unique_ptr<GUIJob>& rupJob : mJobs)
-		{
-			rupJob->execute();
-		}
-		mJobs.clear();
+    Input GUI::update(float tpf, Input input)
+    {
+        // Execute all jobs
+        for (std::unique_ptr<GUIJob>& rupJob : mJobs)
+        {
+            rupJob->execute();
+        }
+        mJobs.clear();
 
-		// Resizing
-		if (mResizing)
-		{
-			mResizeWaitTime -= tpf;
+        // Resizing
+        if (mResizing)
+        {
+            mResizeWaitTime -= tpf;
 
-			// Resizing should take place?
-			if (mResizeWaitTime <= 0)
-			{
-				internalResizing();
-				mResizing = false;
-				mResizeWaitTime = 0;
-			}
-		}
+            // Resizing should take place?
+            if (mResizeWaitTime <= 0)
+            {
+                internalResizing();
+                mResizing = false;
+                mResizeWaitTime = 0;
+            }
+        }
 
-		// Handle time
-		mAccPeriodicTime += tpf;
-		if (mAccPeriodicTime > (ACCUMULATED_TIME_PERIOD / 2))
-		{
-			mAccPeriodicTime -= ACCUMULATED_TIME_PERIOD;
-		}
+        // Handle time
+        mAccPeriodicTime += tpf;
+        if (mAccPeriodicTime > (ACCUMULATED_TIME_PERIOD / 2))
+        {
+            mAccPeriodicTime -= ACCUMULATED_TIME_PERIOD;
+        }
 
-		// Update all layouts in reversed order
-		for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
-		{
-			// Update and use input
-			mLayouts[i]->update(tpf, &input);
-		}
+        // Update all layouts in reversed order
+        for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
+        {
+            // Update and use input
+            mLayouts[i]->update(tpf, &input);
+        }
 
-		// Update gaze drawer
-		mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
+        // Update gaze drawer
+        mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
 
-		// Return copy of used input
-		return input;
-	}
+        // Return copy of used input
+        return input;
+    }
 
-	void GUI::draw()
-	{
-		// Setup OpenGL (therefore is draw not const)
-		mGLSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
+    void GUI::draw()
+    {
+        // Setup OpenGL (therefore is draw not const)
+        mGLSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
 
-		// Draw all layouts
-		for (int i = 0; i < mLayouts.size(); i++)
-		{
-			mLayouts[i]->draw();
-		}
+        // Draw all layouts
+        for (int i = 0; i < mLayouts.size(); i++)
+        {
+            mLayouts[i]->draw();
+        }
 
-		// Render resize blend
-		if (mResizing)
-		{
-			glm::mat4 matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
-			mpResizeBlend->bind();
-			mpResizeBlend->getShader()->fillValue("matrix", matrix);
-			mpResizeBlend->getShader()->fillValue("color", RESIZE_BLEND_COLOR);
-			// mpResizeBlend->getShader()->fillValue("alpha", 1.0f - 0.5f * (mResizeWaitTime / RESIZE_WAIT_DURATION));
-			mpResizeBlend->getShader()->fillValue("alpha", 1.0f); // Without animation
-			mpResizeBlend->draw();
-		}
+        // Render resize blend
+        if (mResizing)
+        {
+            glm::mat4 matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+            mpResizeBlend->bind();
+            mpResizeBlend->getShader()->fillValue("matrix", matrix);
+            mpResizeBlend->getShader()->fillValue("color", RESIZE_BLEND_COLOR);
+            // mpResizeBlend->getShader()->fillValue("alpha", 1.0f - 0.5f * (mResizeWaitTime / RESIZE_WAIT_DURATION));
+            mpResizeBlend->getShader()->fillValue("alpha", 1.0f); // Without animation
+            mpResizeBlend->draw();
+        }
 
-		// Draw gaze input
-		mupGazeDrawer->draw();
+        // Draw gaze input
+        if(mDrawGazeVisualization)
+        {
+            mupGazeDrawer->draw();
+        }
 
-		// Restore OpenGL state of application
-		mGLSetup.restore();
-	}
+        // Restore OpenGL state of application
+        mGLSetup.restore();
+    }
 
-	void GUI::moveLayoutToFront(Layout* pLayout)
-	{
-		mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new MoveLayoutJob(this, pLayout, true))));
-	}
+    void GUI::moveLayoutToFront(Layout* pLayout)
+    {
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new MoveLayoutJob(this, pLayout, true))));
+    }
 
-	void GUI::moveLayoutToBack(Layout* pLayout)
-	{
-		mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new MoveLayoutJob(this, pLayout, false))));
-	}
+    void GUI::moveLayoutToBack(Layout* pLayout)
+    {
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new MoveLayoutJob(this, pLayout, false))));
+    }
 
-	void GUI::loadConfig(std::string filepath)
-	{
-		mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new LoadConfigJob(this, filepath))));
-	}
+    void GUI::loadConfig(std::string filepath)
+    {
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new LoadConfigJob(this, filepath))));
+    }
 
-	void GUI::prefetchImage(std::string filepath)
-	{
-		// Do it immediately
-		mupAssetManager->fetchTexture(filepath);
-	}
+    void GUI::setGazeVisualizationDrawing(bool draw)
+    {
+        mDrawGazeVisualization = draw;
+    }
 
-	int GUI::getWindowWidth() const
-	{
-		return mWidth;
-	}
+    void GUI::toggleGazeVisualizationDrawing()
+    {
+        mDrawGazeVisualization = !mDrawGazeVisualization;
+    }
 
-	int GUI::getWindowHeight() const
-	{
-		return mHeight;
-	}
+    void GUI::prefetchImage(std::string filepath)
+    {
+        // Do it immediately
+        mupAssetManager->fetchTexture(filepath);
+    }
 
-	float GUI::getAccPeriodicTime() const
-	{
-		return mAccPeriodicTime;
-	}
+    int GUI::getWindowWidth() const
+    {
+        return mWidth;
+    }
 
-	Config const * GUI::getConfig() const
-	{
-		return &mConfig;
-	}
+    int GUI::getWindowHeight() const
+    {
+        return mHeight;
+    }
 
-	CharacterSet GUI::getCharacterSet() const
-	{
-		return mCharacterSet;
-	}
+    float GUI::getAccPeriodicTime() const
+    {
+        return mAccPeriodicTime;
+    }
 
-	Font const * GUI::getDefaultFont() const
-	{
-		return mpDefaultFont;
-	}
+    Config const * GUI::getConfig() const
+    {
+        return &mConfig;
+    }
 
-	std::u16string GUI::getContentFromLocalization(std::string key) const
-	{
-		auto it = mupLocalizationMap->find(key);
+    CharacterSet GUI::getCharacterSet() const
+    {
+        return mCharacterSet;
+    }
 
-		if (it != mupLocalizationMap->end())
-		{
-			return it->second;
-		}
-		else
-		{
-			return LOCALIZATION_NOT_FOUND;
-		}
-	}
+    Font const * GUI::getDefaultFont() const
+    {
+        return mpDefaultFont;
+    }
 
-	void GUI::setValueOfConfigAttribute(std::string attribute, float value)
-	{
-		mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
-	}
+    std::u16string GUI::getContentFromLocalization(std::string key) const
+    {
+        auto it = mupLocalizationMap->find(key);
 
-	int GUI::findLayout(Layout const * pLayout) const
-	{
-		// Try to find index of layout in vector
-		int index = -1;
-		for (int i = 0; i < mLayouts.size(); i++)
-		{
-			if (mLayouts[i].get() == pLayout)
-			{
-				index = i;
-				break;
-			}
-		}
+        if (it != mupLocalizationMap->end())
+        {
+            return it->second;
+        }
+        else
+        {
+            return LOCALIZATION_NOT_FOUND;
+        }
+    }
 
-		return index;
-	}
+    void GUI::setValueOfConfigAttribute(std::string attribute, float value)
+    {
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
+    }
 
-	void GUI::moveLayout(int oldIndex, int newIndex)
-	{
-		std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
-		mLayouts.erase(mLayouts.begin() + oldIndex);
+    int GUI::findLayout(Layout const * pLayout) const
+    {
+        // Try to find index of layout in vector
+        int index = -1;
+        for (int i = 0; i < mLayouts.size(); i++)
+        {
+            if (mLayouts[i].get() == pLayout)
+            {
+                index = i;
+                break;
+            }
+        }
 
-		if (newIndex >= mLayouts.size())
-		{
-			mLayouts.push_back(std::move(upLayout));
-		}
-		else
-		{
-			mLayouts.insert(mLayouts.begin() + newIndex, std::move(upLayout));
-		}
-	}
+        return index;
+    }
 
-	void GUI::internalResizing()
-	{
-		// Set new width and height
-		mWidth = mNewWidth;
-		mHeight = mNewHeight;
+    void GUI::moveLayout(int oldIndex, int newIndex)
+    {
+        std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
+        mLayouts.erase(mLayouts.begin() + oldIndex);
 
-		// Resize font atlases first
-		mupAssetManager->resizeFontAtlases();
+        if (newIndex >= mLayouts.size())
+        {
+            mLayouts.push_back(std::move(upLayout));
+        }
+        else
+        {
+            mLayouts.insert(mLayouts.begin() + newIndex, std::move(upLayout));
+        }
+    }
 
-		// Then, resize all layouts
-		for (std::unique_ptr<Layout>& upLayout : mLayouts)
-		{
-			// Layout fetches size via const pointer to this
-			upLayout->makeResizeNecessary();
-		}
-	}
+    void GUI::internalResizing()
+    {
+        // Set new width and height
+        mWidth = mNewWidth;
+        mHeight = mNewHeight;
 
-	GUI::GUIJob::GUIJob(GUI* pGUI)
-	{
-		mpGUI = pGUI;
-	}
+        // Resize font atlases first
+        mupAssetManager->resizeFontAtlases();
 
-	GUI::MoveLayoutJob::MoveLayoutJob(GUI* pGUI, Layout* pLayout, bool toFront) : GUIJob(pGUI)
-	{
-		mpLayout = pLayout;
-		mToFront = toFront;
-	}
+        // Then, resize all layouts
+        for (std::unique_ptr<Layout>& upLayout : mLayouts)
+        {
+            // Layout fetches size via const pointer to this
+            upLayout->makeResizeNecessary();
+        }
+    }
 
-	void GUI::MoveLayoutJob::execute()
-	{
-		int index = mpGUI->findLayout(mpLayout);
+    GUI::GUIJob::GUIJob(GUI* pGUI)
+    {
+        mpGUI = pGUI;
+    }
 
-		// Continue only if found
-		if (index >= 0)
-		{
-			if (mToFront)
-			{
-				mpGUI->moveLayout(index, (int)(mpGUI->mLayouts.size()) - 1);
-			}
-			else
-			{
-				mpGUI->moveLayout(index, 0);
-			}
-		}
-		else
-		{
-			throwWarning(
-				OperationNotifier::Operation::RUNTIME,
-				"Tried to move layout which is not in GUI");
-		}
-	}
+    GUI::MoveLayoutJob::MoveLayoutJob(GUI* pGUI, Layout* pLayout, bool toFront) : GUIJob(pGUI)
+    {
+        mpLayout = pLayout;
+        mToFront = toFront;
+    }
 
-	GUI::LoadConfigJob::LoadConfigJob(GUI *pGUI, std::string filepath) : GUIJob(pGUI)
-	{
-		mFilepath = filepath;
-	}
+    void GUI::MoveLayoutJob::execute()
+    {
+        int index = mpGUI->findLayout(mpLayout);
 
-	void GUI::LoadConfigJob::execute()
-	{
-		mpGUI->mConfig = config_parser::parse(mFilepath);
-	}
+        // Continue only if found
+        if (index >= 0)
+        {
+            if (mToFront)
+            {
+                mpGUI->moveLayout(index, (int)(mpGUI->mLayouts.size()) - 1);
+            }
+            else
+            {
+                mpGUI->moveLayout(index, 0);
+            }
+        }
+        else
+        {
+            throwWarning(
+                OperationNotifier::Operation::RUNTIME,
+                "Tried to move layout which is not in GUI");
+        }
+    }
 
-	GUI::AddLayoutJob::AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout) : GUIJob(pGUI)
-	{
-		mupLayout = std::move(upLayout);
-	}
+    GUI::LoadConfigJob::LoadConfigJob(GUI *pGUI, std::string filepath) : GUIJob(pGUI)
+    {
+        mFilepath = filepath;
+    }
 
-	void GUI::AddLayoutJob::execute()
-	{
-		mpGUI->mLayouts.push_back(std::move(mupLayout));
-	}
+    void GUI::LoadConfigJob::execute()
+    {
+        mpGUI->mConfig = config_parser::parse(mFilepath);
+    }
 
-	GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, float value) : GUIJob(pGUI)
-	{
-		mAttribute = attribute;
-		mValue = value;
-	}
+    GUI::AddLayoutJob::AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout) : GUIJob(pGUI)
+    {
+        mupLayout = std::move(upLayout);
+    }
 
-	void GUI::SetValueOfConfigAttributeJob::execute()
-	{
-		config_parser::fillValue(mpGUI->mConfig, mAttribute, mValue, mpGUI->mConfig.filepath);
-	}
+    void GUI::AddLayoutJob::execute()
+    {
+        mpGUI->mLayouts.push_back(std::move(mupLayout));
+    }
+
+    GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, float value) : GUIJob(pGUI)
+    {
+        mAttribute = attribute;
+        mValue = value;
+    }
+
+    void GUI::SetValueOfConfigAttributeJob::execute()
+    {
+        config_parser::fillValue(mpGUI->mConfig, mAttribute, mValue, mpGUI->mConfig.filepath);
+    }
 }

@@ -31,15 +31,15 @@ namespace eyegui
         return pGUI->addLayout(filepath, visible);
     }
 
-	Input updateGUI(GUI* pGUI, float tpf, Input input)
-	{
-		return pGUI->update(tpf, input);
-	}
+    Input updateGUI(GUI* pGUI, float tpf, Input input)
+    {
+        return pGUI->update(tpf, input);
+    }
 
-	void drawGUI(GUI* pGUI)
-	{
-		pGUI->draw();
-	}
+    void drawGUI(GUI* pGUI)
+    {
+        pGUI->draw();
+    }
 
     void terminateGUI(GUI* pGUI)
     {
@@ -62,6 +62,16 @@ namespace eyegui
     void loadConfig(GUI* pGUI, std::string filepath)
     {
         pGUI->loadConfig(filepath);
+    }
+
+    void setGazeVisualizationDrawing(GUI* pGUI, bool draw)
+    {
+        pGUI->setGazeVisualizationDrawing(draw);
+    }
+
+    void toggleGazeVisualizationDrawing(GUI* pGUI)
+    {
+        pGUI->toggleGazeVisualizationDrawing();
     }
 
     void prefetchImage(GUI* pGUI, std::string filepath)
@@ -94,19 +104,19 @@ namespace eyegui
         pGUI->moveLayoutToBack(pLayout);
     }
 
-	RelativePositionAndSize getRelativePositionAndSizeOfElement(
-		Layout* pLayout,
-		std::string id)
-	{
-		return pLayout->getRelativePositionAndSizeOfElement(id);
-	}
+    RelativePositionAndSize getRelativePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id)
+    {
+        return pLayout->getRelativePositionAndSizeOfElement(id);
+    }
 
-	AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
-		Layout* pLayout,
-		std::string id)
-	{
-		return pLayout->getAbsolutePositionAndSizeOfElement(id);
-	}
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id)
+    {
+        return pLayout->getAbsolutePositionAndSizeOfElement(id);
+    }
 
     void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade)
     {
@@ -383,19 +393,19 @@ namespace eyegui
         pLayout->moveFloatingFrameToBack(frameIndex);
     }
 
-	RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
-		Layout* pLayout,
-		unsigned int frameIndex)
-	{
-		return pLayout->getRelativePositionAndSizeOfFloatingFrame(frameIndex);
-	}
+    RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex)
+    {
+        return pLayout->getRelativePositionAndSizeOfFloatingFrame(frameIndex);
+    }
 
-	AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
-		Layout* pLayout,
-		unsigned int frameIndex)
-	{
-		return pLayout->getAbsolutePositionAndSizeOfFloatingFrame(frameIndex);
-	}
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex)
+    {
+        return pLayout->getAbsolutePositionAndSizeOfFloatingFrame(frameIndex);
+    }
 
     void setErrorCallback(void(*pCallbackFunction)(std::string))
     {

@@ -4,6 +4,8 @@
 - Use automatically smaller fonts in textflow if not enough space
 - Visualize gaze input
  - Turn on and off via interface
+ - Config stuff
+ 	- add to wiki
 - Bug: Replace has to trigger resize in Frame
 
 ### VERSION 0.5 (January/February 2016)
