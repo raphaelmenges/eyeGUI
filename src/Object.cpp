@@ -3,6 +3,8 @@
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
+// Author: Raphael Menges (https://github.com/raphaelmenges)
+
 #include "Object.h"
 
 namespace eyegui

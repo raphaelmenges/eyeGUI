@@ -132,6 +132,9 @@ namespace eyegui
 			mLayouts[i]->update(tpf, &input);
 		}
 
+		// Update gaze drawer
+		mGazeDrawer.update(input.gazeX, input.gazeY, tpf);
+
 		// Return copy of used input
 		return input;
 	}
@@ -158,6 +161,9 @@ namespace eyegui
 			mpResizeBlend->getShader()->fillValue("alpha", 1.0f); // Without animation
 			mpResizeBlend->draw();
 		}
+
+		// Draw gaze input
+		mGazeDrawer.draw();
 
 		// Restore OpenGL state of application
 		mGLSetup.restore();

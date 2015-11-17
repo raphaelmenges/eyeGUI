@@ -21,6 +21,7 @@
 #include "Rendering/AssetManager.h"
 #include "Rendering/GLSetup.h"
 #include "Config.h"
+#include "Rendering/GazeDrawer.h"
 
 #include <memory>
 #include <vector>
@@ -189,6 +190,7 @@ namespace eyegui
 		RenderItem const * mpResizeBlend;
 		std::unique_ptr<localizationMap> mupLocalizationMap;
 		std::vector<std::unique_ptr<GUIJob> > mJobs;
+		GazeDrawer mGazeDrawer;
 	};
 }
 
