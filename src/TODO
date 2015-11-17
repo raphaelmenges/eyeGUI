@@ -1,6 +1,5 @@
 ### VERSION 0.4 (December 2015)
 - Use automatically smaller fonts in textflow if not enough space
-- Bug: Replace has to trigger resize in Frame
 
 ### VERSION 0.5 (January/February 2016)
 - TextInput
