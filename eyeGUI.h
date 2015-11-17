@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.3
+ *  \version   0.4
  *  \license   This project is released under the MIT License (MIT)
  */
 
@@ -92,7 +92,6 @@ namespace eyegui
           \param id is the unique id of the button which causes the callback.
         */
         void virtual up(Layout* pLayout, std::string id) = 0;
-
     };
 
     //! Abstract listener class for sensors.
@@ -113,7 +112,32 @@ namespace eyegui
           \param amount is the value of penetration at time of callback.
         */
         void virtual penetrated(Layout* pLayout, std::string id, float amount) = 0;
+    };
 
+    //! Struct for relative values of position and size
+    struct RelativePositionAndSize
+    {
+        float x = 0;
+        float y = 0;
+        float width = 0;
+        float height = 0;
+    };
+
+    //! Struct for absolute pixel values of position and size
+    struct AbsolutePositionAndSize
+    {
+        int x = 0;
+        int y = 0;
+        int width = 0;
+        int height = 0;
+    };
+
+    //! Struct for input
+    struct Input
+    {
+        int gazeX = 0;
+        int gazeY = 0;
+        bool gazeUsed = false;
     };
 
     //! Creates GUI and returns pointer to it.
@@ -141,12 +165,20 @@ namespace eyegui
     */
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible = true);
 
-    //! Render whole GUI.
+    //! Update whole GUI.
     /*!
       \param pGUI pointer to GUI.
       \param tpf passed time since last rendering in seconds as float.
+      \param input struct.
+      \return input struct with information about usage.
     */
-    void renderGUI(GUI* pGUI, float tpf);
+    Input updateGUI(GUI* pGUI, float tpf, Input input);
+
+    //! Draw whole GUI.
+    /*!
+    \param pGUI pointer to GUI.
+    */
+    void drawGUI(GUI* pGUI);
 
     //! Terminate GUI.
     /*!
@@ -169,13 +201,18 @@ namespace eyegui
     */
     void loadConfig(GUI* pGUI, std::string filepath);
 
-    //! Set mouse cursor.
+    //! Set gaze visualization drawing.
     /*!
       \param pGUI pointer to GUI.
-      \param x is horizontal coordinate of mouse cursor.
-      \param y is vertical coordinate of mouse cursor.
+      \param draw indicates whether gaze visualization should be drawn.
     */
-    void setMouseCursor(GUI* pGUI, int x, int y);
+    void setGazeVisualizationDrawing(GUI* pGUI, bool draw);
+
+    //! Toggle gaze visualization drawing.
+    /*!
+      \param pGUI pointer to GUI.
+    */
+    void toggleGazeVisualizationDrawing(GUI* pGUI);
 
     //! Prefetch image to avoid lags.
     /*!
@@ -183,6 +220,17 @@ namespace eyegui
       \param filepath is path to image which should be prefetched.
     */
     void prefetchImage(GUI* pGUI, std::string filepath);
+
+    //! Sets value of config attribute.
+    /*!
+    \param pLayout pointer to layout.
+    \param attribute is name of attribute which shall be changed.
+    \param value is new value of attribute.
+    */
+    void setValueOfConfigAttribute(
+        GUI* pGUI,
+        std::string attribute,
+        std::string value);
 
     //! Control layout's input usage.
     /*!
@@ -217,6 +265,26 @@ namespace eyegui
       \param pLayout pointer to layout.
     */
     void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
+
+    //! Getter for relative position and size of element. Values are relative in respect to layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return relative position and size of element. Filled with initial values if element not found.
+    */
+    RelativePositionAndSize getRelativePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id);
+
+    //! Getter for absolute pixel position and size of element. Values are in pixel space of GUI.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return absolute position and size of element. Filled with initial values if element not found.
+    */
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id);
 
     //! Activity of element.
     /*!
@@ -268,46 +336,6 @@ namespace eyegui
     \return true if element with given id is dimmable and false else
     */
     bool isElementDimmable(Layout const * pLayout, std::string id);
-
-    //! Get relative x position of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative x position on layout.
-    */
-    float getRelativePositionOfElementOnLayoutX(
-        Layout const * pLayout,
-        std::string id);
-
-    //! Get relative y position of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative y position on layout.
-    */
-    float getRelativePositionOfElementOnLayoutY(
-        Layout const * pLayout,
-        std::string id);
-
-    //! Get relative size in x direction of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative size in x direction on layout.
-    */
-    float getRelativeSizeOfElementOnLayoutX(
-        Layout const * pLayout,
-        std::string id);
-
-    //! Get relative size in y direction of element on its layout.
-    /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative size in y direction on layout.
-    */
-    float getRelativeSizeOfElementOnLayoutY(
-        Layout const * pLayout,
-        std::string id);
 
     //! Check for existence of id.
     /*!
@@ -361,17 +389,6 @@ namespace eyegui
         float g,
         float b,
         float a);
-
-    //! Sets value of config attribute.
-    /*!
-    \param pLayout pointer to layout.
-    \param attribute is name of attribute which shall be changed.
-    \param value if new value of attribute.
-    */
-    void setValueOfConfigAttribute(
-        GUI* pGUI,
-        std::string attribute,
-        float value);
 
     //! Set icon of interactive element.
     /*!
@@ -753,6 +770,26 @@ namespace eyegui
     \param frameIndex index of frame in layout.
     */
     void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
+
+    //! Getter for relative position and size of floating frame. Values are relative in respect to layout.
+    /*!
+    \param pLayout pointer to layout.
+    \param frameIndex index of frame in layout.
+    \return relative position and size of floating frame. Filled with initial values if not found.
+    */
+    RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex);
+
+    //! Getter for absolute pixel position and size of floating frame. Values are in pixel space of GUI.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return absolute position and size of floating frame. Filled with initial values if not found.
+    */
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex);
 
     //! Set error callback function.
     /*!

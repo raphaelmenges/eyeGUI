@@ -19,7 +19,7 @@ namespace eyegui
 		float relativePositionX,
 		float relativePositionY,
 		float relativeSizeX,
-		float relativeSizeY)
+		float relativeSizeY) : Object()
 	{
 		// Initialize members
 		mpLayout = pLayout;
@@ -43,15 +43,51 @@ namespace eyegui
 		// Nothing to do
 	}
 
+	int Frame::getX() const
+	{
+		return (int)(mRelativePositionX * mpLayout->getLayoutWidth());
+	}
+	int Frame::getY() const
+	{
+		return (int)(mRelativePositionY * mpLayout->getLayoutHeight());
+	}
+
+	int Frame::getWidth() const
+	{
+		return (int)(mRelativeSizeX * mpLayout->getLayoutWidth());
+	}
+
+	int Frame::getHeight() const
+	{
+		return (int)(mRelativeSizeY * mpLayout->getLayoutHeight());
+	}
+
+	float Frame::getRelativePositionOnLayoutX() const
+	{
+		return mRelativePositionX;
+	}
+
+	float Frame::getRelativePositionOnLayoutY() const
+	{
+		return mRelativePositionY;
+	}
+
+	float Frame::getRelativeSizeOnLayoutX() const
+	{
+		return mRelativeSizeX;
+	}
+
+	float Frame::getRelativeSizeOnLayoutY() const
+	{
+		return mRelativeSizeY;
+	}
+
 	void Frame::update(float tpf, float alpha, Input* pInput)
 	{
-		// *** OWN UPDATE ***
+		// *** UPDATE ***
 
-		// If visible now and resize is necessary, resize!
-		if (mVisible && mResizeNecessary)
-		{
-			resize(true);
-		}
+		// Resizing
+		resize();
 
 		// Update own alpha
 		mFrameAlpha.update(tpf / mpLayout->getConfig()->animationDuration, !mVisible);
@@ -108,9 +144,9 @@ namespace eyegui
 		}
 	}
 
-	void Frame::resize(bool force)
+	void Frame::resize()
 	{
-		if (mCombinedAlpha > 0 || force)
+		if (mResizeNecessary && mCombinedAlpha > 0)
 		{
 			// Fetch values from layout
 			int layoutWidth = mpLayout->getLayoutWidth();
@@ -132,10 +168,11 @@ namespace eyegui
 				usedHeight);
 			mResizeNecessary = false;
 		}
-		else
-		{
-			mResizeNecessary = true;
-		}
+	}
+
+	void Frame::makeResizeNecessary()
+	{
+		mResizeNecessary = true;
 	}
 
 	void Frame::attachRoot(std::unique_ptr<Element> upElement)

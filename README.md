@@ -7,6 +7,10 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 
 ## Features
 
+#### Version 0.4
+* Gaze visualization
+* Input improvement
+
 #### Version 0.3
 * Adaptive scaling
 * Id replacement at brick loading

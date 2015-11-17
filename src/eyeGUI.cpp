@@ -12,7 +12,7 @@
 #include "OperationNotifier.h"
 
 // Version
-static const std::string VERSION_STRING = "0.3";
+static const std::string VERSION_STRING = "0.4";
 
 namespace eyegui
 {
@@ -31,9 +31,14 @@ namespace eyegui
         return pGUI->addLayout(filepath, visible);
     }
 
-    void renderGUI(GUI* pGUI, float tpf)
+    Input updateGUI(GUI* pGUI, float tpf, Input input)
     {
-        pGUI->render(tpf);
+        return pGUI->update(tpf, input);
+    }
+
+    void drawGUI(GUI* pGUI)
+    {
+        pGUI->draw();
     }
 
     void terminateGUI(GUI* pGUI)
@@ -59,14 +64,27 @@ namespace eyegui
         pGUI->loadConfig(filepath);
     }
 
-    void setMouseCursor(GUI* pGUI, int x, int y)
+    void setGazeVisualizationDrawing(GUI* pGUI, bool draw)
     {
-        pGUI->setMouseCursor(x, y);
+        pGUI->setGazeVisualizationDrawing(draw);
+    }
+
+    void toggleGazeVisualizationDrawing(GUI* pGUI)
+    {
+        pGUI->toggleGazeVisualizationDrawing();
     }
 
     void prefetchImage(GUI* pGUI, std::string filepath)
     {
         pGUI->prefetchImage(filepath);
+    }
+
+    void setValueOfConfigAttribute(
+        GUI* pGUI,
+        std::string attribute,
+        std::string value)
+    {
+        pGUI->setValueOfConfigAttribute(attribute, value);
     }
 
     void setInputUsageOfLayout(Layout* pLayout, bool useInput)
@@ -92,6 +110,20 @@ namespace eyegui
     void moveLayoutToBack(GUI* pGUI, Layout* pLayout)
     {
         pGUI->moveLayoutToBack(pLayout);
+    }
+
+    RelativePositionAndSize getRelativePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id)
+    {
+        return pLayout->getRelativePositionAndSizeOfElement(id);
+    }
+
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
+        Layout* pLayout,
+        std::string id)
+    {
+        return pLayout->getAbsolutePositionAndSizeOfElement(id);
     }
 
     void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade)
@@ -120,26 +152,6 @@ namespace eyegui
     bool isElementDimmable(Layout const * pLayout, std::string id)
     {
         return pLayout->isElementDimmable(id);
-    }
-
-    float getRelativePositionOfElementOnLayoutX(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativePositionOfElementOnLayoutX(id);
-    }
-
-    float getRelativePositionOfElementOnLayoutY(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativePositionOfElementOnLayoutY(id);
-    }
-
-    float getRelativeSizeOfElementOnLayoutX(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativeSizeOfElementOnLayoutX(id);
-    }
-
-    float getRelativeSizeOfElementOnLayoutY(Layout const * pLayout, std::string id)
-    {
-        return pLayout->getRelativeSizeOfElementOnLayoutY(id);
     }
 
     bool checkForId(Layout const * pLayout, std::string id)
@@ -172,14 +184,6 @@ namespace eyegui
         float a)
     {
         pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r, g, b, a));
-    }
-
-    void setValueOfConfigAttribute(
-        GUI* pGUI,
-        std::string attribute,
-        float value)
-    {
-        pGUI->setValueOfConfigAttribute(attribute, value);
     }
 
     void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
@@ -387,6 +391,20 @@ namespace eyegui
     void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex)
     {
         pLayout->moveFloatingFrameToBack(frameIndex);
+    }
+
+    RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex)
+    {
+        return pLayout->getRelativePositionAndSizeOfFloatingFrame(frameIndex);
+    }
+
+    AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
+        Layout* pLayout,
+        unsigned int frameIndex)
+    {
+        return pLayout->getAbsolutePositionAndSizeOfFloatingFrame(frameIndex);
     }
 
     void setErrorCallback(void(*pCallbackFunction)(std::string))

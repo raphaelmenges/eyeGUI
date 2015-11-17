@@ -15,7 +15,6 @@
 
 #include "eyeGUI.h"
 #include "Frame.h"
-#include "Input.h"
 #include "Style.h"
 #include "Config.h"
 #include "Parser/StylesheetParser.h"
@@ -50,7 +49,10 @@ namespace eyegui
 		void draw() const;
 
 		// Resize function
-		void resize(bool force = false);
+		void resize();
+
+		// Make resize necessary
+		void makeResizeNecessary();
 
 		// Attach element to main frame as root
 		void attachElementToMainFrameAsRoot(
@@ -88,6 +90,12 @@ namespace eyegui
 		// One may want not to use input for this layout
 		void useInput(bool useInput);
 
+		// Get relative position and size of element
+		RelativePositionAndSize getRelativePositionAndSizeOfElement(std::string id) const;
+
+		// Get absolute pixel position and size of element
+		AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(std::string id) const;
+
 		// Set element activity
 		void setElementActivity(std::string id, bool active, bool fade);
 
@@ -99,12 +107,6 @@ namespace eyegui
 
 		// Check whether element is dimmable
 		bool isElementDimmable(std::string id) const;
-
-		// Relative position and size of elements
-		float getRelativePositionOfElementOnLayoutX(std::string id) const;
-		float getRelativePositionOfElementOnLayoutY(std::string id) const;
-		float getRelativeSizeOfElementOnLayoutX(std::string id) const;
-		float getRelativeSizeOfElementOnLayoutY(std::string id) const;
 
 		// Set interactive element as highlighted
 		void highlightInteractiveElement(std::string id, bool doHighlight);
@@ -236,6 +238,12 @@ namespace eyegui
 		// Move floating frame to back
 		void moveFloatingFrameToBack(uint frameIndex);
 
+		// Get relative position and size of floating frame
+		RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
+
+		// Get absolute position and size of floating frame
+		AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
+
 	private:
 
 		// Fetch pointer to element by id
@@ -251,7 +259,7 @@ namespace eyegui
 		void insertIds(std::unique_ptr<idMap> upIdMap);
 
 		// Fetch pointer to frame
-		Frame* fetchFloatingFrame(uint frameIndex);
+		Frame* fetchFloatingFrame(uint frameIndex) const;
 
 		// Move floating frame by id
 		void moveFloatingFrame(int oldIndex, int newIndex);

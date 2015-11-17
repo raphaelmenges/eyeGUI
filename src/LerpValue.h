@@ -78,10 +78,28 @@ namespace eyegui
 			mValue = clamp(mValue, mMin, mMax);
 		}
 
-	private:
+		// Getter for min value
+		float getMin() const
+		{
+			return mMin;
+		}
 
-		// If not private, gcc allows assigning simple float
-		LerpValue& operator=(LerpValue other) {}
+		// Getter for max value
+		float getMax() const
+		{
+			return mMax;
+		}
+
+		// Assignment
+		LerpValue& operator=(LerpValue other)
+		{
+			this->mValue = other.getValue();
+			this->mMax = other.getMax();
+			this->mMin = other.getMin();
+			return *this;
+		}
+
+	private:
 
 		// Members
 		float mValue;

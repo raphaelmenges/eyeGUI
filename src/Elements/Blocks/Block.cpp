@@ -53,19 +53,10 @@ namespace eyegui
 	// Updating
 	float Block::specialUpdate(float tpf, Input* pInput)
 	{
-		// If mouse over block, consume input (copied from INTERACTIVE element)
-		// TODO: Using the alpha is somehow..strange
-		if (pInput != NULL
-			&& !pInput->mouseUsed
-			&& getStyle()->backgroundColor.a > 0)
+		// Check if block blocks also input TODO: maybe extra bool instead of backgroundcolor check
+		if (penetratedByInput(pInput) && getStyle()->backgroundColor.a > 0)
 		{
-			if (pInput->mouseCursorX >= mX
-				&& pInput->mouseCursorX <= mX + mWidth
-				&& pInput->mouseCursorY >= mY
-				&& pInput->mouseCursorY <= mY + mHeight)
-			{
-				pInput->mouseUsed = true;
-			}
+			pInput->gazeUsed = true;
 		}
 
 		return 0;

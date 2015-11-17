@@ -279,8 +279,8 @@ namespace eyegui
 				// Calculate the now used space for next element
 				usedElemX = finalX + finalWidth + deltaX;
 
-				// Separators
-				if (separatorSize > 0)
+				// Separators (only add new ones if not last element)
+				if (separatorSize > 0 && separatorPositions.size() < separatorCount)
 				{
 					separatorPositions.push_back(usedElemX + offsetX);
 					usedElemX += separatorSize;
@@ -401,8 +401,8 @@ namespace eyegui
 				// Calculate the now used space for next element
 				usedElemY = finalY + finalHeight + deltaY;
 
-				// Separators
-				if (separatorSize > 0)
+				// Separators (only add new ones if not last element)
+				if (separatorSize > 0 && separatorPositions.size() < separatorCount)
 				{
 					separatorPositions.push_back(usedElemY + offsetY);
 					usedElemY += separatorSize;

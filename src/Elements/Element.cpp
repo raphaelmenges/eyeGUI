@@ -26,9 +26,10 @@ namespace eyegui
 		float relativeScale,
 		float border,
 		bool dimmable,
-		bool adaptiveScaling)
+		bool adaptiveScaling) : Object()
 	{
 		// Initialize members
+		mX, mY, mWidth, mHeight = 0;
 		mType = Type::ELEMENT;
 		mId = id;
 		mStyleName = styleName;
@@ -37,7 +38,6 @@ namespace eyegui
 		mpFrame = pFrame;
 		mpAssetManager = pAssetManager;
 		mpNotificationQueue = pNotificationQueue;
-		mX, mY, mWidth, mHeight = 0;
 		mRelativeScale = relativeScale;
 		mBorder = border;
 		mDimmable = dimmable;
@@ -57,6 +57,45 @@ namespace eyegui
 	Element::~Element()
 	{
 		// Nothing to do so far
+	}
+
+	int Element::getX() const
+	{
+		return mX;
+	}
+	int Element::getY() const
+	{
+		return mY;
+	}
+
+	int Element::getWidth() const
+	{
+		return mWidth;
+	}
+
+	int Element::getHeight() const
+	{
+		return mHeight;
+	}
+
+	float Element::getRelativePositionOnLayoutX() const
+	{
+		return (float)mX / mpLayout->getLayoutWidth();
+	}
+
+	float Element::getRelativePositionOnLayoutY() const
+	{
+		return (float)mY / mpLayout->getLayoutHeight();
+	}
+
+	float Element::getRelativeSizeOnLayoutX() const
+	{
+		return (float)mWidth / mpLayout->getLayoutWidth();
+	}
+
+	float Element::getRelativeSizeOnLayoutY() const
+	{
+		return (float)mHeight / mpLayout->getLayoutHeight();
 	}
 
 	Element::Type Element::getType() const
@@ -279,26 +318,6 @@ namespace eyegui
 		mDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
 	}
 
-
-	int Element::getX() const
-	{
-		return mX;
-	}
-	int Element::getY() const
-	{
-		return mY;
-	}
-
-	int Element::getWidth() const
-	{
-		return mWidth;
-	}
-
-	int Element::getHeight() const
-	{
-		return mHeight;
-	}
-
 	float Element::getDynamicScale() const
 	{
 		return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->maximalAdaptiveScaleIncrease);
@@ -312,26 +331,6 @@ namespace eyegui
 	bool Element::getAdaptiveScaling() const
 	{
 		return mAdaptiveScaling;
-	}
-
-	float Element::getRelativePositionOnLayoutX() const
-	{
-		return (float)mX / mpLayout->getLayoutWidth();
-	}
-
-	float Element::getRelativePositionOnLayoutY() const
-	{
-		return (float)mY / mpLayout->getLayoutHeight();
-	}
-
-	float Element::getRelativeSizeOnLayoutX() const
-	{
-		return (float)mWidth / mpLayout->getLayoutWidth();
-	}
-
-	float Element::getRelativeSizeOnLayoutY() const
-	{
-		return (float)mHeight / mpLayout->getLayoutHeight();
 	}
 
 	float Element::update(float tpf, float alpha, Input* pInput, float dimming)
@@ -348,7 +347,8 @@ namespace eyegui
 			pInput = NULL;
 		}
 
-		// Simple test whether mouse is over element (TODO: only mouse at the moment)
+		// Check wether cursor is over element
+		// Used for dimming etc, not affected by consumption of input
 		bool penetrated = penetratedByInput(pInput);
 
 		// Dimming
@@ -359,7 +359,6 @@ namespace eyegui
 		}
 		else if (mDimmable)
 		{
-			// TODO: do something more intelligent for input testing
 			if (penetrated)
 			{
 				// Undim it
@@ -556,7 +555,7 @@ namespace eyegui
 		float glWidth = width / layoutWidth;
 		float glHeight = height / layoutHeight;
 
-		// Moving
+		// Translation
 		matrix = glm::translate(
 			matrix,
 			glm::vec3(x / layoutWidth,
@@ -574,13 +573,13 @@ namespace eyegui
 
 	bool Element::penetratedByInput(Input const * pInput) const
 	{
-		// Standard check, testing whether cursor is above button
-		if (pInput != NULL && !pInput->mouseUsed)
+		// Check whether gaze is upon element
+		if (pInput != NULL && !pInput->gazeUsed)
 		{
-			if (pInput->mouseCursorX >= mX
-				&& pInput->mouseCursorX <= mX + mWidth
-				&& pInput->mouseCursorY >= mY
-				&& pInput->mouseCursorY <= mY + mHeight)
+			if (pInput->gazeX >= mX
+				&& pInput->gazeX <= mX + mWidth
+				&& pInput->gazeY >= mY
+				&& pInput->gazeY <= mY + mHeight)
 			{
 				return true;
 			}

@@ -19,8 +19,8 @@
 #define ELEMENT_H_
 
 #include "eyeGUI.h"
+#include "Object.h"
 #include "Rendering/AssetManager.h"
-#include "Input.h"
 #include "Style.h"
 #include "LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
@@ -37,7 +37,7 @@ namespace eyegui
 	class Frame;
 	class InteractiveElement;
 
-	class Element
+	class Element : public Object
 	{
 	public:
 
@@ -77,6 +77,18 @@ namespace eyegui
 
 		// Destructor
 		virtual ~Element() = 0;
+
+		// Transformation and size in pixels
+		virtual int getX() const;
+		virtual int getY() const;
+		virtual int getWidth() const;
+		virtual int getHeight() const;
+
+		// Get relative screen position and size
+		virtual float getRelativePositionOnLayoutX() const;
+		virtual float getRelativePositionOnLayoutY() const;
+		virtual float getRelativeSizeOnLayoutX() const;
+		virtual float getRelativeSizeOnLayoutY() const;
 
 		// Type getter
 		Type getType() const;
@@ -138,26 +150,6 @@ namespace eyegui
 		// Change transformation and size (pixel values)
 		void transformAndSize(int x, int y, int width, int height);
 
-		/*
-		__________> x
-		|
-		|
-		|
-		|
-		v
-		y
-
-		x coordinate = minimal left value in pixels
-		y coordinate = minimal top value in pixels
-
-		*/
-
-		// Transformation and size
-		int getX() const;
-		int getY() const;
-		int getWidth() const;
-		int getHeight() const;
-
 		// Get relative and adaptive scale combined to dynamic scale
 		float getDynamicScale() const;
 
@@ -166,12 +158,6 @@ namespace eyegui
 
 		// Get adaptive scaling
 		bool getAdaptiveScaling() const;
-
-		// Get relative screen position and size
-		float getRelativePositionOnLayoutX() const;
-		float getRelativePositionOnLayoutY() const;
-		float getRelativeSizeOnLayoutX() const;
-		float getRelativeSizeOnLayoutY() const;
 
 		// Updating, returns adaptive scale
 		float update(float tpf, float alpha, Input* pInput, float dimming);
@@ -224,12 +210,12 @@ namespace eyegui
 		virtual bool penetratedByInput(Input const * pInput) const;
 
 		// Members
+		int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
 		Type mType;
 		Layout const * mpLayout;
 		Frame* mpFrame;
 		AssetManager* mpAssetManager;
 		NotificationQueue* mpNotificationQueue;
-		int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
 		float mRelativeScale; // [0..]
 		float mAlpha; // [0..1]
 		float mBorderAspectRatio;
@@ -243,7 +229,7 @@ namespace eyegui
 		bool mAdaptiveScaling;
 		LerpValue mAdaptiveScale; // [0..1]
 
-		// This vector is the owner of all possible children. May be empty!
+		// This vector is the owner of all children. May be empty!
 		std::vector<std::unique_ptr<Element> > mChildren;
 
 	private:

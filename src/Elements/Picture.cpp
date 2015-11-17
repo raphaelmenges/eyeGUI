@@ -92,16 +92,10 @@ namespace eyegui
 
 	float Picture::specialUpdate(float tpf, Input* pInput)
 	{
-		// If mouse over picture, consume input (copied from INTERACTIVE element)
-		if (pInput != NULL && !pInput->mouseUsed)
+		// If mouse over picture, consume input
+		if (penetratedByInput(pInput))
 		{
-			if (pInput->mouseCursorX >= mX
-				&& pInput->mouseCursorX <= mX + mWidth
-				&& pInput->mouseCursorY >= mY
-				&& pInput->mouseCursorY <= mY + mHeight)
-			{
-				pInput->mouseUsed = true;
-			}
+			pInput->gazeUsed = true;
 		}
 
 		return 0;

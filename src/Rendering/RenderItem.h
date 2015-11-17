@@ -16,35 +16,35 @@
 
 namespace eyegui
 {
-	class RenderItem
-	{
-	public:
+    class RenderItem
+    {
+    public:
 
-		// Constructor
-		RenderItem(Shader const * pShader, Mesh const * pMesh);
+        // Constructor
+        RenderItem(Shader const * pShader, Mesh const * pMesh);
 
-		// Destructor
-		virtual ~RenderItem();
+        // Destructor
+        virtual ~RenderItem();
 
-		// Bind whole render item (must used before filling values in shader and drawing)
-		void bind() const;
+        // Bind whole render item (must used before filling values in shader and drawing)
+        void bind() const;
 
-		// Draw
-		void draw() const;
+        // Draw
+        void draw(GLenum mode = GL_TRIANGLES) const;
 
-		// Get pointer to shader
-		Shader const * getShader() const;
+        // Get pointer to shader
+        Shader const * getShader() const;
 
-		// Get pointer to mesh
-		Mesh const * getMesh() const;
+        // Get pointer to mesh
+        Mesh const * getMesh() const;
 
-	private:
+    private:
 
-		// Member
-		Shader const * mpShader;
-		Mesh const * mpMesh;
-		GLuint mVertexArrayObject;
-	};
+        // Member
+        Shader const * mpShader;
+        Mesh const * mpMesh;
+        GLuint mVertexArrayObject;
+    };
 }
 
 #endif // RENDER_ITEM_H_
