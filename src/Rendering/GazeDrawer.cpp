@@ -10,9 +10,6 @@
 #include "GUI.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
-// TODO: testing
-#include <iostream>
-
 namespace eyegui
 {
     GazeDrawer::GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager)
@@ -21,6 +18,7 @@ namespace eyegui
         mpGUI = pGUI;
         mpAssetManager = pAssetManager;
         mpCircle = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE, meshes::Type::QUAD);
+        mpLine = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::LINE);
     }
 
     GazeDrawer::~GazeDrawer()
@@ -77,7 +75,7 @@ namespace eyegui
             // Increase focus of last point
             mPoints.back().focus.update(tpf); // TODO: speed in config
 
-            // Move towards new position
+            // Move towards new position along distance vector
             mPoints.back().point +=  tpf * (gazePoint.point - mPoints.back().point);
         }
 
@@ -85,7 +83,7 @@ namespace eyegui
         int pointsToRemoveIndex = -1;
         for (int i = 0; i < mPoints.size() - 1; i++)
         {
-            mPoints[i].alpha.update(-tpf); // TODO: config...
+            mPoints[i].alpha.update(-tpf * 0.25f); // TODO: config...
 
             // Remember which points to remove
             if (mPoints[i].alpha.getValue() <= 0)
@@ -100,20 +98,59 @@ namespace eyegui
         {
             mPoints.erase(mPoints.begin(), mPoints.begin() + pointsToRemoveIndex + 1);
         }
-
-        std::cout << mPoints.size() << std::endl;
     }
 
     void GazeDrawer::draw() const
     {
-        // Draw lines
-
-        // Draw focus cycles
-        mpCircle->bind();
-
         // Get values from GUI
         float GUIWidth = (float)(mpGUI->getWindowWidth());
         float GUIHeight = (float)(mpGUI->getWindowHeight());
+
+        // Draw lines
+        mpLine->bind();
+
+        // Go over connections of gaze points
+        for(int i = 0; i < mPoints.size() - 1; i++)
+        {
+            // Calculate transformation values
+            glm::vec2 currentPoint = mPoints[i].point;
+            glm::vec2 nextPoint = mPoints[i+1].point;
+            float distance = glm::distance(currentPoint, nextPoint);
+
+            // Matrix
+            glm::mat4 matrix = glm::mat4(1.0f);
+
+            // Translation
+            matrix = glm::translate(
+                matrix,
+                glm::vec3(currentPoint.x / GUIWidth, 1.0f - (currentPoint.y / GUIHeight), 0));
+
+            // Scaling
+            matrix = glm::scale(matrix, glm::vec3(distance / GUIWidth, distance / GUIHeight, 1));
+
+            // Rotation
+            glm::vec2 vector = nextPoint-currentPoint;
+            float angle = glm::acos(glm::dot(glm::vec2(1,0), vector) / glm::length(vector));
+
+            // Decide direction of rotation
+            if(nextPoint.y > currentPoint.y)
+            {
+                angle = -angle;
+            }
+
+            matrix = glm::rotate(matrix, angle, glm::vec3(0,0,1));
+
+            // Projection
+            matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f) * matrix;
+
+            mpLine->getShader()->fillValue("matrix", matrix);
+            mpLine->getShader()->fillValue("color", glm::vec4(1,0,0,0.5f)); // TODO: config
+            mpLine->getShader()->fillValue("alpha", mPoints[i].alpha.getValue());
+            mpLine->draw(GL_LINES);
+        }
+
+        // Draw focus cycles
+        mpCircle->bind();
 
         // Draw all circles
         for (const GazePoint& rGazePoint : mPoints)

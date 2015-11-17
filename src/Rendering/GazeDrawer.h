@@ -66,6 +66,7 @@ namespace eyegui
         AssetManager* mpAssetManager;
         std::vector<GazePoint> mPoints;
         RenderItem const * mpCircle;
+        RenderItem const * mpLine;
         int mMinGazePointSize;
         int mMaxGazePointSize;
     };
