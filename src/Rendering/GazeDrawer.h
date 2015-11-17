@@ -17,48 +17,58 @@
 
 namespace eyegui
 {
-	// Forward declaration
-	class GUI;
+    // Forward declaration
+    class GUI;
 
-	class GazeDrawer
-	{
-	public:
+    class GazeDrawer
+    {
+    public:
 
-		// Constructor
-		GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager); // TODO: asset manager (create line asset ?!)
+        // Constructor
+        GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager); // TODO: asset manager (create line asset ?!)
 
-		// Destructor
-		virtual ~GazeDrawer();
+        // Destructor
+        virtual ~GazeDrawer();
 
-		// Update
-		void update(int gazeX, int gazeY, float tpf);
+        // Update
+        void update(int gazeX, int gazeY, float tpf);
 
-		// Draw
-		void draw() const;
+        // Draw
+        void draw() const;
 
-	private:
+    private:
 
-		// Structure for gaze points
-		struct GazePoint
-		{
-			glm::vec2 point; // Easier to handle than ivec2
-			LerpValue alpha;
-			LerpValue focus;
+        // Structure for gaze points
+        struct GazePoint
+        {
+            glm::vec2 point; // Easier to handle than ivec2
+            glm::vec2 originalPoint;
+            LerpValue alpha;
+            LerpValue focus;
 
-			// Constructor
-			GazePoint()
-			{
-				alpha.setValue(1);
-				focus.setValue(0);
-			}
-		};
+            // Constructor
+            GazePoint(int gazeX, int gazeY)
+            {
+                point.x = (float)gazeX;
+                point.y = (float)gazeY;
+                originalPoint = point; // Save original position
+                alpha.setValue(1);
+                focus.setValue(0);
 
-		// Members
-		GUI const * mpGUI;
-		AssetManager* mpAssetManager;
-		std::vector<GazePoint> mPoints;
-		RenderItem const * mpCircle;
-	};
+            }
+        };
+
+        // Calculate pixel diameter of gaze point
+        int calculateDiameterOfGazePoint(const GazePoint& rGazePoint) const;
+
+        // Members
+        GUI const * mpGUI;
+        AssetManager* mpAssetManager;
+        std::vector<GazePoint> mPoints;
+        RenderItem const * mpCircle;
+        int mMinGazePointSize;
+        int mMaxGazePointSize;
+    };
 }
 
 #endif // GAZE_DRAWER
