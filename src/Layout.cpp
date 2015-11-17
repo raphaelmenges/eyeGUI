@@ -54,11 +54,7 @@ namespace eyegui
 		mDyingFloatingFramesIndices.clear();
 
 		// *** RESIZING ***
-
-		if (mVisible && mResizeNecessary)
-		{
-			resize(true);
-		}
+		resize();
 
 		// *** NOTIFICATIONS ***
 
@@ -137,12 +133,12 @@ namespace eyegui
 		}
 	}
 
-	void Layout::resize(bool force)
+	void Layout::resize()
 	{
-		if (mAlpha.getValue() > 0 || force)
+		if (mResizeNecessary && mAlpha.getValue() > 0)
 		{
 			// Resize main frame
-			mupMainFrame->resize(force);
+			mupMainFrame->makeResizeNecessary();
 
 			// Resize floating frames
 			for (auto& upFrame : mFloatingFrames)
@@ -150,16 +146,16 @@ namespace eyegui
 				Frame* pFrame = upFrame.get();
 				if (pFrame != NULL)
 				{
-					pFrame->resize(force);
+					pFrame->makeResizeNecessary();
 				}
 			}
-
 			mResizeNecessary = false;
 		}
-		else
-		{
-			mResizeNecessary = true;
-		}
+	}
+
+	void Layout::makeResizeNecessary()
+	{
+		mResizeNecessary = true;
 	}
 
 	void Layout::attachElementToMainFrameAsRoot(

@@ -88,6 +88,7 @@ namespace eyegui
 		{
 			if (mWidth != width || mHeight != height)
 			{
+				// Initializes resizing, piped to layouts during updating
 				mResizing = true;
 				mResizeWaitTime = RESIZE_WAIT_DURATION;
 
@@ -282,7 +283,7 @@ namespace eyegui
 		for (std::unique_ptr<Layout>& upLayout : mLayouts)
 		{
 			// Layout fetches size via const pointer to this
-			upLayout->resize();
+			upLayout->makeResizeNecessary();
 		}
 	}
 

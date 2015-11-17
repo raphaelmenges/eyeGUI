@@ -50,7 +50,10 @@ namespace eyegui
 		void draw() const;
 
 		// Resize function
-		void resize(bool force = false);
+		void resize();
+
+		// Make resize necessary
+		void makeResizeNecessary();
 
 		// Attach element to main frame as root
 		void attachElementToMainFrameAsRoot(

@@ -59,7 +59,10 @@ namespace eyegui
 		void draw() const;
 
 		// Resize function
-		void resize(bool force = false);
+		void resize();
+
+		// Make resize necessary
+		void makeResizeNecessary();
 
 		// Attach root
 		void attachRoot(std::unique_ptr<Element> upElement);
