@@ -66,6 +66,9 @@ namespace eyegui
 
 	void GazeDrawer::draw() const
 	{
-		// TODO
+		// Draw lines
+
+		// Draw focus cycles
+
 	}
 }
