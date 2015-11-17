@@ -1,11 +1,8 @@
 ### VERSION 0.4 (December 2015)
-- Input
-  - Scenarios
-    - Gaze selects button, interaction via key
-    - Mouse increases threshold on button and selects it, interaction via key
 - Update wiki (important: getting started example)
 - Function to define search folder or so
 - Use automatically smaller fonts in textflow if not enough space
+- Visualize gaze input
 
 ### VERSION 0.5 (January/February 2016)
 - TextInput
