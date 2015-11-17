@@ -3,6 +3,8 @@
 - Function to define search folder or so
 - Use automatically smaller fonts in textflow if not enough space
 - Visualize gaze input
+ - Turn on and off via interface
+- Bug: Replace has to trigger resize in Frame
 
 ### VERSION 0.5 (January/February 2016)
 - TextInput

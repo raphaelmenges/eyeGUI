@@ -10,18 +10,22 @@
 #define GAZE_DRAWER_H_
 
 #include "AssetManager.h"
+#include "LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <vector>
 
 namespace eyegui
 {
+	// Forward declaration
+	class GUI;
+
 	class GazeDrawer
 	{
 	public:
 
 		// Constructor
-		GazeDrawer(); // TODO: asset manager (create line asset ?!)
+		GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager); // TODO: asset manager (create line asset ?!)
 
 		// Destructor
 		virtual ~GazeDrawer();
@@ -38,12 +42,22 @@ namespace eyegui
 		struct GazePoint
 		{
 			glm::vec2 point; // Easier to handle than ivec2
-			float alpha = 1;
-			float size = 1;
+			LerpValue alpha;
+			LerpValue focus;
+
+			// Constructor
+			GazePoint()
+			{
+				alpha.setValue(1);
+				focus.setValue(0);
+			}
 		};
 
 		// Members
-		std::vector<GazePoint> points;
+		GUI const * mpGUI;
+		AssetManager* mpAssetManager;
+		std::vector<GazePoint> mPoints;
+		RenderItem const * mpCircle;
 	};
 }
 

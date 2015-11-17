@@ -31,6 +31,7 @@ namespace eyegui
 		mpDefaultFont = NULL;
 		mResizing = false;
 		mResizeWaitTime = 0;
+		mupGazeDrawer = std::unique_ptr<GazeDrawer>(new GazeDrawer(this, mupAssetManager.get()));
 
 		// Initialize OpenGL
 		mGLSetup.init();
@@ -133,7 +134,7 @@ namespace eyegui
 		}
 
 		// Update gaze drawer
-		mGazeDrawer.update(input.gazeX, input.gazeY, tpf);
+		mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
 
 		// Return copy of used input
 		return input;
@@ -163,7 +164,7 @@ namespace eyegui
 		}
 
 		// Draw gaze input
-		mGazeDrawer.draw();
+		mupGazeDrawer->draw();
 
 		// Restore OpenGL state of application
 		mGLSetup.restore();

@@ -555,7 +555,7 @@ namespace eyegui
 		float glWidth = width / layoutWidth;
 		float glHeight = height / layoutHeight;
 
-		// Moving
+		// Translation
 		matrix = glm::translate(
 			matrix,
 			glm::vec3(x / layoutWidth,

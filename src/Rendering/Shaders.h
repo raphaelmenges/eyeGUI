@@ -32,12 +32,26 @@ namespace eyegui
 		static const char* pColorFragmentShader =
 			"#version 330 core\n"
 			"out vec4 fragColor;\n"
-			"uniform vec4 color;\n"
-			"uniform float alpha;\n"
+			"uniform vec4 color = vec4(1,1,1,1);\n"
+			"uniform float alpha = 1;\n"
 			"void main() {\n"
 			"   fragColor = vec4(color.rgb, color.a * alpha);\n"
 			"}\n";
 
+		// Uniforms:
+		// vec4 color
+		// float alpha
+		static const char* pCircleFragmentShader =
+			"#version 330 core\n"
+			"out vec4 fragColor;\n"
+			"in vec2 uv;\n"
+			"uniform vec4 color = vec4(1,1,1,1);\n"
+			"uniform float alpha = 1;\n"
+			"void main() {\n"
+			"   float gradient = length(2*uv-1);\n" // Simple gradient as base
+			"   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
+			"   fragColor = vec4(color.rgb, color.a * alpha * min(circle, 1.0));\n"
+			"}\n";
 
 		// Uniforms:
 		// vec4 separatorColor

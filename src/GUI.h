@@ -190,7 +190,7 @@ namespace eyegui
 		RenderItem const * mpResizeBlend;
 		std::unique_ptr<localizationMap> mupLocalizationMap;
 		std::vector<std::unique_ptr<GUIJob> > mJobs;
-		GazeDrawer mGazeDrawer;
+		std::unique_ptr<GazeDrawer> mupGazeDrawer;
 	};
 }
 

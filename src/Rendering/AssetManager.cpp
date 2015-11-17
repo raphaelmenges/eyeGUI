@@ -266,6 +266,9 @@ namespace eyegui
 			case shaders::Type::COLOR:
 				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pColorFragmentShader));
 				break;
+			case shaders::Type::CIRCLE:
+				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleFragmentShader));
+				break;
 			case shaders::Type::SEPARATOR:
 				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSeparatorFragmentShader));
 				break;
