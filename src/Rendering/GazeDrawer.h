@@ -36,6 +36,9 @@ namespace eyegui
         // Draw
         void draw() const;
 
+        // Reset
+        void reset();
+
     private:
 
         // Structure for gaze points

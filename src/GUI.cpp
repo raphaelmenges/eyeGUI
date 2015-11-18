@@ -287,12 +287,15 @@ namespace eyegui
 
     void GUI::internalResizing()
     {
-        // Set new width and height
+        // Actual resizing action
         mWidth = mNewWidth;
         mHeight = mNewHeight;
 
         // Resize font atlases first
         mupAssetManager->resizeFontAtlases();
+
+        // Reset gaze drawer
+        mupGazeDrawer->reset();
 
         // Then, resize all layouts
         for (std::unique_ptr<Layout>& upLayout : mLayouts)
