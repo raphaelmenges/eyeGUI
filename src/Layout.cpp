@@ -54,7 +54,7 @@ namespace eyegui
         mDyingFloatingFramesIndices.clear();
 
         // *** RESIZING ***
-        resize();
+        internalResizing();
 
         // *** NOTIFICATIONS ***
 
@@ -130,26 +130,6 @@ namespace eyegui
                     pFrame->draw();
                 }
             }
-        }
-    }
-
-    void Layout::resize()
-    {
-        if (mResizeNecessary && mAlpha.getValue() > 0)
-        {
-            // Resize main frame
-            mupMainFrame->makeResizeNecessary();
-
-            // Resize floating frames
-            for (auto& upFrame : mFloatingFrames)
-            {
-                Frame* pFrame = upFrame.get();
-                if (pFrame != NULL)
-                {
-                    pFrame->makeResizeNecessary();
-                }
-            }
-            mResizeNecessary = false;
         }
     }
 
@@ -1181,6 +1161,26 @@ namespace eyegui
             result.height = pFrame->getHeight();
         }
         return result;
+    }
+
+    void Layout::internalResizing()
+    {
+        if (mResizeNecessary && mAlpha.getValue() > 0)
+        {
+            // Resize main frame
+            mupMainFrame->makeResizeNecessary();
+
+            // Resize floating frames
+            for (auto& upFrame : mFloatingFrames)
+            {
+                Frame* pFrame = upFrame.get();
+                if (pFrame != NULL)
+                {
+                    pFrame->makeResizeNecessary();
+                }
+            }
+            mResizeNecessary = false;
+        }
     }
 
     Element* Layout::fetchElement(std::string id) const

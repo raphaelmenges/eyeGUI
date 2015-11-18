@@ -22,127 +22,127 @@
 
 namespace eyegui
 {
-	// Forward declaration
-	class Layout;
+    // Forward declaration
+    class Layout;
 
-	class Frame : public Object
-	{
-	public:
+    class Frame : public Object
+    {
+    public:
 
-		// Constructor
-		Frame(
-			Layout * const pLayout,
-			float relativePositionX,
-			float relativePositionY,
-			float relativeSizeX,
-			float relativeSizeY);
+        // Constructor
+        Frame(
+            Layout * const pLayout,
+            float relativePositionX,
+            float relativePositionY,
+            float relativeSizeX,
+            float relativeSizeY);
 
-		// Destuctor
-		virtual ~Frame();
+        // Destuctor
+        virtual ~Frame();
 
-		// Transformation and size in pixels
-		virtual int getX() const;
-		virtual int getY() const;
-		virtual int getWidth() const;
-		virtual int getHeight() const;
+        // Transformation and size in pixels
+        virtual int getX() const;
+        virtual int getY() const;
+        virtual int getWidth() const;
+        virtual int getHeight() const;
 
-		// Get relative screen position and size
-		virtual float getRelativePositionOnLayoutX() const;
-		virtual float getRelativePositionOnLayoutY() const;
-		virtual float getRelativeSizeOnLayoutX() const;
-		virtual float getRelativeSizeOnLayoutY() const;
+        // Get relative screen position and size
+        virtual float getRelativePositionOnLayoutX() const;
+        virtual float getRelativePositionOnLayoutY() const;
+        virtual float getRelativeSizeOnLayoutX() const;
+        virtual float getRelativeSizeOnLayoutY() const;
 
-		// Updating
-		void update(float tpf, float alpha, Input* pInput);
+        // Updating
+        void update(float tpf, float alpha, Input* pInput);
 
-		// Drawing
-		void draw() const;
+        // Drawing
+        void draw() const;
 
-		// Resize function
-		void resize();
+        // Make resize necessary
+        void makeResizeNecessary();
 
-		// Make resize necessary
-		void makeResizeNecessary();
+        // Attach root
+        void attachRoot(std::unique_ptr<Element> upElement);
 
-		// Attach root
-		void attachRoot(std::unique_ptr<Element> upElement);
+        // Remove root
+        std::unique_ptr<Element> replaceRoot(std::unique_ptr<Element> upElement);
 
-		// Remove root
-		std::unique_ptr<Element> replaceRoot(std::unique_ptr<Element> upElement);
+        // Register front element for early update and late drawing
+        void registerFrontElementForUpdateAndDraw(Element* pElement, bool visible);
 
-		// Register front element for early update and late drawing
-		void registerFrontElementForUpdateAndDraw(Element* pElement, bool visible);
+        // Set alpha value of front element
+        void setFrontElementAlpha(Element* pElement, float alpha);
 
-		// Set alpha value of front element
-		void setFrontElementAlpha(Element* pElement, float alpha);
+        // Commit dying replaced element
+        void commitDyingReplacedElement(std::unique_ptr<Element> upElement);
 
-		// Commit dying replaced element
-		void commitDyingReplacedElement(std::unique_ptr<Element> upElement);
+        // Set visibility
+        void setVisibility(bool visible, bool fade);
 
-		// Set visibility
-		void setVisibility(bool visible, bool fade);
+        // Get first interactive element. Returns null, if none found
+        InteractiveElement* getFirstInteractiveElement() const;
 
-		// Get first interactive element. Returns null, if none found
-		InteractiveElement* getFirstInteractiveElement() const;
+        // Reset elements
+        void resetElements();
 
-		// Reset elements
-		void resetElements();
+        // Remove front elements of a element
+        void removeFrontElementsOfElement(Element* pTarget);
 
-		// Remove front elements of a element
-		void removeFrontElementsOfElement(Element* pTarget);
+        // Get pointer to all elements, recursively
+        std::set<Element*> getAllElements() const;
 
-		// Get pointer to all elements, recursively
-		std::set<Element*> getAllElements() const;
+        // Get all elements' ids
+        std::set<std::string> getAllElementsIds() const;
 
-		// Get all elements' ids
-		std::set<std::string> getAllElementsIds() const;
+        // Set removed fading alpha
+        void setRemovedFadingAlpha(float alpha);
 
-		// Set removed fading alpha
-		void setRemovedFadingAlpha(float alpha);
+        // Get removed fading alpha
+        float getRemovedFadingAlpha() const;
 
-		// Get removed fading alpha
-		float getRemovedFadingAlpha() const;
+        // Set removed
+        void setRemoved();
 
-		// Set removed
-		void setRemoved();
+        // Is removed?
+        bool isRemoved() const;
 
-		// Is removed?
-		bool isRemoved() const;
+        // Translation
+        void translate(float translateX, float translateY);
 
-		// Translation
-		void translate(float translateX, float translateY);
+        // Scaling
+        void scale(float scaleX, float scaleY);
 
-		// Scaling
-		void scale(float scaleX, float scaleY);
+        // Set position
+        void setPosition(float relativePositionX, float relativePositionY);
 
-		// Set position
-		void setPosition(float relativePositionX, float relativePositionY);
+        // Set size
+        void setSize(float relativeSizeX, float relativeSizeY);
 
-		// Set size
-		void setSize(float relativeSizeX, float relativeSizeY);
+    private:
 
-	private:
+        // Resize function
+        void internalResizing();
 
-		// Clamp size
-		void clampSize();
+        // Clamp size
+        void clampSize();
 
-		// Members
-		Layout const * mpLayout;
-		std::unique_ptr<Element> mupRoot;
-		LerpValue mFrameAlpha;
-		float mCombinedAlpha;
-		bool mVisible;
-		std::vector<Element*> mFrontElements;
-		std::map<Element*, float> mFrontElementAlphas;
-		std::vector<std::unique_ptr<Element> > mDyingReplacedElements;
-		bool mResizeNecessary;
-		float mRelativePositionX;
-		float mRelativePositionY;
-		float mRelativeSizeX;
-		float mRelativeSizeY;
-		bool mRemoved;
-		float mRemovedFadingAlpha;
-	};
+        // Members
+        Layout const * mpLayout;
+        std::unique_ptr<Element> mupRoot;
+        LerpValue mFrameAlpha;
+        float mCombinedAlpha;
+        bool mVisible;
+        std::vector<Element*> mFrontElements;
+        std::map<Element*, float> mFrontElementAlphas;
+        std::vector<std::unique_ptr<Element> > mDyingReplacedElements;
+        bool mResizeNecessary;
+        float mRelativePositionX;
+        float mRelativePositionY;
+        float mRelativeSizeX;
+        float mRelativeSizeY;
+        bool mRemoved;
+        float mRemovedFadingAlpha;
+    };
 }
 
 
