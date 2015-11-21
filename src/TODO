@@ -1,4 +1,8 @@
-### VERSION 0.5 (January/February 2016)
+### VERSION 0.5
+- Function to define search folder for content
+- ... (depending on what the "praktikum" needs)
+
+### VERSION 0.6 (January/February 2016)
 - TextInput
   - Keyboard and "Guesser" (tries to goes what you want to write)
   - Both are indepenend
@@ -8,9 +12,9 @@
     - Letters get bigger and after threshold: selection
     - Only last letter focused for longer time
 
-### VERSION 0.6 (?)
+### VERSION 0.7 (?)
 - Audio (PortAudio library?)
-  - Audo effects defined in style sheet
+  - Audio effects defined in style sheet
 
 ### VERSION 0.x
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
@@ -23,7 +27,7 @@
 - Font has sometimes little rendering issues
 - Adaptive scaling is not that smooth
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
-- Function to define search folder or so
+
 
 Notes:
 - Reminder: Getter for transform and size do only work after first update
