@@ -1,5 +1,8 @@
 ### VERSION 0.5
 - Function to define search folder for content
+- Set style of element
+- Hide elements
+- BUG: Input marked as used even when block beneath is fully transparent
 - ... (depending on what the "praktikum" needs)
 
 ### VERSION 0.6 (January/February 2016)
