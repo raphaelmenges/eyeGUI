@@ -2,6 +2,7 @@
 - Function to define search folder for content
 - Set style of element
 - Hide elements
+- Make default font color white
 - BUG: Input marked as used even when block beneath is fully transparent
 - ... (depending on what the "praktikum" needs)
 
