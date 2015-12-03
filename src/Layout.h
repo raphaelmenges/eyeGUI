@@ -105,6 +105,9 @@ namespace eyegui
         // Check whether element is dimmable
         bool isElementDimmable(std::string id) const;
 
+        // Set style of element
+        void setStyleOfElement(std::string id, std::string style);
+
         // Set interactive element as highlighted
         void highlightInteractiveElement(std::string id, bool doHighlight);
 

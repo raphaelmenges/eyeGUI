@@ -329,6 +329,17 @@ namespace eyegui
         std::string id,
         bool dimmable);
 
+    //! Set style of element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param stlye is name of style in stylesheet of layout.
+    */
+    void setStyleOfElement(
+        Layout* pLayout,
+        std::string id,
+        std::string style);
+
     //! Get whether element is dimmable.
     /*!
     \param pLayout pointer to layout.

@@ -149,6 +149,14 @@ namespace eyegui
         pLayout->setElementDimmable(id, dimmable);
     }
 
+    void setStyleOfElement(
+        Layout* pLayout,
+        std::string id,
+        std::string style)
+    {
+        pLayout->setStyleOfElement(id, style);
+    }
+
     bool isElementDimmable(Layout const * pLayout, std::string id)
     {
         return pLayout->isElementDimmable(id);

@@ -306,6 +306,11 @@ namespace eyegui
         }
     }
 
+    void Layout::setStyleOfElement(std::string id, std::string style)
+    {
+        // TODO
+    }
+
     bool Layout::isElementDimmable(std::string id) const
     {
         Element* pElement = fetchElement(id);
