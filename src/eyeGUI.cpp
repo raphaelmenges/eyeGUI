@@ -12,7 +12,7 @@
 #include "OperationNotifier.h"
 
 // Version
-static const std::string VERSION_STRING = "0.4";
+static const std::string VERSION_STRING = "0.5";
 
 namespace eyegui
 {
