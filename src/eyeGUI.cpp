@@ -241,6 +241,11 @@ namespace eyegui
         pLayout->setContentOfTextBlock(id, content);
     }
 
+    void setContentOfTextBlock(Layout* pLayout, std::string id, std::string content)
+    {
+        pLayout->setContentOfTextBlock(id, content);
+    }
+
     void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key)
     {
         pLayout->setKeyOfTextBlock(id, key);

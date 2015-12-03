@@ -467,9 +467,18 @@ namespace eyegui
     /*!
     \param pLayout pointer to layout.
     \param id is the unique id of an element.
-    \param content is new content for text block.
+    \param content is new content for text block as 16 bit string.
     */
     void setContentOfTextBlock(Layout* pLayout, std::string id, std::u16string content);
+
+    //! Set content of text block. Works only if no key is used for localization.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param content is new content for text block as 8 bit string.
+    */
+    void setContentOfTextBlock(Layout* pLayout, std::string id, std::string content);
+
 
     //! Set key of text block. Works only if used localization file includes key.
     /*!

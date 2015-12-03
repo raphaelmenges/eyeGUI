@@ -12,6 +12,7 @@
 #include "Elements/ElementCasting.h"
 #include "Defines.h"
 #include "OperationNotifier.h"
+#include "externals/utfcpp/source/utf8.h"
 
 #include <algorithm>
 
@@ -422,6 +423,16 @@ namespace eyegui
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text block with id: " + id);
         }
+    }
+
+    void Layout::setContentOfTextBlock(std::string id, std::string content)
+    {
+        // Convert to 16 bit string
+        std::u16string content16;
+        utf8::utf8to16(content.begin(), content.end(), back_inserter(content16));
+
+        // Pipe it to method for 16 bit strings
+        setContentOfTextBlock(id, content16);
     }
 
     void Layout::setKeyOfTextBlock(std::string id, std::string key)

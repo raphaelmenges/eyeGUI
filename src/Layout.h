@@ -126,8 +126,11 @@ namespace eyegui
         // Penetrate sensor
         void penetrateSensor(std::string id, float amount);
 
-        // Set content of text block
+        // Set content of text block with 16 bit string
         void setContentOfTextBlock(std::string id, std::u16string content);
+
+        // Set content of text block with 8 bit string
+        void setContentOfTextBlock(std::string id, std::string content);
 
         // Set key of text block
         void setKeyOfTextBlock(std::string id, std::string key);
