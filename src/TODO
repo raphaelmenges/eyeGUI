@@ -5,7 +5,6 @@
 - Make default font color white
 - BUG: Input marked as used even when block beneath is fully transparent
 - ... (depending on what the "praktikum" needs)
-- SetContentOfTextBlock function with std::string
 
 ### VERSION 0.6 (January/February 2016)
 - TextInput
