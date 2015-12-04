@@ -162,6 +162,11 @@ namespace eyegui
         return pLayout->isElementDimmable(id);
     }
 
+    void setElementHiding(Layout* pLayout, std::string id, bool hidden)
+    {
+        pLayout->setElementHiding(id, hidden);
+    }
+
     bool checkForId(Layout const * pLayout, std::string id)
     {
         return pLayout->checkForId(id);

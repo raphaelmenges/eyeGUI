@@ -102,6 +102,9 @@ namespace eyegui
         // Set whether element is dimmable
         void setElementDimmable(std::string id, bool dimmable);
 
+        // Set hiding of element
+        void setElementHiding(std::string id, bool hidden);
+
         // Check whether element is dimmable
         bool isElementDimmable(std::string id) const;
 

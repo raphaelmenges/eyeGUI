@@ -50,6 +50,7 @@ namespace eyegui
         mBorderAspectRatio = 1;
         mAdaptiveScaling = adaptiveScaling;
         mAdaptiveScale.setValue(0);
+        mHidden = false;
 
         // Fetch style from layout
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
@@ -356,6 +357,11 @@ namespace eyegui
         return mAdaptiveScaling;
     }
 
+    void Element::setHiding(bool hidden)
+    {
+        mHidden = hidden;
+    }
+
     float Element::update(float tpf, float alpha, Input* pInput, float dimming)
     {
         // Activity animationa
@@ -450,7 +456,7 @@ namespace eyegui
     void Element::draw() const
     {
         // Only draw if visible
-        if (mAlpha > 0)
+        if (mAlpha > 0 && !mHidden)
         {
             // Draw the element
             specialDraw();

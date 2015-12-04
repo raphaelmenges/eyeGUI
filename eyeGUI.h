@@ -344,9 +344,17 @@ namespace eyegui
     /*!
     \param pLayout pointer to layout.
     \param id is the unique id of an element.
-    \return true if element with given id is dimmable and false else
+    \return true if element with given id is dimmable and false else.
     */
     bool isElementDimmable(Layout const * pLayout, std::string id);
+
+    //! Set hiding of element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param hidden should be true to hide element and false to unhide it.
+    */
+    void setElementHiding(Layout* pLayout, std::string id, bool hidden);
 
     //! Check for existence of id.
     /*!

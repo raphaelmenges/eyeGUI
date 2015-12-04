@@ -162,6 +162,9 @@ namespace eyegui
         // Get adaptive scaling
         bool getAdaptiveScaling() const;
 
+        // Set hiding
+        void setHiding(bool hidden);
+
         // Updating, returns adaptive scale
         float update(float tpf, float alpha, Input* pInput, float dimming);
 
@@ -245,6 +248,7 @@ namespace eyegui
         std::string mStyleName;
         Style const * mpStyle;
         std::unique_ptr<Element> mupReplacedElement;
+        bool mHidden;
     };
 }
 

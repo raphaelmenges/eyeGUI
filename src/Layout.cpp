@@ -315,6 +315,19 @@ namespace eyegui
         }
     }
 
+    void Layout::setElementHiding(std::string id, bool hidden)
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            pElement->setHiding(hidden);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+        }
+    }
+
     void Layout::setStyleOfElement(std::string id, std::string style)
     {
         Element* pElement = fetchElement(id);
