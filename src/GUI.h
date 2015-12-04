@@ -48,6 +48,9 @@ namespace eyegui
         // Load layout from xml, returns NULL if fails
         Layout* addLayout(std::string filepath, bool visible);
 
+        // Remove layout
+        void removeLayout(Layout const * pLayout);
+
         // Resize whole gui
         void resize(int width, int height);
 
@@ -154,6 +157,19 @@ namespace eyegui
         protected:
 
             std::unique_ptr<Layout> mupLayout;
+        };
+
+        // Job to remove layout
+        class RemoveLayoutJob : public GUIJob
+        {
+        public:
+
+            RemoveLayoutJob(GUI* pGUI, Layout const * pLayout);
+            virtual void execute();
+
+        protected:
+
+            Layout const * mpLayout;
         };
 
         // Job to change value of config attribute

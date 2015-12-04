@@ -31,6 +31,11 @@ namespace eyegui
         return pGUI->addLayout(filepath, visible);
     }
 
+    void removeLayout(GUI* pGUI, Layout const * pLayout)
+    {
+        pGUI->removeLayout(pLayout);
+    }
+
     Input updateGUI(GUI* pGUI, float tpf, Input input)
     {
         return pGUI->update(tpf, input);

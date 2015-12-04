@@ -165,6 +165,13 @@ namespace eyegui
     */
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible = true);
 
+    //! Removes layout in GUI by pointer.
+    /*!
+      \param pGUI pointer to GUI.
+      \param pLayout is the pointer to layout which should be removed.
+    */
+    void removeLayout(GUI* pGUI, Layout const * pLayout);
+
     //! Update whole GUI.
     /*!
       \param pGUI pointer to GUI.

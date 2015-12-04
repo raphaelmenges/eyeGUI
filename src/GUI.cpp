@@ -11,6 +11,8 @@
 #include "OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
+#include <algorithm>
+
 namespace eyegui
 {
     GUI::GUI(
@@ -63,7 +65,6 @@ namespace eyegui
 
     Layout* GUI::addLayout(std::string filepath, bool visible)
     {
-
         // Parse layout
         std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), filepath);
 
@@ -77,6 +78,11 @@ namespace eyegui
         mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new AddLayoutJob(this, std::move(upLayout)))));
 
         return pLayout;
+    }
+
+    void GUI::removeLayout(Layout const * pLayout)
+    {
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new RemoveLayoutJob(this, pLayout))));
     }
 
     void GUI::resize(int width, int height)
@@ -358,6 +364,34 @@ namespace eyegui
     void GUI::AddLayoutJob::execute()
     {
         mpGUI->mLayouts.push_back(std::move(mupLayout));
+    }
+
+    GUI::RemoveLayoutJob::RemoveLayoutJob(GUI* pGUI, Layout const * pLayout) : GUIJob(pGUI)
+    {
+        mpLayout = pLayout;
+    }
+
+    void GUI::RemoveLayoutJob::execute()
+    {
+        // Saving count of layouts
+        int layoutCount = mpGUI->mLayouts.size();
+
+        // Removing layout from vector
+        mpGUI->mLayouts.erase(
+            std::remove_if(
+                mpGUI->mLayouts.begin(),
+                mpGUI->mLayouts.end(),
+                [&] (std::unique_ptr<Layout> const & p)
+                { // This predicate checks, whether raw pointer is same as given
+                    return (p.get() == mpLayout);
+                }),
+            mpGUI->mLayouts.end());
+
+        // Check, whether something has changed
+        if(mpGUI->mLayouts.size() == layoutCount)
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Tried to remove layout that did not exist");
+        }
     }
 
     GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, std::string value) : GUIJob(pGUI)

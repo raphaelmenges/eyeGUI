@@ -115,7 +115,9 @@ namespace eyegui
             glGetShaderInfoLog(handle, log_length, NULL, log);
 
             // Print it
-            throwError(OperationNotifier::Operation::BUG, "A shader throws errors at compilation:\n" + log);
+            throwError(
+                OperationNotifier::Operation::BUG,
+               "A shader throws errors at compilation:\n" + std::string(log));
 
             // Delete chars
             delete[] log;
