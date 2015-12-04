@@ -11,6 +11,7 @@
 #include "Helper.h"
 #include "OperationNotifier.h"
 #include "ParserHelper.h"
+#include "PathBuilder.h"
 
 #include <algorithm>
 #include <sstream>
@@ -33,7 +34,7 @@ namespace eyegui
             config.filepath = filepath;
 
             // Read file
-            std::ifstream in(filepath.c_str(), std::ios::in);
+            std::ifstream in(buildPath(filepath).c_str(), std::ios::in);
 
             // Check whether file was found
             if (!in)

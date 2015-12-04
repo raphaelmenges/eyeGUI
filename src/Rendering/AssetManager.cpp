@@ -18,6 +18,7 @@
 #include "GUI.h"
 #include "Font/AtlasFont.h"
 #include "Font/EmptyFont.h"
+#include "PathBuilder.h"
 
 #include <algorithm>
 
@@ -189,7 +190,7 @@ namespace eyegui
 
                 // Load font to FreeType face
                 std::unique_ptr<FT_Face> upFace = std::unique_ptr<FT_Face>(new FT_Face);
-                if (FT_New_Face(mFreeTypeLibrary, filepath.c_str(), 0, upFace.get()))
+                if (FT_New_Face(mFreeTypeLibrary, buildPath(filepath).c_str(), 0, upFace.get()))
                 {
                     throwError(OperationNotifier::Operation::FONT_LOADING, "Failed to load font with FreeType Library", filepath);
                 }

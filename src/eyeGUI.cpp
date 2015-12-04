@@ -10,7 +10,7 @@
 #include "GUI.h"
 #include "Layout.h"
 #include "OperationNotifier.h"
-#include "PathFinder.h"
+#include "PathBuilder.h"
 
 // Version
 static const std::string VERSION_STRING = "0.5";
@@ -449,7 +449,7 @@ namespace eyegui
 
     void setRootFilepath(std::string rootFilepath)
     {
-        // Set root filepath as friend of path finder
-        PathFinder::rootFilepath = rootFilepath;
+        // Set root filepath as friend of path builder
+        PathBuilder::rootFilepath = rootFilepath;
     }
 }

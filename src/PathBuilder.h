@@ -8,14 +8,17 @@
 // filepath may only be set by eyeGUI.cpp function "setRootFilepath". Everything
 // else would be dangerous.
 
-#ifndef PATH_FINDER_H_
-#define PATH_FINDER_H_
+#ifndef PATH_BUILDER_H_
+#define PATH_BUILDER_H_
 
 #include <string>
 
+// Defines for easier use
+#define buildPath eyegui::PathBuilder::buildFullFilepath
+
 namespace eyegui
 {
-    class PathFinder
+    class PathBuilder
     {
     public:
 
@@ -31,12 +34,12 @@ namespace eyegui
     private:
 
         // Check for instance existence
-        static PathFinder* getInstance()
+        static PathBuilder* getInstance()
         {
             if (pInstance == NULL)
             {
-                static PathFinder pathFinder;
-                pInstance = &pathFinder;
+                static PathBuilder pathBuilder;
+                pInstance = &pathBuilder;
             }
             return pInstance;
         }
@@ -44,16 +47,21 @@ namespace eyegui
         // Internal function to build full filepath
         std::string internalBuildFullFilepath(std::string filepath)
         {
-            // May access root filepath
-            return rootFilepath + filepath;
+            std::string prefix = "";
+            if(rootFilepath != "")
+            {
+                // May access root filepath
+                prefix = rootFilepath + "/";
+            }
+            return prefix + filepath;
         }
 
         // The pointer to the single instance
-        static PathFinder* pInstance;
+        static PathBuilder* pInstance;
 
         // Filepath
         static std::string rootFilepath;
     };
 }
 
-#endif // PATHER_H_
+#endif // PATH_BUILDER_H_
