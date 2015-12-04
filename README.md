@@ -7,6 +7,12 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 
 ## Features
 
+#### Version 0.5
+* Extending interface
+* Layout can be removed from GUI
+* Hiding of elements
+* Root of all filepathes can be set
+
 #### Version 0.4
 * Gaze visualization
 * Input improvement
