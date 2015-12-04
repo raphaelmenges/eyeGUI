@@ -171,7 +171,7 @@ namespace eyegui
             "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
             "   float bodyMask = clamp(circle - bodyPressBorder * sinPressing + 0.5, 0, 1);\n" // Body mask (Adding 0.5 to hide background border when not pressing)
             "   float buttonMask = clamp(circle, 0, 1);\n" // Mask of whole button
-            "   vec4 button = mix(color, iconValue, iconValue.a);\n" // Just body with icon
+            "   vec4 button = mix(color, vec4(iconValue.rgb, 1), iconValue.a);\n" // Just body with icon
             "   button = mix(vec4(color.rgb / 3, color.a), button, bodyMask);\n" // Just body with background
             "   float thresholdMask = clamp(100 * clamp((length(2*uv-1)) - (1.025 * threshold - 0.025), 0, 1), 0 ,1);\n" // Inverted threshold mask
             "   button.rgb = mix(1-button.rgb, button.rgb, thresholdMask);\n" // Use threshold to invert inner circle
@@ -234,7 +234,7 @@ namespace eyegui
             "   float bodyMask = clamp(horizontalPressing - bodyPressBorder * sinPressing, 0, 1) * clamp(verticalPressing - bodyPressBorder * sinPressing, 0, 1);\n" // Body mask
             "   float thresholdMask = mix(uv.r, uv.g, orientation);\n"
             "   thresholdMask =  clamp(100 * clamp(1.9 * abs(thresholdMask - 0.5)  - (0.975 * threshold - 0.025), 0, 1), 0, 1);\n" // Inverted threshold mask
-            "   vec4 button = mix(color, iconValue, iconValue.a);\n" // Just body with icon
+            "   vec4 button = mix(color, vec4(iconValue.rgb, 1), iconValue.a);\n" // Just body with icon
             "   button = mix(vec4(color.rgb / 3, color.a), button, bodyMask);\n" // Just body with background
             "   button.rgb = mix(1-button.rgb, button.rgb, thresholdMask);\n" // Use threshold to invert
             "   button.rgb = mix(button.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
@@ -291,7 +291,7 @@ namespace eyegui
             "   float horizontalPressing = 100 * (1 - 1.95*abs(uv.r-0.5));\n"
             "   float verticalPressing = 100 * (1 - 1.95*abs(uv.g-0.5));\n"
             "   float bodyMask = clamp(horizontalPressing - bodyPressBorder * sinPressing, 0, 1) * clamp(verticalPressing - bodyPressBorder * sinPressing, 0, 1);\n" // Body mask
-            "   vec4 sensor = mix(color, iconValue, iconValue.a);\n" // Just body with icon
+            "   vec4 sensor = mix(color, vec4(iconValue.rgb, 1), iconValue.a);\n" // Just body with icon
             "   sensor = mix(vec4(color.rgb / 3, color.a), sensor, bodyMask);\n" // Just body with background
             "   sensor.rgb = mix(sensor.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
             "   sensor.rgb = mix(vec3(0.3,0.3,0.3), sensor.rgb, max(0.2, activity));\n" // Activity
