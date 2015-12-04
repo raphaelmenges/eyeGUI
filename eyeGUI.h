@@ -463,15 +463,17 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
+      \param immediately indicates, whether animation is skipped or not.
     */
-    void buttonDown(Layout* pLayout, std::string id);
+    void buttonDown(Layout* pLayout, std::string id, bool immediately = false);
 
     //! Button up.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
+      \param immediately indicates, whether animation is skipped or not.
     */
-    void buttonUp(Layout* pLayout, std::string id);
+    void buttonUp(Layout* pLayout, std::string id, bool immediately = false);
 
     //! Is button a switch?
     /*!
