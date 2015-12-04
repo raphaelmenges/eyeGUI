@@ -23,6 +23,7 @@ namespace eyegui
         float border,
         bool dimmable,
         bool adaptiveScaling,
+        bool consumeInput,
         float innerBorder,
         bool showBackground,
         RelativeScaling relativeScaling,
@@ -40,6 +41,7 @@ namespace eyegui
             border,
             dimmable,
             adaptiveScaling,
+            consumeInput,
             innerBorder,
             showBackground)
     {

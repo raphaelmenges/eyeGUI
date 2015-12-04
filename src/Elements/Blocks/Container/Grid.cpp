@@ -23,6 +23,7 @@ namespace eyegui
         float border,
         bool dimmable,
         bool adaptiveScaling,
+        bool consumeInput,
         float innerBorder,
         bool showBackground,
         int rows) : Container(
@@ -37,6 +38,7 @@ namespace eyegui
             border,
             dimmable,
             adaptiveScaling,
+            consumeInput,
             innerBorder,
             showBackground)
     {

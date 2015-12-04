@@ -1,7 +1,7 @@
 ### VERSION 0.5
 - Function to define search folder for content
-- BUG: Input marked as used even when block beneath is fully transparent
 - Set pressed for buttons? set maybe if you bound a option to it which is still choosen after restart or so
+- consume input as option for blocks. instead of using background color!
 
 ### VERSION 0.6
 - TextInput

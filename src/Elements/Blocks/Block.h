@@ -13,54 +13,56 @@
 
 namespace eyegui
 {
-	class Block : public Element
-	{
-	public:
+    class Block : public Element
+    {
+    public:
 
-		// Constructor
-		Block(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout const * pLayout,
-			Frame* pFrame,
-			AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
-			float relativeScale,
-			float border,
-			bool dimmable,
-			bool adaptiveScaling,
-			float innerBorder = 0);
+        // Constructor
+        Block(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+            NotificationQueue* pNotificationQueue,
+            float relativeScale,
+            float border,
+            bool dimmable,
+            bool adaptiveScaling,
+            bool consumeInput,
+            float innerBorder = 0);
 
-		// Destructor
-		virtual ~Block();
+        // Destructor
+        virtual ~Block();
 
-	protected:
+    protected:
 
-		// Updating filled by subclasses, returns adaptive scale
-		virtual float specialUpdate(float tpf, Input* pInput);
+        // Updating filled by subclasses, returns adaptive scale
+        virtual float specialUpdate(float tpf, Input* pInput);
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize();
 
-		// Reset filld by subclasses
-		virtual void specialReset();
+        // Reset filld by subclasses
+        virtual void specialReset();
 
-		// Members
-		int mInnerX;
-		int mInnerY;
-		int mInnerWidth;
-		int mInnerHeight;
+        // Members
+        int mInnerX;
+        int mInnerY;
+        int mInnerWidth;
+        int mInnerHeight;
 
-	private:
+    private:
 
-		// Members
-		RenderItem const * mpBackground;
-		float mInnerBorder; // [0..1]
-	};
+        // Members
+        RenderItem const * mpBackground;
+        float mInnerBorder; // [0..1]
+        bool mConsumeInput;
+    };
 }
 
 #endif // BLOCK_H_

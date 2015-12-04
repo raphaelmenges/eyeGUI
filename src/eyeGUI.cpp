@@ -279,9 +279,9 @@ namespace eyegui
         pLayout->registerSensorListener(id, wpListener);
     }
 
-    void replaceElementWithBlock(Layout* pLayout, std::string id, bool fade)
+    void replaceElementWithBlock(Layout* pLayout, std::string id, bool consumeInput, bool fade)
     {
-        pLayout->replaceElementWithBlock(id, fade);
+        pLayout->replaceElementWithBlock(id, consumeInput, fade);
     }
 
     void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, PictureAlignment alignment, bool fade)
@@ -312,6 +312,7 @@ namespace eyegui
     void replaceElementWithTextBlock(
         Layout* pLayout,
         std::string id,
+        bool consumeInput,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
@@ -320,7 +321,7 @@ namespace eyegui
         std::string key,
         bool fade)
     {
-        pLayout->replaceElementWithTextBlock(id, fontSize, alignment, verticalAlignment, content, innerBorder, key, fade);
+        pLayout->replaceElementWithTextBlock(id, consumeInput, fontSize, alignment, verticalAlignment, content, innerBorder, key, fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)

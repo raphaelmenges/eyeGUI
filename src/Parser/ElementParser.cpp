@@ -129,6 +129,9 @@ namespace eyegui
 
         std::unique_ptr<Grid> parseGrid(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimmable, bool adaptiveScaling, tinyxml2::XMLElement const * xmlGrid, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
+            // Consume input?
+            bool consumeInput = parseBoolAttribute("consumeinput", xmlGrid);
+
             // Get inner border
             float innerBorder = parsePercentAttribute("innerborder", xmlGrid);
 
@@ -167,6 +170,7 @@ namespace eyegui
                     border,
                     dimmable,
                     adaptiveScaling,
+                    consumeInput,
                     innerBorder,
                     showBackground,
                     rows));
@@ -263,8 +267,11 @@ namespace eyegui
 
         std::unique_ptr<Block> parseBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimmable, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBlock, Element* pParent, std::string filepath)
         {
+            // Consume input?
+            bool consumeInput = parseBoolAttribute("consumeinput", xmlBlock);
+
             // Create block and return
-            std::unique_ptr<Block> upBlock = std::unique_ptr<Block>(new Block(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, adaptiveScaling));
+            std::unique_ptr<Block> upBlock = std::unique_ptr<Block>(new Block(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, adaptiveScaling, consumeInput));
             return (std::move(upBlock));
         }
 
@@ -296,6 +303,9 @@ namespace eyegui
 
         std::unique_ptr<Stack> parseStack(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimmable, bool adaptiveScaling, tinyxml2::XMLElement const * xmlStack, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
+            // Consume input?
+            bool consumeInput = parseBoolAttribute("consumeinput", xmlStack);
+
             // Get inner border
             float innerBorder = parsePercentAttribute("innerborder", xmlStack);
 
@@ -370,6 +380,7 @@ namespace eyegui
                     border,
                     dimmable,
                     adaptiveScaling,
+                    consumeInput,
                     innerBorder,
                     showBackground,
                     relativeScaling,
@@ -394,6 +405,9 @@ namespace eyegui
 
         std::unique_ptr<TextBlock> parseTextBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimmable, bool adaptiveScaling, tinyxml2::XMLElement const * xmlTextBlock, Element* pParent, std::string filepath)
         {
+            // Consume input?
+            bool consumeInput = parseBoolAttribute("consumeinput", xmlTextBlock);
+
             // Get inner border
             float innerBorder = parsePercentAttribute("innerborder", xmlTextBlock);
 
@@ -470,7 +484,7 @@ namespace eyegui
             std::string key = parseStringAttribute("key", xmlTextBlock);
 
             // Create text block
-            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, adaptiveScaling, innerBorder, fontSize, alignment, verticalAlignment, content, key));
+            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimmable, adaptiveScaling, consumeInput, innerBorder, fontSize, alignment, verticalAlignment, content, key));
 
             // Return text block
             return std::move(upTextBlock);

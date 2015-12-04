@@ -21,6 +21,7 @@ namespace eyegui
         float border,
         bool dimmable,
         bool adaptiveScaling,
+        bool consumeInput,
         float innerBorder,
         bool showBackground) : Block(
             id,
@@ -34,6 +35,7 @@ namespace eyegui
             border,
             dimmable,
             adaptiveScaling,
+            consumeInput,
             innerBorder)
     {
         // Fill members

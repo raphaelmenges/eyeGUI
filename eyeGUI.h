@@ -540,11 +540,13 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
+      \param consumeInput indicates, whether block consumes given input.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithBlock(
         Layout* pLayout,
         std::string id,
+        bool consumeInput,
         bool fade = false);
 
     //! Replace element with picture.
@@ -621,6 +623,7 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
+      \param consumeInput indicates, whether block consumes given input.
       \param fontSize is size of used font.
       \param alignment is alignment of text.
       \param verticalAlignment is vertical alignment of text.
@@ -632,6 +635,7 @@ namespace eyegui
     void replaceElementWithTextBlock(
         Layout* pLayout,
         std::string id,
+        bool consumeInput,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
