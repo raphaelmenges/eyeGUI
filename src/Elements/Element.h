@@ -31,218 +31,221 @@
 
 namespace eyegui
 {
-	// Forward declaration
-	class Layout;
-	class NotificationQueue;
-	class Frame;
-	class InteractiveElement;
+    // Forward declaration
+    class Layout;
+    class NotificationQueue;
+    class Frame;
+    class InteractiveElement;
 
-	class Element : public Object
-	{
-	public:
+    class Element : public Object
+    {
+    public:
 
-		// Enumeration of elements
-		enum class Type {
-			ELEMENT,
-			PICTURE,
-			BLANK,
-			INTERACTIVE_ELEMENT,
-			SENSOR,
-			BUTTON,
-			CIRCLE_BUTTON,
-			BOX_BUTTON,
-			DROP_BUTTON,
-			BLOCK,
-			STACK,
-			GRID,
-			TEXT_BLOCK
-		};
+        // Enumeration of elements
+        enum class Type {
+            ELEMENT,
+            PICTURE,
+            BLANK,
+            INTERACTIVE_ELEMENT,
+            SENSOR,
+            BUTTON,
+            CIRCLE_BUTTON,
+            BOX_BUTTON,
+            DROP_BUTTON,
+            BLOCK,
+            STACK,
+            GRID,
+            TEXT_BLOCK
+        };
 
-		// Orientation of element
-		enum class Orientation { HORIZONTAL, VERTICAL };
+        // Orientation of element
+        enum class Orientation { HORIZONTAL, VERTICAL };
 
-		// Constructor
-		Element(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout const * pLayout,
-			Frame* pFrame,
-			AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
-			float relativeScale,
-			float border,
-			bool dimmable,
-			bool adaptiveScaling);
+        // Constructor
+        Element(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+            NotificationQueue* pNotificationQueue,
+            float relativeScale,
+            float border,
+            bool dimmable,
+            bool adaptiveScaling);
 
-		// Destructor
-		virtual ~Element() = 0;
+        // Destructor
+        virtual ~Element() = 0;
 
-		// Transformation and size in pixels
-		virtual int getX() const;
-		virtual int getY() const;
-		virtual int getWidth() const;
-		virtual int getHeight() const;
+        // Transformation and size in pixels
+        virtual int getX() const;
+        virtual int getY() const;
+        virtual int getWidth() const;
+        virtual int getHeight() const;
 
-		// Get relative screen position and size
-		virtual float getRelativePositionOnLayoutX() const;
-		virtual float getRelativePositionOnLayoutY() const;
-		virtual float getRelativeSizeOnLayoutX() const;
-		virtual float getRelativeSizeOnLayoutY() const;
+        // Get relative screen position and size
+        virtual float getRelativePositionOnLayoutX() const;
+        virtual float getRelativePositionOnLayoutY() const;
+        virtual float getRelativeSizeOnLayoutX() const;
+        virtual float getRelativeSizeOnLayoutY() const;
 
-		// Type getter
-		Type getType() const;
+        // Type getter
+        Type getType() const;
 
-		// Id getter
-		std::string getId() const;
+        // Id getter
+        std::string getId() const;
 
-		// Parent
-		Element* getParent() const;
+        // Parent
+        Element* getParent() const;
 
-		// Activity
-		bool isActive() const;
+        // Activity
+        bool isActive() const;
 
-		// Orientation
-		Orientation getOrientation() const;
+        // Orientation
+        Orientation getOrientation() const;
 
-		// Style
-		Style const * getStyle() const;
+        // Getter for style
+        Style const * getStyle() const;
 
-		// Name of style
-		std::string getStyleName() const;
+        // Setter for style
+        void setStyle(std::string styleName);
 
-		// Setter for alpha
-		void setAlpha(float alpha);
+        // Getter for name of style
+        std::string getStyleName() const;
 
-		// Getter for alpha
-		float getAlpha() const;
+        // Setter for alpha
+        void setAlpha(float alpha);
 
-		// Activate or deactivate
-		virtual void setActivity(bool active, bool fade);
+        // Getter for alpha
+        float getAlpha() const;
 
-		// Setter for dimmable
-		void setDimmable(bool dimmable);
+        // Activate or deactivate
+        virtual void setActivity(bool active, bool fade);
 
-		// Getter for dimmable
-		bool isDimmable() const;
+        // Setter for dimmable
+        void setDimmable(bool dimmable);
 
-		// Get layout
-		Layout const * getLayout() const;
+        // Getter for dimmable
+        bool isDimmable() const;
 
-		// Get frame
-		Frame* getFrame() const;
+        // Get layout
+        Layout const * getLayout() const;
 
-		// Get asset manager
-		AssetManager* getAssetManager() const;
+        // Get frame
+        Frame* getFrame() const;
 
-		// Get notification queue
-		NotificationQueue* getNotificationQueue() const;
+        // Get asset manager
+        AssetManager* getAssetManager() const;
 
-		// Get border
-		float getBorder() const;
+        // Get notification queue
+        NotificationQueue* getNotificationQueue() const;
 
-		// Get pointer to all children, recursively
-		std::set<Element*> getAllChildren() const;
+        // Get border
+        float getBorder() const;
 
-		// Get ids of all children, recursively
-		std::set<std::string> getAllChildrensIds() const;
+        // Get pointer to all children, recursively
+        std::set<Element*> getAllChildren() const;
 
-		// Change transformation and size (pixel values)
-		void transformAndSize(int x, int y, int width, int height);
+        // Get ids of all children, recursively
+        std::set<std::string> getAllChildrensIds() const;
 
-		// Get relative and adaptive scale combined to dynamic scale
-		float getDynamicScale() const;
+        // Change transformation and size (pixel values)
+        void transformAndSize(int x, int y, int width, int height);
 
-		// Get relative scale
-		float getRelativeScale() const;
+        // Get relative and adaptive scale combined to dynamic scale
+        float getDynamicScale() const;
 
-		// Get adaptive scaling
-		bool getAdaptiveScaling() const;
+        // Get relative scale
+        float getRelativeScale() const;
 
-		// Updating, returns adaptive scale
-		float update(float tpf, float alpha, Input* pInput, float dimming);
+        // Get adaptive scaling
+        bool getAdaptiveScaling() const;
 
-		// Drawing
-		void draw() const;
+        // Updating, returns adaptive scale
+        float update(float tpf, float alpha, Input* pInput, float dimming);
 
-		// Resetting
-		void reset();
+        // Drawing
+        void draw() const;
 
-		// Check before transformation, how much space is needed
-		virtual void evaluateSize(
-			int availableWidth,
-			int availableHeight,
-			int& rWidth,
-			int& rHeight) const;
+        // Resetting
+        void reset();
 
-		// Starts the getting of the next interactive element, returns NULL if no available
-		virtual InteractiveElement* nextInteractiveElement();
+        // Check before transformation, how much space is needed
+        virtual void evaluateSize(
+            int availableWidth,
+            int availableHeight,
+            int& rWidth,
+            int& rHeight) const;
 
-		// Tries to fetch next interactive element for selecting, returns NULL if fails
-		virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
+        // Starts the getting of the next interactive element, returns NULL if no available
+        virtual InteractiveElement* nextInteractiveElement();
 
-		// Replace an attached element, returns NULL if not found
-		virtual std::unique_ptr<Element> replaceAttachedElement(
-			Element* pTarget,
-			std::unique_ptr<Element> upReplacement);
+        // Tries to fetch next interactive element for selecting, returns NULL if fails
+        virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
-		// Commit replaced element to this element
-		void commitReplacedElement(std::unique_ptr<Element> upElement, bool fade);
+        // Replace an attached element, returns NULL if not found
+        virtual std::unique_ptr<Element> replaceAttachedElement(
+            Element* pTarget,
+            std::unique_ptr<Element> upReplacement);
 
-	protected:
+        // Commit replaced element to this element
+        void commitReplacedElement(std::unique_ptr<Element> upElement, bool fade);
 
-		// Updating filled by subclasses, returns adaptive scale
-		virtual float specialUpdate(float tpf, Input* pInput) = 0;
+    protected:
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const = 0;
+        // Updating filled by subclasses, returns adaptive scale
+        virtual float specialUpdate(float tpf, Input* pInput) = 0;
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize() = 0;
+        // Drawing filled by subclasses
+        virtual void specialDraw() const = 0;
 
-		// Reset filld by subclasses
-		virtual void specialReset() = 0;
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize() = 0;
 
-		// Convert pixel space to drawing space
-		glm::mat4 calculateDrawMatrix(int x, int y, int width, int height) const;
+        // Reset filld by subclasses
+        virtual void specialReset() = 0;
 
-		// Checks, whether element is penetrated by input
-		virtual bool penetratedByInput(Input const * pInput) const;
+        // Convert pixel space to drawing space
+        glm::mat4 calculateDrawMatrix(int x, int y, int width, int height) const;
 
-		// Members
-		int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
-		Type mType;
-		Layout const * mpLayout;
-		Frame* mpFrame;
-		AssetManager* mpAssetManager;
-		NotificationQueue* mpNotificationQueue;
-		float mRelativeScale; // [0..]
-		float mAlpha; // [0..1]
-		float mBorderAspectRatio;
-		glm::mat4 mDrawMatrix;
-		LerpValue mActivity; // [0..1]
-		bool mDimmable;
-		LerpValue mDimming; // [0..1] One means full dimming
-		bool mForceUndim; // At the moment only used by drop button 
-						  // to be undimmed while showing inner elements
-		bool mActive;
-		bool mAdaptiveScaling;
-		LerpValue mAdaptiveScale; // [0..1]
+        // Checks, whether element is penetrated by input
+        virtual bool penetratedByInput(Input const * pInput) const;
 
-		// This vector is the owner of all children. May be empty!
-		std::vector<std::unique_ptr<Element> > mChildren;
+        // Members
+        int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
+        Type mType;
+        Layout const * mpLayout;
+        Frame* mpFrame;
+        AssetManager* mpAssetManager;
+        NotificationQueue* mpNotificationQueue;
+        float mRelativeScale; // [0..]
+        float mAlpha; // [0..1]
+        float mBorderAspectRatio;
+        glm::mat4 mDrawMatrix;
+        LerpValue mActivity; // [0..1]
+        bool mDimmable;
+        LerpValue mDimming; // [0..1] One means full dimming
+        bool mForceUndim; // At the moment only used by drop button
+                          // to be undimmed while showing inner elements
+        bool mActive;
+        bool mAdaptiveScaling;
+        LerpValue mAdaptiveScale; // [0..1]
 
-	private:
+        // This vector is the owner of all children. May be empty!
+        std::vector<std::unique_ptr<Element> > mChildren;
 
-		// Members
-		std::string mId;
-		Element* mpParent;
-		float mBorder; // [0..1]
-		Orientation mOrientation;
-		std::string mStyleName;
-		Style const * mpStyle;
-		std::unique_ptr<Element> mupReplacedElement;
-	};
+    private:
+
+        // Members
+        std::string mId;
+        Element* mpParent;
+        float mBorder; // [0..1]
+        Orientation mOrientation;
+        std::string mStyleName;
+        Style const * mpStyle;
+        std::unique_ptr<Element> mupReplacedElement;
+    };
 }
 
 #endif // ELEMENT_H_

@@ -72,7 +72,7 @@ namespace eyegui
         // Get time from GUI
         float getAccPeriodicTime() const;
 
-        // Get pointer to styles of this layout
+        // Get pointer to styles of this layout. Returns NULL if not found
         Style const * getStyleFromStylesheet(std::string styleName) const;
 
         // Get string content from localization
@@ -282,7 +282,7 @@ namespace eyegui
         bool mVisible;
         bool mResizeNecessary;
         bool mUseInput;
-        std::unique_ptr<std::map<std::string, Style> > mStyles;
+        std::unique_ptr<std::map<std::string, Style> > mupStyles;
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<NotificationQueue> mupNotificationQueue;
     };

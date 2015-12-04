@@ -1,11 +1,10 @@
 ### VERSION 0.5
 - Function to define search folder for content
-- Set style of element
 - Hide elements
 - BUG: Input marked as used even when block beneath is fully transparent
 - ... (depending on what the "praktikum" needs)
 
-### VERSION 0.6 (January/February 2016)
+### VERSION 0.6
 - TextInput
   - Keyboard and "Guesser" (tries to goes what you want to write)
   - Both are indepenend
@@ -15,7 +14,7 @@
     - Letters get bigger and after threshold: selection
     - Only last letter focused for longer time
 
-### VERSION 0.7 (?)
+### VERSION 0.7
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
@@ -30,7 +29,6 @@
 - Font has sometimes little rendering issues
 - Adaptive scaling is not that smooth
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
-
 
 Notes:
 - Reminder: Getter for transform and size do only work after first update

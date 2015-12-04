@@ -33,7 +33,7 @@ namespace eyegui
         mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
 
         // Parse style file
-        mStyles = stylesheet_parser::parse(stylesheetFilepath);
+        mupStyles = stylesheet_parser::parse(stylesheetFilepath);
     }
 
     Layout::~Layout()
@@ -182,8 +182,17 @@ namespace eyegui
 
     Style const * Layout::getStyleFromStylesheet(std::string styleName) const
     {
-        // Should always work, because everything is checked at parsing
-        return &((*(mStyles.get())).at(styleName));
+        // Search for style
+        auto it = mupStyles->find(styleName);
+
+        if (it != mupStyles->end())
+        {
+            return &(it->second);
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
     std::u16string Layout::getContentFromLocalization(std::string key) const
@@ -194,7 +203,7 @@ namespace eyegui
     std::set<std::string> Layout::getNamesOfAvailableStyles() const
     {
         std::set<std::string> names;
-        for (const std::pair<std::string, Style>& pair : *(mStyles.get()))
+        for (const std::pair<std::string, Style>& pair : *(mupStyles.get()))
         {
             names.insert(pair.first);
         }
@@ -308,7 +317,15 @@ namespace eyegui
 
     void Layout::setStyleOfElement(std::string id, std::string style)
     {
-        // TODO
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            pElement->setStyle(style);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+        }
     }
 
     bool Layout::isElementDimmable(std::string id) const
@@ -653,9 +670,9 @@ namespace eyegui
     void Layout::setValueOfStyleAttribute(std::string styleName, std::string attribute, glm::vec4 value)
     {
         // Check, whether style exists
-        auto it = mStyles->find(styleName);
+        auto it = mupStyles->find(styleName);
 
-        if (it != mStyles->end())
+        if (it != mupStyles->end())
         {
             stylesheet_parser::fillValue(it->second, attribute, value);
         }
