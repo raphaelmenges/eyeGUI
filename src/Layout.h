@@ -121,10 +121,10 @@ namespace eyegui
         void hitButton(std::string id);
 
         // Button down
-        void buttonDown(std::string id);
+        void buttonDown(std::string id, bool immediately);
 
         // Button up
-        void buttonUp(std::string id);
+        void buttonUp(std::string id, bool immediately);
 
         // Is button a switch?
         bool isButtonSwitch(std::string id) const;

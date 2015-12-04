@@ -234,14 +234,14 @@ namespace eyegui
         pLayout->hitButton(id);
     }
 
-    void buttonDown(Layout* pLayout, std::string id)
+    void buttonDown(Layout* pLayout, std::string id, bool immediately)
     {
-        pLayout->buttonDown(id);
+        pLayout->buttonDown(id, immediately);
     }
 
-    void buttonUp(Layout* pLayout, std::string id)
+    void buttonUp(Layout* pLayout, std::string id, bool immediately)
     {
-        pLayout->buttonUp(id);
+        pLayout->buttonUp(id, immediately);
     }
 
     bool isButtonSwitch(Layout const * pLayout, std::string id)

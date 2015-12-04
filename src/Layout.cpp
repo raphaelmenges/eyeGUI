@@ -394,12 +394,12 @@ namespace eyegui
         }
     }
 
-    void Layout::buttonDown(std::string id)
+    void Layout::buttonDown(std::string id, bool immediately)
     {
         Button* pButton = toButton(fetchElement(id));
         if (pButton != NULL)
         {
-            return pButton->down();
+            return pButton->down(immediately);
         }
         else
         {
@@ -407,12 +407,12 @@ namespace eyegui
         }
     }
 
-    void Layout::buttonUp(std::string id)
+    void Layout::buttonUp(std::string id, bool immediately)
     {
         Button* pButton = toButton(fetchElement(id));
         if (pButton != NULL)
         {
-            return pButton->up();
+            return pButton->up(immediately);
         }
         else
         {
