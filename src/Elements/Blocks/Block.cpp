@@ -55,7 +55,7 @@ namespace eyegui
     // Updating
     float Block::specialUpdate(float tpf, Input* pInput)
     {
-        // Check if block blocks also input TODO: maybe extra bool instead of backgroundcolor check
+        // Check if block blocks also input
         if (penetratedByInput(pInput) && mConsumeInput)
         {
             pInput->gazeUsed = true;
