@@ -2,7 +2,7 @@
 - Function to define search folder for content
 - BUG: Input marked as used even when block beneath is fully transparent
 - Set pressed for buttons? set maybe if you bound a option to it which is still choosen after restart or so
-- maybe option to hide background of grid? or grid and stack no block anymore. would be also an option -> could be added to Container!
+- BUG: Renndering issue at combining alpha of icon and background (look through)
 
 ### VERSION 0.6
 - TextInput

@@ -23,8 +23,9 @@ namespace eyegui
         float border,
         bool dimmable,
         bool adaptiveScaling,
-        int rows,
-        float innerBorder) : Container(
+        float innerBorder,
+        bool showBackground,
+        int rows) : Container(
             id,
             styleName,
             pParent,
@@ -36,7 +37,8 @@ namespace eyegui
             border,
             dimmable,
             adaptiveScaling,
-            innerBorder)
+            innerBorder,
+            showBackground)
     {
         mType = Type::GRID;
 
