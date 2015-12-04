@@ -8,14 +8,14 @@
 // filepath may only be set by eyeGUI.cpp function "setRootFilepath". Everything
 // else would be dangerous.
 
-#ifndef PATHER_H_
-#define PATHER_H_
+#ifndef PATH_FINDER_H_
+#define PATH_FINDER_H_
 
 #include <string>
 
 namespace eyegui
 {
-    class Pather
+    class PathFinder
     {
     public:
 
@@ -31,12 +31,12 @@ namespace eyegui
     private:
 
         // Check for instance existence
-        static Pather* getInstance()
+        static PathFinder* getInstance()
         {
             if (pInstance == NULL)
             {
-                static Pather pather;
-                pInstance = &pather;
+                static PathFinder pathFinder;
+                pInstance = &pathFinder;
             }
             return pInstance;
         }
@@ -49,7 +49,7 @@ namespace eyegui
         }
 
         // The pointer to the single instance
-        static Pather* pInstance;
+        static PathFinder* pInstance;
 
         // Filepath
         static std::string rootFilepath;

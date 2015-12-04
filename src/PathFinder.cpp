@@ -5,11 +5,11 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 
-#include "Pather.h"
+#include "PathFinder.h"
 
 namespace eyegui
 {
-    Pather* Pather::pInstance = NULL;
+    PathFinder* PathFinder::pInstance = NULL;
 
-    std::string Pather::rootFilepath = "";
+    std::string PathFinder::rootFilepath = "";
 }
