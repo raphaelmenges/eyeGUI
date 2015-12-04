@@ -10,6 +10,7 @@
 #include "GUI.h"
 #include "Layout.h"
 #include "OperationNotifier.h"
+#include "Pather.h"
 
 // Version
 static const std::string VERSION_STRING = "0.5";
@@ -444,5 +445,11 @@ namespace eyegui
     std::string getLibraryVersion()
     {
         return VERSION_STRING;
+    }
+
+    void setRootFilepath(std::string rootFilepath)
+    {
+        // Set root filepath as friend
+        Pather::rootFilepath = rootFilepath;
     }
 }

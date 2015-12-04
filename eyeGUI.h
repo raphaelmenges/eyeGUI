@@ -849,6 +849,12 @@ namespace eyegui
       \return version given as string.
     */
     std::string getLibraryVersion();
+
+    //! Root filepath is the prefix used globally for ALL filepaths as prefix.
+    /*!
+      \param rootFilepath is used as prefix for used filepaths.
+    */
+    void setRootFilepath(std::string rootFilepath);
 }
 
 #endif // EYE_GUI_H_
