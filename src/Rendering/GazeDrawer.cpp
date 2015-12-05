@@ -193,8 +193,8 @@ namespace eyegui
 
     int GazeDrawer::calculateDiameterOfGazePoint(const GazePoint& rGazePoint) const
     {
-         return (int) 2 * // Distance is used and mesh is from 0..1, so double the size
+         return (int) (2.0f * // Distance is used and mesh is from 0..1, so double the size
                 (rGazePoint.focus.getValue() * mMaxGazePointSize
-                + (1.0f - rGazePoint.focus.getValue()) * mMinGazePointSize);
+                + (1.0f - rGazePoint.focus.getValue()) * mMinGazePointSize));
     }
 }

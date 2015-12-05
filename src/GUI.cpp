@@ -374,7 +374,7 @@ namespace eyegui
     void GUI::RemoveLayoutJob::execute()
     {
         // Saving count of layouts
-        int layoutCount = mpGUI->mLayouts.size();
+        int layoutCount = (int) mpGUI->mLayouts.size();
 
         // Removing layout from vector
         mpGUI->mLayouts.erase(
