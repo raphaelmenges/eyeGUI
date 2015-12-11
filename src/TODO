@@ -14,6 +14,7 @@
     - Only last letter focused for longer time
 
 ### VERSION 0.7
+- replace picopng by stbimage to support more formats
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
