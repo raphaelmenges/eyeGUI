@@ -1,8 +1,12 @@
 ### VERSION 0.6
-- IDEA: disable opengl storing stuff by function (to save computation time)
 - BUG: penetration of sensor uses increase value only or so.
+- BUG: Only RGBA png files do work, RGB is not loaded correctly
+- replace picopng by stbimage to support more formats
 - What happens when drawn without one update
 - Use UTF8-CPP for config and stylesheet
+    
+### VERSION 0.7
+- IDEA: disable opengl storing stuff by function (to save computation time)
 - add comment at gui resize: one has to wait for update
 - TextInput
   - Keyboard and "Guesser" (tries to goes what you want to write)
@@ -13,8 +17,8 @@
     - Letters get bigger and after threshold: selection
     - Only last letter focused for longer time
 
-### VERSION 0.7
-- replace picopng by stbimage to support more formats
+### VERSION 0.8
+
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
