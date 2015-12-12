@@ -18,7 +18,6 @@
     - Only last letter focused for longer time
 
 ### VERSION 0.8
-
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
