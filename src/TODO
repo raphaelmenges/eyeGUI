@@ -4,6 +4,8 @@
 - replace picopng by stbimage to support more formats
 - What happens when drawn without one update
 - Use UTF8-CPP for config and stylesheet
+- BUG?: At execution for every notification, check whether element still exists (maybe do not safe pointers but ids)
+- Feature?: Distinguish between fade in and out for replacing stuff (at the moment fade out only)
     
 ### VERSION 0.7
 - IDEA: disable opengl storing stuff by function (to save computation time)
