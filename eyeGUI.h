@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.5
+ *  \version   0.6
  *  \license   This project is released under the MIT License (MIT)
  */
 

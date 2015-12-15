@@ -13,7 +13,7 @@
 #include "PathBuilder.h"
 
 // Version
-static const std::string VERSION_STRING = "0.5";
+static const std::string VERSION_STRING = "0.6";
 
 namespace eyegui
 {
