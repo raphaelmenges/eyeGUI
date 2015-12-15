@@ -15,25 +15,25 @@
 
 namespace eyegui
 {
-	class VectorTexture : public Texture
-	{
-	public:
+    class VectorTexture : public Texture
+    {
+    public:
 
-		// Constructor for graphics on disk
-		VectorTexture(std::string filepath, Filtering filtering, Wrap wrap);
+        // Constructor for graphics on disk
+        VectorTexture(std::string filepath, Filtering filtering, Wrap wrap);
 
-		// Constructor for internal graphics
-		VectorTexture(std::string const * pGraphic, Filtering filtering, Wrap wrap);
+        // Constructor for internal graphics
+        VectorTexture(std::string const * pGraphic, Filtering filtering, Wrap wrap);
 
-		// Destructor
-		virtual ~VectorTexture();
+        // Destructor
+        virtual ~VectorTexture();
 
-	private:
+    private:
 
-		// Rasterize
-		void rasterizeGraphics(NSVGimage* svg, Filtering filtering, Wrap wrap);
+        // Rasterize
+        void rasterizeGraphics(NSVGimage* svg, Filtering filtering, Wrap wrap, std::string filepath);
 
-	};
+    };
 }
 
 #endif // VECTOR_TEXTURE_H_

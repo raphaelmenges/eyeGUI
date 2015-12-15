@@ -46,9 +46,9 @@ include_directories(${EXTERNAL_DIR}/GLM)
 file(GLOB_RECURSE OpenGLLoader
   ${EXTERNAL_DIR}/OpenGLLoader/*)
 
-# Add picoPNG
-file(GLOB_RECURSE PICO_PNG
-  ${EXTERNAL_DIR}/picoPNG/*)
+# Add stb_image
+file(GLOB_RECURSE STB_IMAGE
+  ${EXTERNAL_DIR}/stb/*)
 
 # Add NanoSVG
 file(GLOB_RECURSE NANO_SVG
@@ -127,7 +127,7 @@ set(ALL_CODE
     ${TINYXML2}
     ${GLM}
     ${OpenGLLoader}
-    ${PICO_PNG}
+    ${STB_IMAGE}
     ${NANO_SVG}
     ${FREETYPE2}
     ${UTFCPP})

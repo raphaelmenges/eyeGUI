@@ -9,36 +9,21 @@
 
 #include "Helper.h"
 #include "OperationNotifier.h"
-#include "externals/picoPNG/picopng.h"
+
 #include "PathBuilder.h"
 
-#include <fstream>
+// stb_image wants those defines
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG // Force people to use a good pixel graphics format
+
+#include "externals/stb/stb_image.h"
 
 namespace eyegui
 {
     PixelTexture::PixelTexture(std::string filepath, Filtering filtering, Wrap wrap) : Texture()
     {
-        // Read image from disk
-        std::vector<uchar> image;
-        uint width, height, channelCount;
-        loadPixelImage(filepath, image, width, height, channelCount);
-
-        // Create OpenGL texture
-        createOpenGLTexture(image, filtering, wrap, width, height, channelCount);
-    }
-
-    PixelTexture::~PixelTexture()
-    {
-        // Nothing to do
-    }
-
-    void PixelTexture::loadPixelImage(
-        std::string filepath,
-        std::vector<uchar>& rImage,
-        uint& rWidth,
-        uint& rHeight,
-        uint& rChannelCount) const
-    {
+        // Setup stb_image
+        stbi_set_flip_vertically_on_load(true);
 
         // Check file format
         if (!checkFileNameExtension(filepath, "png"))
@@ -46,34 +31,28 @@ namespace eyegui
             throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format", filepath);
         }
 
-        // Read file
-        std::ifstream in(buildPath(filepath).c_str(), std::ios::in | std::ios::binary);
+        // Try to load image
+        int width, height, channelCount;
+        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, 0);
 
         // Check whether file was found
-        if (!in)
+        if (data == NULL)
         {
-            throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found", filepath);
+            throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or error at parsing", filepath);
         }
 
-        // Get size
-        in.seekg(0, std::ios::end);
-        std::streamsize size = in.tellg();
+        // Create vector out of data
+        std::vector<unsigned char> image(data, data + width * height * channelCount);
 
-        // Read it
-        in.seekg(0, std::ios::beg);
-        std::vector<char> buffer((uint)(size));
-        in.read(&(buffer[0]), (uint)(size));
+        // Create OpenGL texture
+        createOpenGLTexture(image, filtering, wrap, width, height, channelCount, filepath);
 
-        // Close file
-        in.close();
+        // Delete raw image data
+        stbi_image_free(data);
+    }
 
-        // Decode image
-        ulong longWidth, longHeight;
-        decodePNG(rImage, longWidth, longHeight, reinterpret_cast<uchar*>(&(buffer[0])), (uint)(size), false);
-        rWidth = (uint)(longWidth);
-        rHeight = (uint)(longHeight);
-
-        // Calculate number of channels
-        rChannelCount = (uint)(rImage.size() / (rWidth * rHeight * sizeof(uchar)));
+    PixelTexture::~PixelTexture()
+    {
+        // Nothing to do
     }
 }

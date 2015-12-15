@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -13,26 +13,16 @@
 
 namespace eyegui
 {
-	class PixelTexture : public Texture
-	{
-	public:
+    class PixelTexture : public Texture
+    {
+    public:
 
-		// Constructor
-		PixelTexture(std::string filepath, Filtering filtering, Wrap wrap);
+        // Constructor
+        PixelTexture(std::string filepath, Filtering filtering, Wrap wrap);
 
-		// Destructor
-		virtual ~PixelTexture();
-
-	protected:
-
-		// Load pixel image from file
-		void loadPixelImage(
-			std::string filepath,
-			std::vector<uchar>& rImage,
-			uint& rWidth,
-			uint& rHeight,
-			uint& rChannelCount) const;
-	};
+        // Destructor
+        virtual ~PixelTexture();
+    };
 }
 
 #endif // PIXEL_TEXTURE_H_

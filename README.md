@@ -7,6 +7,9 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 
 ## Features
 
+#### Version 0.6
+* stb_image for pixel image loading
+
 #### Version 0.5
 * Extending interface
 * Layout can be removed from GUI
@@ -34,7 +37,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 * NanoSVG: https://github.com/memononen/nanosvg
 * TinyXML2: https://github.com/leethomason/tinyxml2
 * GLM: http://glm.g-truc.net/0.9.7/index.html (MIT license chosen)
-* picoPNG: http://lodev.org/lodepng/
+* stb_image: https://github.com/nothings/stb
 * FreeType 2.6.1: http://www.freetype.org/ (FreeType license chosen)
 * UTF8-CPP: https://github.com/nemtrif/utfcpp
 
