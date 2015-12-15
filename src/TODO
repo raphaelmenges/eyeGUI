@@ -1,5 +1,4 @@
 ### VERSION 0.6
-- What happens when drawn without one update
 - Use UTF8-CPP for config and stylesheet
 - Feature?: Distinguish between fade in and out for replacing stuff (at the moment fade out only)
     
