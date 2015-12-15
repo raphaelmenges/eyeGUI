@@ -62,7 +62,7 @@ namespace eyegui
         if (mActive)
         {
             // Inform listener after updating
-            mpNotificationQueue->enqueue(this, Notification::BUTTON_HIT);
+            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_HIT);
 
             // Call context correct method
             if (mIsDown)
@@ -87,7 +87,7 @@ namespace eyegui
             mIsDown = true;
 
             // Inform listener after updating
-            mpNotificationQueue->enqueue(this, Notification::BUTTON_DOWN);
+            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_DOWN);
 
             // Immediately
             if (immediately)
@@ -108,7 +108,7 @@ namespace eyegui
             mIsDown = false;
 
             // Inform listener after updating
-            mpNotificationQueue->enqueue(this, Notification::BUTTON_UP);
+            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_UP);
 
             // Immediately
             if (immediately)
@@ -133,11 +133,11 @@ namespace eyegui
         // Super call
         float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
-		// Check for penetration by input
+        // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
         if (penetrated)
         {
-			// Will be used by this button
+            // Will be used by this button
             pInput->gazeUsed = true;
         }
 

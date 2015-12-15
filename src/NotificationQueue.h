@@ -5,7 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Queue for notifications sent by elements. Should be member of a layout
-// and handling all notifications of its children.
+// and handling all notifications of its elements.
 
 #ifndef NOTIFICATION_QUEUE_H_
 #define NOTIFICATION_QUEUE_H_
@@ -17,31 +17,35 @@
 
 namespace eyegui
 {
-	// Forward declaration
-	class Layout;
+    // Forward declaration
+    class Layout;
 
-	class NotificationQueue
-	{
-	public:
+    // Typedefs
+    typedef std::pair<std::string, InteractiveElement::Notification> NotificationPair;
+    typedef std::vector<NotificationPair> NotificationVector;
 
-		// Constructor
-		NotificationQueue(Layout* pLayout);
+    class NotificationQueue
+    {
+    public:
 
-		// Destructor
-		virtual ~NotificationQueue();
+        // Constructor
+        NotificationQueue(Layout* pLayout);
 
-		// Enqueue notification which is processed before next updating of layout
-		void enqueue(InteractiveElement* pNotifier, InteractiveElement::Notification notification);
+        // Destructor
+        virtual ~NotificationQueue();
 
-		// Process notifications
-		void process();
+        // Enqueue notification which is processed before next updating of layout
+        void enqueue(std::string notifierId, InteractiveElement::Notification notification);
 
-	private:
+        // Process notifications
+        void process();
 
-		// Member
-		Layout* mpLayout;
-		std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > > mupNotificatons;
-	};
+    private:
+
+        // Member
+        Layout* mpLayout;
+        std::unique_ptr<NotificationVector> mupNotificatons;
+    };
 }
 
 #endif // NOTIFICATION_QUEUE_H_

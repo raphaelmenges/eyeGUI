@@ -89,7 +89,7 @@ namespace eyegui
         // Inform listener after updating when penetrated
         if (mPenetration.getValue() > 0)
         {
-            mpNotificationQueue->enqueue(this, Notification::SENSOR_PENETRATED);
+            mpNotificationQueue->enqueue(getId(), Notification::SENSOR_PENETRATED);
         }
 
         return 0;

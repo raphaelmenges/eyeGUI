@@ -36,6 +36,9 @@ namespace eyegui
     {
     public:
 
+        // Friends (may use private methods)
+        friend class NotificationQueue;
+
         // Constructor
         Layout(GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath);
 

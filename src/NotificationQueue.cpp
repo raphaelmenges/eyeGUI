@@ -10,60 +10,64 @@
 #include "Defines.h"
 #include "Layout.h"
 #include "OperationNotifier.h"
+#include "Elements/ElementCasting.h"
 
 namespace eyegui
 {
-	NotificationQueue::NotificationQueue(Layout* pLayout)
-	{
-		mpLayout = pLayout;
-		mupNotificatons = std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > >(new std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> >);
-	}
+    NotificationQueue::NotificationQueue(Layout* pLayout)
+    {
+        mpLayout = pLayout;
+        mupNotificatons = std::unique_ptr<NotificationVector>(new NotificationVector);
+    }
 
-	NotificationQueue::~NotificationQueue()
-	{
-		// Nothing to do
-	}
+    NotificationQueue::~NotificationQueue()
+    {
+        // Nothing to do
+    }
 
-	void NotificationQueue::enqueue(InteractiveElement* pNotifier, InteractiveElement::Notification notification)
-	{
-		mupNotificatons->push_back(std::pair<InteractiveElement*, InteractiveElement::Notification>(pNotifier, notification));
-	}
+    void NotificationQueue::enqueue(std::string notifierId, InteractiveElement::Notification notification)
+    {
+        mupNotificatons->push_back(NotificationPair(notifierId, notification));
+    }
 
-	void NotificationQueue::process()
-	{
-		// Repeat working on the notifications
-		int loopCount = 0;
-		while (mupNotificatons->size() > 0)
-		{
-			if (loopCount == NOTIFICATION_MAX_LOOP_COUNT)
-			{
-				// Delete still existing notifications
-				mupNotificatons.reset(new std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> >);
-				throwWarning(OperationNotifier::Operation::RUNTIME, "Notifications are too nested and were cleared");
+    void NotificationQueue::process()
+    {
+        // Repeat working on the notifications
+        int loopCount = 0;
+        while (mupNotificatons->size() > 0)
+        {
+            if (loopCount == NOTIFICATION_MAX_LOOP_COUNT)
+            {
+                // Delete still existing notifications
+                mupNotificatons.reset(new NotificationVector);
+                throwWarning(OperationNotifier::Operation::RUNTIME, "Notifications are too nested and were cleared");
 
-				// Break the while loop
-				break;
-			}
+                // Break the while loop
+                break;
+            }
 
-			else
-			{
-				// Transfer notifications to local pointer and replace with empty one
-				std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > > upNotifications = std::move(mupNotificatons);
-				mupNotificatons = std::unique_ptr<std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> > >(new std::vector<std::pair<InteractiveElement*, InteractiveElement::Notification> >);
+            else
+            {
+                // Move notifications to local unique pointer and replace with empty one, which can be filled again
+                std::unique_ptr<NotificationVector> upNotifications = std::move(mupNotificatons);
+                mupNotificatons = std::unique_ptr<NotificationVector>(new NotificationVector);
 
-				// Work on notifications
-				for (int i = 0; i < upNotifications->size(); i++)
-				{
-					// Listeners of notifications could fill the notifications in this layout again... (just a note)
-					std::pair<InteractiveElement*, InteractiveElement::Notification> notification = upNotifications->at(i);
+                // Work on notifications
+                for (int i = 0; i < upNotifications->size(); i++)
+                {
+                    // Listeners of notifications could fill the notifications in this layout again... (just a note)
+                    NotificationPair notification = upNotifications->at(i);
 
-					// Piping takes care that replaced elements do not send notifications
-					notification.first->pipeNotification(notification.second, mpLayout);
-				}
+                    // Get interactive element by id from layout
+                    InteractiveElement* pInteractiveElement = toInteractiveElement(mpLayout->fetchElement(notification.first));
 
-				// count loops
-				loopCount++;
-			}
-		}
-	}
+                    // Piping takes care that replaced elements do not send notifications
+                    pInteractiveElement->pipeNotification(notification.second, mpLayout);
+                }
+
+                // count loops
+                loopCount++;
+            }
+        }
+    }
 }
