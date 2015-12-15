@@ -26,7 +26,6 @@ namespace eyegui
     {
         // Delete texture
         glDeleteTextures(1, &mTexture);
-
     }
 
     void Texture::bind(uint slot) const
