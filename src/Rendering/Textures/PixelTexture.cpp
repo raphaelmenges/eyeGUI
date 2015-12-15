@@ -35,7 +35,7 @@ namespace eyegui
         int width, height, channelCount;
         unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, 0);
 
-        // Check whether file was found
+        // Check whether file was found and parsed
         if (data == NULL)
         {
             throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or error at parsing", filepath);

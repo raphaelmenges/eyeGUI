@@ -101,6 +101,8 @@ namespace eyegui
             break;
         default:
             throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Unknown number of color channels", filepath);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, &rData[0]);
+            break;
         }
 
         // Filtering
