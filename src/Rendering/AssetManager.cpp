@@ -169,7 +169,7 @@ namespace eyegui
         if (pFont == NULL)
         {
             // Check whether empty font must be created
-            if (filepath == EMPTY_STRING)
+            if (filepath == EMPTY_STRING_ATTRIBUTE)
             {
                 // Empty font
                 rupFont = std::unique_ptr<Font>(

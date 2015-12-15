@@ -43,7 +43,7 @@ namespace eyegui
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
 
         // Load initial localization
-        if (localizationFilepath != EMPTY_STRING)
+        if (localizationFilepath != EMPTY_STRING_ATTRIBUTE)
         {
             mupLocalizationMap = std::move(localization_parser::parse(localizationFilepath));
         }

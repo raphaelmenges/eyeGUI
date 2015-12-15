@@ -27,7 +27,11 @@ namespace eyegui
 
     void NotificationQueue::enqueue(std::string notifierId, InteractiveElement::Notification notification)
     {
-        mupNotificatons->push_back(NotificationPair(notifierId, notification));
+        // Ignore elements without id
+        if(notifierId != EMPTY_STRING_ATTRIBUTE)
+        {
+          mupNotificatons->push_back(NotificationPair(notifierId, notification));
+        }
     }
 
     void NotificationQueue::process()
