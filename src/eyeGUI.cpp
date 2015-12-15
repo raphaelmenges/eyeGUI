@@ -93,6 +93,17 @@ namespace eyegui
         pGUI->setValueOfConfigAttribute(attribute, value);
     }
 
+    void moveLayoutToFront(GUI* pGUI, Layout* pLayout)
+    {
+        pGUI->moveLayoutToFront(pLayout);
+    }
+
+    void moveLayoutToBack(GUI* pGUI, Layout* pLayout)
+    {
+        pGUI->moveLayoutToBack(pLayout);
+    }
+
+
     void setInputUsageOfLayout(Layout* pLayout, bool useInput)
     {
         pLayout->useInput(useInput);
@@ -106,16 +117,6 @@ namespace eyegui
         {
             pLayout->resetElements();
         }
-    }
-
-    void moveLayoutToFront(GUI* pGUI, Layout* pLayout)
-    {
-        pGUI->moveLayoutToFront(pLayout);
-    }
-
-    void moveLayoutToBack(GUI* pGUI, Layout* pLayout)
-    {
-        pGUI->moveLayoutToBack(pLayout);
     }
 
     RelativePositionAndSize getRelativePositionAndSizeOfElement(

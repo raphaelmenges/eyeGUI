@@ -156,7 +156,7 @@ namespace eyegui
         CharacterSet characterSet = CharacterSet::US_ENGLISH,
         std::string localizationFilepath = "");
 
-    //! Creates layout inside GUI and returns pointer to it.
+    //! Creates layout inside GUI and returns pointer to it. Is executed at update call.
     /*!
       \param pGUI pointer to GUI.
       \param filepath is path to layout xml file.
@@ -165,7 +165,7 @@ namespace eyegui
     */
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible = true);
 
-    //! Removes layout in GUI by pointer.
+    //! Removes layout in GUI by pointer. Is executed at update call.
     /*!
       \param pGUI pointer to GUI.
       \param pLayout is the pointer to layout which should be removed.
@@ -193,7 +193,7 @@ namespace eyegui
     */
     void terminateGUI(GUI* pGUI);
 
-    //! Resize GUI.
+    //! Resize GUI. Is executed at update call.
     /*!
       \param pGUI pointer to GUI.
       \param width of GUI as integer.
@@ -201,7 +201,7 @@ namespace eyegui
     */
     void resizeGUI(GUI* pGUI, int width, int height);
 
-    //! Load config.
+    //! Load config. Is executed at update call.
     /*!
       \param pGUI pointer to GUI.
       \param filepath is path to config file.
@@ -228,7 +228,7 @@ namespace eyegui
     */
     void prefetchImage(GUI* pGUI, std::string filepath);
 
-    //! Sets value of config attribute.
+    //! Sets value of config attribute. Is executed at update call.
     /*!
     \param pLayout pointer to layout.
     \param attribute is name of attribute which shall be changed.
@@ -238,6 +238,20 @@ namespace eyegui
         GUI* pGUI,
         std::string attribute,
         std::string value);
+
+    //! Move layout to front. Is executed at update call.
+    /*!
+      \param pGUI pointer to GUI.
+      \param pLayout pointer to layout.
+    */
+    void moveLayoutToFront(GUI* pGUI, Layout* pLayout);
+
+    //! Move layout to back. Is executed at update call.
+    /*!
+      \param pGUI pointer to GUI.
+      \param pLayout pointer to layout.
+    */
+    void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
 
     //! Control layout's input usage.
     /*!
@@ -258,20 +272,6 @@ namespace eyegui
         bool visible,
         bool reset = false,
         bool fade = false);
-
-    //! Move layout to front.
-    /*!
-      \param pGUI pointer to GUI.
-      \param pLayout pointer to layout.
-    */
-    void moveLayoutToFront(GUI* pGUI, Layout* pLayout);
-
-    //! Move layout to back.
-    /*!
-      \param pGUI pointer to GUI.
-      \param pLayout pointer to layout.
-    */
-    void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
 
     //! Getter for relative position and size of element. Values are relative in respect to layout.
     /*!

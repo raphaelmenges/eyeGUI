@@ -1,9 +1,8 @@
 ### VERSION 0.6
-- Feature?: Distinguish between fade in and out for replacing stuff (at the moment fade out only)
+- ?
     
 ### VERSION 0.7
 - IDEA: disable opengl storing stuff by function (to save computation time)
-- add comment at gui resize: one has to wait for update
 - TextInput
   - Keyboard and "Guesser" (tries to goes what you want to write)
   - Both are indepenend
