@@ -61,8 +61,16 @@ namespace eyegui
                     // Get interactive element by id from layout
                     InteractiveElement* pInteractiveElement = toInteractiveElement(mpLayout->fetchElement(notification.first));
 
-                    // Piping takes care that replaced elements do not send notifications
-                    pInteractiveElement->pipeNotification(notification.second, mpLayout);
+                    // Check for existence
+                    if (pInteractiveElement != NULL)
+                    {
+                        // Piping takes care that replaced elements do not send notifications
+                        pInteractiveElement->pipeNotification(notification.second, mpLayout);
+                    }
+                    else
+                    {
+                        throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find interactive element with id: " + notification.first);
+                    }
                 }
 
                 // count loops
