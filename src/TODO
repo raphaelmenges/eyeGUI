@@ -1,5 +1,4 @@
 ### VERSION 0.6
-- Use UTF8-CPP for config and stylesheet
 - Feature?: Distinguish between fade in and out for replacing stuff (at the moment fade out only)
     
 ### VERSION 0.7
@@ -44,6 +43,7 @@ Notes:
 - Reminder: N
 - Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
 - Tooltips? -> mouse hovering oder gaze when using keyboard...
+- Use UTF8-CPP for config and stylesheet (what would be the advantage?)
 - Input
   - Maybe blocks have an option: kill or not kill input (both possible)
   - is selecting via keyboard input? (at the moment it is not blocked if input is disabled for layout)
