@@ -60,4 +60,9 @@ namespace eyegui
     {
         // Nothing to do
     }
+
+    bool Blank::mayConsumeInput()
+    {
+        return false;
+    }
 }

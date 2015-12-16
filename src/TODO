@@ -1,11 +1,10 @@
 ### VERSION 0.6
-- Inactive buttons do not consume input
 - TODO: wiki: dimable -> dimming (elements and config)
     
 ### VERSION 0.7
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - TextInput
-  - Keyboard and "Guesser" (tries to goes what you want to write)
+  - Keyboard and "Guesser" (tries to guess what you want to write)
   - Both are indepenend
   - Should support unicode...
   - Different modes: Fullscreen, OnScreen, With/Without guesser

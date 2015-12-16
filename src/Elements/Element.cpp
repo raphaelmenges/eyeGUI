@@ -364,20 +364,15 @@ namespace eyegui
 
     float Element::update(float tpf, float alpha, Input* pInput, float dim)
     {
+        // *** OWN UPDATING ***
+
         // Activity animationa
         mActivity.update(tpf, !mActive);
 
         // Save current alpha (already animated by layout or other element)
         mAlpha = alpha;
 
-        // Use activity and alpha to check whether input is necessary
-        if (mAlpha < 1 || mActivity.getValue() < 1)
-        {
-            pInput = NULL;
-        }
-
         // Check wether cursor is over element
-        // Used for dimming etc, not affected by consumption of input
         bool penetrated = penetratedByInput(pInput);
 
         // Dimming
@@ -442,8 +437,29 @@ namespace eyegui
             }
         }
 
+        // *** SUBCLASS METHOD UPDATING ***
+
+        // Use activity and alpha to check whether input may be used by subclasses
+        Input* pSubInput;
+        if (mAlpha < 1 || mActivity.getValue() < 1)
+        {
+            pSubInput = NULL;
+        }
+        else
+        {
+            pSubInput = pInput;
+        }
+
         // Call specialized update of subclasses
-        float specialAdaptiveScale = specialUpdate(tpf, pInput);
+        float specialAdaptiveScale = specialUpdate(tpf, pSubInput);
+
+        // After subclass has used input, mark it as consumed if necessary
+        if(penetrated && mayConsumeInput())
+        {
+            pInput->gazeUsed = true;
+        }
+
+        // *** ADAPTIVE SCALE RETURNING ***
 
         // Decide, which adaptive scale to save. Own adaptive scale decreases if adaptive scaling is deactivated!
         // If it would be not saved in member, nobody would know about it at rendering.

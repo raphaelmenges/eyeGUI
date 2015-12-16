@@ -206,8 +206,11 @@ namespace eyegui
         // Transformation filled by subclasses
         virtual void specialTransformAndSize() = 0;
 
-        // Reset filld by subclasses
+        // Reset filled by subclasses
         virtual void specialReset() = 0;
+
+        // Implemented by subclasses
+        virtual bool mayConsumeInput() = 0;
 
         // Convert pixel space to drawing space
         glm::mat4 calculateDrawMatrix(int x, int y, int width, int height) const;

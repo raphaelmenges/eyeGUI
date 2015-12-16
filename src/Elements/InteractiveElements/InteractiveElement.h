@@ -71,6 +71,9 @@ namespace eyegui
         // Reset filld by subclasses
         virtual void specialReset();
 
+        // Implemented by subclasses
+        virtual bool mayConsumeInput();
+
         // Interaction fill by subclasses
         virtual void specialInteract() = 0;
 

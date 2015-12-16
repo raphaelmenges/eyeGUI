@@ -55,12 +55,6 @@ namespace eyegui
     // Updating
     float Block::specialUpdate(float tpf, Input* pInput)
     {
-        // Check if block blocks also input
-        if (penetratedByInput(pInput) && mConsumeInput)
-        {
-            pInput->gazeUsed = true;
-        }
-
         return 0;
     }
 
@@ -115,5 +109,10 @@ namespace eyegui
     void Block::specialReset()
     {
         // Nothing to do
+    }
+
+    bool Block::mayConsumeInput()
+    {
+        return mConsumeInput;
     }
 }

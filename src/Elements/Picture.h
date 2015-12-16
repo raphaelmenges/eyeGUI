@@ -57,6 +57,9 @@ namespace eyegui
         // Reset filld by subclasses
         virtual void specialReset();
 
+        // Implemented by subclasses
+        virtual bool mayConsumeInput();
+
     private:
 
         // Members

@@ -71,9 +71,6 @@ namespace eyegui
         bool penetrated = penetratedByInput(pInput);
         if (penetrated)
         {
-            // Will be used by this sensor
-            pInput->gazeUsed = true;
-
             // Remove highlight
             highlight(false);
 

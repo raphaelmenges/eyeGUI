@@ -135,11 +135,6 @@ namespace eyegui
 
         // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
-        if (penetrated)
-        {
-            // Will be used by this button
-            pInput->gazeUsed = true;
-        }
 
         // Pressing animation
         if (mIsDown && mPressing.getValue() < 1)

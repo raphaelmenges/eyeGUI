@@ -141,6 +141,11 @@ namespace eyegui
         mIsSelected = false;
     }
 
+    bool InteractiveElement::mayConsumeInput()
+    {
+        return true;
+    }
+
     glm::vec2 InteractiveElement::iconAspectRatioCorrection() const
     {
         float aspectRatio = (float)mWidth / (float)mHeight;

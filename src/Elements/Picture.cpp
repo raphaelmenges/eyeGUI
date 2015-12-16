@@ -92,12 +92,6 @@ namespace eyegui
 
     float Picture::specialUpdate(float tpf, Input* pInput)
     {
-        // If mouse over picture, consume input
-        if (penetratedByInput(pInput))
-        {
-            pInput->gazeUsed = true;
-        }
-
         return 0;
     }
 
@@ -134,5 +128,10 @@ namespace eyegui
     void Picture::specialReset()
     {
         // Nothing to do
+    }
+
+    bool Picture::mayConsumeInput()
+    {
+        return true;
     }
 }
