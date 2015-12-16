@@ -1,5 +1,6 @@
 ### VERSION 0.6
 - Inactive buttons do not consume input
+- TODO: wiki: dimable -> dimming (elements and config)
     
 ### VERSION 0.7
 - IDEA: disable opengl storing stuff by function (to save computation time)

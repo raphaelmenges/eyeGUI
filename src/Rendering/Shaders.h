@@ -57,17 +57,17 @@ namespace eyegui
         // vec4 separatorColor
         // vec4 dimColor
         // float alpha
-        // float dimming
+        // float dim
         static const char* pSeparatorFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "uniform vec4 separatorColor;\n"
             "uniform vec4 dimColor;\n"
             "uniform float alpha;\n"
-            "uniform float dimming;\n"
+            "uniform float dim;\n"
             "void main() {\n"
             "   vec4 col = separatorColor;\n"
-            "	col.rgba *= (1.0 - dimming) + (dimming * dimColor);\n" // Dimming
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   fragColor = vec4(col.rgb, col.a * alpha);\n"
             "}\n";
 
@@ -91,7 +91,7 @@ namespace eyegui
         // vec4 dimColor
         // float alpha
         // float activity
-        // float dimming
+        // float dim
         static const char* pBlockFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -99,11 +99,11 @@ namespace eyegui
             "uniform vec4 dimColor;\n"
             "uniform float alpha;\n"
             "uniform float activity;\n"
-            "uniform float dimming;\n"
+            "uniform float dim;\n"
             "void main() {\n"
             "   vec4 col = backgroundColor;\n"
             "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
-            "	col.rgba *= (1.0 - dimming) + (dimming * dimColor);\n" // Dimming
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   fragColor = vec4(col.rgb, col.a * alpha);\n"
             "}\n";
 
@@ -112,7 +112,7 @@ namespace eyegui
         // vec4 dimColor
         // float alpha
         // float activity
-        // float dimming
+        // float dim
         static const char* pPictureFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -121,11 +121,11 @@ namespace eyegui
             "uniform vec4 dimColor;\n"
             "uniform float alpha;\n"
             "uniform float activity;\n"
-            "uniform float dimming;\n"
+            "uniform float dim;\n"
             "void main() {\n"
             "   vec4 col = texture(icon, uv);\n"
             "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
-            "	col.rgba *= (1.0 - dimming) + (dimming * dimColor);\n" // Dimming
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   fragColor = vec4(col.rgb, col.a * alpha);\n"
             "}\n";
 
@@ -142,7 +142,7 @@ namespace eyegui
         // float highlight
         // float alpha
         // float activity
-        // float dimming
+        // float dim
         // float selection
         static const char* pCircleButtonFragmentShader =
             "#version 330 core\n"
@@ -160,7 +160,7 @@ namespace eyegui
             "uniform float highlight = 0;\n" // How much highlighted [0..1]
             "uniform float alpha;\n"
             "uniform float activity;\n"
-            "uniform float dimming;\n"
+            "uniform float dim;\n"
             "uniform float selection = 1;\n"
             "const int bodyPressBorder = 20;\n"
             "void main() {\n"
@@ -177,7 +177,7 @@ namespace eyegui
             "   button.rgb = mix(1-button.rgb, button.rgb, thresholdMask);\n" // Use threshold to invert inner circle
             "   button.rgb = mix(button.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
             "   button.rgb = mix(vec3(0.3,0.3,0.3), button.rgb, max(0.2, activity));\n" // Activity
-            "	button.rgba *= (1.0 - dimming) + (dimming * dimColor);\n" // Dimming
+            "	button.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "	button.rgb = mix(button.rgb, selectionColor.rgb, pow(gradient,2) * selection * selectionColor.a);\n" // Selection
             "   fragColor = vec4(button.rgb, button.a * buttonMask * alpha);\n" // Composing pixel
             "}\n";
@@ -195,7 +195,7 @@ namespace eyegui
         // float highlight
         // float alpha
         // float activity
-        // float dimming
+        // float dim
         // float selection
         // vec2 iconUVScale
         // float orientation
@@ -215,7 +215,7 @@ namespace eyegui
             "uniform float highlight= 0;\n" // How much highlighted [0..1]
             "uniform float alpha;\n"
             "uniform float activity;\n"
-            "uniform float dimming;\n"
+            "uniform float dim;\n"
             "uniform float selection = 1;\n"
             "uniform vec2 iconUVScale;\n"
             "uniform float orientation;\n"
@@ -239,7 +239,7 @@ namespace eyegui
             "   button.rgb = mix(1-button.rgb, button.rgb, thresholdMask);\n" // Use threshold to invert
             "   button.rgb = mix(button.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
             "   button.rgb = mix(vec3(0.3,0.3,0.3), button.rgb, max(0.2, activity));\n" // Activity
-            "	button.rgba *= (1.0 - dimming) + (dimming * dimColor);\n" // Dimming
+            "	button.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "	button.rgb = mix(button.rgb, selectionColor.rgb, pow(gradient,2) * selection * selectionColor.a);\n" // Selection
             "   fragColor = vec4(button.rgb, button.a * alpha);\n" // Composing pixel
@@ -257,7 +257,7 @@ namespace eyegui
         // float highlight
         // float alpha
         // float activity
-        // float dimming
+        // float dim
         // float selection
         // vec2 iconUVScale
         static const char* pSensorFragmentShader =
@@ -275,7 +275,7 @@ namespace eyegui
             "uniform float highlight= 1.0;\n" // How much highlighted [0..1]
             "uniform float alpha;\n"
             "uniform float activity;\n"
-            "uniform float dimming;\n"
+            "uniform float dim;\n"
             "uniform float selection = 1;\n"
             "uniform vec2 iconUVScale;\n"
             "const int bodyPressBorder = 40;\n"
@@ -295,7 +295,7 @@ namespace eyegui
             "   sensor = mix(vec4(color.rgb / 3, color.a), sensor, bodyMask);\n" // Just body with background
             "   sensor.rgb = mix(sensor.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
             "   sensor.rgb = mix(vec3(0.3,0.3,0.3), sensor.rgb, max(0.2, activity));\n" // Activity
-            "	sensor.rgba *= (1.0 - dimming) + (dimming * dimColor);\n" // Dimming
+            "	sensor.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "	sensor.rgb = mix(sensor.rgb, selectionColor.rgb, pow(gradient,2) * selection * selectionColor.a);\n" // Selection
             "   fragColor = vec4(sensor.rgb, sensor.a * alpha);\n" // Composing pixel

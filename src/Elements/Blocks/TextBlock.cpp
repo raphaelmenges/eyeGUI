@@ -22,7 +22,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-        bool dimmable,
+        bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
         float innerBorder,
@@ -40,7 +40,7 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-            dimmable,
+            dimming,
             adaptiveScaling,
             consumeInput,
             innerBorder)
@@ -126,7 +126,7 @@ namespace eyegui
         // Draw text (emulation of shader bevavior for color mixing)
         glm::vec4 color = getStyle()->fontColor;
         color.a *= mAlpha;
-        color *= (1.0f - mDimming.getValue()) + (mDimming.getValue() * getStyle()->dimColor);
+        color *= (1.0f - mDim.getValue()) + (mDim.getValue() * getStyle()->dimColor);
         mupTextFlow->draw(1.0f, color);
     }
 

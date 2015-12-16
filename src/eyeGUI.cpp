@@ -148,12 +148,12 @@ namespace eyegui
         return pLayout->isElementActive(id);
     }
 
-    void setElementDimmable(
+    void setElementDimming(
         Layout* pLayout,
         std::string id,
-        bool dimmable)
+        bool dimming)
     {
-        pLayout->setElementDimmable(id, dimmable);
+        pLayout->setElementDimming(id, dimming);
     }
 
     void setStyleOfElement(
@@ -164,9 +164,9 @@ namespace eyegui
         pLayout->setStyleOfElement(id, style);
     }
 
-    bool isElementDimmable(Layout const * pLayout, std::string id)
+    bool isElementDimming(Layout const * pLayout, std::string id)
     {
-        return pLayout->isElementDimmable(id);
+        return pLayout->isElementDimming(id);
     }
 
     void setElementHiding(Layout* pLayout, std::string id, bool hidden)

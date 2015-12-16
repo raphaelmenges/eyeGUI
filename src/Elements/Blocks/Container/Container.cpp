@@ -19,7 +19,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-        bool dimmable,
+        bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
         float innerBorder,
@@ -33,7 +33,7 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-            dimmable,
+            dimming,
             adaptiveScaling,
             consumeInput,
             innerBorder)
@@ -54,7 +54,7 @@ namespace eyegui
         // Update the elements
         for (std::unique_ptr<Element>& element : mChildren)
         {
-            float childAdaptiveScale = element->update(tpf, mAlpha, pInput, mDimming.getValue());
+            float childAdaptiveScale = element->update(tpf, mAlpha, pInput, mDim.getValue());
             maxAdaptiveScaleOfChildren = std::max(maxAdaptiveScaleOfChildren, childAdaptiveScale);
         }
 

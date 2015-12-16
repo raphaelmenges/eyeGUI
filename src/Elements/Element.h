@@ -72,7 +72,7 @@ namespace eyegui
             NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
-            bool dimmable,
+            bool dimming,
             bool adaptiveScaling);
 
         // Destructor
@@ -123,11 +123,11 @@ namespace eyegui
         // Activate or deactivate
         virtual void setActivity(bool active, bool fade);
 
-        // Setter for dimmable
-        void setDimmable(bool dimmable);
+        // Setter for dimming
+        void setDimming(bool dimming);
 
-        // Getter for dimmable
-        bool isDimmable() const;
+        // Getter for dimming
+        bool isDimming() const;
 
         // Get layout
         Layout const * getLayout() const;
@@ -166,7 +166,7 @@ namespace eyegui
         void setHiding(bool hidden);
 
         // Updating, returns adaptive scale
-        float update(float tpf, float alpha, Input* pInput, float dimming);
+        float update(float tpf, float alpha, Input* pInput, float dim);
 
         // Drawing
         void draw() const;
@@ -227,8 +227,8 @@ namespace eyegui
         float mBorderAspectRatio;
         glm::mat4 mDrawMatrix;
         LerpValue mActivity; // [0..1]
-        bool mDimmable;
-        LerpValue mDimming; // [0..1] One means full dimming
+        bool mDimming;
+        LerpValue mDim; // [0..1] One means full dimming
         bool mForceUndim; // At the moment only used by drop button
                           // to be undimmed while showing inner elements
         bool mActive;

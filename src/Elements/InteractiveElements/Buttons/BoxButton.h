@@ -13,34 +13,34 @@
 
 namespace eyegui
 {
-	class BoxButton : public Button
-	{
-	public:
+    class BoxButton : public Button
+    {
+    public:
 
-		// Constructor
-		BoxButton(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout const * pLayout,
-			Frame* pFrame,
-			AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
-			float relativeScale,
-			float border,
-			bool dimmable,
-			bool adaptiveScaling,
-			std::string iconFilepath,
-			bool isSwitch);
+        // Constructor
+        BoxButton(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+            NotificationQueue* pNotificationQueue,
+            float relativeScale,
+            float border,
+            bool dimming,
+            bool adaptiveScaling,
+            std::string iconFilepath,
+            bool isSwitch);
 
-		// Deconstructor
-		~BoxButton();
+        // Deconstructor
+        ~BoxButton();
 
-	protected:
+    protected:
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
-	};
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
+    };
 }
 
 #endif // BOX_BUTTON_H_

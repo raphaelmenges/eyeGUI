@@ -19,7 +19,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-        bool dimmable,
+        bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
         float innerBorder) : Element(
@@ -32,7 +32,7 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-            dimmable,
+            dimming,
             adaptiveScaling)
     {
         mType = Type::BLOCK;
@@ -87,7 +87,7 @@ namespace eyegui
 
             // Fill dimming
             mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpBackground->getShader()->fillValue("dimming", mDimming.getValue());
+            mpBackground->getShader()->fillValue("dim", mDim.getValue());
 
             // Draw render item
             mpBackground->draw();

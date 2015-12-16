@@ -21,7 +21,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-        bool dimmable,
+        bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
         float innerBorder,
@@ -39,7 +39,7 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-            dimmable,
+            dimming,
             adaptiveScaling,
             consumeInput,
             innerBorder,
@@ -88,7 +88,7 @@ namespace eyegui
 
             // Fill dimming
             mpSeparator->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpSeparator->getShader()->fillValue("dimming", mDimming.getValue());
+            mpSeparator->getShader()->fillValue("dim", mDim.getValue());
 
             for (int i = 0; i < mSeparatorDrawMatrices.size(); i++)
             {

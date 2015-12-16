@@ -26,7 +26,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-        bool dimmable,
+        bool dimming,
         bool adaptiveScaling) : Object()
     {
         // Initialize members
@@ -41,10 +41,10 @@ namespace eyegui
         mpNotificationQueue = pNotificationQueue;
         mRelativeScale = relativeScale;
         mBorder = border;
-        mDimmable = dimmable;
+        mDimming = dimming;
         mActive = true;
         mActivity.setValue(1);
-        mDimming.setValue(0);
+        mDim.setValue(0);
         mForceUndim = false;
         mAlpha = 1;
         mBorderAspectRatio = 1;
@@ -214,14 +214,14 @@ namespace eyegui
         }
     }
 
-    void Element::setDimmable(bool dimmable)
+    void Element::setDimming(bool dimming)
     {
-        mDimmable = dimmable;
+        mDimming = dimming;
     }
 
-    bool Element::isDimmable() const
+    bool Element::isDimming() const
     {
-        return mDimmable;
+        return mDimming;
     }
 
     Layout const * Element::getLayout() const
@@ -362,7 +362,7 @@ namespace eyegui
         mHidden = hidden;
     }
 
-    float Element::update(float tpf, float alpha, Input* pInput, float dimming)
+    float Element::update(float tpf, float alpha, Input* pInput, float dim)
     {
         // Activity animationa
         mActivity.update(tpf, !mActive);
@@ -384,25 +384,25 @@ namespace eyegui
         if (mForceUndim)
         {
             // Undim it
-            mDimming.update(-tpf / mpLayout->getConfig()->dimmingDecreaseDuration);
+            mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration);
         }
-        else if (mDimmable)
+        else if (mDimming)
         {
             if (penetrated)
             {
                 // Undim it
-                mDimming.update(-tpf / mpLayout->getConfig()->dimmingDecreaseDuration);
+                mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration);
             }
             else
             {
                 // Dim it
-                mDimming.update(tpf / mpLayout->getConfig()->dimmingIncreaseDuration);
+                mDim.update(tpf / mpLayout->getConfig()->dimIncreaseDuration);
             }
         }
         else
         {
             // Use dimming value of parent
-            mDimming.setValue(dimming);
+            mDim.setValue(dim);
         }
 
         // Adaptive scaling
@@ -432,7 +432,7 @@ namespace eyegui
             float replacedAlpha = mAlpha * (mupReplacedElement->getAlpha()
                 - (tpf / mpLayout->getConfig()->animationDuration));
             replacedAlpha = clamp(replacedAlpha, 0, 1);
-            mupReplacedElement->update(tpf, replacedAlpha, NULL, mDimming.getValue());
+            mupReplacedElement->update(tpf, replacedAlpha, NULL, mDim.getValue());
 
             // Check, whether replacement is still visible
             if (replacedAlpha <= 0)
@@ -474,7 +474,7 @@ namespace eyegui
         mActive = true;
         mActivity.setValue(1);
 
-        mDimming.setValue(0);
+        mDim.setValue(0);
         mForceUndim = false;
 
         mAdaptiveScale.setValue(0);

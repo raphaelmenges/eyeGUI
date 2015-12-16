@@ -325,16 +325,16 @@ namespace eyegui
     */
     bool isElementActive(Layout const * pLayout, std::string id);
 
-    //! Set whether element is dimmable.
+    //! Set whether element is dimming.
     /*!
     \param pLayout pointer to layout.
     \param id is the unique id of an element.
-    \param dimmable is the new choice.
+    \param dimming is the new choice.
     */
-    void setElementDimmable(
+    void setElementDimming(
         Layout* pLayout,
         std::string id,
-        bool dimmable);
+        bool dimming);
 
     //! Set style of element.
     /*!
@@ -347,13 +347,13 @@ namespace eyegui
         std::string id,
         std::string style);
 
-    //! Get whether element is dimmable.
+    //! Get whether element is dimming.
     /*!
     \param pLayout pointer to layout.
     \param id is the unique id of an element.
-    \return true if element with given id is dimmable and false else.
+    \return true if element with given id is dimming and false else.
     */
-    bool isElementDimmable(Layout const * pLayout, std::string id);
+    bool isElementDimming(Layout const * pLayout, std::string id);
 
     //! Set hiding of element.
     /*!

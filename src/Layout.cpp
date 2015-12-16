@@ -302,12 +302,12 @@ namespace eyegui
         return false;
     }
 
-    void Layout::setElementDimmable(std::string id, bool dimmable)
+    void Layout::setElementDimming(std::string id, bool dimming)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
         {
-            pElement->setDimmable(dimmable);
+            pElement->setDimming(dimming);
         }
         else
         {
@@ -341,12 +341,12 @@ namespace eyegui
         }
     }
 
-    bool Layout::isElementDimmable(std::string id) const
+    bool Layout::isElementDimming(std::string id) const
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
         {
-            return pElement->isDimmable();
+            return pElement->isDimming();
         }
         else
         {
@@ -711,7 +711,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-                pElement->isDimmable(),
+                pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 consumeInput));
                 // innerBorder is 0 by default and not necessary for block
@@ -746,7 +746,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-                pElement->isDimmable(),
+                pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 filepath,
                 alignment));
@@ -781,7 +781,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-                pElement->isDimmable(),
+                pElement->isDimming(),
                 pElement->getAdaptiveScaling()));
 
             Element* pBlank = upBlank.get();
@@ -814,7 +814,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-                pElement->isDimmable(),
+                pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
                 isSwitch));
@@ -849,7 +849,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-                pElement->isDimmable(),
+                pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
                 isSwitch));
@@ -884,7 +884,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-                pElement->isDimmable(),
+                pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath));
 
@@ -927,7 +927,7 @@ namespace eyegui
                 pElement->getNotificationQueue(),
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
-                pElement->isDimmable(),
+                pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 consumeInput,
                 innerBorder,

@@ -24,7 +24,7 @@ namespace eyegui
         NotificationQueue* pNotificationQueue,
         float relativeScale,
         float border,
-        bool dimmable,
+        bool dimming,
         bool adaptiveScaling,
         std::string iconFilepath,
         bool isSwitch) : InteractiveElement(
@@ -37,7 +37,7 @@ namespace eyegui
             pNotificationQueue,
             relativeScale,
             border,
-            dimmable,
+            dimming,
             adaptiveScaling,
             iconFilepath)
     {

@@ -24,8 +24,8 @@ namespace eyegui
         float buttonThresholdDecreaseDuration = 2.0f;
         float buttonPressingDuration = 0.3f;
         float sensorInteractionPenetrationAmount = 0.5f;
-        float dimmingIncreaseDuration = 1.5f;
-        float dimmingDecreaseDuration = 0.25f;
+        float dimIncreaseDuration = 1.5f;
+        float dimDecreaseDuration = 0.25f;
         float maximalAdaptiveScaleIncrease = 0.5f;
         float adaptiveScaleIncreaseDuration = 1.0f;
         float adaptiveScaleDecreaseDuration = 1.0f;

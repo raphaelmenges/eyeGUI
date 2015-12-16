@@ -125,13 +125,13 @@ namespace eyegui
             {
                 rConfig.sensorInteractionPenetrationAmount = std::stof(value);
             }
-            else if (attribute == "dimming-increase-duration")
+            else if (attribute == "dim-increase-duration")
             {
-                rConfig.dimmingIncreaseDuration = std::stof(value);
+                rConfig.dimIncreaseDuration = std::stof(value);
             }
-            else if (attribute == "dimming-decrease-duration")
+            else if (attribute == "dim-decrease-duration")
             {
-                rConfig.dimmingDecreaseDuration = std::stof(value);
+                rConfig.dimDecreaseDuration = std::stof(value);
             }
             else if (attribute == "maximal-adaptive-scale-increase")
             {

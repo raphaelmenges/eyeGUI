@@ -30,7 +30,7 @@ namespace eyegui
             NotificationQueue* pNotificationQueue,
             float relativeScale,
             float border,
-            bool dimmable,
+            bool dimming,
             bool adaptiveScaling,
             bool consumeInput,
             float innerBorder,
