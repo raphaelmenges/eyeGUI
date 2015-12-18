@@ -1,5 +1,8 @@
 ### VERSION 0.6
 - TODO: wiki: dimable -> dimming (elements and config)
+- Marking elements (render quad above them)
+- Threshold color (no more negative :-C)
+- Umlaute do not work utf8 version of set content of text block interface function
     
 ### VERSION 0.7
 - IDEA: disable opengl storing stuff by function (to save computation time)
