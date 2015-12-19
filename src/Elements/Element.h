@@ -252,6 +252,9 @@ namespace eyegui
         Style const * mpStyle;
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
+
+		bool mMarked;
+		RenderItem const * mpMarkQuad;
     };
 }
 

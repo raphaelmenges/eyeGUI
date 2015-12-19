@@ -62,6 +62,12 @@ namespace eyegui
             // Ok, try to rescue by getting default style. Should be NEVER necessary
             mpStyle = mpLayout->getStyleFromStylesheet(DEFAULT_STYLE_NAME);
         }
+
+		// Quad for marking
+		mpMarkQuad = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+
+		// TODO: Testing
+		mMarked = true;
     }
 
     Element::~Element()
@@ -476,6 +482,14 @@ namespace eyegui
         {
             // Draw the element
             specialDraw();
+
+			// Marking
+			// TODO: check whether marking is over zero
+			mpMarkQuad->bind();
+			mpMarkQuad->getShader()->fillValue("matrix", mDrawMatrix);
+			mpMarkQuad->getShader()->fillValue("color", glm::vec4(1,0,1,1));
+			mpMarkQuad->getShader()->fillValue("alpha", 0.5f);
+			mpMarkQuad->draw();
 
             // Draw fading replaced elements if available (always mutliplied with own alpha)
             if (mupReplacedElement.get() != NULL)
