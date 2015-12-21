@@ -9,6 +9,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 
 #### Version 0.6
 * stb_image for pixel image loading
+* Marking of elements
 
 #### Version 0.5
 * Extending interface
