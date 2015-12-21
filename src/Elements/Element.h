@@ -10,10 +10,12 @@
 // in stack, grid or drop button. Elements have an unique id inside the layout
 // they belong to. Style is saved as string and set do a default value by parser
 // when none is defined and the parent has no set style. Element can have only
-// one parent element which is set to null for the root element of the layout.
+// one parent element which is set to null for the root element of the frame.
 // Transformation and size is calculated using a mechanism first asking the
 // children with "evaluateSize" how much of the available space they would use
-// and then telling all the children their size and transformation.
+// and then telling all the children their size and transformation. Since drop
+// button has a child element which is updated and drawn by the frame, child
+// elements are not updated and drawn automatically by element class.
 
 #ifndef ELEMENT_H_
 #define ELEMENT_H_
@@ -129,6 +131,12 @@ namespace eyegui
         // Getter for dimming
         bool isDimming() const;
 
+		// Set marking
+		void setMarking(bool marking);
+
+		// Getter for marking
+		bool isMarking() const;
+
         // Get layout
         Layout const * getLayout() const;
 
@@ -237,6 +245,8 @@ namespace eyegui
         bool mActive;
         bool mAdaptiveScaling;
         LerpValue mAdaptiveScale; // [0..1]
+		bool mMarking;
+		LerpValue mMark;
 
         // This vector is the owner of all children. May be empty!
         std::vector<std::unique_ptr<Element> > mChildren;
@@ -252,9 +262,6 @@ namespace eyegui
         Style const * mpStyle;
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
-
-		bool mMarked;
-		RenderItem const * mpMarkQuad;
     };
 }
 

@@ -315,6 +315,19 @@ namespace eyegui
         }
     }
 
+	void Layout::setElementMarking(std::string id, bool marking)
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			pElement->setMarking(marking);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+		}
+	}
+
     void Layout::setElementHiding(std::string id, bool hidden)
     {
         Element* pElement = fetchElement(id);
@@ -354,6 +367,20 @@ namespace eyegui
         }
         return false;
     }
+
+	bool Layout::isElementMarking(std::string id) const
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			return pElement->isMarking();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+		}
+		return false;
+	}
 
     void Layout::highlightInteractiveElement(std::string id, bool doHighlight)
     {

@@ -83,6 +83,10 @@ namespace eyegui
             mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
             mpBackground->getShader()->fillValue("dim", mDim.getValue());
 
+			// Fill marking
+			mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
+			mpBackground->getShader()->fillValue("mark", mMark.getValue());
+
             // Draw render item
             mpBackground->draw();
         }

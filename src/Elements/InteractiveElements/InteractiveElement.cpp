@@ -128,6 +128,8 @@ namespace eyegui
         mpRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
         mpRenderItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
         mpRenderItem->getShader()->fillValue("dim", mDim.getValue());
+		mpRenderItem->getShader()->fillValue("markColor", getStyle()->markColor);
+		mpRenderItem->getShader()->fillValue("mark", mMark.getValue());
 
         // Bind icon texture
         mpIcon->bind(0);

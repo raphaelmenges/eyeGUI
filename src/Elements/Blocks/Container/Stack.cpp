@@ -90,6 +90,10 @@ namespace eyegui
             mpSeparator->getShader()->fillValue("dimColor", getStyle()->dimColor);
             mpSeparator->getShader()->fillValue("dim", mDim.getValue());
 
+			// Fill marking
+			mpSeparator->getShader()->fillValue("markColor", getStyle()->markColor);
+			mpSeparator->getShader()->fillValue("mark", mMark.getValue());
+
             for (int i = 0; i < mSeparatorDrawMatrices.size(); i++)
             {
                 // Fill matrix in shader

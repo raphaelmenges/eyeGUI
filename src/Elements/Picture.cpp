@@ -113,6 +113,10 @@ namespace eyegui
         mpQuad->getShader()->fillValue("dimColor", getStyle()->dimColor);
         mpQuad->getShader()->fillValue("dim", mDim.getValue());
 
+		// Fill marking
+		mpQuad->getShader()->fillValue("markColor", getStyle()->markColor);
+		mpQuad->getShader()->fillValue("mark", mMark.getValue());
+
         // Bind image
         mpImage->bind(0);
 

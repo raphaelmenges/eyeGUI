@@ -51,6 +51,8 @@ namespace eyegui
         mAdaptiveScaling = adaptiveScaling;
         mAdaptiveScale.setValue(0);
         mHidden = false;
+		mMarking = false;
+		mMark.setValue(0);
 
         // Fetch style from layout
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
@@ -62,12 +64,6 @@ namespace eyegui
             // Ok, try to rescue by getting default style. Should be NEVER necessary
             mpStyle = mpLayout->getStyleFromStylesheet(DEFAULT_STYLE_NAME);
         }
-
-		// Quad for marking
-		mpMarkQuad = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
-
-		// TODO: Testing
-		mMarked = true;
     }
 
     Element::~Element()
@@ -229,6 +225,16 @@ namespace eyegui
     {
         return mDimming;
     }
+
+	void Element::setMarking(bool marking)
+	{
+		mMarking = marking;
+	}
+
+	bool Element::isMarking() const
+	{
+		return mMarking;
+	}
 
     Layout const * Element::getLayout() const
     {
@@ -427,6 +433,9 @@ namespace eyegui
             mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
         }
 
+		// Marking
+		mMark.update(tpf / mpLayout->getConfig()->animationDuration, !mMarking);
+
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
         {
@@ -483,14 +492,6 @@ namespace eyegui
             // Draw the element
             specialDraw();
 
-			// Marking
-			// TODO: check whether marking is over zero
-			mpMarkQuad->bind();
-			mpMarkQuad->getShader()->fillValue("matrix", mDrawMatrix);
-			mpMarkQuad->getShader()->fillValue("color", glm::vec4(1,0,1,1));
-			mpMarkQuad->getShader()->fillValue("alpha", 0.5f);
-			mpMarkQuad->draw();
-
             // Draw fading replaced elements if available (always mutliplied with own alpha)
             if (mupReplacedElement.get() != NULL)
             {
@@ -508,6 +509,8 @@ namespace eyegui
         mForceUndim = false;
 
         mAdaptiveScale.setValue(0);
+
+		// TODO: one could reset marking, too
 
         // Do reset implemented by subclass
         specialReset();

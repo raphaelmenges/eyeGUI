@@ -156,6 +156,14 @@ namespace eyegui
         pLayout->setElementDimming(id, dimming);
     }
 
+	void setElementMarking(
+		Layout* pLayout,
+		std::string id,
+		bool marking)
+	{
+		pLayout->setElementMarking(id, marking);
+	}
+
     void setStyleOfElement(
         Layout* pLayout,
         std::string id,

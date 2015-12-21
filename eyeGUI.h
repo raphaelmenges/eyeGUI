@@ -336,6 +336,17 @@ namespace eyegui
         std::string id,
         bool dimming);
 
+	//! Set whether element is marking.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param marking is the new choice.
+	*/
+	void setElementMarking(
+		Layout* pLayout,
+		std::string id,
+		bool marking);
+
     //! Set style of element.
     /*!
     \param pLayout pointer to layout.
@@ -354,6 +365,14 @@ namespace eyegui
     \return true if element with given id is dimming and false else.
     */
     bool isElementDimming(Layout const * pLayout, std::string id);
+
+	//! Get whether element is marking.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return true if element with given id is marking and false else.
+	*/
+	bool isElementMarking(Layout const * pLayout, std::string id);
 
     //! Set hiding of element.
     /*!

@@ -1,7 +1,7 @@
 ### VERSION 0.6
 - TODO: wiki: dimable -> dimming (elements and config)
-- Marking elements (render quad above them)
-- Threshold color (no more negative :-C)
+- TODO: wiki: style: MarkColor
+- Marking elements (ok the way now implemented?)
 - Umlaute do not work utf8 version of set content of text block interface function
 - pathes to paths
     
