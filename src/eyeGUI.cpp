@@ -37,7 +37,7 @@ namespace eyegui
         pGUI->removeLayout(pLayout);
     }
 
-    Input updateGUI(GUI* pGUI, float tpf, Input input)
+    Input updateGUI(GUI* pGUI, float tpf, const Input input)
     {
         return pGUI->update(tpf, input);
     }

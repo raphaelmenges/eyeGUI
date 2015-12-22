@@ -103,7 +103,7 @@ namespace eyegui
         }
     }
 
-    Input GUI::update(float tpf, Input input)
+    Input GUI::update(float tpf, const Input input)
     {
         // Execute all jobs
         for (std::unique_ptr<GUIJob>& rupJob : mJobs)
@@ -133,18 +133,21 @@ namespace eyegui
             mAccPeriodicTime -= ACCUMULATED_TIME_PERIOD;
         }
 
+		// Copy constant input
+		Input copyInput = input;
+
         // Update all layouts in reversed order
         for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
         {
             // Update and use input
-            mLayouts[i]->update(tpf, &input);
+            mLayouts[i]->update(tpf, &copyInput);
         }
 
         // Update gaze drawer
         mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
 
         // Return copy of used input
-        return input;
+        return copyInput;
     }
 
     void GUI::draw()

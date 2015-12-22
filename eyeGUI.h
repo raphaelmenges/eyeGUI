@@ -179,7 +179,7 @@ namespace eyegui
       \param input struct.
       \return input struct with information about usage.
     */
-    Input updateGUI(GUI* pGUI, float tpf, Input input);
+    Input updateGUI(GUI* pGUI, float tpf, const Input input);
 
     //! Draw whole GUI.
     /*!
