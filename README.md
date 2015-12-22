@@ -10,6 +10,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 #### Version 0.6
 * stb_image for pixel image loading
 * Marking of elements
+* Instant interaction with element beneath gaze (thanks for the idea to Wojciech Kwasnik)
 
 #### Version 0.5
 * Extending interface

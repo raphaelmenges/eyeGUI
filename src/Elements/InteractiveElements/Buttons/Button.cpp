@@ -199,7 +199,11 @@ namespace eyegui
 
     void Button::specialInteract()
     {
+        // Hit button
         hit();
+
+        // Reset threshold
+        mThreshold.setValue(0);
     }
 
     void Button::specialPipeNotification(Notification notification, Layout* pLayout)

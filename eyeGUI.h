@@ -135,9 +135,10 @@ namespace eyegui
     //! Struct for input
     struct Input
     {
-        int gazeX = 0;
-        int gazeY = 0;
-        bool gazeUsed = false;
+        int gazeX = 0; //!< X position of gaze in pixels
+        int gazeY = 0; //!< Y position of gaze in pixels
+        bool gazeUsed = false; //!< Indicates usage of gaze by eyeGUI
+        bool instantInteraction = false; //!< Instant interaction with element beneath gaze
     };
 
     //! Creates GUI and returns pointer to it.
@@ -336,16 +337,16 @@ namespace eyegui
         std::string id,
         bool dimming);
 
-	//! Set whether element is marking.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\param marking is the new choice.
-	*/
-	void setElementMarking(
-		Layout* pLayout,
-		std::string id,
-		bool marking);
+    //! Set whether element is marking.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param marking is the new choice.
+    */
+    void setElementMarking(
+        Layout* pLayout,
+        std::string id,
+        bool marking);
 
     //! Set style of element.
     /*!
@@ -366,13 +367,13 @@ namespace eyegui
     */
     bool isElementDimming(Layout const * pLayout, std::string id);
 
-	//! Get whether element is marking.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\return true if element with given id is marking and false else.
-	*/
-	bool isElementMarking(Layout const * pLayout, std::string id);
+    //! Get whether element is marking.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return true if element with given id is marking and false else.
+    */
+    bool isElementMarking(Layout const * pLayout, std::string id);
 
     //! Set hiding of element.
     /*!
