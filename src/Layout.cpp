@@ -315,18 +315,18 @@ namespace eyegui
         }
     }
 
-	void Layout::setElementMarking(std::string id, bool marking)
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			pElement->setMarking(marking);
-		}
-		else
-		{
-			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-		}
-	}
+    void Layout::setElementMarking(std::string id, bool marking)
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            pElement->setMarking(marking);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+        }
+    }
 
     void Layout::setElementHiding(std::string id, bool hidden)
     {
@@ -368,19 +368,19 @@ namespace eyegui
         return false;
     }
 
-	bool Layout::isElementMarking(std::string id) const
-	{
-		Element* pElement = fetchElement(id);
-		if (pElement != NULL)
-		{
-			return pElement->isMarking();
-		}
-		else
-		{
-			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-		}
-		return false;
-	}
+    bool Layout::isElementMarking(std::string id) const
+    {
+        Element* pElement = fetchElement(id);
+        if (pElement != NULL)
+        {
+            return pElement->isMarking();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+        }
+        return false;
+    }
 
     void Layout::highlightInteractiveElement(std::string id, bool doHighlight)
     {
@@ -489,12 +489,20 @@ namespace eyegui
 
     void Layout::setContentOfTextBlock(std::string id, std::string content)
     {
-        // Convert to 16 bit string
-        std::u16string content16;
-        utf8::utf8to16(content.begin(), content.end(), back_inserter(content16));
+        // Check for valid UTF-8
+        if(utf8::is_valid(content.begin(), content.end()))
+        {
+            // Convert to 16 bit string
+            std::u16string content16;
+            utf8::utf8to16(content.begin(), content.end(), back_inserter(content16));
 
-        // Pipe it to method for 16 bit strings
-        setContentOfTextBlock(id, content16);
+            // Pipe it to method for 16 bit strings
+            setContentOfTextBlock(id, content16);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Invalid characters found in content. Please check unicode encoding of your source code. Following string was received: " + content);
+        }
     }
 
     void Layout::setKeyOfTextBlock(std::string id, std::string key)

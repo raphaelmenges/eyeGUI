@@ -2,8 +2,7 @@
 - TODO: wiki: dimable -> dimming (elements and config)
 - TODO: wiki: style: MarkColor
 - Marking elements (ok the way now implemented?)
-- Umlaute do not work utf8 version of set content of text block interface function
-    
+
 ### VERSION 0.7
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - TextInput
