@@ -38,11 +38,11 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 ## HowTo
 In order to use eyeGUI, please follow these steps:
 * Generate a project for your compiler with CMake (somewhere on your computer)
-* Build that project (tested with GCC 5.x, Visual Studio 2015 and XCode)
-* Inside build folder, there should be a folder called "build" with two folders inside
-* "include" contains the header file for eyeGUI
-* "lib" includes the binary static library for your compiler
-* Just include the header in your project and link the executeable against the lib
+* Compile that project (tested with GCC 5.x, Visual Studio 2015 and XCode)
+* Inside your build folder chosen in CMake, there should be a folder called "build" containing two other folders
+ * "include" contains the header file for eyeGUI
+ * "lib" contains the binary static library for your compiler
+* Just include the header in your project and link the executeable against the library
 * Keep the licenses in mind! (at least, FreeType2 must be mentioned)
 
 ## Dependencies
