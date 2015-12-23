@@ -35,6 +35,16 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 #### Version 0.1
 * Initial commit
 
+## HowTo
+In order to use eyeGUI, please follow these steps:
+* Generate a project for your compiler with CMake (somewhere on your computer)
+* Build that project (tested with GCC 5.x, Visual Studio 2015 and XCode)
+* Inside build folder, there should be a folder called "build" with two folders inside
+* "include" contains the header file for eyeGUI
+* "lib" includes the binary static library for your compiler
+* Just include the header in your project and link the executeable against the lib
+* Keep the licenses in mind! (at least, FreeType2 must be mentioned)
+
 ## Dependencies
 * NanoSVG: https://github.com/memononen/nanosvg
 * TinyXML2: https://github.com/leethomason/tinyxml2
