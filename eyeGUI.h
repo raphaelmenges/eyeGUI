@@ -342,11 +342,13 @@ namespace eyegui
     \param pLayout pointer to layout.
     \param id is the unique id of an element.
     \param marking is the new choice.
+	\param depth of children of this element, which are marked (or unmarked) too. Negative depth indicates, that all children are affected.
     */
     void setElementMarking(
         Layout* pLayout,
         std::string id,
-        bool marking);
+        bool marking,
+		int depth = 0);
 
     //! Set style of element.
     /*!

@@ -132,7 +132,7 @@ namespace eyegui
         bool isDimming() const;
 
 		// Set marking
-		void setMarking(bool marking);
+		void setMarking(bool marking, int depth);
 
 		// Getter for marking
 		bool isMarking() const;

@@ -193,7 +193,7 @@ namespace eyegui
                     // Do it for all children
                     for (const std::unique_ptr<Element>& element : mChildren)
                     {
-                        element.get()->setActivity(true, fade);
+                        element->setActivity(true, fade);
                     }
                 }
             }
@@ -210,7 +210,7 @@ namespace eyegui
                 // Do it for all children
                 for (const std::unique_ptr<Element>& element : mChildren)
                 {
-                    element.get()->setActivity(false, fade);
+                    element->setActivity(false, fade);
                 }
             }
         }
@@ -226,9 +226,25 @@ namespace eyegui
         return mDimming;
     }
 
-	void Element::setMarking(bool marking)
+	void Element::setMarking(bool marking, int depth)
 	{
 		mMarking = marking;
+
+		// Affect children
+		if (depth != 0)
+		{
+			// Only decrement positive values
+			if (depth > 0)
+			{
+				depth--;
+			}
+
+			// Tell children about it
+			for (const std::unique_ptr<Element>& element : mChildren)
+			{
+				element->setMarking(marking, depth);
+			}
+		}
 	}
 
 	bool Element::isMarking() const

@@ -315,12 +315,12 @@ namespace eyegui
         }
     }
 
-    void Layout::setElementMarking(std::string id, bool marking)
+    void Layout::setElementMarking(std::string id, bool marking, int depth)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
         {
-            pElement->setMarking(marking);
+            pElement->setMarking(marking, depth);
         }
         else
         {

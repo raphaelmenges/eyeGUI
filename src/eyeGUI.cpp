@@ -159,9 +159,10 @@ namespace eyegui
 	void setElementMarking(
 		Layout* pLayout,
 		std::string id,
-		bool marking)
+		bool marking,
+		int depth)
 	{
-		pLayout->setElementMarking(id, marking);
+		pLayout->setElementMarking(id, marking, depth);
 	}
 
     void setStyleOfElement(

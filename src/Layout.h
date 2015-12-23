@@ -106,7 +106,7 @@ namespace eyegui
         void setElementDimming(std::string id, bool dimming);
 
 		// Set whether element is marking
-		void setElementMarking(std::string id, bool marking);
+		void setElementMarking(std::string id, bool marking, int depth);
 
         // Set hiding of element
         void setElementHiding(std::string id, bool hidden);
