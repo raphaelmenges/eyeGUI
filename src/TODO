@@ -18,6 +18,7 @@
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
+- use git submodules!
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
