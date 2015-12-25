@@ -41,7 +41,7 @@ Notes:
 - Strange or hacky: Since OGL functions are loaded already by the library, what happens in the main program doing the same? Seems to work at least...
 - Stack
   - Non used pixels should be better shared among all elements not only the head in stack -> very difficult stuff
-- Reminder: N
+- Reminder: Namespaces easier because Layout and GUI is visible to outer space
 - Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
 - Tooltips? -> mouse hovering oder gaze when using keyboard...
 - Use UTF8-CPP for config and stylesheet (what would be the advantage?)
