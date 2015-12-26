@@ -7,7 +7,7 @@ project(eyeGUILibrary)
 set(LIBNAME "eyeGUI")
 
 # Output path
-set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/lib/")
+set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib/")
 
 # Activate C++11 in GCC and CLANG (Apple maybe needs '-stdlib=libc++')
 if(NOT MSVC)
