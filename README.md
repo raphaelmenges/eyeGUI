@@ -39,8 +39,8 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 In order to use eyeGUI, please follow these steps:
 * Generate a project for your compiler with CMake (somewhere on your computer)
 * Compile that project (tested with GCC 5.x, Visual Studio 2015 and XCode)
-* Inside your build folder chosen in CMake, there should be a folder called "lib" containing the static library
-* Just include the header from the "include" folder into your project and link your executeable against the library
+* Inside your build folder chosen in CMake, there should be a folder called _lib_ containing the static library
+* Just include the header from the _include_ folder into your project and link your executeable against the library
 * Keep the licenses in mind! (at least, FreeType2 must be mentioned)
 
 ## Dependencies
@@ -51,7 +51,7 @@ In order to use eyeGUI, please follow these steps:
 * FreeType 2.6.1: http://www.freetype.org/ (FreeType license chosen)
 * UTF8-CPP: https://github.com/nemtrif/utfcpp
 
-All dependencies are already included inside the folder "externals" and should be found by CMake. They were updated at 23rd October 2015 in master branch. Keep the licenses in mind when you use this library in your project. The source code of this project itself in the folder "src" and the header "eyeGUI.h" is licensed under the MIT license. From my point, it seems you only have to "advertize" the FreeType Library by mentioning it in your documentation or program when using the compiled library. Errors and omissions excepted ;)
+All dependencies are already included inside the folder _externals_ and should be found by CMake. They were updated at 23rd October 2015 in master branch. Keep the licenses in mind when you use this library in your project. The source code of this project itself in the folder _src_ and the header _eyeGUI.h_ from _include_ is licensed under the MIT license. From my point, it seems you only have to advertize the FreeType Library by mentioning it in your documentation or program when using the compiled library. Errors and omissions excepted ;)
 
 ## Acknowledgments
 * Script to create license free OpenGL loader: https://bitbucket.org/alfonse/glloadgen/wiki
