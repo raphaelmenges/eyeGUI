@@ -1,7 +1,3 @@
-### VERSION 0.6
-- TODO: wiki: dimable -> dimming (elements and config)
-- TODO: wiki: style: MarkColor
-
 ### VERSION 0.7
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - TextInput
