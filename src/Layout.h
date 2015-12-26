@@ -13,7 +13,7 @@
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 #include "Frame.h"
 #include "Style.h"
 #include "Config.h"
@@ -105,8 +105,8 @@ namespace eyegui
         // Set whether element is dimming
         void setElementDimming(std::string id, bool dimming);
 
-		// Set whether element is marking
-		void setElementMarking(std::string id, bool marking, int depth);
+        // Set whether element is marking
+        void setElementMarking(std::string id, bool marking, int depth);
 
         // Set hiding of element
         void setElementHiding(std::string id, bool hidden);
@@ -114,8 +114,8 @@ namespace eyegui
         // Check whether element is dimming
         bool isElementDimming(std::string id) const;
 
-		// Check whether element is marking
-		bool isElementMarking(std::string id) const;
+        // Check whether element is marking
+        bool isElementMarking(std::string id) const;
 
         // Set style of element
         void setStyleOfElement(std::string id, std::string style);

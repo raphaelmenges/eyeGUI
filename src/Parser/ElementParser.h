@@ -9,7 +9,7 @@
 #ifndef ELEMENT_PARSER_H_
 #define ELEMENT_PARSER_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 #include "Rendering/AssetManager.h"
 #include "NotificationQueue.h"
 #include "Elements/Elements.h"

@@ -9,7 +9,7 @@
 #ifndef TEXTURE_H_
 #define TEXTURE_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 
 #include "Defines.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"

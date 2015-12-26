@@ -12,7 +12,7 @@
 #ifndef GUI_H_
 #define GUI_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 
 #include "Layout.h"
 #include "Parser/LayoutParser.h"

@@ -9,7 +9,7 @@
 #ifndef STYLESHEET_PARSER_H_
 #define STYLESHEET_PARSER_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 #include "Style.h"
 
 #include <memory>

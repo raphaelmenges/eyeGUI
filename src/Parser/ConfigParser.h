@@ -9,7 +9,7 @@
 #ifndef CONFIG_PARSER_H_
 #define CONFIG_PARSER_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 #include "Config.h"
 
 namespace eyegui

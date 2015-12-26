@@ -5,7 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 
 #include "GUI.h"
 #include "Layout.h"
@@ -156,14 +156,14 @@ namespace eyegui
         pLayout->setElementDimming(id, dimming);
     }
 
-	void setElementMarking(
-		Layout* pLayout,
-		std::string id,
-		bool marking,
-		int depth)
-	{
-		pLayout->setElementMarking(id, marking, depth);
-	}
+    void setElementMarking(
+        Layout* pLayout,
+        std::string id,
+        bool marking,
+        int depth)
+    {
+        pLayout->setElementMarking(id, marking, depth);
+    }
 
     void setStyleOfElement(
         Layout* pLayout,

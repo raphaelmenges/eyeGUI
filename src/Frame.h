@@ -11,7 +11,7 @@
 #ifndef FRAME_H_
 #define FRAME_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 #include "Object.h"
 #include "Elements/Elements.h"
 #include "LerpValue.h"

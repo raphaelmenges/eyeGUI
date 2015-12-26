@@ -20,7 +20,7 @@
 #ifndef ELEMENT_H_
 #define ELEMENT_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 #include "Object.h"
 #include "Rendering/AssetManager.h"
 #include "Style.h"
@@ -131,11 +131,11 @@ namespace eyegui
         // Getter for dimming
         bool isDimming() const;
 
-		// Set marking
-		void setMarking(bool marking, int depth);
+        // Set marking
+        void setMarking(bool marking, int depth);
 
-		// Getter for marking
-		bool isMarking() const;
+        // Getter for marking
+        bool isMarking() const;
 
         // Get layout
         Layout const * getLayout() const;
@@ -245,8 +245,8 @@ namespace eyegui
         bool mActive;
         bool mAdaptiveScaling;
         LerpValue mAdaptiveScale; // [0..1]
-		bool mMarking;
-		LerpValue mMark;
+        bool mMarking;
+        LerpValue mMark;
 
         // This vector is the owner of all children. May be empty!
         std::vector<std::unique_ptr<Element> > mChildren;

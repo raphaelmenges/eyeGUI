@@ -9,43 +9,43 @@
 #ifndef FONT_H_
 #define FONT_H_
 
-#include "eyeGUI.h"
+#include "include/eyeGUI.h"
 #include "Defines.h"
 
 #include "externals/GLM/glm/glm.hpp"
 
 namespace eyegui
 {
-	struct Glyph
-	{
-		glm::vec4	atlasPosition;	// Position in atlas (minU, minV, maxU, maxV)
-		glm::ivec2  size;			// Size in pixel
-		glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
-		glm::vec2	advance;        // Offset to advance to next glyph in pixel
-	};
+    struct Glyph
+    {
+        glm::vec4	atlasPosition;	// Position in atlas (minU, minV, maxU, maxV)
+        glm::ivec2  size;			// Size in pixel
+        glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
+        glm::vec2	advance;        // Offset to advance to next glyph in pixel
+    };
 
-	class Font
-	{
-	public:
+    class Font
+    {
+    public:
 
-		// Constructor
-		Font() {}
+        // Constructor
+        Font() {}
 
-		// Destructor
-		virtual ~Font() {}
+        // Destructor
+        virtual ~Font() {}
 
-		// Resize font atlases
-		virtual void resizeFontAtlases(int windowHeight) = 0;
+        // Resize font atlases
+        virtual void resizeFontAtlases(int windowHeight) = 0;
 
-		// Get glyph (may return NULL if not found)
-		virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const = 0;
+        // Get glyph (may return NULL if not found)
+        virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const = 0;
 
-		// Get height of line
-		virtual float getLineHeight(FontSize fontSize) const = 0;
+        // Get height of line
+        virtual float getLineHeight(FontSize fontSize) const = 0;
 
-		// Get handle of texture atlas
-		virtual uint getAtlasTextureHandle(FontSize fontSize) const = 0;
-	};
+        // Get handle of texture atlas
+        virtual uint getAtlasTextureHandle(FontSize fontSize) const = 0;
+    };
 }
 
 #endif // FONT_H_
