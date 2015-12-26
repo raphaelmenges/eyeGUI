@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.3)
 
 # Project title
 project(eyeGUILibrary)
@@ -15,10 +15,10 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 # Directory of implementation
-set(SRC_DIR "./src")
+set(SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
 
 # Include at top level and at source code level
-include_directories(".")
+include_directories("${CMAKE_CURRENT_LIST_DIR}")
 include_directories("${SRC_DIR}")
 
 # Find all sources and headers
@@ -31,7 +31,7 @@ file(GLOB_RECURSE HEADERS
 	"${SRC_DIR}/*.h")
 
 # Directory of external code
-set(EXTERNAL_DIR "./externals")
+set(EXTERNAL_DIR "${CMAKE_CURRENT_LIST_DIR}/externals")
 
 # Add TinyXML2
 file(GLOB_RECURSE TINYXML2
@@ -139,7 +139,7 @@ IF(MSVC)
 	foreach(f ${ALL_CODE})
 		# Get the path of the file relative to ${CMAKE_CURRENT_SOURCE_DIR},
 		# then alter it (not compulsory)
-		file(RELATIVE_PATH SRCGR "." ${f})
+		file(RELATIVE_PATH SRCGR "${CMAKE_CURRENT_LIST_DIR}" ${f})
 		set(SRCGR "${LIBNAME}/${SRCGR}")
 
 		# Extract the folder, ie remove the filename part
@@ -153,7 +153,7 @@ IF(MSVC)
 ENDIF(MSVC)
 
 # Add the interface header file
-set(ALL_CODE ${ALL_CODE} "./include/eyeGUI.h")
+set(ALL_CODE ${ALL_CODE} "${CMAKE_CURRENT_LIST_DIR}/include/eyeGUI.h")
 
 # Create eyeGUI static library
 add_library(${LIBNAME} STATIC ${ALL_CODE})
