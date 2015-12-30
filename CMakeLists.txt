@@ -43,7 +43,7 @@ file(GLOB_RECURSE GLM
 include_directories("${EXTERNAL_DIR}/GLM")
 
 # Add OpenGLLoader
-file(GLOB_RECURSE OpenGLLoader
+file(GLOB_RECURSE OPEN_GL_LOADER
 	"${EXTERNAL_DIR}/OpenGLLoader/*")
 
 # Add stb_image
@@ -126,7 +126,7 @@ set(ALL_CODE
 	${HEADERS}
 	${TINYXML2}
 	${GLM}
-	${OpenGLLoader}
+	${OPEN_GL_LOADER}
 	${STB_IMAGE}
 	${NANO_SVG}
 	${FREETYPE2}
