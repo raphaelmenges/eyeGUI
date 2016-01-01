@@ -449,6 +449,13 @@ namespace eyegui
         std::string id,
         std::string iconFilepath);
 
+    //! Interact with interactive element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+    */
+    void interactWithInteractiveElement(Layout* pLayout, std::string id);
+
     //! Select interactive element.
     /*!
       \param pLayout pointer to layout.

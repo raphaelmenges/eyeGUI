@@ -220,6 +220,11 @@ namespace eyegui
         pLayout->setIconOfInteractiveElement(id, iconFilepath);
     }
 
+    void interactWithInteractiveElement(Layout* pLayout, std::string id)
+    {
+        pLayout->interactWithInteractiveElement(id);
+    }
+
     void selectInteractiveElement(Layout* pLayout, std::string id)
     {
         pLayout->selectInteractiveElement(id);

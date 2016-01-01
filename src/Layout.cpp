@@ -408,6 +408,19 @@ namespace eyegui
         }
     }
 
+    void Layout::interactWithInteractiveElement(std::string id)
+    {
+        InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));
+        if (pInteractiveElement != NULL)
+        {
+            pInteractiveElement->interact();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find interactive element with id: " + id);
+        }
+    }
+
     void Layout::hitButton(std::string id)
     {
         Button* pButton = toButton(fetchElement(id));
