@@ -472,7 +472,7 @@ namespace eyegui
 
         // Use activity and alpha to check whether input may be used by subclasses
         Input* pSubInput;
-        if (mAlpha < 1 || mActivity.getValue() < 1)
+        if (mAlpha < 1 || !mActive)
         {
             pSubInput = NULL;
         }
