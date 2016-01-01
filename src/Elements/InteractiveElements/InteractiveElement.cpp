@@ -105,7 +105,7 @@ namespace eyegui
     float InteractiveElement::specialUpdate(float tpf, Input* pInput)
     {
         // Highlight
-        mHighlight.update(tpf, !mIsHighlighted);
+        mHighlight.update(tpf / mpLayout->getConfig()->animationDuration, !mIsHighlighted);
 
         // Selection
         mSelection.update(tpf / mpLayout->getConfig()->animationDuration, !mIsSelected);
