@@ -1,5 +1,4 @@
 ### VERSION 0.7
-- IDEA: disable opengl storing stuff by function (to save computation time)
 - TextInput
   - Keyboard and "Guesser" (tries to guess what you want to write)
   - Both are indepenend
@@ -14,7 +13,7 @@
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
-- use git submodules!
+- IDEA: disable opengl storing stuff by function (to save computation time)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Encoding stuff
 	- Different XML library -> UTF8 works even in xeyegui
@@ -25,11 +24,16 @@
 - Font has sometimes little rendering issues
 - Adaptive scaling is not that smooth
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
+- Desc(ription) for elements
+	- lookup in localization file
+	- global "help" mode or just per element?
+	
+### VERSION 1.0
+- Code review!
+- Getting rid of freetype2
+- Some members of element could be private but getters necessary..
 
 Notes:
-- Reminder: Getter for transform and size do only work after first update
-- Localization files MUST BE encoded in UTF-8
-- Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)
 - Maybe use sampler states for textures instead of per texture settings
@@ -37,9 +41,7 @@ Notes:
 - Strange or hacky: Since OGL functions are loaded already by the library, what happens in the main program doing the same? Seems to work at least...
 - Stack
   - Non used pixels should be better shared among all elements not only the head in stack -> very difficult stuff
-- Reminder: Namespaces easier because Layout and GUI is visible to outer space
 - Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
-- Tooltips? -> mouse hovering oder gaze when using keyboard...
 - Use UTF8-CPP for config and stylesheet (what would be the advantage?)
 - Input
   - Maybe blocks have an option: kill or not kill input (both possible)
@@ -50,6 +52,7 @@ Reminders:
 - XML may not contain information about current state (activity, hiding etc!!!)
 - namespaces easier because Layout and GUI is visible to outer space
 - Input: can be NULL if irrelevant for Element
-
-If bored:
-- Some members of element could be private but getters necessary..
+- Getter for transform and size do only work after first update
+- Namespaces easier because Layout and GUI is visible to outer space
+- Element's mBorderAspectRatio for avoiding borders to kill aspect ratio only used in picture at the moment
+- Localization files MUST BE encoded in UTF-8
