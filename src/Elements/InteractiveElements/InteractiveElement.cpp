@@ -142,6 +142,11 @@ namespace eyegui
         mpIcon->bind(0);
     }
 
+	void InteractiveElement::specialTransformAndSize()
+	{
+		// Nothing to do, but must be implemented
+	}
+
     void InteractiveElement::specialReset()
     {
         mHighlight.setValue(0);

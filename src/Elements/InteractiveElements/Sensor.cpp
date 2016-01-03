@@ -110,11 +110,6 @@ namespace eyegui
         mpRenderItem->draw();
     }
 
-    void Sensor::specialTransformAndSize()
-    {
-        // Nothing to do
-    }
-
     void Sensor::specialReset()
     {
         InteractiveElement::specialReset();
