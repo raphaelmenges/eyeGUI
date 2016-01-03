@@ -78,4 +78,25 @@ namespace eyegui
             rHeight = availableWidth;
         }
     }
+
+	bool CircleButton::penetratedByInput(Input const * pInput) const
+	{
+		// Check whether gaze is upon circle button
+		if (pInput != NULL && !pInput->gazeUsed)
+		{
+			// Length of vector from center to gaze point
+			float radius = mWidth / 2.0f;
+			float length = glm::length(
+							glm::vec2(
+								pInput->gazeX - (mX + radius),
+								pInput->gazeY - (mY + radius)));
+			
+			// Gaze inside circle?
+			if(length <= radius)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

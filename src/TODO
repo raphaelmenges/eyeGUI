@@ -32,7 +32,6 @@
 - Some members of element could be private but getters necessary..
 
 Notes:
-- maybe "real" collision detection on pixel basis for stuff (difficult for pictures with alpha?)
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)
 - Maybe use sampler states for textures instead of per texture settings
