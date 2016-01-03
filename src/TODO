@@ -3,10 +3,10 @@
   - Keyboard and "Guesser" (tries to guess what you want to write)
   - Both are indepenend
   - Should support unicode...
-  - Different modes: Fullscreen, OnScreen, With/Without guesser
   - Differet speeds
     - Letters get bigger and after threshold: selection
     - Only last letter focused for longer time
+	- Use discard in shader instead of stencil buffer, because much overhead to setting up and restoring
 
 ### VERSION 0.8
 - Audio (PortAudio library?)
@@ -15,9 +15,6 @@
 ### VERSION 0.x
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
-- Encoding stuff
-	- Different XML library -> UTF8 works even in xeyegui
-	- Use UTF8 library also for config and stylesheet?
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
@@ -27,6 +24,7 @@
 - Desc(ription) for elements
 	- lookup in localization file
 	- global "help" mode or just per element?
+- OpenGL state: bound texture not rescued  (neither in texture/font class nor in GLSetup)
 	
 ### VERSION 1.0
 - Code review!
@@ -34,6 +32,7 @@
 - Some members of element could be private but getters necessary..
 
 Notes:
+- maybe "real" collision detection on pixel basis for stuff (difficult for pictures with alpha?)
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)
 - Maybe use sampler states for textures instead of per texture settings
