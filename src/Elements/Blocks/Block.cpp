@@ -66,7 +66,7 @@ namespace eyegui
             mpBackground->bind();
 
             // Fill matrix in shader
-            mpBackground->getShader()->fillValue("matrix", mDrawMatrix);
+            mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
 
             // Fill color to shader
             mpBackground->getShader()->fillValue(

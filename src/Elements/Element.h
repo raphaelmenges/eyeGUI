@@ -237,7 +237,7 @@ namespace eyegui
         float mRelativeScale; // [0..]
         float mAlpha; // [0..1]
         float mBorderAspectRatio;
-        glm::mat4 mDrawMatrix;
+        glm::mat4 mFullDrawMatrix;
         LerpValue mActivity; // [0..1]
         bool mDimming;
         LerpValue mDim; // [0..1] One means full dimming

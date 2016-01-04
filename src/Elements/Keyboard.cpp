@@ -42,11 +42,11 @@ namespace eyegui
 
 		// Fetch render item for keys
 		mpKey = mpAssetManager->fetchRenderItem(
-			shaders::Type::BLOCK,
+			shaders::Type::KEY,
 			meshes::Type::QUAD);
 
 		// TODO: Testing
-		mKeyCount = 5;
+		mKeyCount = 25;
 	}
 
 	Keyboard::~Keyboard()
@@ -56,7 +56,7 @@ namespace eyegui
 
 	float Keyboard::specialUpdate(float tpf, Input* pInput)
 	{
-		// TODO: update keys
+		// TODO: update keys (maybe do not save keycount but vector with matrices and...vector with letters...)
 		return 0;
 	}
 
@@ -65,42 +65,56 @@ namespace eyegui
 		// *** BACKGROUND ***
 		if (getStyle()->backgroundColor.a > 0)
 		{
-			// Bind render item before setting values and drawing
+			// Bind, fill and draw background
 			mpBackground->bind();
-
-			// Fill matrix in shader
-			mpBackground->getShader()->fillValue("matrix", mDrawMatrix);
-
-			// Fill color to shader
-			mpBackground->getShader()->fillValue(
-				"backgroundColor",
-				getStyle()->backgroundColor);
-
-			// Fill alpha
+			mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
+			mpBackground->getShader()->fillValue("backgroundColor", getStyle()->backgroundColor);
 			mpBackground->getShader()->fillValue("alpha", mAlpha);
-
-			// Fill activity
 			mpBackground->getShader()->fillValue("activity", mActivity.getValue());
-
-			// Fill dimming
 			mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
 			mpBackground->getShader()->fillValue("dim", mDim.getValue());
-
-			// Fill marking
 			mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
 			mpBackground->getShader()->fillValue("mark", mMark.getValue());
-
-			// Draw render item
 			mpBackground->draw();
 		}
 
 		// *** KEYS ***
-		for (int i = 0; i < mKeyCount; i++)
+		mpKey->bind();
+		mpKey->getShader()->fillValue("alpha", mAlpha);
+
+		// !!! THINK AND THEN CODE... !!!
+
+		// Calculate size of one key and count of rows (TODO: move to update method)
+		int size;
+		unsigned int rowCount = 1;
+
+		// First case: one row
+		size = mWidth / mKeyCount;
+		if (size >= mHeight)
 		{
-			// TODO: render keys
+			// Only one row
+			size = mHeight;
+		}
+		else
+		{
+			// Start computation of row count and size
+			int newSize = size;
+			while (newSize >= size)
+			{
+				rowCount++;
+				unsigned int virtualKeyCount = mKeyCount + (rowCount / 2); // Add virtual keys for the shifted appereance
+				virtualKeyCount / rowCount;
+			}
 		}
 
+		// Calculate position of keys
 
+		for (unsigned int i = 0; i < mKeyCount; i++)
+		{
+			/*glm::mat4 matrix = calculateDrawMatrix((int)(mX + i*size), mY, (int)size, (int)size);
+			mpKey->getShader()->fillValue("matrix", matrix);
+			mpKey->draw();*/
+		}
 	}
 
 	void Keyboard::specialTransformAndSize()

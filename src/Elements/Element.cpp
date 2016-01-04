@@ -367,7 +367,7 @@ namespace eyegui
         specialTransformAndSize();
 
         // After calculation transformation, recalculate the matrix for rendering
-        mDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
+		mFullDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
     }
 
     float Element::getDynamicScale() const

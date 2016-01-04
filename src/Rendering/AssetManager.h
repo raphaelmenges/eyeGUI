@@ -27,7 +27,7 @@
 namespace eyegui
 {
     // Available assets
-    namespace shaders { enum class Type { COLOR, CIRCLE, SEPARATOR, BLOCK, PICTURE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, FONT }; }
+    namespace shaders { enum class Type { COLOR, CIRCLE, SEPARATOR, BLOCK, PICTURE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, FONT, KEY }; }
     namespace meshes { enum class Type { QUAD, LINE }; }
     namespace graphics { enum class Type { CIRCLE, NOT_FOUND }; }
 

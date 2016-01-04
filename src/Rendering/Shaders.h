@@ -329,6 +329,17 @@ namespace eyegui
             "	sensor.rgb = mix(sensor.rgb, selectionColor.rgb, pow(gradient,2) * selection * selectionColor.a);\n" // Selection
             "   fragColor = vec4(sensor.rgb, sensor.a * alpha);\n" // Composing pixel
             "}\n";
+
+		// Uniforms:
+		// float alpha
+		static const char* pKeyFragmentShader =
+			"#version 330 core\n"
+			"out vec4 fragColor;\n"
+			"in vec2 uv;\n"
+			"uniform float alpha = 1;\n"
+			"void main() {\n"
+			"   fragColor = vec4(uv.rg, 0, alpha);\n"
+			"}\n";
     }
 }
 

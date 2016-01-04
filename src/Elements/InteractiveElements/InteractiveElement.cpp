@@ -123,7 +123,7 @@ namespace eyegui
     void InteractiveElement::specialDraw() const
     {
         // Fill shader
-        mpRenderItem->getShader()->fillValue("matrix", mDrawMatrix);
+        mpRenderItem->getShader()->fillValue("matrix", mFullDrawMatrix);
         mpRenderItem->getShader()->fillValue("highlight", mHighlight.getValue());
         mpRenderItem->getShader()->fillValue("alpha", mAlpha);
         mpRenderItem->getShader()->fillValue("activity", mActivity.getValue());
