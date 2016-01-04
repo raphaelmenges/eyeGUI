@@ -57,7 +57,8 @@ namespace eyegui
             BLOCK,
             STACK,
             GRID,
-            TEXT_BLOCK
+            TEXT_BLOCK,
+			KEYBOARD
         };
 
         // Orientation of element

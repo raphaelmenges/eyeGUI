@@ -46,7 +46,7 @@ namespace eyegui
         // Transformation filled by subclasses
         virtual void specialTransformAndSize();
 
-        // Reset filld by subclasses
+        // Reset filled by subclasses
         virtual void specialReset();
 
         // Implemented by subclasses

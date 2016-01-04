@@ -76,6 +76,20 @@ namespace eyegui
         }
         return NULL;
     }
+
+	// Tries to cast pointer, returns NULL if fails
+	static Keyboard* toKeyboard(Element* pElement)
+	{
+		if (pElement != NULL)
+		{
+			Element::Type type = pElement->getType();
+			if (type == Element::Type::KEYBOARD)
+			{
+				return static_cast<Keyboard*>(pElement);
+			}
+		}
+		return NULL;
+	}
 }
 
 #endif // ELEMENT_CASTING_H_

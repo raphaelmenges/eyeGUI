@@ -21,5 +21,6 @@
 #include "Elements/InteractiveElements/Buttons/BoxButton.h"
 #include "Elements/InteractiveElements/Buttons/DropButton.h"
 #include "Elements/InteractiveElements/Sensor.h"
+#include "Elements/Keyboard.h"
 
 #endif // ELEMENTS_H_

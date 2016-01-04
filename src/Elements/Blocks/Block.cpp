@@ -42,7 +42,7 @@ namespace eyegui
         mInnerBorder = innerBorder;
 
         // Fetch render item
-        mpBackground = pAssetManager->fetchRenderItem(
+        mpBackground = mpAssetManager->fetchRenderItem(
             shaders::Type::BLOCK,
             meshes::Type::QUAD);
     }
