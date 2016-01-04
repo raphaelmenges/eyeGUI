@@ -39,6 +39,14 @@ namespace eyegui
 		mpBackground = mpAssetManager->fetchRenderItem(
 			shaders::Type::BLOCK,
 			meshes::Type::QUAD);
+
+		// Fetch render item for keys
+		mpKey = mpAssetManager->fetchRenderItem(
+			shaders::Type::BLOCK,
+			meshes::Type::QUAD);
+
+		// TODO: Testing
+		mKeyCount = 5;
 	}
 
 	Keyboard::~Keyboard()
@@ -48,11 +56,13 @@ namespace eyegui
 
 	float Keyboard::specialUpdate(float tpf, Input* pInput)
 	{
+		// TODO: update keys
 		return 0;
 	}
 
 	void Keyboard::specialDraw() const
 	{
+		// *** BACKGROUND ***
 		if (getStyle()->backgroundColor.a > 0)
 		{
 			// Bind render item before setting values and drawing
@@ -83,6 +93,14 @@ namespace eyegui
 			// Draw render item
 			mpBackground->draw();
 		}
+
+		// *** KEYS ***
+		for (int i = 0; i < mKeyCount; i++)
+		{
+			// TODO: render keys
+		}
+
+
 	}
 
 	void Keyboard::specialTransformAndSize()

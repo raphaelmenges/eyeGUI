@@ -53,6 +53,10 @@ namespace eyegui
 
 		// Members
 		RenderItem const * mpBackground;
+		RenderItem const * mpKey;
+
+		// TODO: Testing
+		unsigned int mKeyCount;
 	};
 }
 

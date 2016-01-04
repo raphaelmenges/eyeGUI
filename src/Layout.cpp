@@ -44,7 +44,6 @@ namespace eyegui
     void Layout::update(float tpf, Input* pInput)
     {
         // *** DELETION OF REMOVED FLOATING FRAMES ***
-
         for (int i : mDyingFloatingFramesIndices)
         {
             mFloatingFramesOrderingIndices.erase(
@@ -58,7 +57,6 @@ namespace eyegui
         internalResizing();
 
         // *** NOTIFICATIONS ***
-
         mupNotificationQueue->process();
 
         // *** OWN UPDATE ***
