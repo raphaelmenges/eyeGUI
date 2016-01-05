@@ -13,51 +13,63 @@
 
 namespace eyegui
 {
-	class Keyboard : public Element
-	{
-	public:
+    class Keyboard : public Element
+    {
+    public:
 
-		// Constructor
-		Keyboard(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout const * pLayout,
-			Frame* pFrame,
-			AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
-			float relativeScale,
-			float border,
-			bool dimming,
-			bool adaptiveScaling);
+        // TODO
+        // - maybe build up vector of structs saving position of keys in original state
+        // - redo whole algorithm? first, determining size etc and then set positions is strange
+        // - sizeWithKeyDistance is float, is that ok?
 
-		// Destructor
-		virtual ~Keyboard();
+        // Constructor
+        Keyboard(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+            NotificationQueue* pNotificationQueue,
+            float relativeScale,
+            float border,
+            bool dimming,
+            bool adaptiveScaling);
 
-	protected:
+        // Destructor
+        virtual ~Keyboard();
 
-		// Updating filled by subclasses, returns adaptive scale
-		virtual float specialUpdate(float tpf, Input* pInput);
+    protected:
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
+        // Updating filled by subclasses, returns adaptive scale
+        virtual float specialUpdate(float tpf, Input* pInput);
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
 
-		// Reset filled by subclasses
-		virtual void specialReset();
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize();
 
-		// Implemented by subclasses
-		virtual bool mayConsumeInput();
+        // Reset filled by subclasses
+        virtual void specialReset();
 
-		// Members
-		RenderItem const * mpBackground;
-		RenderItem const * mpKey;
+        // Implemented by subclasses
+        virtual bool mayConsumeInput();
 
-		// TODO: Testing
-		unsigned int mKeyCount;
-	};
+    private:
+
+        const float KEY_DISTANCE = 0.1; // Amount of size
+
+        // Calculate size of keys, number of rows and count of keys in even row
+        void fitKeys(unsigned int& rSize, unsigned int& rRowCount, unsigned int& rCountPerRow) const;
+
+        // Members
+        RenderItem const * mpBackground;
+        RenderItem const * mpKey;
+
+        // TODO: Testing
+        unsigned int mKeyCount;
+    };
 }
 
 #endif // KEYBOARD_H_

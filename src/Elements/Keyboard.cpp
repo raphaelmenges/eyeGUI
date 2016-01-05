@@ -49,7 +49,7 @@ namespace eyegui
             meshes::Type::QUAD);
 
         // TODO: Testing
-        mKeyCount = 25;
+        mKeyCount = 35;
     }
 
     Keyboard::~Keyboard()
@@ -85,59 +85,15 @@ namespace eyegui
         mpKey->bind();
         mpKey->getShader()->fillValue("alpha", mAlpha);
 
-        // Determine key size and count of rows (TODO: redo with better and more stable algorithm)
+        // Determine key size, count of rows and count of keys in even rows
         unsigned int size;
         unsigned int rowCount;
         unsigned int countPerRow;
 
-        // Try to fit keys in available space
-        float i = 0;
-        bool sizeNotFound = true;
-
-        while(sizeNotFound)
-        {
-            // Increment i (used to divide height and create size)
-            i += 0.5f;
-
-            // New size for keys
-            size = mHeight / i;
-
-            // Check, how many fit in one row
-            unsigned int currentCountPerRow = mWidth / size;
-
-            // Calculate, how much height it would need
-            unsigned int currentRowCount = 0;
-            unsigned int currentKeyCount = 0;
-            bool rowWithOneLess = false;
-            while(currentKeyCount < mKeyCount)
-            {
-                // Add possible keys (for which would be space)
-                if(rowWithOneLess && currentCountPerRow >= 1)
-                {
-                    currentKeyCount += currentCountPerRow-1;
-                }
-                else
-                {
-                    currentKeyCount += currentCountPerRow;
-                }
-
-                // Alternating count in rows
-                rowWithOneLess = !rowWithOneLess;
-
-                // Next row
-                currentRowCount++;
-            }
-
-            // Check, whether height is enough for all keys
-            if((currentRowCount * size) <= mHeight)
-            {
-                sizeNotFound = false;
-                rowCount = currentRowCount;
-                countPerRow = currentCountPerRow;
-            }
-        }
+        fitKeys(size, rowCount, countPerRow);
 
         // Draw keys
+        float sizeWithKeyDistance = size * (1.f + KEY_DISTANCE);
         unsigned int keysInRow = 0;
         unsigned int row = 0;
         unsigned int keysNotInLastRow = 0;
@@ -155,16 +111,17 @@ namespace eyegui
             if(row != rowCount - 1)
             {
                 // Not the last row
-                xOffset = (mWidth - (countPerRow - (row % 2)) * size) / 2; // Move it to center
+                xOffset = (mWidth - (countPerRow - (row % 2)) * sizeWithKeyDistance) / 2; // Move it to center
                 keysNotInLastRow++;
             }
             else
             {
                 // Last row
-                xOffset = (mWidth - (mKeyCount - keysNotInLastRow) * size) / 2; // Move it to center
+                xOffset = (mWidth - (mKeyCount - keysNotInLastRow) * sizeWithKeyDistance) / 2; // Move it to center
 
             }
-            xOffset += keysInRow * size; // Offset by keys in rows
+            xOffset += (size * KEY_DISTANCE) / 2;
+            xOffset += keysInRow * sizeWithKeyDistance; // Offset by keys in rows
 
             // Determine yOffset of key
             unsigned int yOffset = 0;
@@ -195,5 +152,58 @@ namespace eyegui
     bool Keyboard::mayConsumeInput()
     {
         return false;
+    }
+
+    void Keyboard::fitKeys(unsigned int& rSize, unsigned int& rRowCount, unsigned int& rCountPerRow) const
+    {
+        // TODO: not optimal nor stable
+
+        // Try to fit keys in available space
+        float i = 0;
+        bool sizeNotFound = true;
+
+        while(sizeNotFound)
+        {
+            // Increment i (used to divide height and create size)
+            i += 0.5f;
+
+            // New size for keys
+            rSize = mHeight / i;
+            float sizeWithKeyDistance = rSize * (1.f + KEY_DISTANCE);
+
+            // Check, how many fit in one row
+            unsigned int currentCountPerRow = mWidth / sizeWithKeyDistance;
+
+            // Calculate, how much height it would need
+            unsigned int currentRowCount = 0;
+            unsigned int currentKeyCount = 0;
+            bool rowWithOneLess = false;
+            while(currentKeyCount < mKeyCount)
+            {
+                // Add possible keys (for which would be space)
+                if(rowWithOneLess && currentCountPerRow >= 1)
+                {
+                    currentKeyCount += currentCountPerRow-1;
+                }
+                else
+                {
+                    currentKeyCount += currentCountPerRow;
+                }
+
+                // Alternating count in rows
+                rowWithOneLess = !rowWithOneLess;
+
+                // Next row
+                currentRowCount++;
+            }
+
+            // Check, whether height is enough for all keys
+            if((currentRowCount * sizeWithKeyDistance) <= mHeight)
+            {
+                sizeNotFound = false;
+                rRowCount = currentRowCount;
+                rCountPerRow = currentCountPerRow;
+            }
+        }
     }
 }
