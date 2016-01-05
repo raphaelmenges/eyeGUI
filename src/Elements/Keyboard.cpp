@@ -7,6 +7,9 @@
 
 #include "Keyboard.h"
 
+// TODO: Testing
+#include <iostream>
+
 namespace eyegui
 {
     Keyboard::Keyboard(
@@ -78,42 +81,104 @@ namespace eyegui
             mpBackground->draw();
         }
 
-        // *** KEYS ***
+        // *** KEYS *** // TODO: Crazy algorithm, not good
         mpKey->bind();
         mpKey->getShader()->fillValue("alpha", mAlpha);
 
-        // !!! THINK AND THEN CODE... !!!
+        // Determine key size and count of rows (TODO: redo with better and more stable algorithm)
+        unsigned int size;
+        unsigned int rowCount;
+        unsigned int countPerRow;
 
-        // Calculate size of one key and count of rows (TODO: move to update method)
-        /*int size;
-        unsigned int rowCount = 1;
+        // Try to fit keys in available space
+        float i = 0;
+        bool sizeNotFound = true;
 
-        // First case: one row
-        size = mWidth / mKeyCount;
-        if (size >= mHeight)
+        while(sizeNotFound)
         {
-            // Only one row
-            size = mHeight;
-        }
-        else
-        {
-            // Start computation of row count and size
-            int newSize = size;
-            while (newSize >= size)
+            // Increment i (used to divide height and create size)
+            i += 0.5f;
+
+            // New size for keys
+            size = mHeight / i;
+
+            // Check, how many fit in one row
+            unsigned int currentCountPerRow = mWidth / size;
+
+            // Calculate, how much height it would need
+            unsigned int currentRowCount = 0;
+            unsigned int currentKeyCount = 0;
+            bool rowWithOneLess = false;
+            while(currentKeyCount < mKeyCount)
             {
-                rowCount++;
-                unsigned int virtualKeyCount = mKeyCount + (rowCount / 2); // Add virtual keys for the shifted appereance
-                virtualKeyCount / rowCount;
+                // Add possible keys (for which would be space)
+                if(rowWithOneLess && currentCountPerRow >= 1)
+                {
+                    currentKeyCount += currentCountPerRow-1;
+                }
+                else
+                {
+                    currentKeyCount += currentCountPerRow;
+                }
+
+                // Alternating count in rows
+                rowWithOneLess = !rowWithOneLess;
+
+                // Next row
+                currentRowCount++;
             }
-        }*/
 
-        // Calculate position of keys
+            // Check, whether height is enough for all keys
+            if((currentRowCount * size) <= mHeight)
+            {
+                sizeNotFound = false;
+                rowCount = currentRowCount;
+                countPerRow = currentCountPerRow;
+            }
+        }
 
-        for (unsigned int i = 0; i < mKeyCount; i++)
+        // Draw keys
+        unsigned int keysInRow = 0;
+        unsigned int row = 0;
+        unsigned int keysNotInLastRow = 0;
+        for (unsigned int j = 0; j < mKeyCount; j++)
         {
-            /*glm::mat4 matrix = calculateDrawMatrix((int)(mX + i*size), mY, (int)size, (int)size);
+            // Determine current row
+            if(keysInRow >= countPerRow - (row % 2))
+            {
+                keysInRow = 0;
+                row++;
+            }
+
+            // Determine xOffset of key
+            unsigned int xOffset = 0;
+            if(row != rowCount - 1)
+            {
+                // Not the last row
+                xOffset = (mWidth - (countPerRow - (row % 2)) * size) / 2; // Move it to center
+                keysNotInLastRow++;
+            }
+            else
+            {
+                // Last row
+                xOffset = (mWidth - (mKeyCount - keysNotInLastRow) * size) / 2; // Move it to center
+
+            }
+            xOffset += keysInRow * size; // Offset by keys in rows
+
+            // Determine yOffset of key
+            unsigned int yOffset = 0;
+            yOffset = row*size + (mHeight - size * rowCount) / 2;
+
+            // Fill draw matrix
+            glm::mat4 matrix = calculateDrawMatrix((int)(mX + xOffset), (int)(mY + yOffset), (int)size, (int)size);
             mpKey->getShader()->fillValue("matrix", matrix);
-            mpKey->draw();*/
+
+            // Draw the key
+            mpKey->draw();
+
+            // Increment key count of this row
+            keysInRow++;
         }
     }
 
