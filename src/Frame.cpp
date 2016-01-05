@@ -300,6 +300,7 @@ namespace eyegui
     {
         mRelativePositionX = relativePositionX;
         mRelativePositionY = relativePositionY;
+        mResizeNecessary = true;
     }
 
     void Frame::setSize(float relativeSizeX, float relativeSizeY)
