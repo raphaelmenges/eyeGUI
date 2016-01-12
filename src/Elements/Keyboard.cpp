@@ -50,7 +50,7 @@ namespace eyegui
             meshes::Type::QUAD);
 
         // TODO: Testing
-        mKeyCount = 35;
+        mKeyCount = 7;
     }
 
     Keyboard::~Keyboard()
@@ -139,11 +139,16 @@ namespace eyegui
 
         // Do it until enough key positions are available
         bool positionsNeeded = true;
+        bool addNewRing = true;
         int startIndexOfAvailable = 0;
         while(positionsNeeded)
         {
             // Add new ring
-            addAvailablePositionsOfRing(ring, availablePositions);
+            if(addNewRing)
+            {
+                addAvailablePositionsOfRing(ring, availablePositions);
+                addNewRing = false;
+            }
 
             // Reserve available positions
             std::vector<int> indicesOfPositionsToBeDeleted;
@@ -185,7 +190,7 @@ namespace eyegui
             // Prepare next run if necessary
             if(positionsNeeded)
             {
-                // Check, whether size decrease is necessary or just new ring
+                // Check, whether size decrease is necessary or just a new ring
                 if(indicesOfPositionsToBeDeleted.size() <= 0)
                 {
                     // Decrease size so that one ring more fits
@@ -205,9 +210,10 @@ namespace eyegui
                 }
                 else
                 {
-                    // Increase ring
+                    // Add ring
                     ring++;
                     startIndexOfAvailable = availablePositions.size();
+                    addNewRing = true;
                 }
             }
         }
