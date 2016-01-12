@@ -61,25 +61,26 @@ namespace eyegui
     private:
 
         // Origin is top left
-        typedef std::pair<int, int> IntegerKeyPosition;
+        typedef std::pair<float, float> KeyPosition;
 
         // Calculate positions of keys
-        void calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, int& rRadius) const;
+        void calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, float& rRadius) const;
 
         // Add positions of ring to available positions for keys
-        void addAvailablePositionsOfRing(unsigned int ring, std::vector<IntegerKeyPosition>& rAvailablePositions) const;
+        void addAvailablePositionsOfRing(unsigned int ring, std::vector<KeyPosition>& rAvailablePositions) const;
 
         // Inlier test for circle in rectangle (origin is top left)
-        bool circleInRectangle(int rectX, int rectY, int rectWidth, int rectHeight, int circleX, int circleY, int circleRadius) const;
+        bool circleInRectangle(float rectX, float rectY, float rectWidth, float rectHeight, float circleX, float circleY, float circleRadius) const;
 
         // Members
         RenderItem const * mpBackground;
         RenderItem const * mpKey;
         std::vector<glm::vec2> mKeyPositions;
-        int mKeyRadius; // TODO: better float
+        float mKeyRadius;
 
         // TODO: Testing
         unsigned int mKeyCount;
+        const float KEY_HORIZONTAL_OFFSET = 0.1f;
     };
 }
 

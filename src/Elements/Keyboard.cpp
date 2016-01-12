@@ -115,7 +115,7 @@ namespace eyegui
         return false;
     }
 
-    void Keyboard::calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, int& rRadius) const
+    void Keyboard::calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, float& rRadius) const
     {
         // Notes:
         // - Everything calculated in pixel space but with origin in middle of available space
@@ -124,15 +124,15 @@ namespace eyegui
         // Initialize some useful variables
         unsigned int ring = 0;
         unsigned int fullyVisibleRing = 0;
-        std::vector<IntegerKeyPosition> availablePositions;
-        std::vector<IntegerKeyPosition> reservedPositions;
-        int halfWidth = availableWidth / 2;
-        int halfHeight = availableHeight / 2;
+        std::vector<KeyPosition> availablePositions;
+        std::vector<KeyPosition> reservedPositions;
+        float halfWidth = availableWidth / 2.f;
+        float halfHeight = availableHeight / 2.f;
 
         // Determine start radius for circles
-        int currentRadius;
+        float currentRadius;
         currentRadius = availableWidth > availableHeight ? availableHeight : availableWidth;
-        currentRadius /= 2;
+        currentRadius /= 2.f;
 
         // Clear positions vector
         rPositions.clear();
@@ -155,7 +155,7 @@ namespace eyegui
             for(int i = startIndexOfAvailable; i < availablePositions.size(); i++)
             {
                 // Get available position
-                IntegerKeyPosition availPos = availablePositions.at(i);
+                KeyPosition availPos = availablePositions.at(i);
 
                 // Check, whether available position is inside space
                 bool inside = circleInRectangle(
@@ -195,14 +195,14 @@ namespace eyegui
                 {
                     // Decrease size so that one ring more fits
                     fullyVisibleRing++;
-                    int divisor = (2 * fullyVisibleRing) + 1; // TODO: float?
+                    float divisor = (2.f * fullyVisibleRing) + 1.f;
                     if(availableWidth > availableHeight)
                     {
-                        currentRadius = (availableHeight / divisor) / 2;
+                        currentRadius = (availableHeight / divisor) / 2.f;
                     }
                     else
                     {
-                        currentRadius = (availableWidth / divisor) / 2;
+                        currentRadius = (availableWidth / divisor) / 2.f;
                     }
 
                     // Reset index where available positions should be searched
@@ -221,7 +221,7 @@ namespace eyegui
         // Save reserved positions in output vector in correct coordinates
         for(int i = 0; i < mKeyCount; i++)
         {
-            const IntegerKeyPosition& rKeyPosition = reservedPositions[i];
+            const KeyPosition& rKeyPosition = reservedPositions[i];
             rPositions.push_back(glm::vec2(
                 rKeyPosition.first * currentRadius + halfWidth,
                 rKeyPosition.second * currentRadius + halfHeight));
@@ -233,7 +233,7 @@ namespace eyegui
 
     void Keyboard::addAvailablePositionsOfRing(
         unsigned int ring,
-        std::vector<IntegerKeyPosition>& rAvailablePositions) const
+        std::vector<KeyPosition>& rAvailablePositions) const
     {
         // Notes:
         // - First left, then right
@@ -241,16 +241,18 @@ namespace eyegui
         // - Coordinate system of eyeGUI used (origin at top left corner)
         // - Horizontal offset of positions is 2!
 
+        float horizontalMutliplier = 1.f + KEY_HORIZONTAL_OFFSET;
+
         if(ring <= 0)
         {
             // No hexagon, just the middle position
-            rAvailablePositions.push_back(IntegerKeyPosition(0,0));
+            rAvailablePositions.push_back(KeyPosition(0,0));
         }
         else
         {
             // Add first line
-            rAvailablePositions.push_back(IntegerKeyPosition(-2 * ring, 0));
-            rAvailablePositions.push_back(IntegerKeyPosition(2 * ring, 0));
+            rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (-2 * ring), 0));
+            rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (2 * ring), 0));
 
             // Go over height of hexagon ring to handle rest
             for(int h = 1; h <= ring; h++)
@@ -258,32 +260,32 @@ namespace eyegui
                 if(h < ring)
                 {
                     // Two positions on the sides on top
-                    rAvailablePositions.push_back(IntegerKeyPosition((-2 * ring) + h, -2 * h));
-                    rAvailablePositions.push_back(IntegerKeyPosition((2 * ring) - h, -2 * h));
+                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((-2 * ring) + h), -2 * h));
+                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((2 * ring) - h), -2 * h));
 
                     // Two positions on the sides on bottom
-                    rAvailablePositions.push_back(IntegerKeyPosition((-2 * ring) + h, 2 * h));
-                    rAvailablePositions.push_back(IntegerKeyPosition((2 * ring) - h, 2 * h));
+                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((-2 * ring) + h), 2 * h));
+                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((2 * ring) - h), 2 * h));
                 }
                 else
                 {
                     // Add positions on top of hexagon ring
                     for(int i = 0; i <= ring; i++)
                     {
-                        rAvailablePositions.push_back(IntegerKeyPosition(-ring + 2 * i, -2 * h));
+                        rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (-ring + 2 * i), -2 * h));
                     }
 
                     // Add positions on bottom of hexagon ring
                     for(int i = 0; i <= ring; i++)
                     {
-                        rAvailablePositions.push_back(IntegerKeyPosition(-ring + 2 * i, 2 * h));
+                        rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (-ring + 2 * i), 2 * h));
                     }
                 }
             }
         }
     }
 
-    bool Keyboard::circleInRectangle(int rectX, int rectY, int rectWidth, int rectHeight, int circleX, int circleY, int circleRadius) const
+    bool Keyboard::circleInRectangle(float rectX, float rectY, float rectWidth, float rectHeight, float circleX, float circleY, float circleRadius) const
     {
 
         if( circleX - circleRadius >= rectX && circleX + circleRadius < rectX + rectWidth
@@ -296,5 +298,4 @@ namespace eyegui
             return false;
         }
     }
-
 }
