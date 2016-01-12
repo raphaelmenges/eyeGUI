@@ -58,7 +58,7 @@ namespace eyegui
             STACK,
             GRID,
             TEXT_BLOCK,
-			KEYBOARD
+            KEYBOARD
         };
 
         // Orientation of element
@@ -221,7 +221,7 @@ namespace eyegui
         // Implemented by subclasses
         virtual bool mayConsumeInput() = 0;
 
-        // Convert pixel space to drawing space
+        // Convert pixel space to drawing space (origin top left)
         glm::mat4 calculateDrawMatrix(int x, int y, int width, int height) const;
 
         // Checks, whether element is penetrated by input

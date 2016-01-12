@@ -7,6 +7,7 @@
 
 #include "Keyboard.h"
 
+
 // TODO: Testing
 #include <iostream>
 
@@ -81,67 +82,27 @@ namespace eyegui
             mpBackground->draw();
         }
 
-        // *** KEYS *** // TODO: Crazy algorithm, not good
+        // *** RENDER KEYS ***
         mpKey->bind();
         mpKey->getShader()->fillValue("alpha", mAlpha);
-
-        // Determine key size, count of rows and count of keys in even rows
-        unsigned int size;
-        unsigned int rowCount;
-        unsigned int countPerRow;
-
-        fitKeys(size, rowCount, countPerRow);
-
-        // Draw keys
-        float sizeWithKeyDistance = size * (1.f + KEY_DISTANCE);
-        unsigned int keysInRow = 0;
-        unsigned int row = 0;
-        unsigned int keysNotInLastRow = 0;
-        for (unsigned int j = 0; j < mKeyCount; j++)
+        for(const glm::vec2& rKeyPosition : mKeyPositions)
         {
-            // Determine current row
-            if(keysInRow >= countPerRow - (row % 2))
-            {
-                keysInRow = 0;
-                row++;
-            }
-
-            // Determine xOffset of key
-            unsigned int xOffset = 0;
-            if(row != rowCount - 1)
-            {
-                // Not the last row
-                xOffset = (mWidth - (countPerRow - (row % 2)) * sizeWithKeyDistance) / 2; // Move it to center
-                keysNotInLastRow++;
-            }
-            else
-            {
-                // Last row
-                xOffset = (mWidth - (mKeyCount - keysNotInLastRow) * sizeWithKeyDistance) / 2; // Move it to center
-
-            }
-            xOffset += (size * KEY_DISTANCE) / 2;
-            xOffset += keysInRow * sizeWithKeyDistance; // Offset by keys in rows
-
-            // Determine yOffset of key
-            unsigned int yOffset = 0;
-            yOffset = row*size + (mHeight - size * rowCount) / 2;
-
-            // Fill draw matrix
-            glm::mat4 matrix = calculateDrawMatrix((int)(mX + xOffset), (int)(mY + yOffset), (int)size, (int)size);
+            glm::mat4 matrix = calculateDrawMatrix(
+                mX + (int)(rKeyPosition.x - mKeyRadius),
+                mY + (int)(rKeyPosition.y - mKeyRadius),
+                (int)(2 * mKeyRadius),
+                (int)(2 * mKeyRadius));
             mpKey->getShader()->fillValue("matrix", matrix);
 
             // Draw the key
             mpKey->draw();
-
-            // Increment key count of this row
-            keysInRow++;
         }
     }
 
     void Keyboard::specialTransformAndSize()
     {
-        // Nothing to do
+        // Recalculate key positions
+        calculateKeyPositions(mWidth, mHeight, mKeyPositions, mKeyRadius);
     }
 
     void Keyboard::specialReset()
@@ -154,56 +115,180 @@ namespace eyegui
         return false;
     }
 
-    void Keyboard::fitKeys(unsigned int& rSize, unsigned int& rRowCount, unsigned int& rCountPerRow) const
+    void Keyboard::calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, int& rRadius) const
     {
-        // TODO: not optimal nor stable
+        // Notes:
+        // - Everything calculated in pixel space but with origin in middle of available space
+        // - Coordinate system of eyeGUI used (origin at top left corner)
 
-        // Try to fit keys in available space
-        float i = 0;
-        bool sizeNotFound = true;
+        // Initialize some useful variables
+        unsigned int ring = 0;
+        unsigned int fullyVisibleRing = 0;
+        std::vector<IntegerKeyPosition> availablePositions;
+        std::vector<IntegerKeyPosition> reservedPositions;
+        int halfWidth = availableWidth / 2;
+        int halfHeight = availableHeight / 2;
 
-        while(sizeNotFound)
+        // Determine start radius for circles
+        int currentRadius;
+        currentRadius = availableWidth > availableHeight ? availableHeight : availableWidth;
+        currentRadius /= 2;
+
+        // Clear positions vector
+        rPositions.clear();
+
+        // Do it until enough key positions are available
+        bool positionsNeeded = true;
+        int startIndexOfAvailable = 0;
+        while(positionsNeeded)
         {
-            // Increment i (used to divide height and create size)
-            i += 0.5f;
+            // Add new ring
+            addAvailablePositionsOfRing(ring, availablePositions);
 
-            // New size for keys
-            rSize = mHeight / i;
-            float sizeWithKeyDistance = rSize * (1.f + KEY_DISTANCE);
-
-            // Check, how many fit in one row
-            unsigned int currentCountPerRow = mWidth / sizeWithKeyDistance;
-
-            // Calculate, how much height it would need
-            unsigned int currentRowCount = 0;
-            unsigned int currentKeyCount = 0;
-            bool rowWithOneLess = false;
-            while(currentKeyCount < mKeyCount)
+            // Reserve available positions
+            std::vector<int> indicesOfPositionsToBeDeleted;
+            for(int i = startIndexOfAvailable; i < availablePositions.size(); i++)
             {
-                // Add possible keys (for which would be space)
-                if(rowWithOneLess && currentCountPerRow >= 1)
+                // Get available position
+                IntegerKeyPosition availPos = availablePositions.at(i);
+
+                // Check, whether available position is inside space
+                bool inside = circleInRectangle(
+                    -halfWidth,
+                    -halfHeight,
+                    availableWidth,
+                    availableHeight,
+                    availPos.first * currentRadius,
+                    availPos.second * currentRadius,
+                    currentRadius);
+
+                // If it is inside, use it!
+                if(inside)
                 {
-                    currentKeyCount += currentCountPerRow-1;
+                    // Reserve this position for a key
+                    reservedPositions.push_back(availPos);
+
+                    // Remember to delete ist from available positions
+                    indicesOfPositionsToBeDeleted.push_back(i);
+                }
+            }
+
+            // Delete all used positions from available positions
+            for(int i = indicesOfPositionsToBeDeleted.size() - 1; i >= 0; i--)
+            {
+                availablePositions.erase(availablePositions.begin() + indicesOfPositionsToBeDeleted[i]);
+            }
+
+            // Check, whether further positions are needed
+            positionsNeeded = reservedPositions.size() < mKeyCount;
+
+            // Prepare next run if necessary
+            if(positionsNeeded)
+            {
+                // Check, whether size decrease is necessary or just new ring
+                if(indicesOfPositionsToBeDeleted.size() <= 0)
+                {
+                    // Decrease size so that one ring more fits
+                    fullyVisibleRing++;
+                    int divisor = (2 * fullyVisibleRing) + 1; // TODO: float?
+                    if(availableWidth > availableHeight)
+                    {
+                        currentRadius = (availableHeight / divisor) / 2;
+                    }
+                    else
+                    {
+                        currentRadius = (availableWidth / divisor) / 2;
+                    }
+
+                    // Reset index where available positions should be searched
+                    startIndexOfAvailable = 0;
                 }
                 else
                 {
-                    currentKeyCount += currentCountPerRow;
+                    // Increase ring
+                    ring++;
+                    startIndexOfAvailable = availablePositions.size();
                 }
-
-                // Alternating count in rows
-                rowWithOneLess = !rowWithOneLess;
-
-                // Next row
-                currentRowCount++;
             }
+        }
 
-            // Check, whether height is enough for all keys
-            if((currentRowCount * sizeWithKeyDistance) <= mHeight)
+        // Save reserved positions in output vector in correct coordinates
+        for(int i = 0; i < mKeyCount; i++)
+        {
+            const IntegerKeyPosition& rKeyPosition = reservedPositions[i];
+            rPositions.push_back(glm::vec2(
+                rKeyPosition.first * currentRadius + halfWidth,
+                rKeyPosition.second * currentRadius + halfHeight));
+        }
+
+        // Save radius
+        rRadius = currentRadius;
+    }
+
+    void Keyboard::addAvailablePositionsOfRing(
+        unsigned int ring,
+        std::vector<IntegerKeyPosition>& rAvailablePositions) const
+    {
+        // Notes:
+        // - First left, then right
+        // - First up, then down
+        // - Coordinate system of eyeGUI used (origin at top left corner)
+        // - Horizontal offset of positions is 2!
+
+        if(ring <= 0)
+        {
+            // No hexagon, just the middle position
+            rAvailablePositions.push_back(IntegerKeyPosition(0,0));
+        }
+        else
+        {
+            // Add first line
+            rAvailablePositions.push_back(IntegerKeyPosition(-2 * ring, 0));
+            rAvailablePositions.push_back(IntegerKeyPosition(2 * ring, 0));
+
+            // Go over height of hexagon ring to handle rest
+            for(int h = 1; h <= ring; h++)
             {
-                sizeNotFound = false;
-                rRowCount = currentRowCount;
-                rCountPerRow = currentCountPerRow;
+                if(h < ring)
+                {
+                    // Two positions on the sides on top
+                    rAvailablePositions.push_back(IntegerKeyPosition((-2 * ring) + h, -2 * h));
+                    rAvailablePositions.push_back(IntegerKeyPosition((2 * ring) - h, -2 * h));
+
+                    // Two positions on the sides on bottom
+                    rAvailablePositions.push_back(IntegerKeyPosition((-2 * ring) + h, 2 * h));
+                    rAvailablePositions.push_back(IntegerKeyPosition((2 * ring) - h, 2 * h));
+                }
+                else
+                {
+                    // Add positions on top of hexagon ring
+                    for(int i = 0; i <= ring; i++)
+                    {
+                        rAvailablePositions.push_back(IntegerKeyPosition(-ring + 2 * i, -2 * h));
+                    }
+
+                    // Add positions on bottom of hexagon ring
+                    for(int i = 0; i <= ring; i++)
+                    {
+                        rAvailablePositions.push_back(IntegerKeyPosition(-ring + 2 * i, 2 * h));
+                    }
+                }
             }
         }
     }
+
+    bool Keyboard::circleInRectangle(int rectX, int rectY, int rectWidth, int rectHeight, int circleX, int circleY, int circleRadius) const
+    {
+
+        if( circleX - circleRadius >= rectX && circleX + circleRadius < rectX + rectWidth
+            && circleY - circleRadius >= rectY && circleY + circleRadius  < rectY + rectHeight)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

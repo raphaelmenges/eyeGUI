@@ -10,6 +10,9 @@
 #define KEYBOARD_H_
 
 #include "Element.h"
+#include "externals/GLM/glm/glm.hpp"
+
+#include <vector>
 
 namespace eyegui
 {
@@ -18,9 +21,8 @@ namespace eyegui
     public:
 
         // TODO
-        // - maybe build up vector of structs saving position of keys in original state
-        // - redo whole algorithm? first, determining size etc and then set positions is strange
-        // - sizeWithKeyDistance is float, is that ok?
+        // - ASCII drawing of hexagon ring
+        // - Float? Integer? meh...
 
         // Constructor
         Keyboard(
@@ -58,14 +60,23 @@ namespace eyegui
 
     private:
 
-        const float KEY_DISTANCE = 0.1; // Amount of size
+        // Origin is top left
+        typedef std::pair<int, int> IntegerKeyPosition;
 
-        // Calculate size of keys, number of rows and count of keys in even row
-        void fitKeys(unsigned int& rSize, unsigned int& rRowCount, unsigned int& rCountPerRow) const;
+        // Calculate positions of keys
+        void calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, int& rRadius) const;
+
+        // Add positions of ring to available positions for keys
+        void addAvailablePositionsOfRing(unsigned int ring, std::vector<IntegerKeyPosition>& rAvailablePositions) const;
+
+        // Inlier test for circle in rectangle (origin is top left)
+        bool circleInRectangle(int rectX, int rectY, int rectWidth, int rectHeight, int circleX, int circleY, int circleRadius) const;
 
         // Members
         RenderItem const * mpBackground;
         RenderItem const * mpKey;
+        std::vector<glm::vec2> mKeyPositions;
+        int mKeyRadius; // TODO: better float
 
         // TODO: Testing
         unsigned int mKeyCount;
