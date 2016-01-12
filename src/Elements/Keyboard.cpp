@@ -112,7 +112,7 @@ namespace eyegui
 
     bool Keyboard::mayConsumeInput()
     {
-        return false;
+        return true;
     }
 
     void Keyboard::calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, float& rRadius) const
