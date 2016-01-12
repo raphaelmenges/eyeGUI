@@ -137,7 +137,7 @@ namespace eyegui
         // Clear positions vector
         rPositions.clear();
 
-        // Do it until enough key positions are available
+        // Do it until enough key positions are reserved
         bool positionsNeeded = true;
         bool addNewRing = true;
         int startIndexOfAvailable = 0;
