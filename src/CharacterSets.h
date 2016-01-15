@@ -13,23 +13,24 @@
 
 namespace eyegui
 {
-	namespace charsets
-	{
-		static const std::set<char16_t> BASIC
-		{
-			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
-			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-			's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F',
-			'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-			'V', 'W', 'X', 'Y', 'Z', '-', '_', ',', ';', '.', ':', '+', '*', '~',
-			'#', '/', '?', '!', '%', '#', ' ', '<', '>', '|'
-		};
+    namespace charsets
+    {
+        static const std::set<char16_t> BASIC
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+            'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+            's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F',
+            'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+            'U', 'V', 'W', 'X', 'Y', 'Z', '-', '_', ',', ';', '.', ':', '+', '*',
+            '~', '#', '/', '?', '!', '%', '#', ' ', '<', '>', '|', '$', '@', '?',
+            '"', '=', '&', '(', ')', '[', ']', '{', '}', '\\', '^', '?'
+        };
 
-		static const std::set<char16_t> GERMANY_GERMAN
-		{
-			u'\u00c4', u'\u00e4', u'\u00d6', u'\u00f6', u'\u00dc', u'\u00fc', u'\u00df'
-		};
-	}
+        static const std::set<char16_t> GERMANY_GERMAN
+        {
+            u'\u00c4', u'\u00e4', u'\u00d6', u'\u00f6', u'\u00dc', u'\u00fc', u'\u00df'
+        };
+    }
 }
 
 #endif // CHARACTER_SETS_H_
