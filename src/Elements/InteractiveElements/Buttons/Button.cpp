@@ -140,16 +140,18 @@ namespace eyegui
         if (mIsDown && mPressing.getValue() < 1)
         {
             mPressing.update(tpf / mpLayout->getConfig()->buttonPressingDuration);
-
-            // If pressed and no switch, go back
-            if (!mIsSwitch && mPressing.getValue() >= 1)
-            {
-                up();
-            }
         }
         else if (!mIsDown && mPressing.getValue() > 0)
         {
             mPressing.update(-tpf / mpLayout->getConfig()->buttonPressingDuration);
+        }
+
+        // If pressed and no switch, go back (do it each frame and not only at end of going down,
+        // because otherwise a deactivation would prohibit going up because of the test for
+        // activity in up()
+        if (mIsDown && !mIsSwitch && mPressing.getValue() >= 1)
+        {
+            up();
         }
 
         // Threshold
