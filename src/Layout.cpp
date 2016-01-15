@@ -1399,12 +1399,26 @@ namespace eyegui
 
     void Layout::insertIds(std::unique_ptr<idMap> upIdMap)
     {
-        int idCount = (int)(mupIds->size() + upIdMap->size());
+        // Faster code, but not so good for debugging later applications
+        /*int idCount = (int)(mupIds->size() + upIdMap->size());
         mupIds->insert(upIdMap->begin(), upIdMap->end());
 
         if (mupIds->size() != idCount)
         {
             throwError(OperationNotifier::Operation::RUNTIME, "Ids are no more unique");
+        }*/
+
+        // Loop over map und add every id
+        for(const auto& rIdElement : *(upIdMap.get()))
+        {
+            int oldIdCount = (int)(mupIds->size());
+            (*(mupIds.get()))[rIdElement.second->getId()] = rIdElement.second;
+
+            // Check, whether id was really unique
+            if(oldIdCount == (int)(mupIds->size()))
+            {
+                throwError(OperationNotifier::Operation::RUNTIME, "Following id is not unique: " + rIdElement.second->getId());
+            }
         }
     }
 
