@@ -1,4 +1,5 @@
 ### VERSION 0.7
+- glGetError...
 - TextInput
 	- Wiki entry... (extra page or in elements? -> both)
   - Keyboard and "Guesser" (tries to guess what you want to write)
