@@ -4,22 +4,28 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Blank element. Mostly used if element is necessary but not defined or
-// as placeholder for a later replacement.
+// Keyboard for eyetracking input.
 
-#ifndef BLANK_H_
-#define BLANK_H_
+#ifndef KEYBOARD_H_
+#define KEYBOARD_H_
 
 #include "Element.h"
+#include "externals/GLM/glm/glm.hpp"
+
+#include <vector>
 
 namespace eyegui
 {
-    class Blank : public Element
+    class Keyboard : public Element
     {
     public:
 
+        // TODO
+        // - ASCII drawing of hexagon ring
+        // - Float? Integer? meh...
+
         // Constructor
-        Blank(
+        Keyboard(
             std::string id,
             std::string styleName,
             Element* pParent,
@@ -33,7 +39,7 @@ namespace eyegui
             bool adaptiveScaling);
 
         // Destructor
-        virtual ~Blank();
+        virtual ~Keyboard();
 
     protected:
 
@@ -51,7 +57,31 @@ namespace eyegui
 
         // Implemented by subclasses
         virtual bool mayConsumeInput();
+
+    private:
+
+        // Origin is top left
+        typedef std::pair<float, float> KeyPosition;
+
+        // Calculate positions of keys
+        void calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, float& rRadius) const;
+
+        // Add positions of ring to available positions for keys
+        void addAvailablePositionsOfRing(unsigned int ring, std::vector<KeyPosition>& rAvailablePositions) const;
+
+        // Inlier test for circle in rectangle (origin is top left)
+        bool circleInRectangle(float rectX, float rectY, float rectWidth, float rectHeight, float circleX, float circleY, float circleRadius) const;
+
+        // Members
+        RenderItem const * mpBackground;
+        RenderItem const * mpKey;
+        std::vector<glm::vec2> mKeyPositions;
+        float mKeyRadius;
+
+        // TODO: Testing
+        unsigned int mKeyCount;
+        const float KEY_HORIZONTAL_OFFSET = 0.1f;
     };
 }
 
-#endif // BLANK_H_
+#endif // KEYBOARD_H_

@@ -101,7 +101,7 @@ namespace eyegui
         mpQuad->bind();
 
         // Fill matrix in shader
-        mpQuad->getShader()->fillValue("matrix", mDrawMatrix);
+        mpQuad->getShader()->fillValue("matrix", mFullDrawMatrix);
 
         // Fill alpha
         mpQuad->getShader()->fillValue("alpha", mAlpha);

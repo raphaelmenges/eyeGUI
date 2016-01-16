@@ -1,6 +1,6 @@
 //	The MIT License (MIT)
 //
-//	Copyright(c) 2015 Raphael Menges
+//	Copyright(c) 2016 Raphael Menges
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files(the "Software"), to deal
@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.6
+ *  \version   0.7
  *  \license   This project is released under the MIT License (MIT)
  */
 
@@ -342,13 +342,13 @@ namespace eyegui
     \param pLayout pointer to layout.
     \param id is the unique id of an element.
     \param marking is the new choice.
-	\param depth of children of this element, which are marked (or unmarked) too. Negative depth indicates, that all children are affected.
+    \param depth of children of this element, which are marked (or unmarked) too. Negative depth indicates, that all children are affected.
     */
     void setElementMarking(
         Layout* pLayout,
         std::string id,
         bool marking,
-		int depth = 0);
+        int depth = 0);
 
     //! Set style of element.
     /*!
@@ -448,6 +448,13 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::string iconFilepath);
+
+    //! Interact with interactive element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+    */
+    void interactWithInteractiveElement(Layout* pLayout, std::string id);
 
     //! Select interactive element.
     /*!

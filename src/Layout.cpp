@@ -44,7 +44,6 @@ namespace eyegui
     void Layout::update(float tpf, Input* pInput)
     {
         // *** DELETION OF REMOVED FLOATING FRAMES ***
-
         for (int i : mDyingFloatingFramesIndices)
         {
             mFloatingFramesOrderingIndices.erase(
@@ -58,7 +57,6 @@ namespace eyegui
         internalResizing();
 
         // *** NOTIFICATIONS ***
-
         mupNotificationQueue->process();
 
         // *** OWN UPDATE ***
@@ -401,6 +399,19 @@ namespace eyegui
         if (pInteractiveElement != NULL)
         {
             pInteractiveElement->setIcon(iconFilepath);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find interactive element with id: " + id);
+        }
+    }
+
+    void Layout::interactWithInteractiveElement(std::string id)
+    {
+        InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));
+        if (pInteractiveElement != NULL)
+        {
+            pInteractiveElement->interact();
         }
         else
         {
@@ -1388,12 +1399,26 @@ namespace eyegui
 
     void Layout::insertIds(std::unique_ptr<idMap> upIdMap)
     {
-        int idCount = (int)(mupIds->size() + upIdMap->size());
+        // Faster code, but not so good for debugging later applications
+        /*int idCount = (int)(mupIds->size() + upIdMap->size());
         mupIds->insert(upIdMap->begin(), upIdMap->end());
 
         if (mupIds->size() != idCount)
         {
             throwError(OperationNotifier::Operation::RUNTIME, "Ids are no more unique");
+        }*/
+
+        // Loop over map und add every id
+        for(const auto& rIdElement : *(upIdMap.get()))
+        {
+            int oldIdCount = (int)(mupIds->size());
+            (*(mupIds.get()))[rIdElement.second->getId()] = rIdElement.second;
+
+            // Check, whether id was really unique
+            if(oldIdCount == (int)(mupIds->size()))
+            {
+                throwError(OperationNotifier::Operation::RUNTIME, "Following id is not unique: " + rIdElement.second->getId());
+            }
         }
     }
 

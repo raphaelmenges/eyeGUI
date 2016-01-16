@@ -57,9 +57,6 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
-        // Transformation filled by subclasses
-        virtual void specialTransformAndSize();
-
         // Reset filld by subclasses
         virtual void specialReset();
 

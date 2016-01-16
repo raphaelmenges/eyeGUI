@@ -27,6 +27,8 @@ namespace eyegui
 		glGetBooleanv(GL_TEXTURE_2D, &mTexture2D);
 		glGetIntegerv(GL_TEXTURE_BINDING_2D, &mActiveTexture);
 		glGetBooleanv(GL_CULL_FACE, &mCulling);
+		glGetBooleanv(GL_COLOR_WRITEMASK, mColorWritemask);
+		glGetBooleanv(GL_STENCIL_TEST, &mStencilTest);
 
 		// Setting
 		glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
@@ -36,6 +38,8 @@ namespace eyegui
 		glEnable(GL_TEXTURE_2D);
 		glActiveTexture(GL_TEXTURE0);
 		glEnable(GL_CULL_FACE);
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDisable(GL_STENCIL_TEST);
 	}
 
 	void GLSetup::restore()
@@ -50,6 +54,8 @@ namespace eyegui
 		setCapability(GL_TEXTURE_2D, mTexture2D);
 		glActiveTexture(mActiveTexture);
 		setCapability(GL_CULL_FACE, mCulling);
+		glColorMask(mColorWritemask[0], mColorWritemask[1], mColorWritemask[2], mColorWritemask[3]);
+		setCapability(GL_STENCIL_TEST, mStencilTest);
 	}
 
 	void GLSetup::setCapability(GLenum cap, GLboolean enable) const

@@ -45,6 +45,8 @@ namespace eyegui
 		GLboolean mTexture2D;
 		GLint mActiveTexture;
 		GLboolean mCulling;
+		GLboolean mColorWritemask[4];
+		GLboolean mStencilTest;
 	};
 }
 

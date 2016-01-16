@@ -105,7 +105,7 @@ namespace eyegui
     float InteractiveElement::specialUpdate(float tpf, Input* pInput)
     {
         // Highlight
-        mHighlight.update(tpf, !mIsHighlighted);
+        mHighlight.update(tpf / mpLayout->getConfig()->animationDuration, !mIsHighlighted);
 
         // Selection
         mSelection.update(tpf / mpLayout->getConfig()->animationDuration, !mIsSelected);
@@ -123,7 +123,7 @@ namespace eyegui
     void InteractiveElement::specialDraw() const
     {
         // Fill shader
-        mpRenderItem->getShader()->fillValue("matrix", mDrawMatrix);
+        mpRenderItem->getShader()->fillValue("matrix", mFullDrawMatrix);
         mpRenderItem->getShader()->fillValue("highlight", mHighlight.getValue());
         mpRenderItem->getShader()->fillValue("alpha", mAlpha);
         mpRenderItem->getShader()->fillValue("activity", mActivity.getValue());
@@ -141,6 +141,11 @@ namespace eyegui
         // Bind icon texture
         mpIcon->bind(0);
     }
+
+	void InteractiveElement::specialTransformAndSize()
+	{
+		// Nothing to do, but must be implemented
+	}
 
     void InteractiveElement::specialReset()
     {

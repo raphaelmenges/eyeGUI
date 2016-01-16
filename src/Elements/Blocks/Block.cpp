@@ -42,7 +42,7 @@ namespace eyegui
         mInnerBorder = innerBorder;
 
         // Fetch render item
-        mpBackground = pAssetManager->fetchRenderItem(
+        mpBackground = mpAssetManager->fetchRenderItem(
             shaders::Type::BLOCK,
             meshes::Type::QUAD);
     }
@@ -66,7 +66,7 @@ namespace eyegui
             mpBackground->bind();
 
             // Fill matrix in shader
-            mpBackground->getShader()->fillValue("matrix", mDrawMatrix);
+            mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
 
             // Fill color to shader
             mpBackground->getShader()->fillValue(

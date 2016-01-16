@@ -291,6 +291,9 @@ namespace eyegui
             case shaders::Type::FONT:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pFontFragmentShader));
                 break;
+			case shaders::Type::KEY:
+				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
+				break;
             }
             pShader = rupShader.get();
             mShaders[shader] = std::move(rupShader);

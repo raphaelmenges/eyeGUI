@@ -51,8 +51,8 @@ namespace eyegui
         mAdaptiveScaling = adaptiveScaling;
         mAdaptiveScale.setValue(0);
         mHidden = false;
-		mMarking = false;
-		mMark.setValue(0);
+        mMarking = false;
+        mMark.setValue(0);
 
         // Fetch style from layout
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
@@ -226,31 +226,31 @@ namespace eyegui
         return mDimming;
     }
 
-	void Element::setMarking(bool marking, int depth)
-	{
-		mMarking = marking;
+    void Element::setMarking(bool marking, int depth)
+    {
+        mMarking = marking;
 
-		// Affect children
-		if (depth != 0)
-		{
-			// Only decrement positive values
-			if (depth > 0)
-			{
-				depth--;
-			}
+        // Affect children
+        if (depth != 0)
+        {
+            // Only decrement positive values
+            if (depth > 0)
+            {
+                depth--;
+            }
 
-			// Tell children about it
-			for (const std::unique_ptr<Element>& element : mChildren)
-			{
-				element->setMarking(marking, depth);
-			}
-		}
-	}
+            // Tell children about it
+            for (const std::unique_ptr<Element>& element : mChildren)
+            {
+                element->setMarking(marking, depth);
+            }
+        }
+    }
 
-	bool Element::isMarking() const
-	{
-		return mMarking;
-	}
+    bool Element::isMarking() const
+    {
+        return mMarking;
+    }
 
     Layout const * Element::getLayout() const
     {
@@ -367,7 +367,7 @@ namespace eyegui
         specialTransformAndSize();
 
         // After calculation transformation, recalculate the matrix for rendering
-        mDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
+		mFullDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
     }
 
     float Element::getDynamicScale() const
@@ -395,7 +395,7 @@ namespace eyegui
         // *** OWN UPDATING ***
 
         // Activity animationa
-        mActivity.update(tpf, !mActive);
+        mActivity.update(tpf / mpLayout->getConfig()->animationDuration, !mActive);
 
         // Save current alpha (already animated by layout or other element)
         mAlpha = alpha;
@@ -449,8 +449,8 @@ namespace eyegui
             mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
         }
 
-		// Marking
-		mMark.update(tpf / mpLayout->getConfig()->animationDuration, !mMarking);
+        // Marking
+        mMark.update(tpf / mpLayout->getConfig()->animationDuration, !mMarking);
 
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
@@ -472,7 +472,7 @@ namespace eyegui
 
         // Use activity and alpha to check whether input may be used by subclasses
         Input* pSubInput;
-        if (mAlpha < 1 || mActivity.getValue() < 1)
+        if (mAlpha < 1 || !mActive)
         {
             pSubInput = NULL;
         }
@@ -526,7 +526,7 @@ namespace eyegui
 
         mAdaptiveScale.setValue(0);
 
-		// TODO: one could reset marking, too
+        // TODO: one could reset marking, too
 
         // Do reset implemented by subclass
         specialReset();

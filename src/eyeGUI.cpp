@@ -13,7 +13,7 @@
 #include "PathBuilder.h"
 
 // Version
-static const std::string VERSION_STRING = "0.6";
+static const std::string VERSION_STRING = "0.7";
 
 namespace eyegui
 {
@@ -218,6 +218,11 @@ namespace eyegui
     void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
     {
         pLayout->setIconOfInteractiveElement(id, iconFilepath);
+    }
+
+    void interactWithInteractiveElement(Layout* pLayout, std::string id)
+    {
+        pLayout->interactWithInteractiveElement(id);
     }
 
     void selectInteractiveElement(Layout* pLayout, std::string id)
