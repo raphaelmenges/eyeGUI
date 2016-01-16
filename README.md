@@ -7,6 +7,9 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 
 ## Features
 
+#### Version 0.7
+* Bugfix release
+
 #### Version 0.6
 * stb_image for pixel image loading
 * Marking of elements
