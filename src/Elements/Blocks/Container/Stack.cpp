@@ -90,9 +90,9 @@ namespace eyegui
             mpSeparator->getShader()->fillValue("dimColor", getStyle()->dimColor);
             mpSeparator->getShader()->fillValue("dim", mDim.getValue());
 
-			// Fill marking
-			mpSeparator->getShader()->fillValue("markColor", getStyle()->markColor);
-			mpSeparator->getShader()->fillValue("mark", mMark.getValue());
+            // Fill marking
+            mpSeparator->getShader()->fillValue("markColor", getStyle()->markColor);
+            mpSeparator->getShader()->fillValue("mark", mMark.getValue());
 
             for (int i = 0; i < mSeparatorDrawMatrices.size(); i++)
             {
@@ -455,6 +455,7 @@ namespace eyegui
                 {
                     mSeparatorDrawMatrices.push_back(
                         calculateDrawMatrix(
+                            mpLayout,
                             separatorPositions[i],
                             mY,
                             separatorWidth,
@@ -464,6 +465,7 @@ namespace eyegui
                 {
                     mSeparatorDrawMatrices.push_back(
                         calculateDrawMatrix(
+                            mpLayout,
                             mX,
                             separatorPositions[i],
                             separatorWidth,

@@ -21,8 +21,7 @@ namespace eyegui
     public:
 
         // TODO
-        // - ASCII drawing of hexagon ring
-        // - Float? Integer? meh...
+        //
 
         // Constructor
         Keyboard(
@@ -60,27 +59,73 @@ namespace eyegui
 
     private:
 
-        // Origin is top left
-        typedef std::pair<float, float> KeyPosition;
+        // Inner class for keys
+        class Key
+        {
+        public:
 
-        // Calculate positions of keys
-        void calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, float& rRadius) const;
+            // Constructor
+            Key(Layout const * pLayout, AssetManager* pAssetManager);
 
-        // Add positions of ring to available positions for keys
-        void addAvailablePositionsOfRing(unsigned int ring, std::vector<KeyPosition>& rAvailablePositions) const;
+            // Set position of center and size of key
+            void transformAndSize(int x, int y, int size);
 
-        // Inlier test for circle in rectangle (origin is top left)
-        bool circleInRectangle(float rectX, float rectY, float rectWidth, float rectHeight, float circleX, float circleY, float circleRadius) const;
+            // Draw key
+            virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const = 0;
+
+        protected:
+
+            // Members
+            int mX;
+            int mY;
+            int mSize;
+            RenderItem const * mpRenderItem;
+            Layout const * mpLayout;
+        };
+
+        // Key with font letter
+        class FontKey : public Key
+        {
+        public:
+
+            // Constructor
+            FontKey(
+                Layout const * pLayout,
+                AssetManager* pAssetManager,
+                Font const * pFont,
+                char16_t character);
+
+            // Draw key
+            virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const;
+
+        private:
+
+            // Members
+            char16_t mCharacter;
+            Font const * mpFont;
+        };
+
+        // Key with graphics
+        class GraphicsKey : public Key
+        {
+        public:
+
+            // Constructor
+            GraphicsKey(
+                Layout const * pLayout,
+                AssetManager* pAssetManager);
+        };
+
+        // Add key to keyboard
+        void addKey(char16_t character);
+
+        // Start new line for keyboard
+        void newLine();
 
         // Members
+        Font const * mpFont;
         RenderItem const * mpBackground;
-        RenderItem const * mpKey;
-        std::vector<glm::vec2> mKeyPositions;
-        float mKeyRadius;
-
-        // TODO: Testing
-        unsigned int mKeyCount;
-        const float KEY_HORIZONTAL_OFFSET = 0.1f;
+        std::vector<std::vector<std::unique_ptr<Key> > > mKeys;
     };
 }
 

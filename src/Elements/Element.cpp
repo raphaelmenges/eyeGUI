@@ -367,7 +367,7 @@ namespace eyegui
         specialTransformAndSize();
 
         // After calculation transformation, recalculate the matrix for rendering
-		mFullDrawMatrix = calculateDrawMatrix(mX, mY, mWidth, mHeight);
+        mFullDrawMatrix = calculateDrawMatrix(mpLayout, mX, mY, mWidth, mHeight);
     }
 
     float Element::getDynamicScale() const
@@ -620,11 +620,11 @@ namespace eyegui
         }
     }
 
-    glm::mat4 Element::calculateDrawMatrix(int x, int y, int width, int height) const
+    glm::mat4 Element::calculateDrawMatrix(Layout const * pLayout, int x, int y, int width, int height)
     {
         // Get values from layout
-        float layoutWidth = (float)(mpLayout->getLayoutWidth());
-        float layoutHeight = (float)(mpLayout->getLayoutHeight());
+        float layoutWidth = (float)(pLayout->getLayoutWidth());
+        float layoutHeight = (float)(pLayout->getLayoutHeight());
 
         // Create identity
         glm::mat4 matrix = glm::mat4(1.0f);

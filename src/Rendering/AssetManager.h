@@ -66,6 +66,9 @@ namespace eyegui
             TextFlowVerticalAlignment verticalAlignment,
             std::u16string content);
 
+        // Get pointer to keyboard font
+        Font const * getKeyboardFont() const;
+
     private:
 
         // Fetch shader

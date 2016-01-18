@@ -86,8 +86,8 @@ namespace eyegui
             "uniform sampler2D atlas;\n"
             "uniform vec4 color;\n"
             "void main() {\n"
-            "   float text = texture(atlas, uv).r;\n"
-            "   fragColor = vec4(color.rgb, color.a * text);\n"
+            "   float tex = texture(atlas, uv).r;\n"
+            "   fragColor = vec4(color.rgb, color.a * tex);\n"
             "}\n";
 
         // Uniforms:
@@ -330,17 +330,29 @@ namespace eyegui
             "   fragColor = vec4(sensor.rgb, sensor.a * alpha);\n" // Composing pixel
             "}\n";
 
+        // Can be used with font as input as well as with simple icon!
         // Uniforms:
+        // sampler2D tex
+        // vec4 color
+        // vec4 iconColor
         // float alpha
+        // vec4 atlasPosition
         static const char* pKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
+            "uniform sampler2D atlas;\n"
+            "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 iconColor = vec4(1,1,1,1);\n"
             "uniform float alpha = 1;\n"
+            "uniform vec4 atlasPosition = vec4(0,0,1,1);\n"
             "void main() {\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
-            "   fragColor = vec4(1, 0.5, 0, circle * alpha);\n"
+            "   vec2 atlasUV = vec2((1-uv.x) * atlasPosition.x + uv.x * atlasPosition.z, (1-uv.y) * atlasPosition.y + uv.y * atlasPosition.w);" // UV coordinates for lookup in atlas
+            "   float tex = texture(atlas, atlasUV).r;\n" // Get value from atlas
+            "   vec4 key = (1-tex) * color + tex * iconColor;" // Composing color
+            "   fragColor = vec4(key.r, key.g, key.b, circle * alpha);\n" // Composing pixel
             "}\n";
     }
 }

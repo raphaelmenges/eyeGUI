@@ -204,6 +204,9 @@ namespace eyegui
         // Commit replaced element to this element
         void commitReplacedElement(std::unique_ptr<Element> upElement, bool fade);
 
+        // Static convert pixel space to drawing space (origin top left)
+        static glm::mat4 calculateDrawMatrix(Layout const * pLayout, int x, int y, int width, int height);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
@@ -220,9 +223,6 @@ namespace eyegui
 
         // Implemented by subclasses
         virtual bool mayConsumeInput() = 0;
-
-        // Convert pixel space to drawing space (origin top left)
-        glm::mat4 calculateDrawMatrix(int x, int y, int width, int height) const;
 
         // Checks, whether element is penetrated by input
         virtual bool penetratedByInput(Input const * pInput) const;

@@ -236,7 +236,7 @@ namespace eyegui
         }
     }
 
-    std::unique_ptr<TextFlow> AssetManager::AssetManager::createTextFlow(
+    std::unique_ptr<TextFlow> AssetManager::createTextFlow(
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
@@ -252,6 +252,11 @@ namespace eyegui
                     verticalAlignment,
                     fetchShader(shaders::Type::FONT),
                     content)));
+    }
+
+    Font const * AssetManager::getKeyboardFont() const
+    {
+        return mpGUI->getDefaultFont();
     }
 
     Shader* AssetManager::fetchShader(shaders::Type shader)
@@ -291,9 +296,9 @@ namespace eyegui
             case shaders::Type::FONT:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pFontFragmentShader));
                 break;
-			case shaders::Type::KEY:
-				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
-				break;
+            case shaders::Type::KEY:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
+                break;
             }
             pShader = rupShader.get();
             mShaders[shader] = std::move(rupShader);

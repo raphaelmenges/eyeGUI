@@ -11,6 +11,12 @@
 // TODO: Testing
 #include <iostream>
 
+// TODO
+// - Rendering characters
+// - Rendering symbols
+// - Initial positioning
+// - ...
+
 namespace eyegui
 {
     Keyboard::Keyboard(
@@ -39,18 +45,30 @@ namespace eyegui
     {
         mType = Type::KEYBOARD;
 
+        // Save members
+        mpFont = mpAssetManager->getKeyboardFont();
+
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
             shaders::Type::BLOCK,
             meshes::Type::QUAD);
 
-        // Fetch render item for keys
-        mpKey = mpAssetManager->fetchRenderItem(
-            shaders::Type::KEY,
-            meshes::Type::QUAD);
+        // Initialize keys
+        newLine();
 
-        // TODO: Testing
-        mKeyCount = 25;
+        // Add keys
+        addKey(u'Q');
+        /*addKey(u'W');
+        addKey(u'E');
+        addKey(u'R');
+        addKey(u'T');
+        addKey(u'Y');
+        newLine();
+        addKey(u'A');
+        addKey(u'S');
+        addKey(u'D');
+        addKey(u'F');
+        addKey(u'G'); */
     }
 
     Keyboard::~Keyboard()
@@ -83,26 +101,18 @@ namespace eyegui
         }
 
         // *** RENDER KEYS ***
-        mpKey->bind();
-        mpKey->getShader()->fillValue("alpha", mAlpha);
-        for(const glm::vec2& rKeyPosition : mKeyPositions)
+        for(const auto& rLine : mKeys)
         {
-            glm::mat4 matrix = calculateDrawMatrix(
-                mX + (int)(rKeyPosition.x - mKeyRadius),
-                mY + (int)(rKeyPosition.y - mKeyRadius),
-                (int)(2 * mKeyRadius),
-                (int)(2 * mKeyRadius));
-            mpKey->getShader()->fillValue("matrix", matrix);
-
-            // Draw the key
-            mpKey->draw();
+            for(const auto& rKey : rLine)
+            {
+                rKey->draw(getStyle()->color, getStyle()->iconColor, mAlpha);
+            }
         }
     }
 
     void Keyboard::specialTransformAndSize()
     {
-        // Recalculate key positions
-        calculateKeyPositions(mWidth, mHeight, mKeyPositions, mKeyRadius);
+        // TODO
     }
 
     void Keyboard::specialReset()
@@ -115,188 +125,81 @@ namespace eyegui
         return true;
     }
 
-    void Keyboard::calculateKeyPositions(int availableWidth, int availableHeight, std::vector<glm::vec2>& rPositions, float& rRadius) const
+    void Keyboard::addKey(char16_t character)
     {
-        // Notes:
-        // - Everything calculated in pixel space but with origin in middle of available space
-        // - Coordinate system of eyeGUI used (origin at top left corner)
-
-        // Initialize some useful variables
-        unsigned int ring = 0;
-        unsigned int fullyVisibleRing = 0;
-        std::vector<KeyPosition> availablePositions;
-        std::vector<KeyPosition> reservedPositions;
-        float halfWidth = availableWidth / 2.f;
-        float halfHeight = availableHeight / 2.f;
-
-        // Determine start radius for circles
-        float currentRadius;
-        currentRadius = availableWidth > availableHeight ? availableHeight : availableWidth;
-        currentRadius /= 2.f;
-
-        // Clear positions vector
-        rPositions.clear();
-
-        // Do it until enough key positions are reserved
-        bool positionsNeeded = true;
-        bool addNewRing = true;
-        int startIndexOfAvailable = 0;
-        while(positionsNeeded)
-        {
-            // Add new ring
-            if(addNewRing)
-            {
-                addAvailablePositionsOfRing(ring, availablePositions);
-                addNewRing = false;
-            }
-
-            // Reserve available positions
-            std::vector<int> indicesOfPositionsToBeDeleted;
-            for(int i = startIndexOfAvailable; i < availablePositions.size(); i++)
-            {
-                // Get available position
-                KeyPosition availPos = availablePositions.at(i);
-
-                // Check, whether available position is inside space
-                bool inside = circleInRectangle(
-                    -halfWidth,
-                    -halfHeight,
-                    availableWidth,
-                    availableHeight,
-                    availPos.first * currentRadius,
-                    availPos.second * currentRadius,
-                    currentRadius);
-
-                // If it is inside, use it!
-                if(inside)
-                {
-                    // Reserve this position for a key
-                    reservedPositions.push_back(availPos);
-
-                    // Remember to delete ist from available positions
-                    indicesOfPositionsToBeDeleted.push_back(i);
-                }
-            }
-
-            // Delete all used positions from available positions
-            for(int i = indicesOfPositionsToBeDeleted.size() - 1; i >= 0; i--)
-            {
-                availablePositions.erase(availablePositions.begin() + indicesOfPositionsToBeDeleted[i]);
-            }
-
-            // Check, whether further positions are needed
-            positionsNeeded = reservedPositions.size() < mKeyCount;
-
-            // Prepare next run if necessary
-            if(positionsNeeded)
-            {
-                // Check, whether size decrease is necessary or just a new ring
-                if(indicesOfPositionsToBeDeleted.size() <= 0)
-                {
-                    // Decrease size so that one ring more fits
-                    fullyVisibleRing++;
-                    float divisor = (2.f * fullyVisibleRing) + 1.f;
-                    if(availableWidth > availableHeight)
-                    {
-                        currentRadius = (availableHeight / divisor) / 2.f;
-                    }
-                    else
-                    {
-                        currentRadius = (availableWidth / divisor) / 2.f;
-                    }
-
-                    // Reset index where available positions should be searched
-                    startIndexOfAvailable = 0;
-                }
-                else
-                {
-                    // Add ring
-                    ring++;
-                    startIndexOfAvailable = availablePositions.size();
-                    addNewRing = true;
-                }
-            }
-        }
-
-        // Save reserved positions in output vector in correct coordinates
-        for(int i = 0; i < mKeyCount; i++)
-        {
-            const KeyPosition& rKeyPosition = reservedPositions[i];
-            rPositions.push_back(glm::vec2(
-                rKeyPosition.first * currentRadius + halfWidth,
-                rKeyPosition.second * currentRadius + halfHeight));
-        }
-
-        // Save radius
-        rRadius = currentRadius;
+        mKeys[mKeys.size()-1].push_back(
+            std::unique_ptr<FontKey>(
+                new FontKey(mpLayout, mpAssetManager, mpFont, character)));
     }
 
-    void Keyboard::addAvailablePositionsOfRing(
-        unsigned int ring,
-        std::vector<KeyPosition>& rAvailablePositions) const
+    void Keyboard::newLine()
     {
-        // Notes:
-        // - First left, then right
-        // - First up, then down
-        // - Coordinate system of eyeGUI used (origin at top left corner)
-        // - Horizontal offset of positions is 2!
-
-        float horizontalMutliplier = 1.f + KEY_HORIZONTAL_OFFSET;
-        float floatRing = (float)ring;
-
-        if(ring <= 0)
-        {
-            // No hexagon, just the middle position
-            rAvailablePositions.push_back(KeyPosition(0,0));
-        }
-        else
-        {
-            // Add first line
-            rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (-2.f * floatRing), 0.f));
-            rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (2.f * floatRing), 0.f));
-
-            // Go over height of hexagon ring to handle rest
-            for(int h = 1; h <= ring; h++)
-            {
-                if(h < ring)
-                {
-                    // Two positions on the sides on top
-                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((-2.f * floatRing) + h), -2.f * h));
-                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((2.f * floatRing) - h), -2.f * h));
-
-                    // Two positions on the sides on bottom
-                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((-2.f * floatRing) + h), 2.f * h));
-                    rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * ((2.f * floatRing) - h), 2.f * h));
-                }
-                else
-                {
-                    // Add positions on top of hexagon ring
-                    for(int i = 0; i <= ring; i++)
-                    {
-                        rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (-floatRing + 2.f * i), -2.f * h));
-                    }
-
-                    // Add positions on bottom of hexagon ring
-                    for(int i = 0; i <= ring; i++)
-                    {
-                        rAvailablePositions.push_back(KeyPosition(horizontalMutliplier * (-floatRing + 2.f * i), 2.f * h));
-                    }
-                }
-            }
-        }
+        mKeys.push_back(std::vector<std::unique_ptr<Key> >());
     }
 
-    bool Keyboard::circleInRectangle(float rectX, float rectY, float rectWidth, float rectHeight, float circleX, float circleY, float circleRadius) const
+    Keyboard::Key::Key(Layout const * pLayout, AssetManager* pAssetManager)
     {
-        // One should not use on both sides the equality, but it works because of floating points
-        if( circleX - circleRadius >= rectX && circleX + circleRadius <= rectX + rectWidth
-            && circleY - circleRadius >= rectY && circleY + circleRadius  <= rectY + rectHeight)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        // Initialize members
+        mpLayout = pLayout;
+        mX = 100;
+        mY = 100;
+        mSize = 100;
+
+        // Fetch render item for keys
+        mpRenderItem = pAssetManager->fetchRenderItem(
+            shaders::Type::KEY,
+            meshes::Type::QUAD);
+    }
+
+    void Keyboard::Key::transformAndSize(int x, int y, int size)
+    {
+        mX = x;
+        mY = y;
+        mSize = size;
+    }
+
+    Keyboard::FontKey::FontKey(
+        Layout const * pLayout,
+        AssetManager* pAssetManager,
+        Font const * pFont,
+        char16_t character) : Key(pLayout, pAssetManager)
+    {
+        mCharacter = character;
+        mpFont = pFont;
+    }
+
+    void Keyboard::FontKey::draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const
+    {
+        // Bind and fill render item
+        mpRenderItem->bind();
+        mpRenderItem->getShader()->fillValue("color", color);
+        mpRenderItem->getShader()->fillValue("iconColor", iconColor);
+        mpRenderItem->getShader()->fillValue("alpha", alpha);
+
+        // Transformation matrix
+        glm::mat4 matrix = Element::calculateDrawMatrix(
+                mpLayout,
+                mX - mSize/2,
+                mY - mSize/2,
+                mSize,
+                mSize);
+        mpRenderItem->getShader()->fillValue("matrix", matrix);
+
+        // Atlas
+        glBindTexture(GL_TEXTURE_2D, mpFont->getAtlasTextureHandle(FontSize::TALL));
+
+        // Position on atlas
+        Glyph const * pGlyph = mpFont->getGlyph(FontSize::TALL, mCharacter);
+        mpRenderItem->getShader()->fillValue("atlasPosition", pGlyph->atlasPosition);
+
+        // Drawing
+        mpRenderItem->draw();
+    }
+
+    Keyboard::GraphicsKey::GraphicsKey(
+        Layout const * pLayout,
+        AssetManager* pAssetManager) : Key(pLayout, pAssetManager)
+    {
+        // TODO
     }
 }
