@@ -20,8 +20,14 @@ namespace eyegui
     {
     public:
 
-        // TODO
-        //
+    // TODO
+    // - Make Key render the circle and so on
+    // - Make subclasses render quad above that cirlce
+    // - Rendering characters
+    // - Rendering symbols
+    // - Initial positioning
+    // - ...
+
 
         // Constructor
         Keyboard(

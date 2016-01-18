@@ -11,12 +11,6 @@
 // TODO: Testing
 #include <iostream>
 
-// TODO
-// - Rendering characters
-// - Rendering symbols
-// - Initial positioning
-// - ...
-
 namespace eyegui
 {
     Keyboard::Keyboard(
