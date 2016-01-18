@@ -39,9 +39,6 @@ namespace eyegui
     {
         mType = Type::KEYBOARD;
 
-        // Save members
-        mpFont = mpAssetManager->getKeyboardFont();
-
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
             shaders::Type::BLOCK,
@@ -51,18 +48,7 @@ namespace eyegui
         newLine();
 
         // Add keys
-        addKey(u'Q');
-        /*addKey(u'W');
-        addKey(u'E');
-        addKey(u'R');
-        addKey(u'T');
-        addKey(u'Y');
-        newLine();
-        addKey(u'A');
-        addKey(u'S');
-        addKey(u'D');
-        addKey(u'F');
-        addKey(u'G'); */
+        addKey(u"Q");
     }
 
     Keyboard::~Keyboard()
@@ -119,11 +105,11 @@ namespace eyegui
         return true;
     }
 
-    void Keyboard::addKey(char16_t character)
+    void Keyboard::addKey(std::u16string content)
     {
         mKeys[mKeys.size()-1].push_back(
-            std::unique_ptr<FontKey>(
-                new FontKey(mpLayout, mpAssetManager, mpFont, character)));
+            std::unique_ptr<TextKey>(
+                new TextKey(mpLayout, mpAssetManager, content)));
     }
 
     void Keyboard::newLine()
@@ -139,7 +125,7 @@ namespace eyegui
         mY = 100;
         mSize = 100;
 
-        // Fetch render item for keys
+        // Fetch render item for key circle
         mpRenderItem = pAssetManager->fetchRenderItem(
             shaders::Type::KEY,
             meshes::Type::QUAD);
@@ -152,22 +138,11 @@ namespace eyegui
         mSize = size;
     }
 
-    Keyboard::FontKey::FontKey(
-        Layout const * pLayout,
-        AssetManager* pAssetManager,
-        Font const * pFont,
-        char16_t character) : Key(pLayout, pAssetManager)
-    {
-        mCharacter = character;
-        mpFont = pFont;
-    }
-
-    void Keyboard::FontKey::draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const
+    void Keyboard::Key::drawCircle(glm::vec4 color, float alpha) const
     {
         // Bind and fill render item
         mpRenderItem->bind();
         mpRenderItem->getShader()->fillValue("color", color);
-        mpRenderItem->getShader()->fillValue("iconColor", iconColor);
         mpRenderItem->getShader()->fillValue("alpha", alpha);
 
         // Transformation matrix
@@ -179,15 +154,37 @@ namespace eyegui
                 mSize);
         mpRenderItem->getShader()->fillValue("matrix", matrix);
 
-        // Atlas
-        glBindTexture(GL_TEXTURE_2D, mpFont->getAtlasTextureHandle(FontSize::TALL));
-
-        // Position on atlas
-        Glyph const * pGlyph = mpFont->getGlyph(FontSize::TALL, mCharacter);
-        mpRenderItem->getShader()->fillValue("atlasPosition", pGlyph->atlasPosition);
-
         // Drawing
         mpRenderItem->draw();
+    }
+
+    Keyboard::TextKey::TextKey(
+        Layout const * pLayout,
+        AssetManager* pAssetManager,
+        std::u16string content) : Key(pLayout, pAssetManager)
+    {
+        // Save members
+        mContent = content;
+
+        // Create text flow element
+        mupTextFlow = pAssetManager->createTextFlow(FontSize::TALL, TextFlowAlignment::CENTER, TextFlowVerticalAlignment::CENTER, mContent);
+    }
+
+    void Keyboard::TextKey::transformAndSize(int x, int y, int size)
+    {
+        // Call super method
+        Keyboard::Key::transformAndSize(x, y, size);
+
+        // TODO: Set transformation of textflow
+    }
+
+    void Keyboard::TextKey::draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const
+    {
+        // Draw circle of key
+        drawCircle(color, alpha);
+
+        // Render text flow (TODO scale)
+        mupTextFlow->draw(1, iconColor);
     }
 
     Keyboard::GraphicsKey::GraphicsKey(

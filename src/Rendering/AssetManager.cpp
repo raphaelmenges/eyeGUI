@@ -254,11 +254,6 @@ namespace eyegui
                     content)));
     }
 
-    Font const * AssetManager::getKeyboardFont() const
-    {
-        return mpGUI->getDefaultFont();
-    }
-
     Shader* AssetManager::fetchShader(shaders::Type shader)
     {
         // Search in map for shader and create if needed

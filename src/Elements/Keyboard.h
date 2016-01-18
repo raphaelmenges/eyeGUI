@@ -28,6 +28,9 @@ namespace eyegui
     // - Initial positioning
     // - ...
 
+    // Notes
+    // - icon color is used here for font too
+
 
         // Constructor
         Keyboard(
@@ -74,12 +77,15 @@ namespace eyegui
             Key(Layout const * pLayout, AssetManager* pAssetManager);
 
             // Set position of center and size of key
-            void transformAndSize(int x, int y, int size);
+            virtual void transformAndSize(int x, int y, int size);
 
             // Draw key
             virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const = 0;
 
         protected:
+
+            // Draw circle
+            void drawCircle(glm::vec4 color, float alpha) const;
 
             // Members
             int mX;
@@ -89,17 +95,19 @@ namespace eyegui
             Layout const * mpLayout;
         };
 
-        // Key with font letter
-        class FontKey : public Key
+        // Key with text
+        class TextKey : public Key
         {
         public:
 
             // Constructor
-            FontKey(
+            TextKey(
                 Layout const * pLayout,
                 AssetManager* pAssetManager,
-                Font const * pFont,
-                char16_t character);
+                std::u16string content);
+
+            // Set position of center and size of key
+            virtual void transformAndSize(int x, int y, int size);
 
             // Draw key
             virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const;
@@ -107,8 +115,8 @@ namespace eyegui
         private:
 
             // Members
-            char16_t mCharacter;
-            Font const * mpFont;
+            std::u16string mContent;
+            std::unique_ptr<TextFlow> mupTextFlow;
         };
 
         // Key with graphics
@@ -120,16 +128,17 @@ namespace eyegui
             GraphicsKey(
                 Layout const * pLayout,
                 AssetManager* pAssetManager);
+
+            // TODO: add methods and members
         };
 
         // Add key to keyboard
-        void addKey(char16_t character);
+        void addKey(std::u16string content);
 
         // Start new line for keyboard
         void newLine();
 
         // Members
-        Font const * mpFont;
         RenderItem const * mpBackground;
         std::vector<std::vector<std::unique_ptr<Key> > > mKeys;
     };
