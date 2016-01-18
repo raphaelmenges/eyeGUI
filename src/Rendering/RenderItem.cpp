@@ -17,7 +17,7 @@ namespace eyegui
 
         // Save currently set buffer and vertex array object
         GLint oldBuffer, oldVAO;
-        glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
         glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
 
         // Vertex array object

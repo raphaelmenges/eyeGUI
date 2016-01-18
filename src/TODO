@@ -35,6 +35,7 @@
 - Some members of element could be private but getters necessary..
 
 Notes:
+- RenderItem: some shader programs optimize uv attribute away, so cannot be set and throws opengl error
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)
 - Maybe use sampler states for textures instead of per texture settings
