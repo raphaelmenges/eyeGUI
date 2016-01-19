@@ -43,6 +43,7 @@ namespace eyegui
     static const glm::vec4 RESIZE_BLEND_COLOR = glm::vec4(0.75f, 0.75f, 0.75f, 0.75f);
     static const std::u16string LOCALIZATION_NOT_FOUND = u"";
     static const float KEY_CIRCLE_CHARACTER_SIZE_RATIO = 0.6f;
+    static const float KEYBOARD_HORIZONTAL_KEY_DISTANCE = 0.1f;
 }
 
 #endif // DEFINES_H_

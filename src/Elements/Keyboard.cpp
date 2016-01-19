@@ -86,8 +86,8 @@ namespace eyegui
         addKey(u'M');
         addKey(u';');
         addKey(u':');
-        addKey(u'-');
         addKey(u'_');
+        addKey(u'#');
     }
 
     Keyboard::~Keyboard()
@@ -144,11 +144,16 @@ namespace eyegui
 
         // Calculate size of keys
         int keySize;
-        int maxHorizontalKeySize = mWidth / maxCountInLine;
+        int maxHorizontalKeySize = (mWidth / maxCountInLine);
+        maxHorizontalKeySize -= maxHorizontalKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE; // Substract distance
         int maxVerticalKeySize = mHeight / mKeys.size();
         keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
         int halfKeySize = keySize / 2;
-        bool lastLineWasShifted = false;
+
+        // Calculate offset to center keyboard in available space
+        int xCenterOffset, yCenterOffset;
+        xCenterOffset = (mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2;
+        yCenterOffset = (mHeight - (mKeys.size() * keySize)) / 2;
 
         // Arrange keys
         for(int i = 0; i < mKeys.size(); i++) // Go over lines
@@ -157,18 +162,20 @@ namespace eyegui
             int keyCount = mKeys[i].size();
 
             // Decide, whether keys are shifted in that line
-            int xOffset = 0;
+            int xOffset = halfKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE;
             if((keyCount - maxCountInLine) % 2 != 0)
             {
-                // X offset
-                xOffset = halfKeySize;
+                // Add shift
+                xOffset += halfKeySize;
             }
             for(int j = 0; j < keyCount; j++) // Go over keys
             {
                 mKeys[i][j]->transformAndSize(
-                    mX + halfKeySize + (j * keySize) + xOffset,
-                    mY + halfKeySize + (i * keySize),
+                    mX + xCenterOffset + halfKeySize + (j * keySize) + xOffset,
+                    mY + yCenterOffset + halfKeySize + (i * keySize),
                     keySize);
+
+                xOffset += keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE;
             }
         }
     }
