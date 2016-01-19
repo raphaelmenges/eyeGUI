@@ -48,15 +48,46 @@ namespace eyegui
 
         // Add keys
         addKey(u'Q');
-        /*addKey(u'W');
+        addKey(u'W');
         addKey(u'E');
         addKey(u'R');
+        addKey(u'T');
+        addKey(u'Z');
+        addKey(u'U');
+        addKey(u'I');
+        addKey(u'O');
+        addKey(u'P');
+        addKey(u'\u00dc');
+        addKey(u'*');
 
         newLine();
 
         addKey(u'A');
         addKey(u'S');
-        addKey(u'D'); */
+        addKey(u'D');
+        addKey(u'F');
+        addKey(u'G');
+        addKey(u'H');
+        addKey(u'J');
+        addKey(u'K');
+        addKey(u'L');
+        addKey(u'\u00d6');
+        addKey(u'\u00c4');
+
+        newLine();
+
+        addKey(u'>');
+        addKey(u'Y');
+        addKey(u'X');
+        addKey(u'C');
+        addKey(u'V');
+        addKey(u'B');
+        addKey(u'N');
+        addKey(u'M');
+        addKey(u';');
+        addKey(u':');
+        addKey(u'-');
+        addKey(u'_');
     }
 
     Keyboard::~Keyboard()
@@ -100,12 +131,44 @@ namespace eyegui
 
     void Keyboard::specialTransformAndSize()
     {
-        // Keys
+        // Get line with maximum count
+        int maxCountInLine = -1;
         for(const auto& rLine : mKeys)
         {
-            for(const auto& rKey : rLine)
+            int countInLine = rLine.size();
+            if(countInLine > maxCountInLine)
             {
-                rKey->transformAndSize(100,100,100);
+                maxCountInLine = countInLine;
+            }
+        }
+
+        // Calculate size of keys
+        int keySize;
+        int maxHorizontalKeySize = mWidth / maxCountInLine;
+        int maxVerticalKeySize = mHeight / mKeys.size();
+        keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
+        int halfKeySize = keySize / 2;
+        bool lastLineWasShifted = false;
+
+        // Arrange keys
+        for(int i = 0; i < mKeys.size(); i++) // Go over lines
+        {
+            // Count of keys in current row
+            int keyCount = mKeys[i].size();
+
+            // Decide, whether keys are shifted in that line
+            int xOffset = 0;
+            if((keyCount - maxCountInLine) % 2 != 0)
+            {
+                // X offset
+                xOffset = halfKeySize;
+            }
+            for(int j = 0; j < keyCount; j++) // Go over keys
+            {
+                mKeys[i][j]->transformAndSize(
+                    mX + halfKeySize + (j * keySize) + xOffset,
+                    mY + halfKeySize + (i * keySize),
+                    keySize);
             }
         }
     }
