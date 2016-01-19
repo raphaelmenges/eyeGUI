@@ -82,7 +82,7 @@ namespace eyegui
 
         // Save currently set buffer and vertex array object
         GLint oldBuffer, oldVAO;
-        glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
         glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
 
         // Initialize mesh buffers and vertex array object
@@ -101,16 +101,7 @@ namespace eyegui
         vertices.push_back(glm::vec3(0,0,0));
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * 3 * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-        // Fill texture coordinate buffer
-        glBindBuffer(GL_ARRAY_BUFFER, mQuadTextureCoordinateBuffer);
-        std::vector<glm::vec2> textureCoordinates;
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.y));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.w));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
-        glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * 2 * sizeof(float), textureCoordinates.data(), GL_STATIC_DRAW);
+        // Texture coordinates are dynamic and filled in transformAndSize method
 
         // Bind stuff to vertex array object
         glBindVertexArray(mQuadVertexArrayObject);
@@ -171,6 +162,20 @@ namespace eyegui
                 mY - (quadSize.y/2),
                 quadSize.x,
                 quadSize.y);
+
+        // Set texture coordinates of quad
+        GLint oldBuffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, mQuadTextureCoordinateBuffer);
+        std::vector<glm::vec2> textureCoordinates;
+        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
+        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.y));
+        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
+        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
+        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.w));
+        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
+        glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
     void CharacterKey::draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const

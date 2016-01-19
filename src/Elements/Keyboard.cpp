@@ -47,7 +47,16 @@ namespace eyegui
         newLine();
 
         // Add keys
-        addKey(u'W');
+        addKey(u'Q');
+        /*addKey(u'W');
+        addKey(u'E');
+        addKey(u'R');
+
+        newLine();
+
+        addKey(u'A');
+        addKey(u'S');
+        addKey(u'D'); */
     }
 
     Keyboard::~Keyboard()
