@@ -203,7 +203,7 @@ namespace eyegui
         {
             for(const auto& rKey : rLine)
             {
-                rKey->draw(getStyle()->color, getStyle()->iconColor, mAlpha);
+                rKey->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->iconColor, mAlpha);
             }
         }
     }

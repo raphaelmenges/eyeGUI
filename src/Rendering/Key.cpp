@@ -42,6 +42,14 @@ namespace eyegui
         mX = x;
         mY = y;
         mSize = size;
+
+        // Draw matrix for cirlce
+        mCircleMatrix = Element::calculateDrawMatrix(
+                mpLayout,
+                mX - mSize/2,
+                mY - mSize/2,
+                mSize,
+                mSize);
     }
 
     void Key::update(float tpf)
@@ -65,25 +73,26 @@ namespace eyegui
         return glm::vec2(mX, mY);
     }
 
-    void Key::drawCircle(glm::vec4 color, float alpha) const
+    void Key::drawCircle(
+            int oglStencilX,
+            int oglSencilY,
+            int oglStencilWidth,
+            int oglStencilHeight,
+            glm::vec4 color,
+            float alpha) const
     {
         // Bind and fill render item
         mpCirlceRenderItem->bind();
 
+        // Fill color
         glm::vec4 circleColor = color;
         circleColor.a *= alpha;
         mpCirlceRenderItem->getShader()->fillValue("color", circleColor);
 
+        // Fill other uniforms
+        mpCirlceRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
         mpCirlceRenderItem->getShader()->fillValue("focus", mFocus.getValue());
-
-        // Transformation matrix
-        glm::mat4 circleMatrix = Element::calculateDrawMatrix(
-                mpLayout,
-                mX - mSize/2,
-                mY - mSize/2,
-                mSize,
-                mSize);
-        mpCirlceRenderItem->getShader()->fillValue("matrix", circleMatrix);
+        mpCirlceRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
 
         // Drawing
         mpCirlceRenderItem->draw();
@@ -203,10 +212,23 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    void CharacterKey::draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const
+    void CharacterKey::draw(
+            int stencilX,
+            int stencilY,
+            int stencilWidth,
+            int stencilHeight,
+            glm::vec4 color,
+            glm::vec4 iconColor,
+            float alpha) const
     {
+        // Convert stencil values to OpenGL coordinate system
+        int oglStencilX = stencilX;
+        int oglStencilY = mpLayout->getLayoutHeight() - stencilY - stencilHeight;
+        int oglStencilWidth = stencilWidth;
+        int oglStencilHeight = stencilHeight;
+
         // Draw circle of key
-        drawCircle(color, alpha);
+        drawCircle(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight, color, alpha);
 
         // Render character
         mpQuadShader->bind();
@@ -215,13 +237,14 @@ namespace eyegui
         // Bind atlas texture
         glBindTexture(GL_TEXTURE_2D, mpFont->getAtlasTextureHandle(FontSize::TALL));
 
-        // Color
+        // Fill color
         glm::vec4 characterColor = iconColor;
-        iconColor.a *= alpha;
-
-        // Fill uniforms
-        mpQuadShader->fillValue("matrix", mQuadMatrix);
+        characterColor.a *= alpha;
         mpQuadShader->fillValue("color", characterColor);
+
+        // Fill other uniforms
+        mpQuadShader->fillValue("matrix", mQuadMatrix); // Matrix is updated in transform and size
+        mpQuadShader->fillValue("stencil", glm::vec4(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight));
 
         // Draw character quad (vertex count must be 6)
         glDrawArrays(GL_TRIANGLES, 0, 6);

@@ -333,13 +333,19 @@ namespace eyegui
         // Uniforms:
         // vec4 color
         // float focus
+        // vec4 stencil
         static const char* pKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
             "uniform float focus = 0;\n"
+            "uniform vec4 stencil;\n"
             "void main() {\n"
+            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
+            "   {"
+            "       discard;\n"
+            "   }"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
             "   fragColor = vec4(color.rgb + focus * 0.2f, color.a * circle);\n" // Composing pixel
@@ -349,13 +355,19 @@ namespace eyegui
         // Uniforms:
         // sampler2D atlas
         // vec4 color
+        // vec4 stencil
         static const char* pCharacterKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform sampler2D atlas;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 stencil;\n"
             "void main() {\n"
+            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
+            "   {"
+            "       discard;\n"
+            "   }"
             "   float value = texture(atlas, uv).r;\n"
             "   fragColor = vec4(color.rgb, color.a * value);\n" // Composing pixel
             "}\n";

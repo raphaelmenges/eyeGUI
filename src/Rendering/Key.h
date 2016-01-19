@@ -38,8 +38,15 @@ namespace eyegui
         // Update
         virtual void update(float tpf);
 
-        // Draw
-        virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const = 0;
+        // Draw (stencil values in eyeGUI coordinate system)
+        virtual void draw(
+            int stencilX,
+            int stencilY,
+            int stencilWidth,
+            int stencilHeight,
+            glm::vec4 color,
+            glm::vec4 iconColor,
+            float alpha) const = 0;
 
         // Reset
         virtual void reset();
@@ -55,8 +62,14 @@ namespace eyegui
 
     protected:
 
-        // Draw circle
-        void drawCircle(glm::vec4 color, float alpha) const;
+        // Draw circle (stencil values already in OpenGL coordinates)
+        void drawCircle(
+            int oglStencilX,
+            int oglSencilY,
+            int oglStencilWidth,
+            int oglStencilHeight,
+            glm::vec4 color,
+            float alpha) const;
 
         // Members
         int mX;
@@ -67,6 +80,7 @@ namespace eyegui
         RenderItem const * mpCirlceRenderItem;
         bool mFocused;
         LerpValue mFocus;
+        glm::mat4 mCircleMatrix;
     };
 
     // Key with character
@@ -87,8 +101,16 @@ namespace eyegui
         // Set position of center and size of key
         virtual void transformAndSize(int x, int y, int size);
 
-        // Draw key
-        virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const;
+        // Draw (stencil values in eyeGUI coordinate system)
+        virtual void draw(
+            int stencilX,
+            int stencilY,
+            int stencilWidth,
+            int stencilHeight,
+            glm::vec4 color,
+            glm::vec4 iconColor,
+            float alpha) const;
+
 
         // Get value
         virtual std::u16string getValue() const;
