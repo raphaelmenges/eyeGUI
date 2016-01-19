@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Keyboard for eyetracking input.
+// Keyboard for eyetracking input. Let asset manager create the keys.
 
 #ifndef KEYBOARD_H_
 #define KEYBOARD_H_
@@ -21,10 +21,6 @@ namespace eyegui
     public:
 
     // TODO
-    // - Make Key render the circle and so on
-    // - Make subclasses render quad above that cirlce
-    // - Rendering characters
-    // - Rendering symbols
     // - Initial positioning
     // - ...
 

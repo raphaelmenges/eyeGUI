@@ -51,8 +51,7 @@ namespace eyegui
         int mSize;
         Layout const * mpLayout;
         AssetManager* mpAssetManager;
-        RenderItem const * mpRenderItem;
-        glm::mat4 mMatrix;
+        RenderItem const * mpCirlceRenderItem;
     };
 
     // Key with character
@@ -70,6 +69,9 @@ namespace eyegui
         // Destructor
         virtual ~CharacterKey();
 
+        // Set position of center and size of key
+        virtual void transformAndSize(int x, int y, int size);
+
         // Draw key
         virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const;
 
@@ -81,10 +83,12 @@ namespace eyegui
         // Members
         Font const * mpFont;
         char16_t mCharacter;
-        Shader const * mpShader;
-        GLuint mVertexBuffer;
-        GLuint mTextureCoordinateBuffer;
-        GLuint mVertexArrayObject;
+        Glyph const * mpGlyph;
+        Shader const * mpQuadShader;
+        GLuint mQuadVertexBuffer;
+        GLuint mQuadTextureCoordinateBuffer;
+        GLuint mQuadVertexArrayObject;
+        glm::mat4 mQuadMatrix;
     };
 
     // Key with graphic (not used nor implemented)
@@ -99,6 +103,8 @@ namespace eyegui
 
         // Destructor
         virtual ~GraphicKey();
+
+        // Could share the quad stuff with character key...
     };
 }
 

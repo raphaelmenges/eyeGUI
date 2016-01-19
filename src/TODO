@@ -1,6 +1,5 @@
 ### VERSION 0.8
-- glGetError...
-	- something at layout loading or so (before any drawing)
+- Problem: Font nearest or linear filtering (one is good for textflow, the other for keyboard...)
 - TextInput
 	- Wiki entry... (extra page or in elements? -> both)
   - Keyboard and "Guesser" (tries to guess what you want to write)
