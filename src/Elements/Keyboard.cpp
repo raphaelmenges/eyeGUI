@@ -40,6 +40,11 @@ namespace eyegui
 
         // Initialize members
         mInitialKeySize = 0;
+        mThreshold.setValue(0);
+        mpFocusedKey = NULL;
+        mFocusedKeyRow = 0;
+        mFocusedKeyColumn = 0;
+        mGrowOffset = glm::vec2(0,0);
 
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
@@ -91,8 +96,6 @@ namespace eyegui
         addKey(u':');
         addKey(u'_');
         addKey(u'#');
-
-        mKeys[1][3]->setFocus(true);
     }
 
     Keyboard::~Keyboard()
@@ -102,30 +105,52 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
+        // TODO REDO whole method!!!
+
         // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
-        int focusRow = 0;
-        int focusColumn = 0;
 
+        // Keyboard threshold
+        mThreshold.update(tpf, !penetrated);
+
+        // Determine focused key
         if(penetrated)
         {
-            // Determine, which key is focused by user
+            // User's gaze
             glm::vec2 point = glm::vec2(pInput->gazeX, pInput->gazeY);
 
             // Go over keys and search nearest
             float distance = 1000000;
+            Key* pNewFocusedKey = NULL;
+            int newFocusedKeyRow = 0;
+            int newFocusedKeyColumn = 0;
             for(int i = 0; i < mKeys.size(); i++)
             {
                 for(int j = 0; j < mKeys[i].size(); j++)
                 {
+                    // Use position in keys to get position after last update
                     float currentDistance = glm::abs(glm::distance(point, mKeys[i][j]->getPosition()));
                     if(currentDistance < distance)
                     {
                         distance = currentDistance;
-                        focusRow = i;
-                        focusColumn = j;
+                        pNewFocusedKey = mKeys[i][j].get();
+                        newFocusedKeyRow = i;
+                        newFocusedKeyColumn = j;
                     }
                 }
+            }
+
+            // Set focus if necessary
+            if(pNewFocusedKey != mpFocusedKey)
+            {
+                if(mpFocusedKey != NULL)
+                {
+                    mpFocusedKey->setFocus(false);
+                }
+                mpFocusedKey = pNewFocusedKey;
+                mpFocusedKey->setFocus(true);
+                mFocusedKeyRow = newFocusedKeyRow;
+                mFocusedKeyColumn = newFocusedKeyColumn;
             }
         }
 
@@ -134,24 +159,22 @@ namespace eyegui
         {
             for(int j = 0; j < mKeys[i].size(); j++)
             {
+                // TODO: do the magic here
+                if(mpFocusedKey != NULL)
+                {
+                   glm::vec2 newGrowOffset = mInitialKeyPositions[i][j] - mInitialKeyPositions[mFocusedKeyRow][mFocusedKeyColumn];
+                   mGrowOffset +=  0.01f * tpf * (newGrowOffset - mGrowOffset);
+                }
+
                 // Transform and size
                 mKeys[i][j]->transformAndSize(
-                    mInitialKeyPositions[i][j].x,
-                    mInitialKeyPositions[i][j].y,
+                    mInitialKeyPositions[i][j].x + mGrowOffset.x * mThreshold.getValue(),
+                    mInitialKeyPositions[i][j].y + mGrowOffset.y * mThreshold.getValue(),
                     mInitialKeySize);
 
                 // Updating
                 mKeys[i][j]->update(tpf);
-
-                // Unset focus of all after update and before focusing one
-                mKeys[i][j]->setFocus(false);
             }
-        }
-
-        // Set focus on currently focused
-        if(penetrated)
-        {
-            mKeys[focusRow][focusColumn]->setFocus(true);
         }
 
         return 0;
@@ -206,7 +229,7 @@ namespace eyegui
         keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
         int halfKeySize = keySize / 2;
 
-        // Calculate offset to center keyboard in available space
+        // Calculate offset to center
         int xCenterOffset, yCenterOffset;
         xCenterOffset = (mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2;
         yCenterOffset = (mHeight - (mKeys.size() * keySize)) / 2;
@@ -239,6 +262,12 @@ namespace eyegui
 
     void Keyboard::specialReset()
     {
+        mThreshold.setValue(0);
+        mpFocusedKey = NULL;
+        mFocusedKeyRow = 0;
+        mFocusedKeyColumn = 0;
+        mGrowOffset = glm::vec2(0,0);
+
         // Reset keys
         for(const auto& rLine : mKeys)
         {
