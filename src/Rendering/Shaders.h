@@ -332,33 +332,30 @@ namespace eyegui
 
         // Uniforms:
         // vec4 color
-        // float alpha
         static const char* pKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
-            "uniform float alpha = 1;\n"
             "void main() {\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
-            "   fragColor = vec4(color.rgb, color.a * circle * alpha);\n" // Composing pixel
+            "   fragColor = vec4(color.rgb, color.a * circle);\n" // Composing pixel
             "}\n";
 
 
         // Uniforms:
+        // sampler2D atlas
         // vec4 color
-        // float alpha
         static const char* pCharacterKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
+            "uniform sampler2D atlas;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
-            "uniform float alpha = 1;\n"
             "void main() {\n"
-            "   float gradient = length(2*uv-1);\n" // Simple gradient as base
-            "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
-            "   fragColor = vec4(color.rgb, color.a * circle * alpha);\n" // Composing pixel
+            "   float value = texture(atlas, uv).r;\n"
+            "   fragColor = vec4(color.rgb, color.a * value);\n" // Composing pixel
             "}\n";
     }
 }

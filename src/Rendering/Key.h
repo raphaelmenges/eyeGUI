@@ -52,6 +52,7 @@ namespace eyegui
         Layout const * mpLayout;
         AssetManager* mpAssetManager;
         RenderItem const * mpRenderItem;
+        glm::mat4 mMatrix;
     };
 
     // Key with character
@@ -68,9 +69,6 @@ namespace eyegui
 
         // Destructor
         virtual ~CharacterKey();
-
-        // Set position of center and size of key
-        virtual void transformAndSize(int x, int y, int size);
 
         // Draw key
         virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const;

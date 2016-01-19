@@ -91,7 +91,14 @@ namespace eyegui
 
     void Keyboard::specialTransformAndSize()
     {
-        // TODO
+        // Keys
+        for(const auto& rLine : mKeys)
+        {
+            for(const auto& rKey : rLine)
+            {
+                rKey->transformAndSize(100,100,100);
+            }
+        }
     }
 
     void Keyboard::specialReset()
