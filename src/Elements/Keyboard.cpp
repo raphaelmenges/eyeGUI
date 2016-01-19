@@ -38,6 +38,9 @@ namespace eyegui
     {
         mType = Type::KEYBOARD;
 
+        // Initialize members
+        mInitialKeySize = 0;
+
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
             shaders::Type::BLOCK,
@@ -88,6 +91,8 @@ namespace eyegui
         addKey(u':');
         addKey(u'_');
         addKey(u'#');
+
+        mKeys[1][3]->setFocus(true);
     }
 
     Keyboard::~Keyboard()
@@ -97,7 +102,58 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
-        // TODO: update keys (maybe do not save keycount but vector with matrices and...vector with letters...)
+        // Check for penetration by input
+        bool penetrated = penetratedByInput(pInput);
+        int focusRow = 0;
+        int focusColumn = 0;
+
+        if(penetrated)
+        {
+            // Determine, which key is focused by user
+            glm::vec2 point = glm::vec2(pInput->gazeX, pInput->gazeY);
+
+            // Go over keys and search nearest
+            float distance = 1000000;
+            for(int i = 0; i < mInitialKeyPositions.size(); i++)
+            {
+                for(int j = 0; j < mInitialKeyPositions[i].size(); j++)
+                {
+                    float currentDistance = glm::abs(glm::distance(point, mInitialKeyPositions[i][j]));
+                    if(currentDistance < distance)
+                    {
+                        distance = currentDistance;
+                        focusRow = i;
+                        focusColumn = j;
+                    }
+                }
+            }
+        }
+
+        // Update keys (they have to be transformed and sized each update)
+        for(int i = 0; i < mKeys.size(); i++)
+        {
+            for(int j = 0; j < mKeys[i].size(); j++)
+            {
+                // Transform and size
+                mKeys[i][j]->transformAndSize(
+                    mInitialKeyPositions[i][j].x,
+                    mInitialKeyPositions[i][j].y,
+                    mInitialKeySize);
+
+                // Updating
+                mKeys[i][j]->update(tpf);
+
+                // Unset focus of all after update and before focusing one
+                mKeys[i][j]->setFocus(false);
+            }
+        }
+
+        // Set focus on currently focused
+        if(penetrated)
+        {
+            mKeys[focusRow][focusColumn]->setFocus(true);
+        }
+
         return 0;
     }
 
@@ -155,7 +211,7 @@ namespace eyegui
         xCenterOffset = (mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2;
         yCenterOffset = (mHeight - (mKeys.size() * keySize)) / 2;
 
-        // Arrange keys
+        // Save initial key positions
         for(int i = 0; i < mKeys.size(); i++) // Go over lines
         {
             // Count of keys in current row
@@ -170,19 +226,27 @@ namespace eyegui
             }
             for(int j = 0; j < keyCount; j++) // Go over keys
             {
-                mKeys[i][j]->transformAndSize(
+                mInitialKeyPositions[i][j] = glm::vec2(
                     mX + xCenterOffset + halfKeySize + (j * keySize) + xOffset,
-                    mY + yCenterOffset + halfKeySize + (i * keySize),
-                    keySize);
+                    mY + yCenterOffset + halfKeySize + (i * keySize));
 
                 xOffset += keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE;
             }
         }
+
+        mInitialKeySize = keySize;
     }
 
     void Keyboard::specialReset()
     {
-        // Nothing to do
+        // Reset keys
+        for(const auto& rLine : mKeys)
+        {
+            for(const auto& rKey : rLine)
+            {
+                rKey->reset();
+            }
+        }
     }
 
     bool Keyboard::mayConsumeInput()
@@ -193,10 +257,12 @@ namespace eyegui
     void Keyboard::addKey(char16_t character)
     {
         mKeys[mKeys.size()-1].push_back(mpAssetManager->createKey(mpLayout, character));
+        mInitialKeyPositions[mInitialKeyPositions.size()-1].push_back(glm::vec2());
     }
 
     void Keyboard::newLine()
     {
         mKeys.push_back(std::vector<std::unique_ptr<Key> >());
+        mInitialKeyPositions.push_back(std::vector<glm::vec2>());
     }
 }

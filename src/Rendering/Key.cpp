@@ -23,6 +23,8 @@ namespace eyegui
         mX = 0;
         mY = 0;
         mSize = 0;
+        mFocused = false;
+        mFocus.setValue(0);
 
         // Fetch render item for key circle
         mpCirlceRenderItem = mpAssetManager->fetchRenderItem(
@@ -42,6 +44,22 @@ namespace eyegui
         mSize = size;
     }
 
+    void Key::update(float tpf)
+    {
+        mFocus.update(tpf, !mFocused);
+    }
+
+    void Key::reset()
+    {
+        mFocused = false;
+        mFocus.setValue(0);
+    }
+
+    void Key::setFocus(bool focused)
+    {
+        mFocused = focused;
+    }
+
     void Key::drawCircle(glm::vec4 color, float alpha) const
     {
         // Bind and fill render item
@@ -50,6 +68,8 @@ namespace eyegui
         glm::vec4 circleColor = color;
         circleColor.a *= alpha;
         mpCirlceRenderItem->getShader()->fillValue("color", circleColor);
+
+        mpCirlceRenderItem->getShader()->fillValue("focus", mFocus.getValue());
 
         // Transformation matrix
         glm::mat4 circleMatrix = Element::calculateDrawMatrix(

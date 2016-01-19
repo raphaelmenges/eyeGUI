@@ -332,15 +332,17 @@ namespace eyegui
 
         // Uniforms:
         // vec4 color
+        // float focus
         static const char* pKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform float focus = 0;\n"
             "void main() {\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
-            "   fragColor = vec4(color.rgb, color.a * circle);\n" // Composing pixel
+            "   fragColor = vec4(color.rgb + focus * 0.2f, color.a * circle);\n" // Composing pixel
             "}\n";
 
 

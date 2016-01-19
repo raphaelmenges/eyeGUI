@@ -12,6 +12,7 @@
 #include "Font/Font.h"
 #include "Shader.h"
 #include "RenderItem.h"
+#include "LerpValue.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
 namespace eyegui
@@ -34,8 +35,17 @@ namespace eyegui
         // Set position of center and size of key
         virtual void transformAndSize(int x, int y, int size);
 
-        // Draw key
+        // Update
+        virtual void update(float tpf);
+
+        // Draw
         virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const = 0;
+
+        // Reset
+        virtual void reset();
+
+        // Set focus
+        void setFocus(bool focused);
 
         // Get value
         virtual std::u16string getValue() const = 0;
@@ -52,6 +62,8 @@ namespace eyegui
         Layout const * mpLayout;
         AssetManager* mpAssetManager;
         RenderItem const * mpCirlceRenderItem;
+        bool mFocused;
+        LerpValue mFocus;
     };
 
     // Key with character
