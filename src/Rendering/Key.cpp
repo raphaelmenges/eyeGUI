@@ -60,6 +60,11 @@ namespace eyegui
         mFocused = focused;
     }
 
+    glm::vec2 Key::getPosition() const
+    {
+        return glm::vec2(mX, mY);
+    }
+
     void Key::drawCircle(glm::vec4 color, float alpha) const
     {
         // Bind and fill render item

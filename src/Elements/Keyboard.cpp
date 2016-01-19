@@ -114,11 +114,11 @@ namespace eyegui
 
             // Go over keys and search nearest
             float distance = 1000000;
-            for(int i = 0; i < mInitialKeyPositions.size(); i++)
+            for(int i = 0; i < mKeys.size(); i++)
             {
-                for(int j = 0; j < mInitialKeyPositions[i].size(); j++)
+                for(int j = 0; j < mKeys[i].size(); j++)
                 {
-                    float currentDistance = glm::abs(glm::distance(point, mInitialKeyPositions[i][j]));
+                    float currentDistance = glm::abs(glm::distance(point, mKeys[i][j]->getPosition()));
                     if(currentDistance < distance)
                     {
                         distance = currentDistance;
