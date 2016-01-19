@@ -68,72 +68,8 @@ namespace eyegui
 
     private:
 
-        // Inner class for keys
-        class Key
-        {
-        public:
-
-            // Constructor
-            Key(Layout const * pLayout, AssetManager* pAssetManager);
-
-            // Set position of center and size of key
-            virtual void transformAndSize(int x, int y, int size);
-
-            // Draw key
-            virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const = 0;
-
-        protected:
-
-            // Draw circle
-            void drawCircle(glm::vec4 color, float alpha) const;
-
-            // Members
-            int mX;
-            int mY;
-            int mSize;
-            RenderItem const * mpRenderItem;
-            Layout const * mpLayout;
-        };
-
-        // Key with text
-        class TextKey : public Key
-        {
-        public:
-
-            // Constructor
-            TextKey(
-                Layout const * pLayout,
-                AssetManager* pAssetManager,
-                std::u16string content);
-
-            // Set position of center and size of key
-            virtual void transformAndSize(int x, int y, int size);
-
-            // Draw key
-            virtual void draw(glm::vec4 color, glm::vec4 iconColor, float alpha) const;
-
-        private:
-
-            // Members
-            std::u16string mContent;
-            std::unique_ptr<TextFlow> mupTextFlow;
-        };
-
-        // Key with graphics
-        class GraphicsKey : public Key
-        {
-        public:
-
-            // Constructor
-            GraphicsKey(
-                Layout const * pLayout,
-                AssetManager* pAssetManager);
-
-            // TODO: add methods and members
-        };
-
         // Add key to keyboard
-        void addKey(std::u16string content);
+        void addKey(char16_t character);
 
         // Start new line for keyboard
         void newLine();

@@ -28,6 +28,7 @@
 	- lookup in localization file
 	- global "help" mode or just per element?
 - OpenGL state: bound texture not rescued  (neither in texture/font class nor in GLSetup)
+- uniform absolute include pathes
 	
 ### VERSION 1.0
 - Code review!
