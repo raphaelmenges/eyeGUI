@@ -53,8 +53,8 @@ namespace eyegui
         RenderItem* pRenderItem = NULL;
 
         // Fetch shader and mesh
-        Shader* pShader = fetchShader(shader);
-        Mesh* pMesh = fetchMesh(mesh);
+        Shader const * pShader = fetchShader(shader);
+        Mesh const * pMesh = fetchMesh(mesh);
 
         // Search in map for render item
         if (mRenderItems.find(shader) != mRenderItems.end())
@@ -159,7 +159,7 @@ namespace eyegui
         return pTexture;
     }
 
-    Shader* AssetManager::fetchShader(shaders::Type shader)
+    Shader const * AssetManager::fetchShader(shaders::Type shader)
     {
         // Search in map for shader and create if needed
         std::unique_ptr<Shader>& rupShader = mShaders[shader];
@@ -210,7 +210,7 @@ namespace eyegui
         return pShader;
     }
 
-    Mesh* AssetManager::fetchMesh(meshes::Type mesh)
+    Mesh const * AssetManager::fetchMesh(meshes::Type mesh)
     {
         // Search in map for mesh and create if needed
         std::unique_ptr<Mesh>& rupMesh = mMeshes[mesh];

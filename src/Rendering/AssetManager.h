@@ -55,10 +55,10 @@ namespace eyegui
         Texture const * fetchTexture(graphics::Type graphic);
 
         // Fetch shader
-        Shader* fetchShader(shaders::Type shader);
+        Shader const * fetchShader(shaders::Type shader);
 
         // Fetch mesh
-        Mesh* fetchMesh(meshes::Type mesh);
+        Mesh const * fetchMesh(meshes::Type mesh);
 
         // Fetch font
         Font const * fetchFont(std::string filepath);
