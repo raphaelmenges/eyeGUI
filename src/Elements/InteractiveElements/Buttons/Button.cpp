@@ -62,7 +62,7 @@ namespace eyegui
         if (mActive)
         {
             // Inform listener after updating
-            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_HIT);
+            mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_HIT);
 
             // Call context correct method
             if (mIsDown)
@@ -87,7 +87,7 @@ namespace eyegui
             mIsDown = true;
 
             // Inform listener after updating
-            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_DOWN);
+            mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_DOWN);
 
             // Immediately
             if (immediately)
@@ -108,7 +108,7 @@ namespace eyegui
             mIsDown = false;
 
             // Inform listener after updating
-            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_UP);
+            mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_UP);
 
             // Immediately
             if (immediately)
@@ -203,18 +203,18 @@ namespace eyegui
         mThreshold.setValue(0);
     }
 
-    void Button::specialPipeNotification(Notification notification, Layout* pLayout)
+    void Button::specialPipeNotification(NotificationType notification, Layout* pLayout)
     {
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
-        case Notification::BUTTON_HIT:
+        case NotificationType::BUTTON_HIT:
             notifyListener(&ButtonListener::hit, pLayout, getId());
             break;
-        case Notification::BUTTON_DOWN:
+        case NotificationType::BUTTON_DOWN:
             notifyListener(&ButtonListener::down, pLayout, getId());
             break;
-        case Notification::BUTTON_UP:
+        case NotificationType::BUTTON_UP:
             notifyListener(&ButtonListener::up, pLayout, getId());
             break;
         default:

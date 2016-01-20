@@ -25,7 +25,7 @@ namespace eyegui
         // Nothing to do
     }
 
-    void NotificationQueue::enqueue(std::string notifierId, InteractiveElement::Notification notification)
+    void NotificationQueue::enqueue(std::string notifierId, NotificationType notification)
     {
         // Ignore elements without id
         if(notifierId != EMPTY_STRING_ATTRIBUTE)
@@ -62,14 +62,14 @@ namespace eyegui
                     // Listeners of notifications could fill the notifications in this layout again... (just a note)
                     NotificationPair notification = upNotifications->at(i);
 
-                    // Get interactive element by id from layout
-                    InteractiveElement* pInteractiveElement = toInteractiveElement(mpLayout->fetchElement(notification.first));
+                    // Get notifier element pointer by id from layout
+                    NotifierElement* pNotifierElement = toNotifierElement(mpLayout->fetchElement(notification.first));
 
                     // Check for existence
-                    if (pInteractiveElement != NULL)
+                    if (pNotifierElement != NULL)
                     {
                         // Piping takes care that replaced elements do not send notifications
-                        pInteractiveElement->pipeNotification(notification.second, mpLayout);
+                        pNotifierElement->pipeNotification(notification.second, mpLayout);
                     }
                     else
                     {

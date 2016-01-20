@@ -9,7 +9,8 @@
 #ifndef KEYBOARD_H_
 #define KEYBOARD_H_
 
-#include "Element.h"
+#include "NotifierElement.h"
+#include "NotifierTemplate.h"
 #include "externals/GLM/glm/glm.hpp"
 #include "LerpValue.h"
 
@@ -17,20 +18,18 @@
 
 namespace eyegui
 {
-    class Keyboard : public Element
+    class Keyboard : public NotifierElement, public NotifierTemplate<KeyboardListener>
     {
     public:
 
-    // TODO
-    // - Give focus real color and more speed
-    // Make modes, which can be activated / deactivated
-    // Or more like parameters, which can adjust it?
-    // - grow mode
-    // - fast mode
+        // TODO
+        // - Use parameters and not hardcoded values
+        // - Clean up update method
+        // - Everything resolution independend in update method?
+        // - Nicer reset after key pressed
 
-    // Notes
-    // - icon color is used here for font rendering
-
+        // Notes
+        // - icon color is used here for font rendering
 
         // Constructor
         Keyboard(
@@ -66,6 +65,9 @@ namespace eyegui
         // Implemented by subclasses
         virtual bool mayConsumeInput();
 
+        // Filled by subclass and called by layout after updating and before drawing
+        virtual void specialPipeNotification(NotificationType notification, Layout* pLayout);
+
     private:
 
         // Add key to keyboard
@@ -85,6 +87,7 @@ namespace eyegui
         glm::vec2 mFocusPosition;
         glm::vec2 mGazePosition;
         bool mNewFocus;
+        std::u16string mLastPressedKeyValue;
     };
 }
 

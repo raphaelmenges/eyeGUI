@@ -295,6 +295,11 @@ namespace eyegui
         pLayout->registerSensorListener(id, wpListener);
     }
 
+    void registerKeyboardListener(Layout* pLayout, std::string id, std::weak_ptr<KeyboardListener> wpListener)
+    {
+        pLayout->registerKeyboardListener(id, wpListener);
+    }
+
     void replaceElementWithBlock(Layout* pLayout, std::string id, bool consumeInput, bool fade)
     {
         pLayout->replaceElementWithBlock(id, consumeInput, fade);

@@ -24,7 +24,7 @@ namespace eyegui
         float border,
         bool dimming,
         bool adaptiveScaling,
-        std::string iconFilepath) : Element(
+        std::string iconFilepath) : NotifierElement(
             id,
             styleName,
             pParent,
@@ -88,15 +88,6 @@ namespace eyegui
         }
     }
 
-    void InteractiveElement::pipeNotification(Notification notification, Layout* pLayout)
-    {
-        // Only pipe if visible (so fading elements do not notify)
-        if (mAlpha >= 1)
-        {
-            specialPipeNotification(notification, pLayout);
-        }
-    }
-
     InteractiveElement* InteractiveElement::internalNextInteractiveElement(Element const * pCaller)
     {
         return this;
@@ -142,10 +133,10 @@ namespace eyegui
         mpIcon->bind(0);
     }
 
-	void InteractiveElement::specialTransformAndSize()
-	{
-		// Nothing to do, but must be implemented
-	}
+    void InteractiveElement::specialTransformAndSize()
+    {
+        // Nothing to do, but must be implemented
+    }
 
     void InteractiveElement::specialReset()
     {

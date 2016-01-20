@@ -555,6 +555,19 @@ namespace eyegui
         }
     }
 
+    void Layout::registerKeyboardListener(std::string id, std::weak_ptr<KeyboardListener> wpListener)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->registerListener(wpListener);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
     void Layout::selectInteractiveElement(std::string id)
     {
         InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));

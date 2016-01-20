@@ -33,6 +33,33 @@ namespace eyegui
     }
 
     // Tries to cast pointer, returns NULL if fails
+    static NotifierElement* toNotifierElement(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            // Is it interactive element?
+            InteractiveElement* pInteractiveElement = toInteractiveElement(pElement);
+
+            if(pInteractiveElement != NULL)
+            {
+                // Ok, cast interactive to notifier element pointer and return it
+                return static_cast<NotifierElement*>(pInteractiveElement);
+            }
+            else
+            {
+                // Test for other cases
+                Element::Type type = pElement->getType();
+                if(type == Element::Type::NOTIFIER_ELEMENT
+                    || type == Element::Type::KEYBOARD)
+                {
+                    return static_cast<NotifierElement*>(pElement);
+                }
+            }
+        }
+        return NULL;
+    }
+
+    // Tries to cast pointer, returns NULL if fails
     static Button* toButton(Element* pElement)
     {
         if (pElement != NULL)
@@ -77,19 +104,19 @@ namespace eyegui
         return NULL;
     }
 
-	// Tries to cast pointer, returns NULL if fails
-	static Keyboard* toKeyboard(Element* pElement)
-	{
-		if (pElement != NULL)
-		{
-			Element::Type type = pElement->getType();
-			if (type == Element::Type::KEYBOARD)
-			{
-				return static_cast<Keyboard*>(pElement);
-			}
-		}
-		return NULL;
-	}
+    // Tries to cast pointer, returns NULL if fails
+    static Keyboard* toKeyboard(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            Element::Type type = pElement->getType();
+            if (type == Element::Type::KEYBOARD)
+            {
+                return static_cast<Keyboard*>(pElement);
+            }
+        }
+        return NULL;
+    }
 }
 
 #endif // ELEMENT_CASTING_H_

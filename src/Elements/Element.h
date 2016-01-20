@@ -48,6 +48,7 @@ namespace eyegui
             ELEMENT,
             PICTURE,
             BLANK,
+            NOTIFIER_ELEMENT,
             INTERACTIVE_ELEMENT,
             SENSOR,
             BUTTON,

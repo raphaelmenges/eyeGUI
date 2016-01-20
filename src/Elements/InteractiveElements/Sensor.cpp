@@ -86,7 +86,7 @@ namespace eyegui
         // Inform listener after updating when penetrated
         if (mPenetration.getValue() > 0)
         {
-            mpNotificationQueue->enqueue(getId(), Notification::SENSOR_PENETRATED);
+            mpNotificationQueue->enqueue(getId(), NotificationType::SENSOR_PENETRATED);
         }
 
         return 0;
@@ -123,12 +123,12 @@ namespace eyegui
         penetrate(mpLayout->getConfig()->sensorInteractionPenetrationAmount);
     }
 
-    void Sensor::specialPipeNotification(Notification notification, Layout* pLayout)
+    void Sensor::specialPipeNotification(NotificationType notification, Layout* pLayout)
     {
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
-        case Notification::SENSOR_PENETRATED:
+        case NotificationType::SENSOR_PENETRATED:
             notifyListener(&SensorListener::penetrated, pLayout, getId(), mPenetration.getValue());
             break;
         default:

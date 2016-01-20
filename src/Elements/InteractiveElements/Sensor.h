@@ -11,7 +11,6 @@
 #define SENSOR_H_
 
 #include "InteractiveElement.h"
-#include "Elements/NotifierTemplate.h"
 
 namespace eyegui
 {
@@ -55,7 +54,7 @@ namespace eyegui
         virtual void specialInteract();
 
         // Filled by subclass and called by layout after updating and before drawing
-        virtual void specialPipeNotification(Notification notification, Layout* pLayout);
+        virtual void specialPipeNotification(NotificationType notification, Layout* pLayout);
 
     private:
 

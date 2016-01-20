@@ -7,6 +7,9 @@
 
 #include "Keyboard.h"
 
+#include "NotificationQueue.h"
+#include "OperationNotifier.h"
+
 // TODO: Testing
 #include <iostream>
 
@@ -23,7 +26,7 @@ namespace eyegui
         float relativeScale,
         float border,
         bool dimming,
-        bool adaptiveScaling) : Element(
+        bool adaptiveScaling) : NotifierElement(
             id,
             styleName,
             pParent,
@@ -161,7 +164,7 @@ namespace eyegui
 
         // Use gaze delta as weight (is one if low delta in gaze)
         float gazeDelta = glm::abs(glm::distance(newGazePosition, mGazePosition)); // In pixels!
-        float gazeDeltaWeight = 1.f - clamp(gazeDelta / (3 * mInitialKeySize), 0, 1); // Key size used for normalization
+        float gazeDeltaWeight = 1.f - clamp(gazeDelta / (2 * mInitialKeySize), 0, 1); // Key size used for normalization
 
         // *** CHECK FOR PENETRATION ***
 
@@ -171,7 +174,7 @@ namespace eyegui
         // Threshold (used to determine key selection)
         if(penetrated)
         {
-            mThreshold.update(tpf * 3.f * (gazeDeltaWeight - 0.8f));
+            mThreshold.update(tpf * 4.f * (gazeDeltaWeight - 0.8f));
         }
         else
         {
@@ -225,7 +228,7 @@ namespace eyegui
         }
 
         // *** UPDATE KEY POSITIONS ***
-        bool keyHit = false;
+        bool keyPressed = false;
 
         // Update keys (they have to be transformed and sized each update)
         for(int i = 0; i < mKeys.size(); i++)
@@ -263,7 +266,7 @@ namespace eyegui
                 // Updating
                 mKeys[i][j]->update(tpf);
 
-                // Check for "key hit"
+                // Check for "key pressed"
                 if(mThreshold.getValue() >= 1.f && mKeys[i][j]->isFocused())
                 {
                     // Check, whether gaze is really on focused key
@@ -274,14 +277,18 @@ namespace eyegui
                                 mGazePosition))
                         < keySize / 2)
                     {
+                        // Save value in member to have it when notification queue calls the pipe method
+                        mLastPressedKeyValue = mKeys[i][j]->getValue();
+                        keyPressed = true;
 
-                        keyHit = true;
+                        // Inform listener after updating
+                        mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
                     }
                 }
             }
         }
 
-        if(keyHit)
+        if(keyPressed)
         {
             mThreshold.setValue(0);
         }
@@ -401,6 +408,22 @@ namespace eyegui
     bool Keyboard::mayConsumeInput()
     {
         return true;
+    }
+
+    void Keyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
+    {
+        // Pipe notifications to notifier template including own data
+        switch (notification)
+        {
+        case NotificationType::KEYBOARD_KEY_PRESSED:
+            notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), mLastPressedKeyValue);
+            break;
+        default:
+            throwWarning(
+                OperationNotifier::Operation::BUG,
+                "Keyboard got notification which is not thought for it.");
+            break;
+        }
     }
 
     void Keyboard::addKey(char16_t character)

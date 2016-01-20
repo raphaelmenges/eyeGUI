@@ -16,6 +16,7 @@
 #include "Elements/Blocks/Container/Grid.h"
 #include "Elements/Blocks/Container/Stack.h"
 #include "Elements/Blocks/TextBlock.h"
+#include "Elements/NotifierElement.h"
 #include "Elements/InteractiveElements/InteractiveElement.h"
 #include "Elements/InteractiveElements/Buttons/CircleButton.h"
 #include "Elements/InteractiveElements/Buttons/BoxButton.h"

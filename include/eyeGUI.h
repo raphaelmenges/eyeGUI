@@ -70,7 +70,7 @@ namespace eyegui
         ButtonListener();
 
         //! Destructor.
-        virtual ~ButtonListener();
+        virtual ~ButtonListener() = 0;
 
         //! Callback for hitting of button.
         /*!
@@ -103,7 +103,7 @@ namespace eyegui
         SensorListener();
 
         //! Destructor.
-        virtual ~SensorListener();
+        virtual ~SensorListener() = 0;
 
         //! Callback for penetration of sensor.
         /*!
@@ -112,6 +112,26 @@ namespace eyegui
           \param amount is the value of penetration at time of callback.
         */
         void virtual penetrated(Layout* pLayout, std::string id, float amount) = 0;
+    };
+
+    //! Abstract listener class for keyboards.
+    class KeyboardListener
+    {
+    public:
+
+        //! Constructor.
+        KeyboardListener();
+
+        //! Destructor.
+        virtual ~KeyboardListener() = 0;
+
+        //! Callback for pressing keys of keyboard.
+        /*!
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the keyboard which causes the callback.
+          \param value is the u16string given by pressed key.
+        */
+        void virtual keyPressed(Layout* pLayout, std::string id, std::u16string value) = 0;
     };
 
     //! Struct for relative values of position and size
@@ -566,6 +586,17 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::weak_ptr<SensorListener> wpListener);
+
+    //! Register listener to keyboard.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param wpListener is weak pointer to listener that should be registered.
+    */
+    void registerKeyboardListener(
+        Layout* pLayout,
+        std::string id,
+        std::weak_ptr<KeyboardListener> wpListener);
 
     //! Replace element with block.
     /*!

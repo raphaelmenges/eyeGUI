@@ -21,7 +21,7 @@ namespace eyegui
     class Layout;
 
     // Typedefs
-    typedef std::pair<std::string, InteractiveElement::Notification> NotificationPair;
+    typedef std::pair<std::string, NotificationType> NotificationPair;
     typedef std::vector<NotificationPair> NotificationVector;
 
     class NotificationQueue
@@ -35,7 +35,7 @@ namespace eyegui
         virtual ~NotificationQueue();
 
         // Enqueue notification which is processed before next updating of layout
-        void enqueue(std::string notifierId, InteractiveElement::Notification notification);
+        void enqueue(std::string notifierId, NotificationType notification);
 
         // Process notifications
         void process();
