@@ -73,11 +73,11 @@ namespace eyegui
                     }
                     else
                     {
-                        throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find interactive element with id: " + notification.first);
+                        throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find notifier element with id: " + notification.first);
                     }
                 }
 
-                // count loops
+                // Count loops
                 loopCount++;
             }
         }

@@ -10,7 +10,7 @@
 #ifndef NOTIFICATION_QUEUE_H_
 #define NOTIFICATION_QUEUE_H_
 
-#include "Elements/InteractiveElements/InteractiveElement.h"
+#include "Elements/NotifierElement.h"
 
 #include <memory>
 #include <vector>
