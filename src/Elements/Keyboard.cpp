@@ -56,7 +56,49 @@ namespace eyegui
         newLine();
 
         // Add keys
-        addKey(u'Q');
+        addKey(u'q');
+        addKey(u'w');
+        addKey(u'e');
+        addKey(u'r');
+        addKey(u't');
+        addKey(u'z');
+        addKey(u'u');
+        addKey(u'i');
+        addKey(u'o');
+        addKey(u'p');
+        addKey(u'\u00fc');
+        addKey(u'+');
+
+        newLine();
+
+        addKey(u'a');
+        addKey(u's');
+        addKey(u'd');
+        addKey(u'f');
+        addKey(u'g');
+        addKey(u'h');
+        addKey(u'j');
+        addKey(u'k');
+        addKey(u'l');
+        addKey(u'\u00f6');
+        addKey(u'\u00e4');
+
+        newLine();
+
+        addKey(u'<');
+        addKey(u'y');
+        addKey(u'x');
+        addKey(u'c');
+        addKey(u'v');
+        addKey(u'b');
+        addKey(u'n');
+        addKey(u'm');
+        addKey(u'.');
+        addKey(u'-');
+        addKey(u'/');
+        addKey(u'#');
+
+        /*addKey(u'Q');
         addKey(u'W');
         addKey(u'E');
         addKey(u'R');
@@ -96,7 +138,7 @@ namespace eyegui
         addKey(u';');
         addKey(u':');
         addKey(u'_');
-        addKey(u'#');
+        addKey(u'#'); */
     }
 
     Keyboard::~Keyboard()
