@@ -5,7 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Queue for notifications sent by elements. Should be member of a layout
-// and handling all notifications of its elements.
+// and handling all notifications of its notifier elements.
 
 #ifndef NOTIFICATION_QUEUE_H_
 #define NOTIFICATION_QUEUE_H_

@@ -4,10 +4,10 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Element, that is able to pipe notifications. Is not subclass of notifier
-// template, but is common subclass of those classes. Subclasses of the notifier
-// template must use their listener classes as parameter, what is not possible
-// in this abstract superclass.
+// Abstract superclass for elements, that are able to pipe notifications. Is
+// itself not subclass of notifier template, but is common superclass of those
+// classes. Subclasses of the notifier template must use their specific listener
+// classes as parameter.
 
 #ifndef NOTIFIER_ELEMENT_H_
 #define NOTIFIER_ELEMENT_H_
