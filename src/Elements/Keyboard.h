@@ -83,6 +83,7 @@ namespace eyegui
         int mFocusedKeyRow;
         int mFocusedKeyColumn;
         glm::vec2 mFocusPosition;
+        glm::vec2 mGazePosition;
         bool mNewFocus;
     };
 }

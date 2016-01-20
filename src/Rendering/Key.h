@@ -54,6 +54,9 @@ namespace eyegui
         // Set focus
         void setFocus(bool focused);
 
+        // Get focus
+        bool isFocused() const;
+
         // Get position on GUI
         glm::vec2 getPosition() const;
 

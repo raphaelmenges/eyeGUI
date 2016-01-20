@@ -68,6 +68,11 @@ namespace eyegui
         mFocused = focused;
     }
 
+    bool Key::isFocused() const
+    {
+        return mFocused;
+    }
+
     glm::vec2 Key::getPosition() const
     {
         return glm::vec2(mX, mY);
