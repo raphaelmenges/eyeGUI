@@ -22,20 +22,14 @@ namespace eyegui
     public:
 
     // TODO
-    // - Redo update method. Think a little bit about it
-    //  - Where to use initial position and where current position
-    //  -
-
     // - Give focus real color and more speed
     // Make modes, which can be activated / deactivated
     // Or more like parameters, which can adjust it?
     // - grow mode
     // - fast mode
-    // Cut shaders of keys at border of element
-    // Threshold for focus?
 
     // Notes
-    // - icon color is used here for font too
+    // - icon color is used here for font rendering
 
 
         // Constructor
@@ -86,10 +80,10 @@ namespace eyegui
         std::vector<std::vector<glm::vec2> > mInitialKeyPositions;
         float mInitialKeySize;
         LerpValue mThreshold;
-        Key* mpFocusedKey;
         int mFocusedKeyRow;
         int mFocusedKeyColumn;
-        glm::vec2 mGrowOffset;
+        glm::vec2 mFocusPosition;
+        bool mNewFocus;
     };
 }
 

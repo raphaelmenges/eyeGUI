@@ -1,16 +1,19 @@
-### VERSION 0.8
+### VERSION 0.8 (Keyboard can be used to see in urls for the browser prototype)
+- Keyboard listener
 - Problem: Font nearest or linear filtering (one is good for textflow, the other for keyboard...)
-- TextInput
-	- Wiki entry... (extra page or in elements? -> both)
+- Rendering issues caused by font atlas
+- Wiki entry... (extra page or in elements? -> both)
+
+### VERSION 0.9
+- Advanced TextInput
   - Keyboard and "Guesser" (tries to guess what you want to write)
   - Both are indepenend
   - Should support unicode...
   - Differet speeds
     - Letters get bigger and after threshold: selection
     - Only last letter focused for longer time
-	- Use discard in shader instead of stencil buffer, because much overhead to setting up and restoring
 
-### VERSION 0.9
+### VERSION 0.10
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 

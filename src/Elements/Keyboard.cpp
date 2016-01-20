@@ -41,10 +41,10 @@ namespace eyegui
         // Initialize members
         mInitialKeySize = 0;
         mThreshold.setValue(0);
-        mpFocusedKey = NULL;
-        mFocusedKeyRow = 0;
-        mFocusedKeyColumn = 0;
-        mGrowOffset = glm::vec2(0,0);
+        mFocusedKeyRow = -1;
+        mFocusedKeyColumn = -1;
+        mFocusPosition = glm::vec2(0,0);
+        mNewFocus = true;
 
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
@@ -105,35 +105,36 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
-        // TODO REDO whole method!!!
+        // User's gaze
+        glm::vec2 gazePoint = glm::vec2(pInput->gazeX, pInput->gazeY);
 
         // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
 
         // Keyboard threshold
-        mThreshold.update(tpf, !penetrated);
+        mThreshold.update(0.5f * tpf, !penetrated);
 
         // Determine focused key
-        if(penetrated)
+        if(!penetrated)
         {
-            // User's gaze
-            glm::vec2 point = glm::vec2(pInput->gazeX, pInput->gazeY);
-
+            // Gaze now more in element
+            mNewFocus = true;
+        }
+        else
+        {
             // Go over keys and search nearest
-            float distance = 1000000;
-            Key* pNewFocusedKey = NULL;
-            int newFocusedKeyRow = 0;
-            int newFocusedKeyColumn = 0;
+            float minDistance = 1000000;
+            int newFocusedKeyRow = -1;
+            int newFocusedKeyColumn = -1;
             for(int i = 0; i < mKeys.size(); i++)
             {
                 for(int j = 0; j < mKeys[i].size(); j++)
                 {
                     // Use position in keys to get position after last update
-                    float currentDistance = glm::abs(glm::distance(point, mKeys[i][j]->getPosition()));
-                    if(currentDistance < distance)
+                    float currentDistance = glm::abs(glm::distance(gazePoint, mKeys[i][j]->getPosition()));
+                    if(currentDistance < minDistance)
                     {
-                        distance = currentDistance;
-                        pNewFocusedKey = mKeys[i][j].get();
+                        minDistance = currentDistance;
                         newFocusedKeyRow = i;
                         newFocusedKeyColumn = j;
                     }
@@ -141,16 +142,34 @@ namespace eyegui
             }
 
             // Set focus if necessary
-            if(pNewFocusedKey != mpFocusedKey)
+            if(newFocusedKeyRow != mFocusedKeyRow || newFocusedKeyColumn != mFocusedKeyColumn)
             {
-                if(mpFocusedKey != NULL)
+                // Unset old focus
+                if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
                 {
-                    mpFocusedKey->setFocus(false);
+                    mKeys[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
                 }
-                mpFocusedKey = pNewFocusedKey;
-                mpFocusedKey->setFocus(true);
+
+                // Set new focus
                 mFocusedKeyRow = newFocusedKeyRow;
                 mFocusedKeyColumn = newFocusedKeyColumn;
+                mKeys[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
+            }
+        }
+
+        // Update focus position
+        if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
+        {
+            if(mNewFocus)
+            {
+                // Set focus position directly
+                mFocusPosition = mInitialKeyPositions[mFocusedKeyRow][mFocusedKeyColumn];
+                mNewFocus = false;
+            }
+            else
+            {
+                // Move focus position to focused key
+                mFocusPosition += tpf * (mInitialKeyPositions[mFocusedKeyRow][mFocusedKeyColumn] - mFocusPosition);
             }
         }
 
@@ -159,21 +178,34 @@ namespace eyegui
         {
             for(int j = 0; j < mKeys[i].size(); j++)
             {
-                // TODO: do the magic here
-                if(mpFocusedKey != NULL)
-                {
-                   glm::vec2 newGrowOffset = mInitialKeyPositions[i][j] - mInitialKeyPositions[mFocusedKeyRow][mFocusedKeyColumn];
-                   mGrowOffset +=  0.01f * tpf * (newGrowOffset - mGrowOffset);
-                }
+                // Get delta between focused node and this node
+                glm::vec2 positionDelta = mInitialKeyPositions[i][j] - mFocusPosition;
+
+                // Make delta depenend on itself
+                float positionDeltaWeight = glm::length(positionDelta) / (5 * mInitialKeySize); // Key size used for normalization
+                positionDeltaWeight = 1.f - clamp(positionDeltaWeight, 0, 1);
+
+                // Only near keys have to be moved
+                positionDelta *= positionDeltaWeight;
+
+                // Calculate delta of size
+                float sizeDelta = mInitialKeySize - glm::length(mKeys[i][j]->getPosition() - gazePoint);
+                sizeDelta = std::max(-mInitialKeySize / 2, sizeDelta);
+
+                // Weight with threshold
+                positionDelta *= mThreshold.getValue();
+                sizeDelta *= mThreshold.getValue();
 
                 // Transform and size
                 mKeys[i][j]->transformAndSize(
-                    mInitialKeyPositions[i][j].x + mGrowOffset.x * mThreshold.getValue(),
-                    mInitialKeyPositions[i][j].y + mGrowOffset.y * mThreshold.getValue(),
-                    mInitialKeySize);
+                    mInitialKeyPositions[i][j].x + positionDelta.x,
+                    mInitialKeyPositions[i][j].y + positionDelta.y,
+                    mInitialKeySize + sizeDelta);
 
                 // Updating
                 mKeys[i][j]->update(tpf);
+
+                // TODO: react when size is over certain threshold?
             }
         }
 
@@ -263,10 +295,10 @@ namespace eyegui
     void Keyboard::specialReset()
     {
         mThreshold.setValue(0);
-        mpFocusedKey = NULL;
-        mFocusedKeyRow = 0;
-        mFocusedKeyColumn = 0;
-        mGrowOffset = glm::vec2(0,0);
+        mFocusedKeyRow = -1;
+        mFocusedKeyColumn = -1;
+        mFocusPosition = glm::vec2(0,0);
+        mNewFocus = true;
 
         // Reset keys
         for(const auto& rLine : mKeys)
