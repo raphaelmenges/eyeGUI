@@ -5,6 +5,7 @@
 - Wiki entry... (extra page or in elements? -> both)
 
 ### VERSION 0.9
+- No more working in combination with glew? (internal test with tutorial project)
 - Advanced TextInput
   - Keyboard and "Guesser" (tries to guess what you want to write)
   - Both are indepenend
