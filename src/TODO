@@ -1,5 +1,4 @@
 ### VERSION 0.8 (Keyboard can be used to see in urls for the browser prototype)
-- BUG: UTF-8 in textblock and new line symbol do not work
 - Warning when one uses umlaute in textflow, coming from keyboard
 - Problem: Font nearest or linear filtering (one is good for textflow, the other for keyboard...)
 - Rendering issues caused by font atlas

@@ -110,10 +110,10 @@ namespace eyegui
             {
                 upElement = std::move(parseDropButton(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
             }
-			else if (value == "keyboard")
-			{
-				upElement = std::move(parseKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
-			}
+            else if (value == "keyboard")
+            {
+                upElement = std::move(parseKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown element found: " + std::string(xmlElement->Value()), filepath);
@@ -481,6 +481,11 @@ namespace eyegui
 
             // Get content
             std::string contentValue = parseStringAttribute("content", xmlTextBlock);
+
+            // Xml parser replaces new lines with visible "\n"
+            replaceString(contentValue, "\\n", "\n");
+
+            // Convert to utf-16 string
             std::u16string content;
             utf8::utf8to16(contentValue.begin(), contentValue.end(), back_inserter(content));
 
@@ -569,12 +574,12 @@ namespace eyegui
             return (std::move(upDropButton));
         }
 
-		std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
-		{
-			// Create and return keyboard
-			std::unique_ptr<Keyboard> upKeyboard = std::unique_ptr<Keyboard>(new Keyboard(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling));
-			return (std::move(upKeyboard));
-		}
+        std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
+        {
+            // Create and return keyboard
+            std::unique_ptr<Keyboard> upKeyboard = std::unique_ptr<Keyboard>(new Keyboard(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling));
+            return (std::move(upKeyboard));
+        }
 
         bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& expectedValue)
         {
