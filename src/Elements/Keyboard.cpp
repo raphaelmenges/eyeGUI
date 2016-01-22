@@ -238,17 +238,18 @@ namespace eyegui
                 // Get delta between position of initial key position and gaze position
                 glm::vec2 positionDelta = mInitialKeyPositions[i][j] - mGazePosition;
 
-                // Make delta depenend on itself
-                float positionDeltaWeight = glm::length(positionDelta) / (5 * mInitialKeySize); // Key size used for normalization
-                positionDeltaWeight = 1.f - clamp(positionDeltaWeight, 0, 1);
+                // Radius of focus
+                float focusWeight = glm::length(positionDelta) / (5 * mInitialKeySize); // Key size used for normalization
+                focusWeight = clamp(focusWeight, 0, 1);
 
                 // Only near keys have to be moved
-                positionDelta *= positionDeltaWeight;
+                positionDelta *= 1.f - focusWeight;
                 positionDelta *= 0.25f;
 
                 // Calculate delta of size
                 float sizeDelta = mInitialKeySize - glm::length(mKeys[i][j]->getPosition() - mGazePosition);
-                sizeDelta = std::max(-0.25f * mInitialKeySize, sizeDelta); // Subtracted from initial size
+                sizeDelta = focusWeight + sizeDelta * (1.f - focusWeight);
+                sizeDelta = std::max(-0.3f * mInitialKeySize, sizeDelta); // Subtracted from initial size
                 sizeDelta *= 0.75f;
 
                 // Weight with threshold
