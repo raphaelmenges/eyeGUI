@@ -199,8 +199,8 @@ namespace eyegui
                 mpLayout,
                 mX - (quadSize.x/2),
                 mY - (quadSize.y/2),
-                quadSize.x,
-                quadSize.y);
+                (int)quadSize.x,
+                (int)quadSize.y);
 
         // Set texture coordinates of quad
         GLint oldBuffer;

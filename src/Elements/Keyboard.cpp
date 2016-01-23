@@ -257,9 +257,9 @@ namespace eyegui
                 sizeDelta *= mThreshold.getValue();
 
                 // Calc stuff for key
-                int keyPositionX = mInitialKeyPositions[i][j].x + positionDelta.x;
-                int keyPositionY = mInitialKeyPositions[i][j].y + positionDelta.y;
-                int keySize = mInitialKeySize + sizeDelta;
+                int keyPositionX = (int)(mInitialKeyPositions[i][j].x + positionDelta.x);
+                int keyPositionY = (int)(mInitialKeyPositions[i][j].y + positionDelta.y);
+                int keySize = (int)(mInitialKeySize + sizeDelta);
 
                 // Transform and size
                 mKeys[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
@@ -341,7 +341,7 @@ namespace eyegui
         int maxCountInLine = -1;
         for(const auto& rLine : mKeys)
         {
-            int countInLine = rLine.size();
+            int countInLine = (int)rLine.size();
             if(countInLine > maxCountInLine)
             {
                 maxCountInLine = countInLine;
@@ -351,24 +351,24 @@ namespace eyegui
         // Calculate size of keys
         int keySize;
         int maxHorizontalKeySize = (mWidth / maxCountInLine);
-        maxHorizontalKeySize -= maxHorizontalKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE; // Substract distance
-        int maxVerticalKeySize = mHeight / mKeys.size();
+        maxHorizontalKeySize -= (int)(maxHorizontalKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE); // Substract distance
+        int maxVerticalKeySize = (int)(mHeight / mKeys.size());
         keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
         int halfKeySize = keySize / 2;
 
         // Calculate offset to center
         int xCenterOffset, yCenterOffset;
-        xCenterOffset = (mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2;
-        yCenterOffset = (mHeight - (mKeys.size() * keySize)) / 2;
+        xCenterOffset = (int)((mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2.f);
+        yCenterOffset = (int)((mHeight - (mKeys.size() * keySize)) / 2.f);
 
         // Save initial key positions
         for(int i = 0; i < mKeys.size(); i++) // Go over lines
         {
             // Count of keys in current row
-            int keyCount = mKeys[i].size();
+            int keyCount = (int)mKeys[i].size();
 
             // Decide, whether keys are shifted in that line
-            int xOffset = halfKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE;
+            int xOffset = (int)(halfKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
             if((keyCount - maxCountInLine) % 2 != 0)
             {
                 // Add shift
@@ -380,11 +380,11 @@ namespace eyegui
                     mX + xCenterOffset + halfKeySize + (j * keySize) + xOffset,
                     mY + yCenterOffset + halfKeySize + (i * keySize));
 
-                xOffset += keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE;
+                xOffset += (int)(keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
             }
         }
 
-        mInitialKeySize = keySize;
+        mInitialKeySize = (float)keySize;
     }
 
     void Keyboard::specialReset()
