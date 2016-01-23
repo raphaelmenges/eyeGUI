@@ -23,10 +23,12 @@ namespace eyegui
     public:
 
         // TODO
-        // - Use parameters and not hardcoded values
+		// - Animate pressed key more (fly in direction of user)
+        // - Use parameters and not hardcoded values (durations, not multiplier)
         // - Clean up update method
         // - Everything resolution independend in update method?
         // - Nicer reset after key pressed
+		// - gaze ist after start at 0,0
 
         // Notes
         // - icon color is used here for font rendering
@@ -86,8 +88,8 @@ namespace eyegui
         int mFocusedKeyColumn;
         glm::vec2 mFocusPosition;
         glm::vec2 mGazePosition;
-        bool mNewFocus;
         std::u16string mLastPressedKeyValue;
+		bool mKeyWasPressed;
     };
 }
 

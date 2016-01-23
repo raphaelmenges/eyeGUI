@@ -48,7 +48,7 @@ namespace eyegui
         mFocusedKeyColumn = -1;
         mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
-        mNewFocus = true;
+		mKeyWasPressed = false;
 
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
@@ -59,6 +59,20 @@ namespace eyegui
         newLine();
 
         // Add keys
+		addKey(u'1');
+		addKey(u'2');
+		addKey(u'3');
+		addKey(u'4');
+		addKey(u'5');
+		addKey(u'6');
+		addKey(u'7');
+		addKey(u'8');
+		addKey(u'9');
+		addKey(u'0');
+		addKey(u'#');
+
+		newLine();
+
         addKey(u'q');
         addKey(u'w');
         addKey(u'e');
@@ -153,14 +167,7 @@ namespace eyegui
     {
         // *** FILTER USER'S GAZE ***
         glm::vec2 newGazePosition = glm::vec2(pInput->gazeX, pInput->gazeY);
-        if(mNewFocus)
-        {
-            mGazePosition = newGazePosition;
-        }
-        else
-        {
-            mGazePosition += std::min(1.f, 5.f * tpf) * (newGazePosition - mGazePosition);
-        }
+		mGazePosition += std::min(1.f, 5.f * tpf) * (newGazePosition - mGazePosition);
 
         // Use gaze delta as weight (is one if low delta in gaze)
         float gazeDelta = glm::abs(glm::distance(newGazePosition, mGazePosition)); // In pixels!
@@ -171,14 +178,23 @@ namespace eyegui
         // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
 
-        // Threshold (used to determine key selection)
-        if(penetrated)
-        {
-            mThreshold.update(tpf * 4.f * (gazeDeltaWeight - 0.8f));
-        }
+        // Threshold (used to determine key pressing)
+		if (mKeyWasPressed)
+		{
+			mThreshold.update(-6.0f * tpf);
+
+			if (mThreshold.getValue() <= 0)
+			{
+				mKeyWasPressed = false;
+			}
+		}
+		else if (penetrated)
+		{
+			mThreshold.update(tpf * 6.0f * (gazeDeltaWeight - 0.8f));
+		}
         else
         {
-            mThreshold.update(-2.0f * tpf);
+			mThreshold.update(-1.0f * tpf);
         }
 
         // *** DETERMINE FOCUSED KEY ***
@@ -228,7 +244,6 @@ namespace eyegui
         }
 
         // *** UPDATE KEY POSITIONS ***
-        bool keyPressed = false;
 
         // Update keys (they have to be transformed and sized each update)
         for(int i = 0; i < mKeys.size(); i++)
@@ -239,26 +254,33 @@ namespace eyegui
                 glm::vec2 positionDelta = mInitialKeyPositions[i][j] - mGazePosition;
 
                 // Radius of focus
-                float focusWeight = glm::length(positionDelta) / (5 * mInitialKeySize); // Key size used for normalization
+                float focusWeight = 1.f - glm::length(positionDelta) / (3 * mInitialKeySize); // Key size used for normalization
                 focusWeight = clamp(focusWeight, 0, 1);
 
                 // Only near keys have to be moved
-                positionDelta *= 1.f - focusWeight;
+                positionDelta *= focusWeight;
                 positionDelta *= 0.25f;
 
                 // Calculate delta of size
                 float sizeDelta = mInitialKeySize - glm::length(mKeys[i][j]->getPosition() - mGazePosition);
-                sizeDelta = focusWeight + sizeDelta * (1.f - focusWeight);
+                sizeDelta = (1.f - focusWeight) + sizeDelta * focusWeight;
                 sizeDelta = std::max(-0.3f * mInitialKeySize, sizeDelta); // Subtracted from initial size
                 sizeDelta *= 0.75f;
+
+				// Use delta to center as well (strange because uses final size delta...)
+				glm::vec2 centerDelta = glm::vec2(mX + (mWidth / 2), mY + (mHeight / 2)) - mFocusPosition;
+				centerDelta /= glm::length(glm::vec2(mWidth, mHeight)) / 2;
+				centerDelta *= focusWeight * mInitialKeySize;
+				centerDelta *= 0.5f;
 
                 // Weight with threshold
                 positionDelta *= mThreshold.getValue();
                 sizeDelta *= mThreshold.getValue();
+				centerDelta *= mThreshold.getValue();
 
                 // Calc stuff for key
-                int keyPositionX = (int)(mInitialKeyPositions[i][j].x + positionDelta.x);
-                int keyPositionY = (int)(mInitialKeyPositions[i][j].y + positionDelta.y);
+                int keyPositionX = (int)(mInitialKeyPositions[i][j].x + positionDelta.x + centerDelta.x);
+                int keyPositionY = (int)(mInitialKeyPositions[i][j].y + positionDelta.y + centerDelta.y);
                 int keySize = (int)(mInitialKeySize + sizeDelta);
 
                 // Transform and size
@@ -268,7 +290,7 @@ namespace eyegui
                 mKeys[i][j]->update(tpf);
 
                 // Check for "key pressed"
-                if(mThreshold.getValue() >= 1.f && mKeys[i][j]->isFocused())
+                if(!mKeyWasPressed && mThreshold.getValue() >= 1.f && mKeys[i][j]->isFocused())
                 {
                     // Check, whether gaze is really on focused key
                     if(
@@ -280,28 +302,13 @@ namespace eyegui
                     {
                         // Save value in member to have it when notification queue calls the pipe method
                         mLastPressedKeyValue = mKeys[i][j]->getValue();
-                        keyPressed = true;
+						mKeyWasPressed = true;
 
                         // Inform listener after updating
                         mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
                     }
                 }
             }
-        }
-
-        if(keyPressed)
-        {
-            mThreshold.setValue(0);
-        }
-
-        // Check, whether next update will be a new focus
-        if(penetrated)
-        {
-            mNewFocus = false;
-        }
-        else
-        {
-            mNewFocus = true;
         }
 
         return 0;
@@ -394,7 +401,7 @@ namespace eyegui
         mFocusedKeyColumn = -1;
         mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
-        mNewFocus = true;
+		mKeyWasPressed = false;
 
         // Reset keys
         for(const auto& rLine : mKeys)

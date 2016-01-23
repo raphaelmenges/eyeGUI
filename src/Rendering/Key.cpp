@@ -197,8 +197,8 @@ namespace eyegui
         glm::vec2 quadSize =  sizeMultiplier * (float)mSize * KEY_CIRCLE_CHARACTER_SIZE_RATIO;
         mQuadMatrix = Element::calculateDrawMatrix(
                 mpLayout,
-                mX - (quadSize.x/2),
-                mY - (quadSize.y/2),
+                mX - (int)(quadSize.x/2),
+                mY - (int)(quadSize.y/2),
                 (int)quadSize.x,
                 (int)quadSize.y);
 
