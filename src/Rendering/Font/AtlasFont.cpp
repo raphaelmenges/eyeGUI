@@ -106,20 +106,36 @@ namespace eyegui
         }
     }
 
-    GLuint AtlasFont::getAtlasTextureHandle(FontSize fontSize) const
+    void AtlasFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering) const
     {
+		// Choose slot
+		glActiveTexture(GL_TEXTURE0 + slot);
+
+		// Bind atlas texture
         switch (fontSize)
         {
         case FontSize::TALL:
-            return mTallTexture;
+			glBindTexture(GL_TEXTURE_2D, mTallTexture);
             break;
         case FontSize::MEDIUM:
-            return mMediumTexture;
+			glBindTexture(GL_TEXTURE_2D, mMediumTexture);
             break;
         case FontSize::SMALL:
-            return mSmallTexture;
+			glBindTexture(GL_TEXTURE_2D, mSmallTexture);
             break;
         }
+
+		// Set sampling
+		if (linearFiltering)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+		else
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
     }
 
     Glyph const * AtlasFont::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
@@ -320,12 +336,10 @@ namespace eyegui
         glGetIntegerv(GL_UNPACK_ALIGNMENT, &oldUnpackAlignment);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        // Initialize texture for atlas
+        // Initialize texture for atlas (filtering set at texture binding)
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         std::vector<GLubyte> emptyData(xResolution * yResolution, 0);
         glTexImage2D(

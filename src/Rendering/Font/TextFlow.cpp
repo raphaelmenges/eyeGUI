@@ -67,9 +67,6 @@ namespace eyegui
         // Restore old settings
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
         glBindVertexArray(oldVAO);
-
-        // Get handle of atlas texture
-        mAtlasTextureHandle = mpFont->getAtlasTextureHandle(mFontSize);
     }
 
     TextFlow::~TextFlow()
@@ -132,7 +129,7 @@ namespace eyegui
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
 
         // Bind atlas texture
-        glBindTexture(GL_TEXTURE_2D, mAtlasTextureHandle);
+		mpFont->bindAtlasTexture(mFontSize);
 
         // Fill uniforms
         mpShader->fillValue("matrix", matrix);

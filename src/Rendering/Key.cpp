@@ -240,7 +240,7 @@ namespace eyegui
         glBindVertexArray(mQuadVertexArrayObject);
 
         // Bind atlas texture
-        glBindTexture(GL_TEXTURE_2D, mpFont->getAtlasTextureHandle(FontSize::TALL));
+		mpFont->bindAtlasTexture(FontSize::TALL, 0, true);
 
         // Fill color
         glm::vec4 characterColor = iconColor;

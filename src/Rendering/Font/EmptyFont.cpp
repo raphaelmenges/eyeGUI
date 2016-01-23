@@ -56,9 +56,9 @@ namespace eyegui
 		return 0;
 	}
 
-	uint EmptyFont::getAtlasTextureHandle(FontSize fontSize) const
+	void EmptyFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering ) const
 	{
-		return mTexture;
+		// Nothing to do
 	}
 
 }

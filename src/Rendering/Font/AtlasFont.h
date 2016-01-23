@@ -47,8 +47,8 @@ namespace eyegui
 		// Get height of line
 		virtual float getLineHeight(FontSize fontSize) const;
 
-		// Get handle of texture atlas
-		virtual uint getAtlasTextureHandle(FontSize fontSize) const;
+		// Bind atlas texture of font
+		virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const;
 
 	private:
 

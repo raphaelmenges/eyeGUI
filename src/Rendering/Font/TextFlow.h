@@ -88,7 +88,6 @@ namespace eyegui
 		GLuint mVertexBuffer;
 		GLuint mTextureCoordinateBuffer;
 		GLuint mVertexArrayObject;
-		GLuint mAtlasTextureHandle;
 	};
 }
 
