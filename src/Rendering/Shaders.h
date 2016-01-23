@@ -347,7 +347,7 @@ namespace eyegui
             "       discard;\n"
             "   }"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
-            "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
+            "   float circle = min(1, (1-gradient) * 75);\n" // Extend gradient to unclamped circle
             "   fragColor = vec4(color.rgb + focus * 0.2f, color.a * circle);\n" // Composing pixel
             "}\n";
 

@@ -32,10 +32,34 @@ namespace eyegui
             meshes::Type::QUAD);
     }
 
+	Key::Key(const Key& rOtherKey)
+	{
+		// Copy members
+		mpLayout = rOtherKey.mpLayout;
+		mpAssetManager = rOtherKey.mpAssetManager;
+		mX = rOtherKey.mX;
+		mY = rOtherKey.mY;
+		mSize = rOtherKey.mSize;
+		mFocused = rOtherKey.mFocused;
+		mFocus.setValue(rOtherKey.mFocus.getValue());
+		mpCirlceRenderItem = rOtherKey.mpCirlceRenderItem;
+	}
+
     Key::~Key()
     {
         // Nothing to do
     }
+
+	void Key::transformAndSize()
+	{
+		// Draw matrix for cirlce
+		mCircleMatrix = Element::calculateDrawMatrix(
+			mpLayout,
+			mX - mSize / 2,
+			mY - mSize / 2,
+			mSize,
+			mSize);
+	}
 
     void Key::transformAndSize(int x, int y, int size)
     {
@@ -43,18 +67,13 @@ namespace eyegui
         mY = y;
         mSize = size;
 
-        // Draw matrix for cirlce
-        mCircleMatrix = Element::calculateDrawMatrix(
-                mpLayout,
-                mX - mSize/2,
-                mY - mSize/2,
-                mSize,
-                mSize);
+		transformAndSize();
     }
 
     void Key::update(float tpf)
     {
-        mFocus.update(tpf, !mFocused);
+		// TODO: parameter
+        mFocus.update(3 * tpf, !mFocused);
     }
 
     void Key::reset()
@@ -77,6 +96,11 @@ namespace eyegui
     {
         return glm::vec2(mX, mY);
     }
+
+	int Key::getSize() const
+	{
+		return mSize;
+	}
 
     void Key::drawCircle(
             int oglStencilX,
@@ -119,48 +143,21 @@ namespace eyegui
         // Get glyph from font
         mpGlyph = mpFont->getGlyph(FontSize::TALL, mCharacter);
 
-        // Save currently set buffer and vertex array object
-        GLint oldBuffer, oldVAO;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
-        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
-
-        // Initialize mesh buffers and vertex array object
-        glGenBuffers(1, &mQuadVertexBuffer);
-        glGenBuffers(1, &mQuadTextureCoordinateBuffer);
-        glGenVertexArrays(1, &mQuadVertexArrayObject);
-
-        // Fill vertex buffer (in OpenGL space)
-        glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);
-        std::vector<glm::vec3> vertices;
-        vertices.push_back(glm::vec3(0,0,0));
-        vertices.push_back(glm::vec3(1,0,0));
-        vertices.push_back(glm::vec3(1,1,0));
-        vertices.push_back(glm::vec3(1,1,0));
-        vertices.push_back(glm::vec3(0,1,0));
-        vertices.push_back(glm::vec3(0,0,0));
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * 3 * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-
-        // Texture coordinates are dynamic and filled in transformAndSize method
-
-        // Bind stuff to vertex array object
-        glBindVertexArray(mQuadVertexArrayObject);
-
-        // Vertices
-        GLuint vertexAttrib = glGetAttribLocation(mpQuadShader->getShaderProgram(), "posAttribute");
-        glEnableVertexAttribArray(vertexAttrib);
-        glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);
-        glVertexAttribPointer(vertexAttrib, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        // Texture coordinates
-        GLuint uvAttrib = glGetAttribLocation(mpQuadShader->getShaderProgram(), "uvAttribute");
-        glEnableVertexAttribArray(uvAttrib);
-        glBindBuffer(GL_ARRAY_BUFFER, mQuadTextureCoordinateBuffer);
-        glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        // Restore old settings
-        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
-        glBindVertexArray(oldVAO);
+		// Prepare quad for displaying the character
+		prepareQuad();
     }
+
+	CharacterKey::CharacterKey(const CharacterKey& rOtherKey) : Key(rOtherKey)
+	{
+		// Copy members
+		mpFont = rOtherKey.mpFont;
+		mCharacter = rOtherKey.mCharacter;
+		mpQuadShader = rOtherKey.mpQuadShader;
+		mpGlyph = rOtherKey.mpGlyph;
+
+		// But create own quad!
+		prepareQuad();
+	}
 
     CharacterKey::~CharacterKey()
     {
@@ -172,50 +169,50 @@ namespace eyegui
         glDeleteBuffers(1, &mQuadTextureCoordinateBuffer);
     }
 
-    void CharacterKey::transformAndSize(int x, int y, int size)
-    {
-        // Super call
-        Key::transformAndSize(x, y, size);
+	void CharacterKey::transformAndSize()
+	{
+		// Super call
+		Key::transformAndSize();
 
-        // Calculate ratio of glyph representing character
-        float ratio = (float)mpGlyph->size.x / (float)mpGlyph->size.y;
+		// Calculate ratio of glyph representing character
+		float ratio = (float)mpGlyph->size.x / (float)mpGlyph->size.y;
 
-        // Calculate size multiplier
-        glm::vec2 sizeMultiplier;
-        if(ratio > 1)
-        {
-            // Wider
-            sizeMultiplier = glm::vec2(1, 1.0f/ratio);
-        }
-        else
-        {
-            // Higher
-            sizeMultiplier = glm::vec2(ratio, 1);
-        }
+		// Calculate size multiplier
+		glm::vec2 sizeMultiplier;
+		if (ratio > 1)
+		{
+			// Wider
+			sizeMultiplier = glm::vec2(1, 1.0f / ratio);
+		}
+		else
+		{
+			// Higher
+			sizeMultiplier = glm::vec2(ratio, 1);
+		}
 
-        // Fill matrix for rendering quad displaying character
-        glm::vec2 quadSize =  sizeMultiplier * (float)mSize * KEY_CIRCLE_CHARACTER_SIZE_RATIO;
-        mQuadMatrix = Element::calculateDrawMatrix(
-                mpLayout,
-                mX - (int)(quadSize.x/2),
-                mY - (int)(quadSize.y/2),
-                (int)quadSize.x,
-                (int)quadSize.y);
+		// Fill matrix for rendering quad displaying character
+		glm::vec2 quadSize = sizeMultiplier * (float)mSize * KEY_CIRCLE_CHARACTER_SIZE_RATIO;
+		mQuadMatrix = Element::calculateDrawMatrix(
+			mpLayout,
+			mX - (int)(quadSize.x / 2),
+			mY - (int)(quadSize.y / 2),
+			(int)quadSize.x,
+			(int)quadSize.y);
 
-        // Set texture coordinates of quad
-        GLint oldBuffer;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, mQuadTextureCoordinateBuffer);
-        std::vector<glm::vec2> textureCoordinates;
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.y));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.w));
-        textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
-        glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
-    }
+		// Set texture coordinates of quad
+		GLint oldBuffer;
+		glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, mQuadTextureCoordinateBuffer);
+		std::vector<glm::vec2> textureCoordinates;
+		textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
+		textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.y));
+		textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
+		textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.z, mpGlyph->atlasPosition.w));
+		textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.w));
+		textureCoordinates.push_back(glm::vec2(mpGlyph->atlasPosition.x, mpGlyph->atlasPosition.y));
+		glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
+	}
 
     void CharacterKey::draw(
             int stencilX,
@@ -259,4 +256,49 @@ namespace eyegui
     {
         return std::u16string(&mCharacter);
     }
+
+	void CharacterKey::prepareQuad()
+	{
+		// Save currently set buffer and vertex array object
+		GLint oldBuffer, oldVAO;
+		glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
+		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
+
+		// Initialize mesh buffers and vertex array object
+		glGenBuffers(1, &mQuadVertexBuffer);
+		glGenBuffers(1, &mQuadTextureCoordinateBuffer);
+		glGenVertexArrays(1, &mQuadVertexArrayObject);
+
+		// Fill vertex buffer (in OpenGL space)
+		glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);
+		std::vector<glm::vec3> vertices;
+		vertices.push_back(glm::vec3(0, 0, 0));
+		vertices.push_back(glm::vec3(1, 0, 0));
+		vertices.push_back(glm::vec3(1, 1, 0));
+		vertices.push_back(glm::vec3(1, 1, 0));
+		vertices.push_back(glm::vec3(0, 1, 0));
+		vertices.push_back(glm::vec3(0, 0, 0));
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * 3 * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+		// Texture coordinates are dynamic and filled in transformAndSize method
+
+		// Bind stuff to vertex array object
+		glBindVertexArray(mQuadVertexArrayObject);
+
+		// Vertices
+		GLuint vertexAttrib = glGetAttribLocation(mpQuadShader->getShaderProgram(), "posAttribute");
+		glEnableVertexAttribArray(vertexAttrib);
+		glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);
+		glVertexAttribPointer(vertexAttrib, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+		// Texture coordinates
+		GLuint uvAttrib = glGetAttribLocation(mpQuadShader->getShaderProgram(), "uvAttribute");
+		glEnableVertexAttribArray(uvAttrib);
+		glBindBuffer(GL_ARRAY_BUFFER, mQuadTextureCoordinateBuffer);
+		glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+		// Restore old settings
+		glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
+		glBindVertexArray(oldVAO);
+	}
 }

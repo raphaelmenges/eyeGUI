@@ -165,6 +165,29 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
+		// *** UPDATE ANIMATED PRESSED KEYES ***
+		std::vector<int> dyingPressedKeys;
+		for (int i = 0; i < mPressedKeys.size(); i++)
+		{
+			// Update alpha and size
+			// (TODO: very ugly because of transform and size call. Should be called somewhere else and only to react to new layout resolution....)
+			mPressedKeys[i].first -= tpf * 2;
+			Key* pKey = mPressedKeys[i].second.get();
+			pKey->transformAndSize((int)pKey->getPosition().x, (int)pKey->getPosition().y, (int)(pKey->getSize() + 5 * tpf * mInitialKeySize));
+
+			// Check, whether still visible
+			if (mPressedKeys[i].first <= 0)
+			{
+				dyingPressedKeys.push_back(i);
+			}
+		}
+
+		// Delete dying pressed keys (go backwards through it)
+		for (int i = (int)dyingPressedKeys.size()-1; i >= 0; i--)
+		{
+			mPressedKeys.erase(mPressedKeys.begin() + i);
+		}
+
         // *** FILTER USER'S GAZE ***
         glm::vec2 newGazePosition = glm::vec2(pInput->gazeX, pInput->gazeY);
 		mGazePosition += std::min(1.f, 5.f * tpf) * (newGazePosition - mGazePosition);
@@ -190,7 +213,7 @@ namespace eyegui
 		}
 		else if (penetrated)
 		{
-			mThreshold.update(tpf * 6.0f * (gazeDeltaWeight - 0.8f));
+			mThreshold.update(tpf * 8.0f * (gazeDeltaWeight - 0.8f));
 		}
         else
         {
@@ -267,20 +290,13 @@ namespace eyegui
                 sizeDelta = std::max(-0.3f * mInitialKeySize, sizeDelta); // Subtracted from initial size
                 sizeDelta *= 0.75f;
 
-				// Use delta to center as well (strange because uses final size delta...)
-				glm::vec2 centerDelta = glm::vec2(mX + (mWidth / 2), mY + (mHeight / 2)) - mFocusPosition;
-				centerDelta /= glm::length(glm::vec2(mWidth, mHeight)) / 2;
-				centerDelta *= focusWeight * mInitialKeySize;
-				centerDelta *= 0.5f;
-
                 // Weight with threshold
                 positionDelta *= mThreshold.getValue();
                 sizeDelta *= mThreshold.getValue();
-				centerDelta *= mThreshold.getValue();
 
                 // Calc stuff for key
-                int keyPositionX = (int)(mInitialKeyPositions[i][j].x + positionDelta.x + centerDelta.x);
-                int keyPositionY = (int)(mInitialKeyPositions[i][j].y + positionDelta.y + centerDelta.y);
+				int keyPositionX = (int)(mInitialKeyPositions[i][j].x + positionDelta.x);
+				int keyPositionY = (int)(mInitialKeyPositions[i][j].y + positionDelta.y);
                 int keySize = (int)(mInitialKeySize + sizeDelta);
 
                 // Transform and size
@@ -306,6 +322,11 @@ namespace eyegui
 
                         // Inform listener after updating
                         mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
+
+						// Add pressed key for nice animation (TODO: at the moment, only character key possible...)
+						std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)(mKeys[i][j].get())));
+						upPressedKey->transformAndSize();
+						mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
                     }
                 }
             }
@@ -335,11 +356,17 @@ namespace eyegui
         // *** RENDER KEYS ***
         for(const auto& rLine : mKeys)
         {
-            for(const auto& rKey : rLine)
+            for(const auto& rupKey : rLine)
             {
-                rKey->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->iconColor, mAlpha);
+                rupKey->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->iconColor, mAlpha);
             }
         }
+
+		// Render animation of pressed keys
+		for (const auto& rPressedKey : mPressedKeys)
+		{
+			rPressedKey.second->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->iconColor, mAlpha * rPressedKey.first);
+		}
     }
 
     void Keyboard::specialTransformAndSize()
@@ -402,6 +429,7 @@ namespace eyegui
         mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
 		mKeyWasPressed = false;
+		mPressedKeys.clear();
 
         // Reset keys
         for(const auto& rLine : mKeys)

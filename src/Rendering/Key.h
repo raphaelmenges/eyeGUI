@@ -29,8 +29,14 @@ namespace eyegui
         // Constructor
         Key(Layout const * pLayout, AssetManager* pAssetManager);
 
+		// Copy constructor
+		Key(const Key& rOtherKey);
+
         // Destructor
         virtual ~Key() = 0;
+
+		// Simple transform and size to fit layout size
+		virtual void transformAndSize();
 
         // Set position of center and size of key
         virtual void transformAndSize(int x, int y, int size);
@@ -59,6 +65,9 @@ namespace eyegui
 
         // Get position on GUI
         glm::vec2 getPosition() const;
+
+		// Get size in pixels
+		int getSize() const;
 
         // Get value
         virtual std::u16string getValue() const = 0;
@@ -98,11 +107,14 @@ namespace eyegui
             Font const * pFont,
             char16_t character);
 
+		// Copy constructor
+		CharacterKey(const CharacterKey& rOtherKey);
+
         // Destructor
         virtual ~CharacterKey();
 
-        // Set position of center and size of key
-        virtual void transformAndSize(int x, int y, int size);
+		// Simple transform and size to fit layout size
+		virtual void transformAndSize();
 
         // Draw (stencil values in eyeGUI coordinate system)
         virtual void draw(
@@ -114,11 +126,13 @@ namespace eyegui
             glm::vec4 iconColor,
             float alpha) const;
 
-
         // Get value
         virtual std::u16string getValue() const;
 
     private:
+
+		// Prepare quad for displaying the character
+		void prepareQuad();
 
         // Members
         Font const * mpFont;

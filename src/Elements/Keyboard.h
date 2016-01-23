@@ -23,12 +23,12 @@ namespace eyegui
     public:
 
         // TODO
-		// - Animate pressed key more (fly in direction of user)
+		// - Focus stuff not good enough for swype like behaviour. More like: threshold, until focused! (so extra lerp value in key)
         // - Use parameters and not hardcoded values (durations, not multiplier)
         // - Clean up update method
         // - Everything resolution independend in update method?
-        // - Nicer reset after key pressed
 		// - gaze ist after start at 0,0
+		// - better use relative values in keys, not absolute screen stuff
 
         // Notes
         // - icon color is used here for font rendering
@@ -72,6 +72,9 @@ namespace eyegui
 
     private:
 
+		// Typedefs
+		typedef std::pair<float, std::unique_ptr<Key> > PressedKey;
+
         // Add key to keyboard
         void addKey(char16_t character);
 
@@ -90,6 +93,7 @@ namespace eyegui
         glm::vec2 mGazePosition;
         std::u16string mLastPressedKeyValue;
 		bool mKeyWasPressed;
+		std::vector<PressedKey> mPressedKeys;  // Alpha [0..1] and copy of key
     };
 }
 
