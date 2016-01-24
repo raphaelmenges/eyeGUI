@@ -1,17 +1,15 @@
 ### VERSION 0.8 (Keyboard can be used to see in urls for the browser prototype)
-- TODO in Keyboard.h header
-- Warning when one uses umlaute in textflow, coming from keyboard
+- TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
 - Wiki entry... (extra page or in elements? -> both)
+- Clean up Key and Keyboard class
 
 ### VERSION 0.9
 - No more working in combination with glew? (internal test with tutorial project)
 - Advanced TextInput
-  - Keyboard and "Guesser" (tries to guess what you want to write)
-  - Both are indepenend
-  - Should support unicode...
-  - Differet speeds
-    - Letters get bigger and after threshold: selection
-    - Only last letter focused for longer time
+  - "Guesser" (tries to guess what you want to write)
+	  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
+  - Change between small and big letters
+	- Think about different key maps (?) (extra letters, smileys)
 
 ### VERSION 0.10
 - Audio (PortAudio library?)

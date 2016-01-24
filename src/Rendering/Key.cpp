@@ -73,7 +73,7 @@ namespace eyegui
     void Key::update(float tpf)
     {
 		// TODO: parameter
-        mFocus.update(3 * tpf, !mFocused);
+        mFocus.update(6 * tpf, !mFocused);
     }
 
     void Key::reset()
@@ -254,7 +254,7 @@ namespace eyegui
 
     std::u16string CharacterKey::getValue() const
     {
-        return std::u16string(&mCharacter);
+		return std::u16string(&mCharacter, 1);
     }
 
 	void CharacterKey::prepareQuad()
