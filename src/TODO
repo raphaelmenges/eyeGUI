@@ -2,6 +2,7 @@
 - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
 - Wiki entry... (extra page or in elements? -> both)
 - Clean up Key and Keyboard class
+- Keyboard should be subclass of interactable...
 
 ### VERSION 0.9
 - No more working in combination with glew? (internal test with tutorial project)
