@@ -210,7 +210,7 @@ namespace eyegui
 
     //! Terminate GUI.
     /*!
-      \param pGUI pointer to GUI which should be termianted.
+      \param pGUI pointer to GUI which should be terminated.
     */
     void terminateGUI(GUI* pGUI);
 
@@ -555,7 +555,6 @@ namespace eyegui
     \param content is new content for text block as 8 bit string.
     */
     void setContentOfTextBlock(Layout* pLayout, std::string id, std::string content);
-
 
     //! Set key of text block. Works only if used localization file includes key.
     /*!

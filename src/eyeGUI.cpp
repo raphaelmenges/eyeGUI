@@ -178,6 +178,11 @@ namespace eyegui
         return pLayout->isElementDimming(id);
     }
 
+	bool isElementMarking(Layout const * pLayout, std::string id)
+	{
+		return pLayout->isElementMarking(id);
+	}
+
     void setElementHiding(Layout* pLayout, std::string id, bool hidden)
     {
         pLayout->setElementHiding(id, hidden);
