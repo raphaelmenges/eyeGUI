@@ -190,7 +190,13 @@ namespace eyegui
 
         // *** FILTER USER'S GAZE ***
         glm::vec2 newGazePosition = glm::vec2(pInput->gazeX, pInput->gazeY);
-		mGazePosition += std::min(1.f, 5.f * tpf) * (newGazePosition - mGazePosition);
+		glm::vec2 rawGazeDelta = (newGazePosition - mGazePosition);
+
+		// Filter only, when delta is small
+		float gazeFilterRadius = 4 * mInitialKeySize;
+		float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
+		float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, 5.f * tpf);
+		mGazePosition += gazeFilter * rawGazeDelta;
 
         // Use gaze delta as weight (is one if low delta in gaze)
         float gazeDelta = glm::abs(glm::distance(newGazePosition, mGazePosition)); // In pixels!
