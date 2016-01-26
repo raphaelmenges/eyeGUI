@@ -27,7 +27,7 @@ namespace eyegui
         // - Use parameters and not hardcoded values (durations, not multiplier)
         // - Clean up update method
         // - Everything resolution independend in update method?
-		// - gaze ist after start at 0,0
+		// - gaze ist after start at 0,0 (and until first input is not NULL)
 		// - better use relative values in keys, not absolute screen stuff
 
         // Notes

@@ -223,6 +223,9 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
+		// Check for penetration by input
+		bool penetrated = penetratedByInput(pInput);
+
 		// *** UPDATE ANIMATED PRESSED KEYES ***
 		std::vector<int> dyingPressedKeys;
 		for (int i = 0; i < mPressedKeys.size(); i++)
@@ -247,42 +250,42 @@ namespace eyegui
 		}
 
         // *** FILTER USER'S GAZE ***
-        glm::vec2 newGazePosition = glm::vec2(pInput->gazeX, pInput->gazeY);
-		glm::vec2 rawGazeDelta = (newGazePosition - mGazePosition);
-
-		// Filter only, when delta is small
-		float gazeFilterRadius = 4 * mInitialKeySize;
-		float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
-		float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, 5.f * tpf);
-		mGazePosition += gazeFilter * rawGazeDelta;
-
-        // Use gaze delta as weight (is one if low delta in gaze)
-        float gazeDelta = glm::abs(glm::distance(newGazePosition, mGazePosition)); // In pixels!
-        float gazeDeltaWeight = 1.f - clamp(gazeDelta / (2 * mInitialKeySize), 0, 1); // Key size used for normalization
-
-        // *** CHECK FOR PENETRATION ***
-
-        // Check for penetration by input
-        bool penetrated = penetratedByInput(pInput);
-
-        // Threshold (used to determine key pressing)
-		if (mKeyWasPressed)
+		if (pInput != NULL) // TODO: look, whether NULL test makes sense here
 		{
-			mThreshold.update(-6.0f * tpf);
+			glm::vec2 newGazePosition = glm::vec2(pInput->gazeX, pInput->gazeY);
+			glm::vec2 rawGazeDelta = (newGazePosition - mGazePosition);
 
-			if (mThreshold.getValue() <= 0)
+			// Filter only, when delta is small
+			float gazeFilterRadius = 4 * mInitialKeySize;
+			float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
+			float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, 5.f * tpf);
+			mGazePosition += gazeFilter * rawGazeDelta;
+
+			// Use gaze delta as weight (is one if low delta in gaze)
+			float gazeDelta = glm::abs(glm::distance(newGazePosition, mGazePosition)); // In pixels!
+			float gazeDeltaWeight = 1.f - clamp(gazeDelta / (2 * mInitialKeySize), 0, 1); // Key size used for normalization
+
+			// *** CHECK FOR PENETRATION ***
+
+			// Threshold (used to determine key pressing)
+			if (mKeyWasPressed)
 			{
-				mKeyWasPressed = false;
+				mThreshold.update(-6.0f * tpf);
+
+				if (mThreshold.getValue() <= 0)
+				{
+					mKeyWasPressed = false;
+				}
+			}
+			else if (penetrated)
+			{
+				mThreshold.update(tpf * 8.0f * (gazeDeltaWeight - 0.8f));
+			}
+			else
+			{
+				mThreshold.update(-1.0f * tpf);
 			}
 		}
-		else if (penetrated)
-		{
-			mThreshold.update(tpf * 8.0f * (gazeDeltaWeight - 0.8f));
-		}
-        else
-        {
-			mThreshold.update(-1.0f * tpf);
-        }
 
         // *** DETERMINE FOCUSED KEY ***
         if(penetrated)
