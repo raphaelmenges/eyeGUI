@@ -70,6 +70,63 @@ namespace eyegui
 		addKey(u'8');
 		addKey(u'9');
 		addKey(u'0');
+		addKey(u'/');
+
+		newLine();
+
+		addKey(u'q');
+		addKey(u'w');
+		addKey(u'e');
+		addKey(u'r');
+		addKey(u't');
+		addKey(u'y');
+		addKey(u'u');
+		addKey(u'i');
+		addKey(u'o');
+		addKey(u'p');
+		addKey(u'+');
+		addKey(u'-');
+
+		newLine();
+
+		addKey(u'a');
+		addKey(u's');
+		addKey(u'd');
+		addKey(u'f');
+		addKey(u'g');
+		addKey(u'h');
+		addKey(u'j');
+		addKey(u'k');
+		addKey(u'l');
+		addKey(u'(');
+		addKey(u')');
+
+		newLine();
+
+		addKey(u'#');
+		addKey(u'z');
+		addKey(u'x');
+		addKey(u'c');
+		addKey(u'v');
+		addKey(u'b');
+		addKey(u'n');
+		addKey(u'm');
+		addKey(u'.');
+		addKey(u':');
+		addKey(u'<');
+		addKey(u'>');
+
+		// QWERTZ layout, does not work within CEF3 because of german umlaute for the moment
+		/*addKey(u'1');
+		addKey(u'2');
+		addKey(u'3');
+		addKey(u'4');
+		addKey(u'5');
+		addKey(u'6');
+		addKey(u'7');
+		addKey(u'8');
+		addKey(u'9');
+		addKey(u'0');
 		addKey(u'#');
 
 		newLine();
@@ -114,7 +171,7 @@ namespace eyegui
         addKey(u'.');
         addKey(u'-');
         addKey(u'/');
-        addKey(u'#');
+        addKey(u'#'); */
 
         /*addKey(u'Q');
         addKey(u'W');
