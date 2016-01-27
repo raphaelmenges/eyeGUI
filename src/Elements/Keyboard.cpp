@@ -279,7 +279,7 @@ namespace eyegui
 			}
 			else if (penetrated)
 			{
-				mThreshold.update(tpf * 8.0f * (gazeDeltaWeight - 0.8f));
+				mThreshold.update(tpf * 4.0f * (gazeDeltaWeight - 0.8f));
 			}
 			else
 			{
