@@ -1,10 +1,26 @@
-### VERSION 0.8 (Keyboard can be used to see in urls for the browser prototype)
-- TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
-- Wiki entry... (extra page or in elements? -> both)
-- Clean up Key and Keyboard class
-- Keyboard should be subclass of interactable...
+### VERSION 0.8
+- Keyboard
+  - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
+  - Wiki entry... (extra page or in elements? -> both)
+  - Clean up Key and Keyboard class
+  - Keyboard should be subclass of interactable...
+  - Color of focus in keyboard
+- New class in rendering: image
+  - use in element picture
+  - alignments: center, fill, left, right, top, bottom, zoom
+  - use as optional background in blocks
+- put dpi somewhere adjustable (in create gui call?) -> maybe make something like initial config (for font sizes too)
+- TextAtlas: make 
+- TextFlows
+  - Percentage scaling
+  - Display text even at overflow (maybe cut it and display '...')
+- Draw gui: make gui pointer const
 
 ### VERSION 0.9
+- Multilingual keyboard with different subboards (for extra characters not used often)
+- extra font atlas for keyboard (do not use tall one anymore)
+
+### VERSION 0.10
 - No more working in combination with glew? (internal test with tutorial project)
 - Advanced TextInput
   - "Guesser" (tries to guess what you want to write)
@@ -12,7 +28,7 @@
   - Change between small and big letters
 	- Think about different key maps (?) (extra letters, smileys)
 
-### VERSION 0.10
+### VERSION 0.11
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
