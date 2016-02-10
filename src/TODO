@@ -49,6 +49,7 @@
 	
 ### VERSION 1.0
 - Code review!
+  - valgrind
 - Getting rid of freetype2
 - Some members of element could be private but getters necessary..
 

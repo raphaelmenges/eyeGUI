@@ -31,6 +31,7 @@ namespace eyegui
     {
         // Initialize members
         mX, mY, mWidth, mHeight = 0;
+        mOrientation = Element::Orientation::VERTICAL;
         mType = Type::ELEMENT;
         mId = id;
         mStyleName = styleName;

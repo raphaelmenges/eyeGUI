@@ -12,7 +12,7 @@ namespace eyegui
     Mesh::Mesh(std::vector<float> const * const pVertices, std::vector<float> const * const pTextureCoordinates)
     {
         // Save currently set buffer
-        GLint oldBuffer;
+        GLint oldBuffer = -1;
         glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
 
         // Vertex buffer

@@ -40,7 +40,8 @@ namespace eyegui
         mHeight = 0;
 
         // Save currently set buffer and vertex array object
-        GLint oldBuffer, oldVAO;
+        GLint oldBuffer = -1;
+        GLint oldVAO = -1;
         glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
         glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
 
@@ -129,7 +130,7 @@ namespace eyegui
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
 
         // Bind atlas texture
-		mpFont->bindAtlasTexture(mFontSize);
+        mpFont->bindAtlasTexture(mFontSize);
 
         // Fill uniforms
         mpShader->fillValue("matrix", matrix);
@@ -142,7 +143,7 @@ namespace eyegui
     void TextFlow::calculateMesh()
     {
         // Save currently set buffer
-        GLint oldBuffer;
+        GLint oldBuffer = -1;
         glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
 
         // Get size of space
