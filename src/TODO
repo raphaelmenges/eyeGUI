@@ -10,7 +10,6 @@
   - alignments: center, fill, left, right, top, bottom, zoom
   - use as optional background in blocks
 - put dpi somewhere adjustable (in create gui call?) -> maybe make something like initial config (for font sizes too)
-- TextAtlas: make 
 - TextFlows
   - Percentage scaling
   - Display text even at overflow (maybe cut it and display '...')
