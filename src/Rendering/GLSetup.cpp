@@ -9,11 +9,6 @@
 
 namespace eyegui
 {
-    void GLSetup::init()
-    {
-        ogl_LoadFunctions();
-    }
-
     void GLSetup::setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight)
     {
         // Storing

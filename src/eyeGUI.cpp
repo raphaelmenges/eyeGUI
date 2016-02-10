@@ -42,7 +42,7 @@ namespace eyegui
         return pGUI->update(tpf, input);
     }
 
-    void drawGUI(GUI* pGUI)
+    void drawGUI(GUI const * pGUI)
     {
         pGUI->draw();
     }
@@ -178,10 +178,10 @@ namespace eyegui
         return pLayout->isElementDimming(id);
     }
 
-	bool isElementMarking(Layout const * pLayout, std::string id)
-	{
-		return pLayout->isElementMarking(id);
-	}
+    bool isElementMarking(Layout const * pLayout, std::string id)
+    {
+        return pLayout->isElementMarking(id);
+    }
 
     void setElementHiding(Layout* pLayout, std::string id, bool hidden)
     {

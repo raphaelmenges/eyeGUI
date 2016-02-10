@@ -10,6 +10,7 @@
 #include "Defines.h"
 #include "OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
+#include "externals/OpenGLLoader/gl_core_3_3.h"
 
 #include <algorithm>
 
@@ -37,7 +38,7 @@ namespace eyegui
         mDrawGazeVisualization = false;
 
         // Initialize OpenGL
-        mGLSetup.init();
+        ogl_LoadFunctions();
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -133,8 +134,8 @@ namespace eyegui
             mAccPeriodicTime -= ACCUMULATED_TIME_PERIOD;
         }
 
-		// Copy constant input
-		Input copyInput = input;
+        // Copy constant input
+        Input copyInput = input;
 
         // Update all layouts in reversed order
         for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
@@ -150,10 +151,11 @@ namespace eyegui
         return copyInput;
     }
 
-    void GUI::draw()
+    void GUI::draw() const
     {
-        // Setup OpenGL (therefore is draw not const)
-        mGLSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
+        // Setup OpenGL
+        GLSetup glSetup;
+        glSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
 
         // Draw all layouts
         for (int i = 0; i < mLayouts.size(); i++)
@@ -180,7 +182,7 @@ namespace eyegui
         }
 
         // Restore OpenGL state of application
-        mGLSetup.restore();
+        glSetup.restore();
     }
 
     void GUI::moveLayoutToFront(Layout* pLayout)

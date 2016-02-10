@@ -133,13 +133,13 @@ namespace eyegui
         */
         void virtual keyPressed(Layout* pLayout, std::string id, std::u16string value) = 0;
 
-		//! Callback for pressing keys of keyboard.
-		/*!
-		\param pLayout pointer to layout from which callback is coming.
-		\param id is the unique id of the keyboard which causes the callback.
-		\param value is the string given by pressed key.
-		*/
-		void virtual keyPressed(Layout* pLayout, std::string id, std::string value) = 0;
+        //! Callback for pressing keys of keyboard.
+        /*!
+        \param pLayout pointer to layout from which callback is coming.
+        \param id is the unique id of the keyboard which causes the callback.
+        \param value is the string given by pressed key.
+        */
+        void virtual keyPressed(Layout* pLayout, std::string id, std::string value) = 0;
     };
 
     //! Struct for relative values of position and size
@@ -214,7 +214,7 @@ namespace eyegui
     /*!
     \param pGUI pointer to GUI.
     */
-    void drawGUI(GUI* pGUI);
+    void drawGUI(GUI const * pGUI);
 
     //! Terminate GUI.
     /*!

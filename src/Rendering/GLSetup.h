@@ -7,7 +7,7 @@
 // Stores the current state of used OpenGL functions, sets the necesarry ones
 // for rendering and restores to previous state after rendering. Texture slots
 // are NOT restored because this would be expensive and probably meaningless
-// when the user of this library is sane.
+// when the user of this library is sane. Framebuffers are also not touched.
 
 #ifndef GL_SETUP_H_
 #define GL_SETUP_H_
@@ -19,9 +19,6 @@ namespace eyegui
     class GLSetup
     {
     public:
-
-        // Initialization
-        void init();
 
         // Store current state and set own
         void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);

@@ -58,7 +58,7 @@ namespace eyegui
         Input update(float tpf, const Input input);
 
         // Drawing
-        void draw();
+        void draw() const;
 
         // Move layout to front
         void moveLayoutToFront(Layout* pLayout);
@@ -203,7 +203,6 @@ namespace eyegui
         int mNewWidth, mNewHeight;
         CharacterSet mCharacterSet;
         std::unique_ptr<AssetManager> mupAssetManager;
-        GLSetup mGLSetup;
         float mAccPeriodicTime;
         Config mConfig;
         Font const * mpDefaultFont;

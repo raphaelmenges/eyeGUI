@@ -1,20 +1,25 @@
 ### VERSION 0.8
+- New class in rendering: image
+  - image! alignments: center, fill, zoom (remind to change ALL the shit everywhere about picture alignment...also wiki)
+  - use as optional background in blocks
+  - mimic of shader behaviour as method of element super class?
+  
 - Keyboard
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
   - Wiki entry... (extra page or in elements? -> both)
   - Clean up Key and Keyboard class
   - Keyboard should be subclass of interactable...
   - Color of focus in keyboard
-- New class in rendering: image
-  - use in element picture
-  - alignments: center, fill, zoom
-  - use as optional background in blocks
-  - mimic of shader behaviour as method of element super class?
+  
 - put dpi somewhere adjustable (in create gui call?) -> maybe make something like initial config (for font sizes too)
-- TextFlows
-  - Percentage scaling
+
+- TextBlock
+  - Percentage scaling 
+    - text flow already has something, but too simple at draw time. one need it at calculating mesh.
+      in addition, should recognize scaling != 100% to change filtering
   - Display text even at overflow (maybe cut it and display '...')
-- Draw gui: make gui pointer const
+
+- Enable jpeg (and more) loading (update wiki!)
 
 ### VERSION 0.9
 - Multilingual keyboard with different subboards (for extra characters not used often)
