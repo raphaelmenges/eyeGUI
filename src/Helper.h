@@ -9,6 +9,9 @@
 #ifndef HELPER_H_
 #define HELPER_H_
 
+#include "externals/GLM/glm/glm.hpp"
+#include "externals/GLM/glm/gtc/matrix_transform.hpp"
+
 #include <string>
 #include <algorithm>
 
@@ -53,6 +56,36 @@ namespace eyegui
             rInput.replace(startPos, rTarget.length(), rReplacement);
             startPos += rReplacement.length();
         }
+    }
+
+    // Convert pixel space to drawing space (origin top left)
+    static glm::mat4 calculateDrawMatrix(int layoutWidth, int layoutHeight, int x, int y, int width, int height)
+    {
+        // Get values from layout
+        float floatLayoutWidth = (float)(layoutWidth);
+        float floatLayoutHeight = (float)(layoutHeight);
+
+        // Create identity
+        glm::mat4 matrix = glm::mat4(1.0f);
+
+        // Width and height from zero to one
+        float glWidth = width / floatLayoutWidth;
+        float glHeight = height / floatLayoutHeight;
+
+        // Translation
+        matrix = glm::translate(
+            matrix,
+            glm::vec3(x / floatLayoutWidth,
+                (1.0f - (y / floatLayoutHeight)) - glHeight,
+                0));
+
+        // Scaling
+        matrix = glm::scale(matrix, glm::vec3(glWidth, glHeight, 1));
+
+        // Projection
+        matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f) * matrix;
+
+        return matrix;
     }
 }
 

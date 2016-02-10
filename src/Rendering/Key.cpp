@@ -10,6 +10,7 @@
 #include "Layout.h"
 #include "AssetManager.h"
 #include "Defines.h"
+#include "Helper.h"
 
 namespace eyegui
 {
@@ -53,8 +54,9 @@ namespace eyegui
     void Key::transformAndSize()
     {
         // Draw matrix for cirlce
-        mCircleMatrix = Element::calculateDrawMatrix(
-            mpLayout,
+        mCircleMatrix = calculateDrawMatrix(
+            mpLayout->getLayoutWidth(),
+            mpLayout->getLayoutHeight(),
             mX - mSize / 2,
             mY - mSize / 2,
             mSize,
@@ -192,8 +194,9 @@ namespace eyegui
 
         // Fill matrix for rendering quad displaying character
         glm::vec2 quadSize = sizeMultiplier * (float)mSize * KEY_CIRCLE_CHARACTER_SIZE_RATIO;
-        mQuadMatrix = Element::calculateDrawMatrix(
-            mpLayout,
+        mQuadMatrix = calculateDrawMatrix(
+            mpLayout->getLayoutWidth(),
+            mpLayout->getLayoutHeight(),
             mX - (int)(quadSize.x / 2),
             mY - (int)(quadSize.y / 2),
             (int)quadSize.x,

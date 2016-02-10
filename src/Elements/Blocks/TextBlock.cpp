@@ -123,19 +123,19 @@ namespace eyegui
         // Super call
         Block::specialDraw();
 
-        // Draw text (emulation of shader bevavior for color mixing)
+        // Draw text (emulation of shader behavior for color mixing)
         glm::vec4 color = getStyle()->fontColor;
         color.a *= mAlpha;
 
-		// Marking
-		float oldAlpha = color.a;
-		color = (1.0f - (mMark.getValue() * getStyle()->markColor.a)) * color + (mMark.getValue() * getStyle()->markColor.a * getStyle()->markColor);
-		color = glm::vec4(color.r, color.g, color.b, oldAlpha);
+        // Marking
+        float oldAlpha = color.a;
+        color = (1.0f - (mMark.getValue() * getStyle()->markColor.a)) * color + (mMark.getValue() * getStyle()->markColor.a * getStyle()->markColor);
+        color = glm::vec4(color.r, color.g, color.b, oldAlpha);
 
-		// Dimming
+        // Dimming
         color *= (1.0f - mDim.getValue()) + (mDim.getValue() * getStyle()->dimColor);
 
-		// Drawing
+        // Drawing
         mupTextFlow->draw(1.0f, color);
     }
 

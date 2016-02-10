@@ -8,6 +8,7 @@
 #include "Stack.h"
 
 #include "Layout.h"
+#include "Helper.h"
 
 namespace eyegui
 {
@@ -455,7 +456,8 @@ namespace eyegui
                 {
                     mSeparatorDrawMatrices.push_back(
                         calculateDrawMatrix(
-                            mpLayout,
+                            mpLayout->getLayoutWidth(),
+                            mpLayout->getLayoutHeight(),
                             separatorPositions[i],
                             mY,
                             separatorWidth,
@@ -465,7 +467,8 @@ namespace eyegui
                 {
                     mSeparatorDrawMatrices.push_back(
                         calculateDrawMatrix(
-                            mpLayout,
+                            mpLayout->getLayoutWidth(),
+                            mpLayout->getLayoutHeight(),
                             mX,
                             separatorPositions[i],
                             separatorWidth,

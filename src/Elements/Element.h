@@ -205,9 +205,6 @@ namespace eyegui
         // Commit replaced element to this element
         void commitReplacedElement(std::unique_ptr<Element> upElement, bool fade);
 
-        // Static convert pixel space to drawing space (origin top left)
-        static glm::mat4 calculateDrawMatrix(Layout const * pLayout, int x, int y, int width, int height);
-
     protected:
 
         // Updating filled by subclasses, returns adaptive scale

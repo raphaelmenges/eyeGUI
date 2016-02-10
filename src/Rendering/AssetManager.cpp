@@ -181,8 +181,8 @@ namespace eyegui
             case shaders::Type::BLOCK:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBlockFragmentShader));
                 break;
-            case shaders::Type::PICTURE:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pPictureFragmentShader));
+            case shaders::Type::IMAGE:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pImageFragmentShader));
                 break;
             case shaders::Type::CIRCLE_BUTTON:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleButtonFragmentShader));

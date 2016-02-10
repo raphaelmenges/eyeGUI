@@ -11,12 +11,17 @@
 #define IMAGE_H_
 
 #include "include/eyeGUI.h"
-#include "Rendering/AssetManager.h"
+#include "externals/GLM/glm/glm.hpp"
 
 #include <string>
 
 namespace eyegui
 {
+    // Forward declaration
+    class AssetManager;
+    class RenderItem;
+    class Texture;
+
     class Image
     {
     public:
@@ -30,17 +35,29 @@ namespace eyegui
         // Deconstructor
         virtual ~Image();
 
+        // Check before transformation, how much space is needed
+        void evaluateSize(
+            int availableWidth,
+            int availableHeight,
+            int& rWidth,
+            int& rHeight) const;
+
         // Transform and size
         void transformAndSize(int x, int y, int width, int height);
 
         // Draw
-        void draw() const;
+        void draw(glm::vec4 color) const;
 
     private:
 
+        // Members
         RenderItem const * mpQuad;
-        Texture const * mpImage;
+        Texture const * mpTexture;
         PictureAlignment mAlignment;
+        int mX;
+        int mY;
+        int mWidth;
+        int mHeight;
     };
 }
 

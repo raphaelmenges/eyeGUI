@@ -368,7 +368,13 @@ namespace eyegui
         specialTransformAndSize();
 
         // After calculation transformation, recalculate the matrix for rendering
-        mFullDrawMatrix = calculateDrawMatrix(mpLayout, mX, mY, mWidth, mHeight);
+        mFullDrawMatrix = calculateDrawMatrix(
+                            mpLayout->getLayoutWidth(),
+                            mpLayout->getLayoutHeight(),
+                            mX,
+                            mY,
+                            mWidth,
+                            mHeight);
     }
 
     float Element::getDynamicScale() const
@@ -619,35 +625,6 @@ namespace eyegui
             // No fading, so let it die instantly after this frame
             mpFrame->commitDyingReplacedElement(std::move(upElement));
         }
-    }
-
-    glm::mat4 Element::calculateDrawMatrix(Layout const * pLayout, int x, int y, int width, int height)
-    {
-        // Get values from layout
-        float layoutWidth = (float)(pLayout->getLayoutWidth());
-        float layoutHeight = (float)(pLayout->getLayoutHeight());
-
-        // Create identity
-        glm::mat4 matrix = glm::mat4(1.0f);
-
-        // Width and height from zero to one
-        float glWidth = width / layoutWidth;
-        float glHeight = height / layoutHeight;
-
-        // Translation
-        matrix = glm::translate(
-            matrix,
-            glm::vec3(x / layoutWidth,
-                (1.0f - (y / layoutHeight)) - glHeight,
-                0));
-
-        // Scaling
-        matrix = glm::scale(matrix, glm::vec3(glWidth, glHeight, 1));
-
-        // Projection
-        matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f) * matrix;
-
-        return matrix;
     }
 
     bool Element::penetratedByInput(Input const * pInput) const
