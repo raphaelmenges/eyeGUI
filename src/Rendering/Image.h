@@ -18,6 +18,7 @@
 namespace eyegui
 {
     // Forward declaration
+    class Layout;
     class AssetManager;
     class RenderItem;
     class Texture;
@@ -28,6 +29,7 @@ namespace eyegui
 
         // Constructor
         Image(
+            Layout const * pLayout,
             AssetManager* pAssetManager,
             std::string filepath,
             PictureAlignment alignment);
@@ -48,9 +50,14 @@ namespace eyegui
         // Draw
         void draw(glm::vec4 color) const;
 
+        // Getter for pixel sizes of used texture
+        uint getTextureWidth() const;
+        uint getTextureHeight() const;
+
     private:
 
         // Members
+        Layout const * mpLayout;
         RenderItem const * mpQuad;
         Texture const * mpTexture;
         PictureAlignment mAlignment;

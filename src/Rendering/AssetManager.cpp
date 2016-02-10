@@ -339,4 +339,15 @@ namespace eyegui
                     mpGUI->getDefaultFont(),
                     character)));
     }
+
+    std::unique_ptr<Image> AssetManager::createImage(Layout const * pLayout, std::string filepath, PictureAlignment alignment)
+    {
+        return std::move(
+            std::unique_ptr<Image>(
+                new Image(
+                    pLayout,
+                    this,
+                    filepath,
+                    alignment)));
+    }
 }

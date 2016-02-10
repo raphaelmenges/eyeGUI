@@ -38,14 +38,12 @@ namespace eyegui
         mType = Type::PICTURE;
 
         // Fill members
-        //mpQuad = mpAssetManager->fetchRenderItem(shaders::Type::PICTURE, meshes::Type::QUAD);
-        mpImage = mpAssetManager->fetchTexture(filepath);
-        mAlignment = alignment;
+        mupImage = std::move(mpAssetManager->createImage(mpLayout, filepath, alignment));
 
         // Aspect ratio of border should be preserved if necessary
-        if (mAlignment == PictureAlignment::ORIGINAL)
+        if (alignment == PictureAlignment::ORIGINAL)
         {
-            mBorderAspectRatio = (float)(mpImage->getWidth()) / (float)(mpImage->getHeight());
+            mBorderAspectRatio = (float)(mupImage->getTextureWidth()) / (float)(mupImage->getTextureHeight());
         }
 
     }
@@ -61,7 +59,7 @@ namespace eyegui
         int& rWidth,
         int& rHeight) const
     {
-        // TODO: pipe to image
+        mupImage->evaluateSize(availableWidth, availableHeight, rWidth, rHeight);
     }
 
     float Picture::specialUpdate(float tpf, Input* pInput)
@@ -71,6 +69,7 @@ namespace eyegui
 
     void Picture::specialDraw() const
     {
+
         // Bind render item before setting values and drawing
         /*mpQuad->bind();
 
@@ -96,11 +95,14 @@ namespace eyegui
 
         // Draw render item
         mpQuad->draw();*/
+
+        // TODO: Color (shader mimic)
+        mupImage->draw(glm::vec4(1,1,1,1));
     }
 
     void Picture::specialTransformAndSize()
     {
-        // Nothing to do
+        mupImage->transformAndSize(mX, mY, mWidth, mHeight);
     }
 
     void Picture::specialReset()

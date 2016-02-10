@@ -18,6 +18,7 @@
 #include "Font/Font.h"
 #include "Font/TextFlow.h"
 #include "Key.h"
+#include "Image.h"
 
 #include "externals/FreeType2/include/ft2build.h"
 #include FT_FREETYPE_H
@@ -75,6 +76,9 @@ namespace eyegui
 
         // Create key for keyboard and return it as unique pointer
         std::unique_ptr<Key> createKey(Layout const * pLayout, char16_t character);
+
+        // Create image and return it as unique pointer
+        std::unique_ptr<Image> createImage(Layout const * pLayout, std::string filepath, PictureAlignment alignment);
 
     private:
 

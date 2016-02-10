@@ -7,8 +7,9 @@
   - Color of focus in keyboard
 - New class in rendering: image
   - use in element picture
-  - alignments: center, fill, left, right, top, bottom, zoom
+  - alignments: center, fill, zoom
   - use as optional background in blocks
+  - mimic of shader behaviour as method of element super class?
 - put dpi somewhere adjustable (in create gui call?) -> maybe make something like initial config (for font sizes too)
 - TextFlows
   - Percentage scaling
@@ -46,6 +47,7 @@
 	- global "help" mode or just per element?
 - OpenGL state: bound texture not rescued  (neither in texture/font class nor in GLSetup)
 - uniform absolute include pathes
+- common base class for TextFlow, Key and Image
 	
 ### VERSION 1.0
 - Code review!

@@ -7,16 +7,19 @@
 
 #include "Image.h"
 
+#include "Layout.h"
 #include "Rendering/AssetManager.h"
 
 namespace eyegui
 {
     Image::Image(
+        Layout const * pLayout,
         AssetManager* pAssetManager,
         std::string filepath,
         PictureAlignment alignment)
     {
         // Initialize members
+        mpLayout = pLayout;
         mpQuad = pAssetManager->fetchRenderItem(shaders::Type::IMAGE, meshes::Type::QUAD);
         mpTexture = pAssetManager->fetchTexture(filepath);
         mAlignment = alignment;
@@ -26,12 +29,18 @@ namespace eyegui
         mHeight = 0;
     }
 
+    Image::~Image()
+    {
+        // Nothing to do
+    }
+
     void Image::evaluateSize(
         int availableWidth,
         int availableHeight,
         int& rWidth,
         int& rHeight) const
     {
+        // TODO: Zoom
         if (mAlignment == PictureAlignment::ORIGINAL)
         {
             float availableAspectRatio = ((float)availableWidth) / ((float)availableHeight);
@@ -74,5 +83,32 @@ namespace eyegui
         // Bind render item before setting values and drawing
         mpQuad->bind();
 
+        // Fill uniforms
+        mpQuad->getShader()->fillValue(
+            "matrix",
+            calculateDrawMatrix(
+                mpLayout->getLayoutWidth(),
+                mpLayout->getLayoutHeight(),
+                mX,
+                mY,
+                mWidth,
+                mHeight));
+        mpQuad->getShader()->fillValue("color", color);
+
+        // Bind texture to render
+        mpTexture->bind(0);
+
+        // Draw the quad
+        mpQuad->draw();
+    }
+
+    uint Image::getTextureWidth() const
+    {
+        return (uint)(mpTexture->getWidth());
+    }
+
+    uint Image::getTextureHeight() const
+    {
+        return (uint)(mpTexture->getHeight());
     }
 }
