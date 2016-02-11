@@ -87,8 +87,6 @@ namespace eyegui
 
     void Image::draw(glm::vec4 color) const
     {
-        // TODO: do somthing about scaled alignment
-
         // Bind render item before setting values and drawing
         mpQuad->bind();
 
