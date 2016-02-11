@@ -11,7 +11,6 @@
 #define TEXT_BLOCK_H_
 
 #include "Block.h"
-#include "Rendering/Font/TextFlow.h"
 
 namespace eyegui
 {
