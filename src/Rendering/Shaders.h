@@ -118,18 +118,19 @@ namespace eyegui
 
         // Uniforms:
         // sampler2D icon
+        // vec2 scale
         // vec4 color
         static const char* pImageFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform sampler2D icon;\n"
+            "uniform vec2 scale;\n"
             "uniform vec4 color;\n"
             "void main() {\n"
-            "   vec4 col = texture(icon, uv);\n"
+            "   vec4 col = texture(icon, ((uv - 0.5) * scale) + 0.5);\n"
             "   fragColor = vec4(col * color);\n"
             "}\n";
-
 
         // Uniforms:
         // sampler2D icon

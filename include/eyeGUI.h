@@ -57,9 +57,9 @@ namespace eyegui
     /*! This enum is defined directly in the interface because it is needed by some functions. */
     enum class TextFlowVerticalAlignment { TOP, CENTER, BOTTOM };
 
-    //! Enumeration of possible picture alignments.
+    //! Enumeration of possible image alignments.
     /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */
-    enum class PictureAlignment { ORIGINAL, STRETCHED };
+    enum class ImageAlignment { ORIGINAL, STRETCHED, ZOOMED };
 
     //! Abstract listener class for buttons.
     class ButtonListener
@@ -623,15 +623,14 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param filepath is the path to the image used in the picture element.
-      \param alignment is the inner alignment of the picture.
+      \param alignment is the alignment of the picture.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithPicture(
         Layout* pLayout,
         std::string id,
         std::string filepath,
-        PictureAlignment
-        alignment,
+        ImageAlignment alignment,
         bool fade = false);
 
     //! Replace element with blank.

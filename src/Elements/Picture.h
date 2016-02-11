@@ -31,7 +31,7 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             std::string filepath,
-            PictureAlignment alignment);
+            ImageAlignment alignment);
 
         // Destructor
         virtual ~Picture();

@@ -789,7 +789,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithPicture(std::string id, std::string filepath, PictureAlignment alignment, bool fade)
+    void Layout::replaceElementWithPicture(std::string id, std::string filepath, ImageAlignment alignment, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)

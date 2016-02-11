@@ -16,7 +16,7 @@ namespace eyegui
         Layout const * pLayout,
         AssetManager* pAssetManager,
         std::string filepath,
-        PictureAlignment alignment)
+        ImageAlignment alignment)
     {
         // Initialize members
         mpLayout = pLayout;
@@ -40,33 +40,40 @@ namespace eyegui
         int& rWidth,
         int& rHeight) const
     {
-        // TODO: Zoom
-        if (mAlignment == PictureAlignment::ORIGINAL)
+        switch(mAlignment)
         {
-            float availableAspectRatio = ((float)availableWidth) / ((float)availableHeight);
-            float aspectRatio = (float)(mpTexture->getWidth()) / (float)(mpTexture->getHeight());
-
-            if (availableAspectRatio < aspectRatio)
+        case ImageAlignment::ORIGINAL:
             {
-                // Horizontal space less than necessary
-                rWidth = availableWidth;
+                // Extra parenthesis somehow necessary because of variable initialization
+                float availableAspectRatio = ((float)availableWidth) / ((float)availableHeight);
+                float aspectRatio = mpTexture->getAspectRatio();
 
-                // Adjust vertical size
-                rHeight = (int)((float)rWidth / aspectRatio);
-            }
-            else
-            {
-                // Vertical space less than necessary
-                rHeight = availableHeight;
+                if (availableAspectRatio < aspectRatio)
+                {
+                    // Horizontal space less than necessary
+                    rWidth = availableWidth;
 
-                // Adjust horizontal size
-                rWidth = (int)((float)rHeight * aspectRatio);
+                    // Adjust vertical size
+                    rHeight = (int)((float)rWidth / aspectRatio);
+                }
+                else
+                {
+                    // Vertical space less than necessary
+                    rHeight = availableHeight;
+
+                    // Adjust horizontal size
+                    rWidth = (int)((float)rHeight * aspectRatio);
+                }
+                break;
             }
-        }
-        else
-        {
+        case ImageAlignment::STRETCHED:
             rWidth = availableWidth;
             rHeight = availableHeight;
+            break;
+        case ImageAlignment::ZOOMED:
+            rWidth = availableWidth;
+            rHeight = availableHeight;
+            break;
         }
     }
 
@@ -80,10 +87,12 @@ namespace eyegui
 
     void Image::draw(glm::vec4 color) const
     {
+        // TODO: do somthing about scaled alignment
+
         // Bind render item before setting values and drawing
         mpQuad->bind();
 
-        // Fill uniforms
+        // Fill matrix
         mpQuad->getShader()->fillValue(
             "matrix",
             calculateDrawMatrix(
@@ -93,7 +102,30 @@ namespace eyegui
                 mY,
                 mWidth,
                 mHeight));
+
+        // Fill color
         mpQuad->getShader()->fillValue("color", color);
+
+        // Fill scale
+        glm::vec2 scale = glm::vec2(1.f,1.f);
+        if(mAlignment == ImageAlignment::ZOOMED)
+        {
+            float availableAspectRatio = ((float)mWidth) / ((float)mHeight);
+            float aspectRatio = mpTexture->getAspectRatio();
+
+            if (availableAspectRatio < aspectRatio)
+            {
+                // Horizontal space less than necessary
+                scale.x = availableAspectRatio / aspectRatio;
+            }
+            else
+            {
+                // Vertical space less than necessary
+                scale.y = aspectRatio / availableAspectRatio;
+            }
+
+        }
+        mpQuad->getShader()->fillValue("scale", scale);
 
         // Bind texture to render
         mpTexture->bind(0);

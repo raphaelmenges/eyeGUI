@@ -310,7 +310,7 @@ namespace eyegui
         pLayout->replaceElementWithBlock(id, consumeInput, fade);
     }
 
-    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, PictureAlignment alignment, bool fade)
+    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, ImageAlignment alignment, bool fade)
     {
         pLayout->replaceElementWithPicture(id, filepath, alignment, fade);
     }

@@ -78,7 +78,7 @@ namespace eyegui
         std::unique_ptr<Key> createKey(Layout const * pLayout, char16_t character);
 
         // Create image and return it as unique pointer
-        std::unique_ptr<Image> createImage(Layout const * pLayout, std::string filepath, PictureAlignment alignment);
+        std::unique_ptr<Image> createImage(Layout const * pLayout, std::string filepath, ImageAlignment alignment);
 
     private:
 

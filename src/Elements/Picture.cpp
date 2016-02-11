@@ -22,7 +22,7 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string filepath,
-        PictureAlignment alignment) : Element(
+        ImageAlignment alignment) : Element(
             id,
             styleName,
             pParent,
@@ -40,8 +40,8 @@ namespace eyegui
         // Fill members
         mupImage = std::move(mpAssetManager->createImage(mpLayout, filepath, alignment));
 
-        // Aspect ratio of border should be preserved if necessary
-        if (alignment == PictureAlignment::ORIGINAL)
+        // Aspect ratio of border should be preserved if necessary (only when pictue is neither zoomed nor stretched)
+        if (alignment == ImageAlignment::ORIGINAL)
         {
             mBorderAspectRatio = (float)(mupImage->getTextureWidth()) / (float)(mupImage->getTextureHeight());
         }

@@ -340,7 +340,7 @@ namespace eyegui
                     character)));
     }
 
-    std::unique_ptr<Image> AssetManager::createImage(Layout const * pLayout, std::string filepath, PictureAlignment alignment)
+    std::unique_ptr<Image> AssetManager::createImage(Layout const * pLayout, std::string filepath, ImageAlignment alignment)
     {
         return std::move(
             std::unique_ptr<Image>(

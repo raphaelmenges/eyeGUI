@@ -286,14 +286,18 @@ namespace eyegui
 
             // Get alignment
             std::string alignmentValue = parseStringAttribute("alignment", xmlPicture);
-            PictureAlignment alignment;
+            ImageAlignment alignment;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "original")
             {
-                alignment = PictureAlignment::ORIGINAL;
+                alignment = ImageAlignment::ORIGINAL;
             }
             else if (alignmentValue == "stretched")
             {
-                alignment = PictureAlignment::STRETCHED;
+                alignment = ImageAlignment::STRETCHED;
+            }
+            else if (alignmentValue == "zoomed")
+            {
+                alignment = ImageAlignment::ZOOMED;
             }
             else
             {

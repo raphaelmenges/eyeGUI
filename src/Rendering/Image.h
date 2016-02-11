@@ -32,7 +32,7 @@ namespace eyegui
             Layout const * pLayout,
             AssetManager* pAssetManager,
             std::string filepath,
-            PictureAlignment alignment);
+            ImageAlignment alignment);
 
         // Deconstructor
         virtual ~Image();
@@ -60,7 +60,7 @@ namespace eyegui
         Layout const * mpLayout;
         RenderItem const * mpQuad;
         Texture const * mpTexture;
-        PictureAlignment mAlignment;
+        ImageAlignment mAlignment;
         int mX;
         int mY;
         int mWidth;

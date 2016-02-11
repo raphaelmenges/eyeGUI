@@ -193,7 +193,7 @@ namespace eyegui
         void replaceElementWithBlock(std::string id, bool consumeInput, bool fade);
 
         // Replace any element with picture
-        void replaceElementWithPicture(std::string id, std::string filepath, PictureAlignment alignment, bool fade);
+        void replaceElementWithPicture(std::string id, std::string filepath, ImageAlignment alignment, bool fade);
 
         // Replace any element with blank
         void replaceElementWithBlank(std::string id, bool fade);

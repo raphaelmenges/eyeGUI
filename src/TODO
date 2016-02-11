@@ -1,8 +1,8 @@
 ### VERSION 0.8
 - New class in rendering: image
-  - image! alignments: center, fill, zoom (remind to change ALL the shit everywhere about picture alignment...also wiki)
+  - wiki: image alignment + zoomed alignment possible
   - use as optional background in blocks
-  - mimic of shader behaviour as method of element super class?
+  - mimic of shader behaviour as method of element super class? -> try to use it in ALL elements
   
 - Keyboard
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
