@@ -56,7 +56,7 @@ namespace eyegui
         }
         else
         {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "GUI was tried to terminate but is already terminated");
+            throwWarning(OperationNotifier::Operation::RUNTIME, "GUI was tried to terminate but is NULL pointer");
         }
     }
 
