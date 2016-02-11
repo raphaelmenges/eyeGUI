@@ -85,7 +85,7 @@ namespace eyegui
         mHeight = height;
     }
 
-    void Image::draw(glm::vec4 color) const
+    void Image::draw(float alpha, float activity, glm::vec4 dimColor, float dim, glm::vec4 markColor, float mark) const
     {
         // Bind render item before setting values and drawing
         mpQuad->bind();
@@ -101,8 +101,13 @@ namespace eyegui
                 mWidth,
                 mHeight));
 
-        // Fill color
-        mpQuad->getShader()->fillValue("color", color);
+        // Fill values
+        mpQuad->getShader()->fillValue("alpha", alpha);
+        mpQuad->getShader()->fillValue("activity", activity);
+        mpQuad->getShader()->fillValue("dimColor", dimColor);
+        mpQuad->getShader()->fillValue("dim", dim);
+        mpQuad->getShader()->fillValue("markColor", markColor);
+        mpQuad->getShader()->fillValue("mark", mark);
 
         // Fill scale
         glm::vec2 scale = glm::vec2(1.f,1.f);

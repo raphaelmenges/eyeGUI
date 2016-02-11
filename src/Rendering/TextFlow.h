@@ -22,6 +22,7 @@ namespace eyegui
 {
     // Forward declaration
     class GUI;
+    class AssetManager;
 
     class TextFlow
     {
@@ -30,11 +31,11 @@ namespace eyegui
         // Constructor
         TextFlow(
             GUI const * pGUI,
+            AssetManager* pAssetManager,
             Font const * pFont,
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
-            Shader const * pShader,
             std::u16string content);
 
         // Destructor
@@ -71,6 +72,7 @@ namespace eyegui
 
         // Members
         GUI const * mpGUI;
+        AssetManager* mpAssetManager;
         Font const * mpFont;
         FontSize mFontSize;
         TextFlowAlignment mAlignment;

@@ -8,30 +8,35 @@
 #include "TextFlow.h"
 
 #include "GUI.h"
+#include "AssetManager.h"
 #include "OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
+
 #include <cmath>
 
 namespace eyegui
 {
     TextFlow::TextFlow(
         GUI const * pGUI,
+        AssetManager* pAssetManager,
         Font const * pFont,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
-        Shader const * pShader,
         std::u16string content)
     {
         // Fill members
         mpGUI = pGUI;
+        mpAssetManager = pAssetManager;
         mpFont = pFont;
         mFontSize = fontSize;
         mAlignment = alignment;
         mVerticalAlignment = verticalAlignment;
-        mpShader = pShader;
         mContent = content;
         mFlowHeight = 0;
+
+        // Fetch shader
+        mpShader = mpAssetManager->fetchShader(shaders::Type::TEXT_FLOW);
 
         // TransformAndSize has to be called before usage
         mX = 0;

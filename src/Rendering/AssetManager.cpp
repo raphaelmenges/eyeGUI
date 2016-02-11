@@ -193,8 +193,8 @@ namespace eyegui
             case shaders::Type::SENSOR:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSensorFragmentShader));
                 break;
-            case shaders::Type::FONT:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pFontFragmentShader));
+            case shaders::Type::TEXT_FLOW:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pTextFlowFragmentShader));
                 break;
             case shaders::Type::KEY:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
@@ -321,11 +321,11 @@ namespace eyegui
             std::unique_ptr<TextFlow>(
                 new TextFlow(
                     mpGUI,
+                    this,
                     mpGUI->getDefaultFont(),
                     fontSize,
                     alignment,
                     verticalAlignment,
-                    fetchShader(shaders::Type::FONT),
                     content)));
     }
 

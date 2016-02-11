@@ -8,10 +8,10 @@
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
   - Wiki entry... (extra page or in elements? -> both)
   - Clean up Key and Keyboard class
-  - Keyboard should be subclass of interactable...
+  - Keyboard should be subclass of interactive... (at the moment, all have an icon...make super class for all with ONE icon....)
   - Color of focus in keyboard
   
-- put dpi somewhere adjustable (in create gui call?) -> maybe make something like initial config (for font sizes too)
+- put dpi somewhere adjustable (in create gui call?) -> maybe make something like initial config (for font sizes too)4
 
 - TextBlock
   - Percentage scaling 

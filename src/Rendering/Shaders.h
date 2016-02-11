@@ -79,7 +79,7 @@ namespace eyegui
         // sampler2D atlas
         // float alpha
         // vec4 color
-        static const char* pFontFragmentShader =
+        static const char* pTextFlowFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
@@ -119,17 +119,30 @@ namespace eyegui
         // Uniforms:
         // sampler2D icon
         // vec2 scale
-        // vec4 color
+        // vec4 dimColor
+        // vec4 markColor
+        // float alpha
+        // float activity
+        // float dim
+        // float mark
         static const char* pImageFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
-            "uniform sampler2D icon;\n"
+            "uniform sampler2D image;\n"
             "uniform vec2 scale;\n"
-            "uniform vec4 color;\n"
+            "uniform float alpha;\n"
+            "uniform vec4 dimColor;\n"
+            "uniform vec4 markColor;\n"
+            "uniform float activity;\n"
+            "uniform float dim;\n"
+            "uniform float mark;\n"
             "void main() {\n"
-            "   vec4 col = texture(icon, ((uv - 0.5) * scale) + 0.5);\n"
-            "   fragColor = vec4(col * color);\n"
+            "   vec4 col = texture(image, ((uv - 0.5) * scale) + 0.5);\n" // Fetch color from image
+            "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
+            "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "   fragColor = vec4(col.rgb, col.a * alpha);\n"
             "}\n";
 
         // Uniforms:

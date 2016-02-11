@@ -48,7 +48,7 @@ namespace eyegui
         void transformAndSize(int x, int y, int width, int height);
 
         // Draw
-        void draw(glm::vec4 color) const;
+        void draw(float alpha, float activity, glm::vec4 dimColor, float dim, glm::vec4 markColor, float mark) const;
 
         // Getter for pixel sizes of used texture
         uint getTextureWidth() const;

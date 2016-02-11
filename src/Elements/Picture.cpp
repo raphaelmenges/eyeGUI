@@ -69,35 +69,8 @@ namespace eyegui
 
     void Picture::specialDraw() const
     {
-
-        // Bind render item before setting values and drawing
-        /*mpQuad->bind();
-
-        // Fill matrix in shader
-        mpQuad->getShader()->fillValue("matrix", mFullDrawMatrix);
-
-        // Fill alpha
-        mpQuad->getShader()->fillValue("alpha", mAlpha);
-
-        // Fill activity
-        mpQuad->getShader()->fillValue("activity", mActivity.getValue());
-
-        // Fill dimming
-        mpQuad->getShader()->fillValue("dimColor", getStyle()->dimColor);
-        mpQuad->getShader()->fillValue("dim", mDim.getValue());
-
-        // Fill marking
-        mpQuad->getShader()->fillValue("markColor", getStyle()->markColor);
-        mpQuad->getShader()->fillValue("mark", mMark.getValue());
-
-        // Bind image
-        mpImage->bind(0);
-
-        // Draw render item
-        mpQuad->draw();*/
-
-        // TODO: Color (shader mimic)
-        mupImage->draw(glm::vec4(1,1,1,1));
+        // Draw image owned by this
+        mupImage->draw(mAlpha, mActivity.getValue(), getStyle()->dimColor, mDim.getValue(), getStyle()->markColor, mMark.getValue());
     }
 
     void Picture::specialTransformAndSize()
