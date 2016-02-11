@@ -190,7 +190,12 @@ namespace eyegui
         void setValueOfStyleAttribute(std::string styleName, std::string attribute, glm::vec4 value);
 
         // Replace any element with block
-        void replaceElementWithBlock(std::string id, bool consumeInput, bool fade);
+        void replaceElementWithBlock(
+            std::string id,
+            bool consumeInput,
+            std::string backgroundFilepath,
+            ImageAlignment backgroundAlignment,
+            bool fade);
 
         // Replace any element with picture
         void replaceElementWithPicture(std::string id, std::string filepath, ImageAlignment alignment, bool fade);
@@ -211,6 +216,8 @@ namespace eyegui
         void replaceElementWithTextBlock(
             std::string id,
             bool consumeInput,
+            std::string backgroundFilepath,
+            ImageAlignment backgroundAlignment,
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,

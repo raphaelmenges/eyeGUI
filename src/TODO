@@ -1,7 +1,7 @@
 ### VERSION 0.8
-- New class in rendering: image
-  - wiki: image alignment + zoomed alignment possible
-  - use as optional background in blocks
+-wiki
+  - image alignment + zoomed alignment possible
+  - in all block elements: background image / alignment (backgroundsrc, backgroundalignment)
   
 - Keyboard
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)

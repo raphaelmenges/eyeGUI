@@ -22,6 +22,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         float innerBorder) : Element(
             id,
             styleName,
@@ -45,6 +47,12 @@ namespace eyegui
         mpBackground = mpAssetManager->fetchRenderItem(
             shaders::Type::BLOCK,
             meshes::Type::QUAD);
+
+        // Fetch background image if one is wanted
+        if(backgroundFilepath != EMPTY_STRING_ATTRIBUTE)
+        {
+            mupImage = mpAssetManager->createImage(mpLayout, backgroundFilepath, backgroundAlignment);
+        }
     }
 
     Block::~Block()
@@ -60,6 +68,7 @@ namespace eyegui
 
     void Block::specialDraw() const
     {
+        // Draw simple background color
         if (getStyle()->backgroundColor.a > 0)
         {
             // Bind render item before setting values and drawing
@@ -83,12 +92,24 @@ namespace eyegui
             mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
             mpBackground->getShader()->fillValue("dim", mDim.getValue());
 
-			// Fill marking
-			mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
-			mpBackground->getShader()->fillValue("mark", mMark.getValue());
+            // Fill marking
+            mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
+            mpBackground->getShader()->fillValue("mark", mMark.getValue());
 
             // Draw render item
             mpBackground->draw();
+        }
+
+        // Draw background image if available
+        if(mupImage != NULL)
+        {
+            mupImage->draw(
+                mAlpha,
+                mActivity.getValue(),
+                getStyle()->dimColor,
+                mDim.getValue(),
+                getStyle()->markColor,
+                mMark.getValue());
         }
     }
 

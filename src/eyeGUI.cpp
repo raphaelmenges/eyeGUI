@@ -305,9 +305,15 @@ namespace eyegui
         pLayout->registerKeyboardListener(id, wpListener);
     }
 
-    void replaceElementWithBlock(Layout* pLayout, std::string id, bool consumeInput, bool fade)
+    void replaceElementWithBlock(
+        Layout* pLayout,
+        std::string id,
+        bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
+        bool fade)
     {
-        pLayout->replaceElementWithBlock(id, consumeInput, fade);
+        pLayout->replaceElementWithBlock(id, consumeInput, backgroundFilepath, backgroundAlignment, fade);
     }
 
     void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, ImageAlignment alignment, bool fade)
@@ -345,9 +351,22 @@ namespace eyegui
         std::u16string content,
         float innerBorder,
         std::string key,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         bool fade)
     {
-        pLayout->replaceElementWithTextBlock(id, consumeInput, fontSize, alignment, verticalAlignment, content, innerBorder, key, fade);
+        pLayout->replaceElementWithTextBlock(
+            id,
+            consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
+            fontSize,
+            alignment,
+            verticalAlignment,
+            content,
+            innerBorder,
+            key,
+            fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)

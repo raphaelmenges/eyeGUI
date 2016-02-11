@@ -9,6 +9,7 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
+#include "include/eyeGUI.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <string>
@@ -44,6 +45,7 @@ namespace eyegui
     static const std::u16string LOCALIZATION_NOT_FOUND = u"";
     static const float KEY_CIRCLE_CHARACTER_SIZE_RATIO = 0.6f;
     static const float KEYBOARD_HORIZONTAL_KEY_DISTANCE = 0.15f;
+    static const ImageAlignment STANDARD_IMAGE_ALIGNMENT = ImageAlignment::ZOOMED;
 }
 
 #endif // DEFINES_H_

@@ -754,7 +754,12 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithBlock(std::string id, bool consumeInput, bool fade)
+    void Layout::replaceElementWithBlock(
+        std::string id,
+        bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
+        bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -772,7 +777,9 @@ namespace eyegui
                 pElement->getBorder(),
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
-                consumeInput));
+                consumeInput,
+                backgroundFilepath,
+                backgroundAlignment));
                 // innerBorder is 0 by default and not necessary for block
 
             Element* pBlock = upBlock.get();
@@ -964,6 +971,8 @@ namespace eyegui
     void Layout::replaceElementWithTextBlock(
         std::string id,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
@@ -989,6 +998,8 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 consumeInput,
+                backgroundFilepath,
+                backgroundAlignment,
                 innerBorder,
                 fontSize,
                 alignment,

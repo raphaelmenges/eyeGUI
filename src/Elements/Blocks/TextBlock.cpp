@@ -25,6 +25,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         float innerBorder,
         FontSize fontSize,
         TextFlowAlignment alignment,
@@ -43,6 +45,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
             innerBorder)
     {
         mType = Type::TEXT_BLOCK;

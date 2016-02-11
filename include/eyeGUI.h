@@ -610,12 +610,17 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param consumeInput indicates, whether block consumes given input.
+      \param backgroundFilepath is path to image rendered in background.
+             Use empty string to indicate no background image.
+      \param backgroundAlignment indicates alignment of background image.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithBlock(
         Layout* pLayout,
         std::string id,
         bool consumeInput,
+        std::string backgroundFilepath = "",
+        ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,
         bool fade = false);
 
     //! Replace element with picture.
@@ -692,6 +697,9 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param consumeInput indicates, whether block consumes given input.
+      \param backgroundFilepath is path to image rendered in background.
+             Use empty string to indicate no background image.
+      \param backgroundAlignment indicates alignment of background image.
       \param fontSize is size of used font.
       \param alignment is alignment of text.
       \param verticalAlignment is vertical alignment of text.
@@ -710,6 +718,8 @@ namespace eyegui
         std::u16string content,
         float innerBorder,
         std::string key = "",
+        std::string backgroundFilepath = "",
+        ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,
         bool fade = false);
 
     //! Replace element with brick.

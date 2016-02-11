@@ -32,6 +32,8 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             bool consumeInput,
+            std::string backgroundFilepath,
+            ImageAlignment backgroundAlignment,
             float innerBorder,
             FontSize fontSize,
             TextFlowAlignment alignment,
