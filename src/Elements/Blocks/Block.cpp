@@ -115,6 +115,20 @@ namespace eyegui
 
     void Block::specialTransformAndSize()
     {
+        // Background image placing
+        if(mupImage != NULL)
+        {
+            // First, evaluate size of image (not in own evaluation method, because
+            // this element is not dependend on image size.
+            int imageWidth, imageHeight;
+            mupImage->evaluateSize(mWidth, mHeight, imageWidth, imageHeight);
+
+            // Center image in element
+            int imageDeltaX = (mWidth - imageWidth) / 2;
+            int imageDeltaY = (mHeight - imageHeight) / 2;
+            mupImage->transformAndSize(mX + imageDeltaX, mY + imageDeltaY, imageWidth, imageHeight);
+        }
+
         // Use inner border
         int usedBorder;
         if (getOrientation() == Element::Orientation::HORIZONTAL)
@@ -129,6 +143,8 @@ namespace eyegui
         mInnerY = mY + usedBorder / 2;
         mInnerWidth = mWidth - usedBorder;
         mInnerHeight = mHeight - usedBorder;
+
+
     }
 
     void Block::specialReset()
