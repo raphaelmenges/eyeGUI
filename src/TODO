@@ -2,7 +2,6 @@
 - New class in rendering: image
   - wiki: image alignment + zoomed alignment possible
   - use as optional background in blocks
-  - mimic of shader behaviour as method of element super class? -> try to use it in ALL elements
   
 - Keyboard
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
@@ -18,6 +17,7 @@
     - text flow already has something, but too simple at draw time. one need it at calculating mesh.
       in addition, should recognize scaling != 100% to change filtering
   - Display text even at overflow (maybe cut it and display '...')
+  - if there is no space in one line and word is too long for it, try to cut it
 
 - Enable jpeg (and more) loading (update wiki!)
 

@@ -70,7 +70,13 @@ namespace eyegui
     void Picture::specialDraw() const
     {
         // Draw image owned by this
-        mupImage->draw(mAlpha, mActivity.getValue(), getStyle()->dimColor, mDim.getValue(), getStyle()->markColor, mMark.getValue());
+        mupImage->draw(
+            mAlpha,
+            mActivity.getValue(),
+            getStyle()->dimColor,
+            mDim.getValue(),
+            getStyle()->markColor,
+            mMark.getValue());
     }
 
     void Picture::specialTransformAndSize()
