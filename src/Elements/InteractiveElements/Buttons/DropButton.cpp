@@ -88,7 +88,7 @@ namespace eyegui
     void DropButton::attachInnerElement(std::unique_ptr<Element> upElement)
     {
         // Condition to allow only one inner child
-        if (mChildren.size() == 0)
+        if (mChildren.empty())
         {
             // Should be the only one
             mChildren.push_back(std::move(upElement));
