@@ -137,12 +137,12 @@ namespace eyegui
         mpQuad->draw();
     }
 
-    uint Image::getTextureWidth() const
+    unsigned int Image::getTextureWidth() const
     {
         return (uint)(mpTexture->getWidth());
     }
 
-    uint Image::getTextureHeight() const
+	unsigned int Image::getTextureHeight() const
     {
         return (uint)(mpTexture->getHeight());
     }

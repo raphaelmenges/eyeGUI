@@ -51,8 +51,8 @@ namespace eyegui
         void draw(float alpha, float activity, glm::vec4 dimColor, float dim, glm::vec4 markColor, float mark) const;
 
         // Getter for pixel sizes of used texture
-        uint getTextureWidth() const;
-        uint getTextureHeight() const;
+        unsigned int getTextureWidth() const;
+		unsigned int getTextureHeight() const;
 
     private:
 
