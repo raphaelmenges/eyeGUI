@@ -115,13 +115,13 @@ namespace eyegui
                 std::transform(input.begin(), input.end(), input.begin(), ::tolower);
 
                 // Check token
-                if (input.compare("png") == 0)
-                {
-                    rupTexture = std::unique_ptr<Texture>(new PixelTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
-                }
-                else if (input.compare("svg") == 0)
+                if (input.compare("svg") == 0)
                 {
                     rupTexture = std::unique_ptr<Texture>(new VectorTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
+                }
+                else if (input.compare("png") == 0 || input.compare("jpg") == 0 || input.compare("jpeg") == 0 || input.compare("tga") == 0 || input.compare("bmp") == 0)
+                {
+                    rupTexture = std::unique_ptr<Texture>(new PixelTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
                 }
                 else
                 {
