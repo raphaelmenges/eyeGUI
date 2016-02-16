@@ -40,7 +40,8 @@ namespace eyegui
             int height,
             std::string fontFilepath,
             CharacterSet characterSet,
-            std::string localizationFilepath);
+            std::string localizationFilepath,
+            float vectorGraphicsDPI);
 
         // Destructor
         virtual ~GUI();
@@ -101,6 +102,9 @@ namespace eyegui
 
         // Get string content from localization
         std::u16string getContentFromLocalization(std::string key) const;
+
+        // Get dpi for rasterization of vector graphics
+        float getVectorGraphicsDPI() const;
 
     private:
 
@@ -213,6 +217,7 @@ namespace eyegui
         std::vector<std::unique_ptr<GUIJob> > mJobs;
         std::unique_ptr<GazeDrawer> mupGazeDrawer;
         bool mDrawGazeVisualization;
+        float mVectorGraphicsDPI;
     };
 }
 

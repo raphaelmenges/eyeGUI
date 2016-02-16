@@ -178,8 +178,9 @@ namespace eyegui
         int width; //!< width of GUI as integer
         int height; //!< height of GUI as integer
         std::string fontFilepath = ""; //!< fontFilepath is path to a .ttf font file
-        CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< characterSet used to initialize font rendering.
+        CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< characterSet used to initialize font rendering
         std::string localizationFilepath = ""; //!< localizationFilepath is path to a .leyegui file
+        float vectorGraphicsDPI = 96.0f; //!< dpi which are used to rasterize vector graphics
     };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.

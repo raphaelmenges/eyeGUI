@@ -32,7 +32,6 @@ namespace eyegui
     static const std::string CONFIG_EXTENSION = "ceyegui";
     static const std::string STYLESHEET_EXTENSION = "seyegui";
     static const std::string LOCALIZATION_EXTENSION = "leyegui";
-    static const float SVG_DPI = 96;
     static const int NOTIFICATION_MAX_LOOP_COUNT = 10;
     static const float ACCUMULATED_TIME_PERIOD = 1800.0f;
     static const float FONT_CHARACTER_PADDING = 0.07f; // Percentage of height

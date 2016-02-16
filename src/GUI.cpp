@@ -21,7 +21,8 @@ namespace eyegui
         int height,
         std::string fontFilepath,
         CharacterSet characterSet,
-        std::string localizationFilepath)
+        std::string localizationFilepath,
+        float vectorGraphicsDPI)
     {
         // Initialize members
         mWidth = width;
@@ -36,6 +37,7 @@ namespace eyegui
         mResizeWaitTime = 0;
         mupGazeDrawer = std::unique_ptr<GazeDrawer>(new GazeDrawer(this, mupAssetManager.get()));
         mDrawGazeVisualization = false;
+        mVectorGraphicsDPI = vectorGraphicsDPI;
 
         // Initialize OpenGL
         ogl_LoadFunctions();
@@ -263,6 +265,11 @@ namespace eyegui
         {
             return LOCALIZATION_NOT_FOUND;
         }
+    }
+
+    float GUI::getVectorGraphicsDPI() const
+    {
+        return mVectorGraphicsDPI;
     }
 
     int GUI::findLayout(Layout const * pLayout) const

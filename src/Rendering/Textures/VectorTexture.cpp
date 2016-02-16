@@ -20,7 +20,7 @@
 
 namespace eyegui
 {
-    VectorTexture::VectorTexture(std::string filepath, Filtering filtering, Wrap wrap) : Texture()
+    VectorTexture::VectorTexture(std::string filepath, Filtering filtering, Wrap wrap, float dpi) : Texture()
     {
         // Check file format
         if (!checkFileNameExtension(filepath, "svg"))
@@ -29,7 +29,7 @@ namespace eyegui
         }
 
         // Parse file
-        NSVGimage* svg = nsvgParseFromFile(buildPath(filepath).c_str(), "px", SVG_DPI);
+        NSVGimage* svg = nsvgParseFromFile(buildPath(filepath).c_str(), "px", dpi);
 
         // Check whether file found and parsed
         if (svg == NULL)
@@ -44,12 +44,12 @@ namespace eyegui
         nsvgDelete(svg);
     }
 
-    VectorTexture::VectorTexture(std::string const * pGraphic, Filtering filtering, Wrap wrap)
+    VectorTexture::VectorTexture(std::string const * pGraphic, Filtering filtering, Wrap wrap, float dpi)
     {
         // Parse graphics
         char* str = static_cast<char*>(malloc(sizeof(char) * pGraphic->size() + 1));
         strcpy(str, pGraphic->data());
-        NSVGimage* svg = nsvgParse(str, "px", SVG_DPI);
+        NSVGimage* svg = nsvgParse(str, "px", dpi);
         free(str);
 
         // Rasterize it and create OpenGL texture

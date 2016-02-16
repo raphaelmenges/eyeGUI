@@ -10,8 +10,6 @@
   - Clean up Key and Keyboard class
   - Keyboard should be subclass of interactive... (at the moment, all have an icon...make super class for all with ONE icon....)
   - Color of focus in keyboard
-  
-- put dpi somewhere adjustable (in create gui call?) -> maybe make something like initial config (for font sizes too)4
 
 - TextBlock
   - Percentage scaling 
