@@ -1,5 +1,5 @@
 ### VERSION 0.8
--wiki
+- Wiki
   - image alignment + zoomed alignment possible
   - in all block elements: background image / alignment (backgroundsrc, backgroundalignment)
   - more image formats than png can be loaded
@@ -20,6 +20,8 @@
 
 ### VERSION 0.9
 - Multilingual keyboard with different subboards (for extra characters not used often)
+  - Change between small and big letters
+  - Think about different key maps (?) (extra letters, smileys)
 - extra font atlas for keyboard (do not use tall one anymore)
 
 ### VERSION 0.10
@@ -27,8 +29,6 @@
 - Advanced TextInput
   - "Guesser" (tries to guess what you want to write)
 	  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
-  - Change between small and big letters
-	- Think about different key maps (?) (extra letters, smileys)
 
 ### VERSION 0.11
 - Audio (PortAudio library?)
