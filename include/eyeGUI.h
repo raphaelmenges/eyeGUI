@@ -169,21 +169,18 @@ namespace eyegui
         bool instantInteraction = false; //!< Instant interaction with element beneath gaze
     };
 
-    //! Creates GUI and returns pointer to it.
-    /*!
-      \param width of GUI as integer.
-      \param height of GUI as integer
-      \param fontFilepath is path to a .ttf font file
-      \param characterSet used to initialize font rendering.
-      \param localizationFilepath is path to a .leyegui file
-      \return pointer to created GUI.
-    */
-    GUI* createGUI(
-        int width,
-        int height,
-        std::string fontFilepath = "",
-        CharacterSet characterSet = CharacterSet::US_ENGLISH,
-        std::string localizationFilepath = "");
+    //! Builder for GUI
+    class GUIBuilder
+    {
+    public:
+
+        GUI* construct() const; //!< returns pointer to built GUI
+        int width; //!< width of GUI as integer
+        int height; //!< height of GUI as integer
+        std::string fontFilepath = ""; //!< fontFilepath is path to a .ttf font file
+        CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< characterSet used to initialize font rendering.
+        std::string localizationFilepath = ""; //!< localizationFilepath is path to a .leyegui file
+    };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.
     /*!

@@ -17,14 +17,9 @@ static const std::string VERSION_STRING = "0.8";
 
 namespace eyegui
 {
-    GUI* createGUI(
-        int width,
-        int height,
-        std::string fontFilepath,
-        CharacterSet characterSet,
-        std::string localizationFilepath)
+    GUI* GUIBuilder::construct() const
     {
-        return (new GUI(width, height, fontFilepath, characterSet, localizationFilepath));
+        return new GUI(width, height, fontFilepath, characterSet, localizationFilepath);
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
