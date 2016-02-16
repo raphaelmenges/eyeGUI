@@ -14,7 +14,6 @@
 
 // stb_image wants those defines
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_ONLY_PNG // Force people to use a good pixel graphics format
 
 #include "externals/stb/stb_image.h"
 

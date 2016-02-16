@@ -2,6 +2,7 @@
 -wiki
   - image alignment + zoomed alignment possible
   - in all block elements: background image / alignment (backgroundsrc, backgroundalignment)
+  - more image formats than png can be loaded
   
 - Keyboard
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
@@ -18,8 +19,6 @@
       in addition, should recognize scaling != 100% to change filtering
   - Display text even at overflow (maybe cut it and display '...')
   - if there is no space in one line and word is too long for it, try to cut it
-
-- Enable jpeg (and more) loading (update wiki!)
 
 ### VERSION 0.9
 - Multilingual keyboard with different subboards (for extra characters not used often)
