@@ -17,12 +17,18 @@ namespace eyegui
         std::string filepath,
         std::unique_ptr<FT_Face> upFace,
         std::set<char16_t> characterSet,
-        int windowHeight) : Font()
+        int windowHeight,
+        float fontTallSize,
+        float fontMediumSize,
+        float fontSmallSize) : Font()
     {
         // Fill members
         mFilepath = filepath;
         mupFace = std::move(upFace);
         mCharacterSet = characterSet;
+        mFontTallSize = fontTallSize;
+        mFontMediumSize = fontMediumSize;
+        mFontSmallSize = fontSmallSize;
 
         // Initilialize textures
         glGenTextures(1, &mTallTexture);
@@ -108,34 +114,34 @@ namespace eyegui
 
     void AtlasFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering) const
     {
-		// Choose slot
-		glActiveTexture(GL_TEXTURE0 + slot);
+        // Choose slot
+        glActiveTexture(GL_TEXTURE0 + slot);
 
-		// Bind atlas texture
+        // Bind atlas texture
         switch (fontSize)
         {
         case FontSize::TALL:
-			glBindTexture(GL_TEXTURE_2D, mTallTexture);
+            glBindTexture(GL_TEXTURE_2D, mTallTexture);
             break;
         case FontSize::MEDIUM:
-			glBindTexture(GL_TEXTURE_2D, mMediumTexture);
+            glBindTexture(GL_TEXTURE_2D, mMediumTexture);
             break;
         case FontSize::SMALL:
-			glBindTexture(GL_TEXTURE_2D, mSmallTexture);
+            glBindTexture(GL_TEXTURE_2D, mSmallTexture);
             break;
         }
 
-		// Set sampling
-		if (linearFiltering)
-		{
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		}
-		else
-		{
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		}
+        // Set sampling
+        if (linearFiltering)
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        }
+        else
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        }
     }
 
     Glyph const * AtlasFont::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
@@ -161,9 +167,9 @@ namespace eyegui
 
     void AtlasFont::fillPixelHeights(int windowHeight)
     {
-        mTallPixelHeight = (int)(windowHeight * FONT_TALL_SCREEN_HEIGHT);
-        mMediumPixelHeight = (int)(windowHeight * FONT_MEDIUM_SCREEN_HEIGHT);
-        mSmallPixelHeight = (int)(windowHeight * FONT_SMALL_SCREEN_HEIGHT);
+        mTallPixelHeight = (int)(windowHeight * mFontTallSize);
+        mMediumPixelHeight = (int)(windowHeight * mFontMediumSize);
+        mSmallPixelHeight = (int)(windowHeight * mFontSmallSize);
     }
 
     void AtlasFont::fillAtlases()

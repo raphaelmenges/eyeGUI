@@ -22,7 +22,10 @@ namespace eyegui
         std::string fontFilepath,
         CharacterSet characterSet,
         std::string localizationFilepath,
-        float vectorGraphicsDPI)
+        float vectorGraphicsDPI,
+        float fontTallSize,
+        float fontMediumSize,
+        float fontSmallSize)
     {
         // Initialize members
         mWidth = width;
@@ -38,6 +41,9 @@ namespace eyegui
         mupGazeDrawer = std::unique_ptr<GazeDrawer>(new GazeDrawer(this, mupAssetManager.get()));
         mDrawGazeVisualization = false;
         mVectorGraphicsDPI = vectorGraphicsDPI;
+        mFontTallSize = fontTallSize;
+        mFontMediumSize = fontMediumSize;
+        mFontSmallSize = fontSmallSize;
 
         // Initialize OpenGL
         ogl_LoadFunctions();
@@ -270,6 +276,21 @@ namespace eyegui
     float GUI::getVectorGraphicsDPI() const
     {
         return mVectorGraphicsDPI;
+    }
+
+    float GUI::getFontTallSize() const
+    {
+        return mFontTallSize;
+    }
+
+    float GUI::getFontMediumSize() const
+    {
+        return mFontMediumSize;
+    }
+
+    float GUI::getFontSmallSize() const
+    {
+        return mFontSmallSize;
     }
 
     int GUI::findLayout(Layout const * pLayout) const

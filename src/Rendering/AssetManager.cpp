@@ -289,7 +289,10 @@ namespace eyegui
                             filepath,
                             std::move(upFace),
                             characters,
-                            mpGUI->getWindowHeight()));
+                            mpGUI->getWindowHeight(),
+                            mpGUI->getFontTallSize(),
+                            mpGUI->getFontMediumSize(),
+                            mpGUI->getFontSmallSize()));
                 }
             }
 

@@ -181,6 +181,9 @@ namespace eyegui
         CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< characterSet used to initialize font rendering
         std::string localizationFilepath = ""; //!< localizationFilepath is path to a .leyegui file
         float vectorGraphicsDPI = 96.0f; //!< dpi which are used to rasterize vector graphics
+        float fontTallSize = 0.1f; //!< Height of tall font in percentage of GUI height
+        float fontMediumSize = 0.04f; //!< Height of medium font in percentage of GUI height
+        float fontSmallSize = 0.0175f; //!< Height of small font in percentage of GUI height
     };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.

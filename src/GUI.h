@@ -41,7 +41,10 @@ namespace eyegui
             std::string fontFilepath,
             CharacterSet characterSet,
             std::string localizationFilepath,
-            float vectorGraphicsDPI);
+            float vectorGraphicsDPI,
+            float fontTallSize,
+            float fontMediumSize,
+            float fontSmallSize);
 
         // Destructor
         virtual ~GUI();
@@ -105,6 +108,15 @@ namespace eyegui
 
         // Get dpi for rasterization of vector graphics
         float getVectorGraphicsDPI() const;
+
+        // Get size for tall font
+        float getFontTallSize() const;
+
+        // Get size for medium font
+        float getFontMediumSize() const;
+
+        // Get size for small font
+        float getFontSmallSize() const;
 
     private:
 
@@ -218,6 +230,9 @@ namespace eyegui
         std::unique_ptr<GazeDrawer> mupGazeDrawer;
         bool mDrawGazeVisualization;
         float mVectorGraphicsDPI;
+        float mFontTallSize;
+        float mFontMediumSize;
+        float mFontSmallSize;
     };
 }
 

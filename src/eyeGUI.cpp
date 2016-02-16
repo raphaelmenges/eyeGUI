@@ -19,7 +19,16 @@ namespace eyegui
 {
     GUI* GUIBuilder::construct() const
     {
-        return new GUI(width, height, fontFilepath, characterSet, localizationFilepath, vectorGraphicsDPI);
+        return new GUI(
+            width,
+            height,
+            fontFilepath,
+            characterSet,
+            localizationFilepath,
+            vectorGraphicsDPI,
+            fontTallSize,
+            fontMediumSize,
+            fontSmallSize);
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
