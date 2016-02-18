@@ -17,6 +17,8 @@
       in addition, should recognize scaling != 100% to change filtering
   - Display text even at overflow (maybe cut it and display '...')
   - if there is no space in one line and word is too long for it, try to cut it
+  
+- PNGs withtout alpha channel do not work?
 
 ### VERSION 0.9
 - Multilingual keyboard with different subboards (for extra characters not used often)
