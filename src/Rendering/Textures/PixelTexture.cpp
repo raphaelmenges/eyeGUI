@@ -30,9 +30,9 @@ namespace eyegui
             throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format", filepath);
         }
 
-        // Try to load image
+        // Try to load image (return always 4 channels, otherwise there are sometimes rendering issues....)
         int width, height, channelCount;
-        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, 0);
+        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, 4);
 
         // Check whether file was found and parsed
         if (data == NULL)
