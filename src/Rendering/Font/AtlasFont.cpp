@@ -338,7 +338,7 @@ namespace eyegui
         }
 
         // Enable writing of non power of two
-        GLint oldUnpackAlignment;
+        GLint oldUnpackAlignment = 4;
         glGetIntegerv(GL_UNPACK_ALIGNMENT, &oldUnpackAlignment);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
