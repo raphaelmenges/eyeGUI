@@ -13,9 +13,7 @@
 
 - TextBlock
   - Percentage scaling 
-    - text flow already has something, but too simple at draw time. one need it at calculating mesh.
-      in addition, should recognize scaling != 100% to change filtering
-  - if there is no space in one line and word is too long for it, try to cut it
+    - in addition, should recognize scaling != 100% to change filtering
 
 ### VERSION 0.9
 - Multilingual keyboard with different subboards (for extra characters not used often)

@@ -75,7 +75,13 @@ namespace eyegui
         void calculateMesh();
 
         // Calculate word
-        Word calculateWord(std::u16string content);
+        Word calculateWord(std::u16string content) const;
+
+		// Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
+		std::vector<Word> calculateWord(std::u16string content, int maxPixelWidth) const;
+
+		// Inserts word into vector, returns true at success
+		bool TextFlow::insertWord(std::vector<Word>& rWords, const std::u16string& rContent, int maxPixelWidth) const;
 
         // Members
         GUI const * mpGUI;

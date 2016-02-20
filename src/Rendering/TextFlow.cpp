@@ -203,43 +203,39 @@ namespace eyegui
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec2> textureCoordinates;
 
+		// Do not generate text flow mesh when there is a failure
+		bool failure = false;
+
         // Go over paragraphs (pens are in local pixel coordinate system with origin in lower left corner of element)
         float yPixelPen = -lineHeight; // First line should be also inside flow
         for (std::u16string& rPargraph : paragraphs)
-        {
+		{
             // Get words out of paragraph
-            std::vector<TextFlow::Word> words;
+            std::vector<Word> words;
             std::u16string wordDelimiter = u" ";
             while ((pos = rPargraph.find(wordDelimiter)) != std::u16string::npos)
             {
                 token = rPargraph.substr(0, pos);
-                words.push_back(calculateWord(token));
                 rPargraph.erase(0, pos + wordDelimiter.length());
-            }
-            words.push_back(calculateWord(rPargraph)); // Last word (words never empty)
-
-            // Check, whether all words can fit into given width
-            float maxWordPixelWidth = 0;
-            for (const Word& rWord : words)
-            {
-                maxWordPixelWidth = std::max(rWord.pixelWidth, maxWordPixelWidth);
+				failure |= !insertWord(words, token, mWidth);
             }
 
-			// TODO: Try to detect earlier that a word it too long and try to divide it (even more than one time)
+			// Add last token from paragraph as well
+			failure |= !insertWord(words, rPargraph, mWidth);
 
-            // When all words could fit, try it
-            if (std::ceil(maxWordPixelWidth) <= mWidth)
-            {
-                // Prepare some values
-                int wordIndex = 0;
-                bool hasNext = true;
+			// Failure appeared, forget it
+			if (!failure)
+			{
+				// Prepare some values
+				int wordIndex = 0;
+				bool hasNext = !words.empty();
 
-                // Go over words in paragraph
-                while (hasNext && abs(yPixelPen) <= mHeight)
-                {
-                    // Collect words in one line
-                    std::vector<Word const *> line;
-                    float wordsPixelWidth = 0;
+				// Go over lines to write paragraph
+				while (hasNext && abs(yPixelPen) <= mHeight)
+				{
+					// Collect words in one line
+					std::vector<Word const *> line;
+					float wordsPixelWidth = 0;
 					float newWordsPixelWidth = 0;
 
 					// Still words in the paragraph and enough space?
@@ -272,65 +268,73 @@ namespace eyegui
 						line.push_back(&overflowMark);
 					}
 
-                    // Now decide xOffset for line
-                    int xOffset = 0;
-                    if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
-                    {
-                        xOffset = mWidth - (int)((wordsPixelWidth + ((float)line.size() - 1.0) * pixelOfSpace));
-                        if (mAlignment == TextFlowAlignment::CENTER)
-                        {
-                            xOffset = xOffset / 2;
-                        }
-                    }
+					// Now decide xOffset for line
+					int xOffset = 0;
+					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+					{
+						xOffset = mWidth - (int)((wordsPixelWidth + ((float)line.size() - 1.0) * pixelOfSpace));
+						if (mAlignment == TextFlowAlignment::CENTER)
+						{
+							xOffset = xOffset / 2;
+						}
+					}
 
-                    // Decide dynamic space for line
-                    int dynamicSpace = (int)pixelOfSpace;
-                    if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext && line.size() > 1) // Do not use dynamic space for last line
-                    {
-                        dynamicSpace = (mWidth - (int)wordsPixelWidth) / ((int)line.size() - 1);
-                    }
+					// Decide dynamic space for line
+					int dynamicSpace = (int)pixelOfSpace;
+					if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext && line.size() > 1) // Do not use dynamic space for last line
+					{
+						dynamicSpace = (mWidth - (int)wordsPixelWidth) / ((int)line.size() - 1);
+					}
 
-                    // Combine word geometry to one line
-                    float xPixelPen = (float)xOffset;
-                    for (int i = 0; i < line.size(); i++)
-                    {
-                        // Assuming, that the count of vertices and texture coordinates is equal
-                        for (int j = 0; j < line[i]->spVertices->size(); j++)
-                        {
-                            const glm::vec3& rVertex = line[i]->spVertices->at(j);
-                            vertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
-                            const glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
-                            textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
-                        }
+					// Combine word geometry to one line
+					float xPixelPen = (float)xOffset;
+					for (int i = 0; i < line.size(); i++)
+					{
+						// Assuming, that the count of vertices and texture coordinates is equal
+						for (int j = 0; j < line[i]->spVertices->size(); j++)
+						{
+							const glm::vec3& rVertex = line[i]->spVertices->at(j);
+							vertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
+							const glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
+							textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+						}
 
-                        // Advance xPen
-                        xPixelPen += (float)dynamicSpace + line[i]->pixelWidth;
-                    }
+						// Advance xPen
+						xPixelPen += (float)dynamicSpace + line[i]->pixelWidth;
+					}
 
-                    // Advance yPen
-                    yPixelPen -= lineHeight;
-                }
-            }
+					// Advance yPen
+					yPixelPen -= lineHeight;
+				}
+			}
         }
 
-        // Get height of all lines (yPixelPen is one line to low now)
-        mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
+		// If failure appeared, clean up
+		if (failure)
+		{
+			// Vertex count will become zero
+			vertices.clear();
+			textureCoordinates.clear();
+		}
 
-        // Vertex count
-        mVertexCount = (GLuint)vertices.size();
+		// Get height of all lines (yPixelPen is one line to low now)
+		mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
 
-        // Fill into buffer
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+		// Vertex count
+		mVertexCount = (GLuint)vertices.size();
 
-        glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
+		// Fill into buffer
+		glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+		glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
+		glBufferData(GL_ARRAY_BUFFER, mVertexCount * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
 
         // Restore old setting
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    TextFlow::Word TextFlow::calculateWord(std::u16string content)
+    TextFlow::Word TextFlow::calculateWord(std::u16string content) const
     {
         // Empty word
         Word word;
@@ -387,4 +391,64 @@ namespace eyegui
 
         return word;
     }
+
+	std::vector<TextFlow::Word> TextFlow::calculateWord(std::u16string content, int maxPixelWidth) const
+	{
+		// Calculate word from content
+		Word word = calculateWord(content);
+
+		// End of recursion
+		if ((content.size() == 1 && word.pixelWidth > maxPixelWidth) || content.empty())
+		{
+			// Return empty vector as signal of failure
+			return std::vector<Word>();
+		}
+		else if (word.pixelWidth <= maxPixelWidth)
+		{
+			// If word length is ok, just return it
+			return std::vector<Word>(1, word);
+		}
+		else
+		{
+			// Word is too wide and content longer than 1, split it!
+			int length = (int)content.size();
+			int left = length / 2;
+			int right = length - left;
+
+			// Combine results from recursive call
+			std::vector<Word> leftWord = calculateWord(content.substr(0, left), maxPixelWidth);
+			std::vector<Word> rightWord = calculateWord(content.substr(left+1, right), maxPixelWidth);
+
+			// If one or more of both are empty, forget it
+			if (leftWord.empty() || rightWord.empty())
+			{
+				return std::vector<Word>();
+			}
+			else
+			{
+				std::vector<Word> words(leftWord);
+				words.insert(words.end(), rightWord.begin(), rightWord.end());
+				return words;
+			}
+		}
+	}
+
+
+	bool TextFlow::insertWord(std::vector<TextFlow::Word>& rWords, const std::u16string& rContent, int maxPixelWidth) const
+	{
+		std::vector<Word> newWords = calculateWord(rContent, maxPixelWidth);
+
+		// Check, whether call was successful
+		if (newWords.empty())
+		{
+			// Was not successful, so return false
+			return false;
+		}
+		else
+		{
+			// Insert new words and return true
+			rWords.insert(rWords.end(), newWords.begin(), newWords.end());
+			return true;
+		}
+	}
 }
