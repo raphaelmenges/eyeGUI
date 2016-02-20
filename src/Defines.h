@@ -42,6 +42,7 @@ namespace eyegui
     static const float KEY_CIRCLE_CHARACTER_SIZE_RATIO = 0.6f;
     static const float KEYBOARD_HORIZONTAL_KEY_DISTANCE = 0.15f;
     static const ImageAlignment STANDARD_IMAGE_ALIGNMENT = ImageAlignment::ZOOMED;
+	static const std::u16string TEXT_FLOW_OVERFLOW_MARK = u"...";
 }
 
 #endif // DEFINES_H_

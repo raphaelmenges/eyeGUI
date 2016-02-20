@@ -161,7 +161,7 @@ namespace eyegui
         GLint oldBuffer = -1;
         glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
 
-        // Get size of space
+        // Get size of space character
         float pixelOfSpace = 0;
 
         Glyph const * pGlyph = mpFont->getGlyph(mFontSize, u' ');
@@ -175,6 +175,12 @@ namespace eyegui
         {
             pixelOfSpace = pGlyph->advance.x;
         }
+
+		// Create mark for overflow
+		Word overflowMark = calculateWord(TEXT_FLOW_OVERFLOW_MARK);
+
+		// Get height of line
+		float lineHeight = mpFont->getLineHeight(mFontSize);
 
         // Go over words in content
         std::u16string copyContent = mContent;
@@ -197,8 +203,8 @@ namespace eyegui
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec2> textureCoordinates;
 
-        // Go over paragraphs (pens are in local pixel coordinate system with origin in lower left corner)
-        float yPixelPen = -mpFont->getLineHeight(mFontSize); // First line should be also inside flow
+        // Go over paragraphs (pens are in local pixel coordinate system with origin in lower left corner of element)
+        float yPixelPen = -lineHeight; // First line should be also inside flow
         for (std::u16string& rPargraph : paragraphs)
         {
             // Get words out of paragraph
@@ -219,6 +225,8 @@ namespace eyegui
                 maxWordPixelWidth = std::max(rWord.pixelWidth, maxWordPixelWidth);
             }
 
+			// TODO: Try to detect earlier that a word it too long and try to divide it (even more than one time)
+
             // When all words could fit, try it
             if (std::ceil(maxWordPixelWidth) <= mWidth)
             {
@@ -227,29 +235,42 @@ namespace eyegui
                 bool hasNext = true;
 
                 // Go over words in paragraph
-                while (hasNext && (abs(yPixelPen) <= mHeight))
+                while (hasNext && abs(yPixelPen) <= mHeight)
                 {
                     // Collect words in one line
                     std::vector<Word const *> line;
                     float wordsPixelWidth = 0;
+					float newWordsPixelWidth = 0;
 
-                    while (
-                        hasNext // Still words in the paragraph?
-                        && std::ceil(
-                            (wordsPixelWidth + (float)words[wordIndex].pixelWidth) // Words size
-                            + (((float)line.size()) - 1.0f) * pixelOfSpace) // Spaces
-                        <= mWidth) // Still enough free pixels in in line?
-                    {
-                        wordsPixelWidth += words[wordIndex].pixelWidth;
-                        line.push_back(&words[wordIndex]);
-                        wordIndex++;
+					// Still words in the paragraph and enough space?
+					while (hasNext && newWordsPixelWidth <= mWidth)
+					{
+						// First word should always fit into width because of previous checks
+						wordsPixelWidth += words[wordIndex].pixelWidth;
+						line.push_back(&words[wordIndex]);
+						wordIndex++;
 
-                        if (wordIndex >= words.size())
-                        {
-                            // No words in paragraph left
-                            hasNext = false;
-                        }
-                    }
+						if (wordIndex >= words.size())
+						{
+							// No words in paragraph left
+							hasNext = false;
+						}
+						else
+						{
+							// Calculate next width of line
+							newWordsPixelWidth = std::ceil(
+								(wordsPixelWidth + (float)words[wordIndex].pixelWidth) // Words size (old ones and new one)
+								+ (((float)line.size()) - 1.0f) * pixelOfSpace); // Spaces between words
+						}
+					}
+
+					// If this is last line and after it still words left, replace it by some mark for overflow
+					if (hasNext && abs(yPixelPen - lineHeight) > mHeight && overflowMark.pixelWidth <= mWidth)
+					{
+						line.clear();
+						wordsPixelWidth = overflowMark.pixelWidth;
+						line.push_back(&overflowMark);
+					}
 
                     // Now decide xOffset for line
                     int xOffset = 0;
@@ -264,7 +285,7 @@ namespace eyegui
 
                     // Decide dynamic space for line
                     int dynamicSpace = (int)pixelOfSpace;
-                    if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext) // Do not use dynamic space for last line
+                    if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext && line.size() > 1) // Do not use dynamic space for last line
                     {
                         dynamicSpace = (mWidth - (int)wordsPixelWidth) / ((int)line.size() - 1);
                     }
@@ -287,13 +308,13 @@ namespace eyegui
                     }
 
                     // Advance yPen
-                    yPixelPen -= mpFont->getLineHeight(mFontSize);
+                    yPixelPen -= lineHeight;
                 }
             }
         }
 
         // Get height of all lines (yPixelPen is one line to low now)
-        mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - mpFont->getLineHeight(mFontSize)), 0.0f);
+        mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
 
         // Vertex count
         mVertexCount = (GLuint)vertices.size();
