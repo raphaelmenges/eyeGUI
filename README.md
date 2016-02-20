@@ -10,6 +10,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 #### Version 0.8
 * Simple keyboard
 * Image background for blocks possible
+* Text can be scaled
 
 #### Version 0.7
 * Bugfix release

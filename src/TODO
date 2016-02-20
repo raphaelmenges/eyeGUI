@@ -3,6 +3,7 @@
   - image alignment + zoomed alignment possible
   - in all block elements: background image / alignment (backgroundsrc, backgroundalignment)
   - more image formats than png can be loaded
+	- textblock new percent attribute: textscale
   
 - Keyboard
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
@@ -10,10 +11,6 @@
   - Clean up Key and Keyboard class
   - Keyboard should be subclass of interactive... (at the moment, all have an icon...make super class for all with ONE icon....)
   - Color of focus in keyboard
-
-- TextBlock
-  - Percentage scaling 
-    - in addition, should recognize scaling != 100% to change filtering
 
 ### VERSION 0.9
 - Multilingual keyboard with different subboards (for extra characters not used often)

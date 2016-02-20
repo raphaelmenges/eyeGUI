@@ -346,18 +346,19 @@ namespace eyegui
     }
 
     void replaceElementWithTextBlock(
-        Layout* pLayout,
-        std::string id,
-        bool consumeInput,
-        FontSize fontSize,
-        TextFlowAlignment alignment,
-        TextFlowVerticalAlignment verticalAlignment,
-        std::u16string content,
-        float innerBorder,
-        std::string key,
-        std::string backgroundFilepath,
-        ImageAlignment backgroundAlignment,
-        bool fade)
+		Layout* pLayout,
+		std::string id,
+		bool consumeInput,
+		FontSize fontSize,
+		TextFlowAlignment alignment,
+		TextFlowVerticalAlignment verticalAlignment,
+		std::u16string content,
+		float innerBorder,
+		float textScale,
+		std::string key,
+		std::string backgroundFilepath,
+		ImageAlignment backgroundAlignment,
+		bool fade)
     {
         pLayout->replaceElementWithTextBlock(
             id,
@@ -367,6 +368,7 @@ namespace eyegui
             fontSize,
             alignment,
             verticalAlignment,
+			textScale,
             content,
             innerBorder,
             key,

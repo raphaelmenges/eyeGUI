@@ -510,6 +510,9 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Unknown vertical alignment used in text block: " + verticalAlignmentValue, filepath);
             }
 
+			// Get text scale
+			float textScale = parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
+
             // Get content
             std::string contentValue = parseStringAttribute("content", xmlTextBlock);
 
@@ -545,6 +548,7 @@ namespace eyegui
                         fontSize,
                         alignment,
                         verticalAlignment,
+						textScale,
                         content,
                         key));
 

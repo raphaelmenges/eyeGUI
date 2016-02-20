@@ -698,15 +698,16 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param consumeInput indicates, whether block consumes given input.
-      \param backgroundFilepath is path to image rendered in background.
-             Use empty string to indicate no background image.
-      \param backgroundAlignment indicates alignment of background image.
       \param fontSize is size of used font.
       \param alignment is alignment of text.
       \param verticalAlignment is vertical alignment of text.
       \param content is the content of the displayed text.
-      \param innerBorder is space between border and text.
+	  \param innerBorder is space between border and text.
+      \param textScale is scale of text.
       \param key is used for localization.
+	  \param backgroundFilepath is path to image rendered in background.
+			 Use empty string to indicate no background image.
+	  \param backgroundAlignment indicates alignment of background image.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithTextBlock(
@@ -717,7 +718,8 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-        float innerBorder,
+        float innerBorder = 0.0f,
+		float textScale = 1.0f,
         std::string key = "",
         std::string backgroundFilepath = "",
         ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,

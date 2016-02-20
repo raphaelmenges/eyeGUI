@@ -31,6 +31,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
+		float textScale,
         std::u16string content,
         std::string key) : Block(
             id,
@@ -79,7 +80,7 @@ namespace eyegui
         }
 
 		// Create text flow
-		mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, 2.0f, textFlowContent));
+		mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, textScale, textFlowContent));
     }
 
     TextBlock::~TextBlock()

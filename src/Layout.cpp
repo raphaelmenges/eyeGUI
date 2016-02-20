@@ -976,6 +976,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
+		float textScale,
         std::u16string content,
         float innerBorder,
         std::string key,
@@ -1004,6 +1005,7 @@ namespace eyegui
                 fontSize,
                 alignment,
                 verticalAlignment,
+				textScale,
                 content,
                 key));
 
