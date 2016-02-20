@@ -72,6 +72,7 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
+			float scale,
             std::u16string content);
 
         // Create key for keyboard and return it as unique pointer

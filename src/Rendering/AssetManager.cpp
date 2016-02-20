@@ -318,6 +318,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
+		float scale,
         std::u16string content)
     {
         return std::move(
@@ -329,6 +330,7 @@ namespace eyegui
                     fontSize,
                     alignment,
                     verticalAlignment,
+					scale,
                     content)));
     }
 

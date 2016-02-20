@@ -54,7 +54,8 @@ namespace eyegui
         // Fill members
         mKey = key;
 
-        // Create text flow
+		// Content of text flow
+		std::u16string textFlowContent;
         if (mKey != EMPTY_STRING_ATTRIBUTE)
         {
             std::u16string localization = mpLayout->getContentFromLocalization(mKey);
@@ -64,17 +65,21 @@ namespace eyegui
                     OperationNotifier::Operation::RUNTIME,
                     "No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
 
-                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+				textFlowContent = content;
             }
             else
             {
-                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
+				textFlowContent = localization;
             }
         }
         else
         {
-            mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+			textFlowContent = content;
+            
         }
+
+		// Create text flow
+		mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, 2.0f, textFlowContent));
     }
 
     TextBlock::~TextBlock()

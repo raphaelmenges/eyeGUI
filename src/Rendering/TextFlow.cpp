@@ -23,6 +23,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
+		float scale,
         std::u16string content)
     {
         // Fill members
@@ -32,6 +33,7 @@ namespace eyegui
         mFontSize = fontSize;
         mAlignment = alignment;
         mVerticalAlignment = verticalAlignment;
+		mScale = scale;
         mContent = content;
         mFlowHeight = 0;
 
@@ -139,8 +141,15 @@ namespace eyegui
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
 
         // Bind atlas texture
-        mpFont->bindAtlasTexture(mFontSize);
-
+		if (mScale == 1.0f)
+		{
+			mpFont->bindAtlasTexture(mFontSize, 0, false);
+		}
+		else
+		{
+			mpFont->bindAtlasTexture(mFontSize, 0, true);
+		}
+        
         // Fill uniforms
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("color", color);
@@ -173,14 +182,14 @@ namespace eyegui
         }
         else
         {
-            pixelOfSpace = pGlyph->advance.x;
+            pixelOfSpace = mScale * pGlyph->advance.x;
         }
 
 		// Create mark for overflow
-		Word overflowMark = calculateWord(TEXT_FLOW_OVERFLOW_MARK);
+		Word overflowMark = calculateWord(TEXT_FLOW_OVERFLOW_MARK, mScale);
 
 		// Get height of line
-		float lineHeight = mpFont->getLineHeight(mFontSize);
+		float lineHeight = mScale * mpFont->getLineHeight(mFontSize);
 
         // Go over words in content
         std::u16string copyContent = mContent;
@@ -217,11 +226,11 @@ namespace eyegui
             {
                 token = rPargraph.substr(0, pos);
                 rPargraph.erase(0, pos + wordDelimiter.length());
-				failure |= !insertWord(words, token, mWidth);
+				failure |= !insertWord(words, token, mWidth, mScale);
             }
 
 			// Add last token from paragraph as well
-			failure |= !insertWord(words, rPargraph, mWidth);
+			failure |= !insertWord(words, rPargraph, mWidth, mScale);
 
 			// Failure appeared, forget it
 			if (!failure)
@@ -236,10 +245,10 @@ namespace eyegui
 					// Collect words in one line
 					std::vector<Word const *> line;
 					float wordsPixelWidth = 0;
-					float newWordsPixelWidth = 0;
+					float newWordsWithSpacesPixelWidth = 0;
 
-					// Still words in the paragraph and enough space?
-					while (hasNext && newWordsPixelWidth <= mWidth)
+					// Still words in the paragraph and enough space? Fill into line!
+					while (hasNext && newWordsWithSpacesPixelWidth <= mWidth)
 					{
 						// First word should always fit into width because of previous checks
 						wordsPixelWidth += words[wordIndex].pixelWidth;
@@ -254,7 +263,7 @@ namespace eyegui
 						else
 						{
 							// Calculate next width of line
-							newWordsPixelWidth = std::ceil(
+							newWordsWithSpacesPixelWidth = std::ceil(
 								(wordsPixelWidth + (float)words[wordIndex].pixelWidth) // Words size (old ones and new one)
 								+ (((float)line.size()) - 1.0f) * pixelOfSpace); // Spaces between words
 						}
@@ -334,7 +343,7 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    TextFlow::Word TextFlow::calculateWord(std::u16string content) const
+    TextFlow::Word TextFlow::calculateWord(std::u16string content, float scale) const
     {
         // Empty word
         Word word;
@@ -354,13 +363,13 @@ namespace eyegui
                 continue;
             }
 
-            float yPixelPen = 0 - (float)(pGlyph->size.y - pGlyph->bearing.y);
+            float yPixelPen = 0 - (scale * (float)(pGlyph->size.y - pGlyph->bearing.y));
 
             // Vertices for this quad
             glm::vec3 vertexA = glm::vec3(xPixelPen, yPixelPen, 0);
-            glm::vec3 vertexB = glm::vec3(xPixelPen + pGlyph->size.x, yPixelPen, 0);
-            glm::vec3 vertexC = glm::vec3(xPixelPen + pGlyph->size.x, yPixelPen + pGlyph->size.y, 0);
-            glm::vec3 vertexD = glm::vec3(xPixelPen, yPixelPen + pGlyph->size.y, 0);
+            glm::vec3 vertexB = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen, 0);
+            glm::vec3 vertexC = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen + (scale * pGlyph->size.y), 0);
+            glm::vec3 vertexD = glm::vec3(xPixelPen, yPixelPen + (scale * pGlyph->size.y), 0);
 
             // Texture coordinates for this quad
             glm::vec2 textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
@@ -368,7 +377,7 @@ namespace eyegui
             glm::vec2 textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
             glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
 
-            xPixelPen += pGlyph->advance.x;
+            xPixelPen += scale * pGlyph->advance.x;
 
             // Fill into data blocks
             word.spVertices->push_back(vertexA);
@@ -392,10 +401,10 @@ namespace eyegui
         return word;
     }
 
-	std::vector<TextFlow::Word> TextFlow::calculateWord(std::u16string content, int maxPixelWidth) const
+	std::vector<TextFlow::Word> TextFlow::calculateWord(std::u16string content, int maxPixelWidth, float scale) const
 	{
 		// Calculate word from content
-		Word word = calculateWord(content);
+		Word word = calculateWord(content, scale);
 
 		// End of recursion
 		if ((content.size() == 1 && word.pixelWidth > maxPixelWidth) || content.empty())
@@ -416,8 +425,8 @@ namespace eyegui
 			int right = length - left;
 
 			// Combine results from recursive call
-			std::vector<Word> leftWord = calculateWord(content.substr(0, left), maxPixelWidth);
-			std::vector<Word> rightWord = calculateWord(content.substr(left+1, right), maxPixelWidth);
+			std::vector<Word> leftWord = calculateWord(content.substr(0, left), maxPixelWidth, scale);
+			std::vector<Word> rightWord = calculateWord(content.substr(left+1, right), maxPixelWidth, scale);
 
 			// If one or more of both are empty, forget it
 			if (leftWord.empty() || rightWord.empty())
@@ -434,7 +443,7 @@ namespace eyegui
 	}
 
 
-	bool TextFlow::insertWord(std::vector<TextFlow::Word>& rWords, const std::u16string& rContent, int maxPixelWidth) const
+	bool TextFlow::insertWord(std::vector<TextFlow::Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const
 	{
 		// Do nothing if input is empty
 		if (rContent.empty())
@@ -442,7 +451,7 @@ namespace eyegui
 			return true;
 		}
 
-		std::vector<Word> newWords = calculateWord(rContent, maxPixelWidth);
+		std::vector<Word> newWords = calculateWord(rContent, maxPixelWidth, scale);
 
 		// Check, whether call was successful
 		if (newWords.empty())
