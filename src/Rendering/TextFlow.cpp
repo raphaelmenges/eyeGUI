@@ -278,25 +278,35 @@ namespace eyegui
 					}
 
 					// Now decide xOffset for line
-					int xOffset = 0;
+					float xOffset = 0;
 					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
 					{
-						xOffset = mWidth - (int)((wordsPixelWidth + ((float)line.size() - 1.0) * pixelOfSpace));
+						xOffset = (float)mWidth - ((wordsPixelWidth + ((float)line.size() - 1.0f) * pixelOfSpace));
 						if (mAlignment == TextFlowAlignment::CENTER)
 						{
-							xOffset = xOffset / 2;
+							xOffset = xOffset / 2.0f;
 						}
 					}
 
 					// Decide dynamic space for line
-					int dynamicSpace = (int)pixelOfSpace;
-					if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext && line.size() > 1) // Do not use dynamic space for last line
+					float dynamicSpace = pixelOfSpace;
+					if (line.size() > 1)
 					{
-						dynamicSpace = (mWidth - (int)wordsPixelWidth) / ((int)line.size() - 1);
+						if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext && line.size() > 1) // Do not use dynamic space for last line
+						{
+							// For justify, do something dynamic
+							dynamicSpace = ((float)mWidth - wordsPixelWidth) / ((float)line.size() - 1.0f);
+						}
+						else
+						{
+							// Adjust space to compensate precision errors in other alignments
+							float calculatedDynamicSpace = (float)mWidth - (wordsPixelWidth / (float)(line.size() - 1));
+							dynamicSpace = std::min(dynamicSpace, calculatedDynamicSpace);
+						}
 					}
 
 					// Combine word geometry to one line
-					float xPixelPen = (float)xOffset;
+					float xPixelPen = xOffset;
 					for (int i = 0; i < line.size(); i++)
 					{
 						// Assuming, that the count of vertices and texture coordinates is equal
@@ -309,7 +319,7 @@ namespace eyegui
 						}
 
 						// Advance xPen
-						xPixelPen += (float)dynamicSpace + line[i]->pixelWidth;
+						xPixelPen += dynamicSpace + line[i]->pixelWidth;
 					}
 
 					// Advance yPen
