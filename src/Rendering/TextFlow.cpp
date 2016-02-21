@@ -277,17 +277,6 @@ namespace eyegui
 						line.push_back(&overflowMark);
 					}
 
-					// Now decide xOffset for line
-					float xOffset = 0;
-					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
-					{
-						xOffset = (float)mWidth - ((wordsPixelWidth + ((float)line.size() - 1.0f) * pixelOfSpace));
-						if (mAlignment == TextFlowAlignment::CENTER)
-						{
-							xOffset = xOffset / 2.0f;
-						}
-					}
-
 					// Decide dynamic space for line
 					float dynamicSpace = pixelOfSpace;
 					if (line.size() > 1)
@@ -302,6 +291,17 @@ namespace eyegui
 							// Adjust space to compensate precision errors in other alignments
 							float calculatedDynamicSpace = (float)mWidth - (wordsPixelWidth / (float)(line.size() - 1));
 							dynamicSpace = std::min(dynamicSpace, calculatedDynamicSpace);
+						}
+					}
+
+					// Now decide xOffset for line
+					float xOffset = 0;
+					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+					{
+						xOffset = (float)mWidth - ((wordsPixelWidth + ((float)line.size() - 1.0f) * dynamicSpace));
+						if (mAlignment == TextFlowAlignment::CENTER)
+						{
+							xOffset = xOffset / 2.0f;
 						}
 					}
 
