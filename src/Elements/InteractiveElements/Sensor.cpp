@@ -26,7 +26,7 @@ namespace eyegui
         float border,
         bool dimming,
         bool adaptiveScaling,
-        std::string iconFilepath) : InteractiveElement(
+        std::string iconFilepath) : IconInteractiveElement(
             id,
             styleName,
             pParent,
@@ -42,7 +42,7 @@ namespace eyegui
     {
         // Fill members
         mType = Type::SENSOR;
-        mpRenderItem = mpAssetManager->fetchRenderItem(
+        mpIconRenderItem = mpAssetManager->fetchRenderItem(
             shaders::Type::SENSOR,
             meshes::Type::QUAD);
         mPenetration.setValue(0);
@@ -65,7 +65,7 @@ namespace eyegui
     float Sensor::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
-        InteractiveElement::specialUpdate(tpf, pInput);
+        IconInteractiveElement::specialUpdate(tpf, pInput);
 
         // Penetration by input
         bool penetrated = penetratedByInput(pInput);
@@ -95,24 +95,24 @@ namespace eyegui
     void Sensor::specialDraw() const
     {
         // Bind render item before setting values and drawing
-        mpRenderItem->bind();
+		mpIconRenderItem->bind();
 
         // Super call
-        InteractiveElement::specialDraw();
+        IconInteractiveElement::specialDraw();
 
         // Fill other values
-        mpRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
+		mpIconRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
 
         // Scale of icon
-        mpRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
+		mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
 
         // Draw render item
-        mpRenderItem->draw();
+		mpIconRenderItem->draw();
     }
 
     void Sensor::specialReset()
     {
-        InteractiveElement::specialReset();
+		IconInteractiveElement::specialReset();
 
         // Reset some values
         mPenetration.setValue(0);

@@ -467,13 +467,13 @@ namespace eyegui
         float b,
         float a);
 
-    //! Set icon of interactive element.
+    //! Set icon of icon interactive element.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
     */
-    void setIconOfInteractiveElement(
+    void setIconOfIconInteractiveElement(
         Layout* pLayout,
         std::string id,
         std::string iconFilepath);

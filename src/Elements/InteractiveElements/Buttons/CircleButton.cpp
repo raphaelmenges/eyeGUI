@@ -40,7 +40,7 @@ namespace eyegui
         mType = Type::CIRCLE_BUTTON;
 
         // Fetch stuff for rendering
-        mpRenderItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_BUTTON, meshes::Type::QUAD);
+        mpIconRenderItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_BUTTON, meshes::Type::QUAD);
     }
 
     CircleButton::~CircleButton()
@@ -51,13 +51,13 @@ namespace eyegui
     void CircleButton::specialDraw() const
     {
         // Bind render item before setting values and drawing
-        mpRenderItem->bind();
+		mpIconRenderItem->bind();
 
         // Super call
         Button::specialDraw();
 
         // Draw render item
-        mpRenderItem->draw();
+		mpIconRenderItem->draw();
     }
 
     void CircleButton::evaluateSize(

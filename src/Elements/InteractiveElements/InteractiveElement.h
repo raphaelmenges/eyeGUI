@@ -31,8 +31,7 @@ namespace eyegui
             float relativeScale,
             float border,
             bool dimming,
-            bool adaptiveScaling,
-            std::string iconFilepath);
+            bool adaptiveScaling);
 
         // Destructor
         virtual ~InteractiveElement() = 0;
@@ -49,9 +48,6 @@ namespace eyegui
         // Select button, returns whether successful
         void select(bool doSelect);
 
-        // Set icon
-        void setIcon(std::string filepath);
-
         // Tries to fetch next interactive element for selecting, returns NULL if fails
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
@@ -59,9 +55,6 @@ namespace eyegui
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
-
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
 
         // Transformation filled by subclasses
         virtual void specialTransformAndSize();
@@ -75,20 +68,11 @@ namespace eyegui
         // Interaction fill by subclasses
         virtual void specialInteract() = 0;
 
-        // Calculate aspect ratio correction for icon on gizmo
-        glm::vec2 iconAspectRatioCorrection() const;
-
-        // Members
-        RenderItem const * mpRenderItem; // has to be initialized by subclasses
-
-    private:
-
         // Members
         LerpValue mHighlight;
         bool mIsHighlighted;
         LerpValue mSelection;
         bool mIsSelected;
-        Texture const * mpIcon;
     };
 }
 

@@ -393,12 +393,12 @@ namespace eyegui
         }
     }
 
-    void Layout::setIconOfInteractiveElement(std::string id, std::string iconFilepath)
+    void Layout::setIconOfIconInteractiveElement(std::string id, std::string iconFilepath)
     {
-        InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));
-        if (pInteractiveElement != NULL)
+        IconInteractiveElement* pIconInteractiveElement = toIconInteractiveElement(fetchElement(id));
+        if (pIconInteractiveElement != NULL)
         {
-            pInteractiveElement->setIcon(iconFilepath);
+			pIconInteractiveElement->setIcon(iconFilepath);
         }
         else
         {
