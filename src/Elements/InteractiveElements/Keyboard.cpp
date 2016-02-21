@@ -27,7 +27,7 @@ namespace eyegui
         float relativeScale,
         float border,
         bool dimming,
-        bool adaptiveScaling) : NotifierElement(
+        bool adaptiveScaling) : InteractiveElement(
             id,
             styleName,
             pParent,
@@ -223,6 +223,9 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
+		// Call super
+		InteractiveElement::specialUpdate(tpf, pInput);
+
 		// Check for penetration by input
 		bool penetrated = penetratedByInput(pInput);
 
@@ -490,6 +493,9 @@ namespace eyegui
 
     void Keyboard::specialReset()
     {
+		// Call super
+		InteractiveElement::specialReset();
+
         mThreshold.setValue(0);
         mFocusedKeyRow = -1;
         mFocusedKeyColumn = -1;
@@ -510,8 +516,16 @@ namespace eyegui
 
     bool Keyboard::mayConsumeInput()
     {
+		// Call super
+		InteractiveElement::mayConsumeInput();
+
         return true;
     }
+
+	void Keyboard::specialInteract()
+	{
+		// TODO (what should happen at simple interaction?)
+	}
 
     void Keyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
     {

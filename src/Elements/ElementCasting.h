@@ -49,7 +49,8 @@ namespace eyegui
 			{
 				// Test for other cases
 				Element::Type type = pElement->getType();
-				if (type == Element::Type::INTERACTIVE_ELEMENT)
+				if (type == Element::Type::INTERACTIVE_ELEMENT
+					|| type == Element::Type::KEYBOARD)
 				{
 					return static_cast<InteractiveElement*>(pElement);
 				}
@@ -58,7 +59,6 @@ namespace eyegui
         return NULL;
     }
 
-	// TODO: has to be changed when keyboard is interactive element!
     // Tries to cast pointer, returns NULL if fails
     static NotifierElement* toNotifierElement(Element* pElement)
     {
@@ -76,8 +76,7 @@ namespace eyegui
             {
                 // Test for other cases
                 Element::Type type = pElement->getType();
-                if(type == Element::Type::NOTIFIER_ELEMENT
-                    || type == Element::Type::KEYBOARD)
+                if(type == Element::Type::NOTIFIER_ELEMENT)
                 {
                     return static_cast<NotifierElement*>(pElement);
                 }

@@ -9,7 +9,6 @@
   - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
   - Wiki entry... (extra page or in elements? -> both)
   - Clean up Key and Keyboard class
-  - Keyboard should be subclass of interactive... (at the moment, all have an icon...make super class for all with ONE icon....)
   - Color of focus in keyboard
 	
 - BUGS

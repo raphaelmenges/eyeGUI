@@ -9,16 +9,16 @@
 #ifndef KEYBOARD_H_
 #define KEYBOARD_H_
 
-#include "NotifierElement.h"
-#include "NotifierTemplate.h"
+#include "src/Elements/InteractiveElements/InteractiveElement.h"
+#include "src/Elements/NotifierTemplate.h"
 #include "externals/GLM/glm/glm.hpp"
-#include "LerpValue.h"
+#include "src/LerpValue.h"
 
 #include <vector>
 
 namespace eyegui
 {
-    class Keyboard : public NotifierElement, public NotifierTemplate<KeyboardListener>
+    class Keyboard : public InteractiveElement, public NotifierTemplate<KeyboardListener>
     {
     public:
 
@@ -29,6 +29,9 @@ namespace eyegui
         // - Everything resolution independend in update method?
 		// - gaze ist after start at 0,0 (and until first input is not NULL)
 		// - better use relative values in keys, not absolute screen stuff
+		// - implement InteractiveElement stuff
+		//	- highlight
+		//  - selection
 
         // Notes
         // - icon color is used here for font rendering
@@ -66,6 +69,9 @@ namespace eyegui
 
         // Implemented by subclasses
         virtual bool mayConsumeInput();
+
+		// Interaction fill by subclasses
+		virtual void specialInteract();
 
         // Filled by subclass and called by layout after updating and before drawing
         virtual void specialPipeNotification(NotificationType notification, Layout* pLayout);
