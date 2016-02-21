@@ -110,6 +110,11 @@ namespace eyegui
 		mpIconRenderItem->draw();
     }
 
+	void Sensor::specialTransformAndSize()
+	{
+		// Nothing to do, but must be implemented
+	}
+
     void Sensor::specialReset()
     {
 		IconInteractiveElement::specialReset();

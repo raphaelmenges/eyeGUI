@@ -185,6 +185,11 @@ namespace eyegui
 		mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
     }
 
+	void Button::specialTransformAndSize()
+	{
+		// Nothing to do, but must be implemented
+	}
+
     void Button::specialReset()
     {
 		IconInteractiveElement::specialReset();

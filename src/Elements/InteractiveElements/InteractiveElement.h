@@ -56,9 +56,6 @@ namespace eyegui
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
 
-        // Transformation filled by subclasses
-        virtual void specialTransformAndSize();
-
         // Reset filld by subclasses
         virtual void specialReset();
 

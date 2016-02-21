@@ -96,12 +96,6 @@ namespace eyegui
         return 0;
     }
 
-    void InteractiveElement::specialTransformAndSize()
-    {
-		// TODO: implement it in sensor and button (better structure)
-        // Nothing to do, but must be implemented
-    }
-
     void InteractiveElement::specialReset()
     {
         mHighlight.setValue(0);
