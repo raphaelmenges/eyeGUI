@@ -203,7 +203,7 @@ namespace eyegui
             "   float iconScale = mix(1, 1.5, sinPressing);\n" // Icon scale by pressing value
             "   vec4 iconValue = iconColor * texture(icon, ((uv - 0.5) * iconScale) + 0.5).rgba;\n" // Fetch icon
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
-            "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
+            "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
             "   float bodyMask = clamp(circle - bodyPressBorder * sinPressing + 0.5, 0, 1);\n" // Body mask (Adding 0.5 to hide background border when not pressing)
             "   float buttonMask = clamp(circle, 0, 1);\n" // Mask of whole button
             "   vec4 button = mix(color, vec4(iconValue.rgb, 1), iconValue.a);\n" // Just body with icon
@@ -350,22 +350,32 @@ namespace eyegui
         // Uniforms:
         // vec4 color
         // float focus
+		// float select
         // vec4 stencil
-        static const char* pKeyFragmentShader =
-            "#version 330 core\n"
-            "out vec4 fragColor;\n"
-            "in vec2 uv;\n"
-            "uniform vec4 color = vec4(1,0,0,1);\n"
-            "uniform float focus = 0;\n"
-            "uniform vec4 stencil;\n"
-            "void main() {\n"
-            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
-            "   {"
-            "       discard;\n"
-            "   }"
-            "   float gradient = length(2*uv-1);\n" // Simple gradient as base
-            "   float circle = min(1, (1-gradient) * 75);\n" // Extend gradient to unclamped circle
-            "   fragColor = vec4(color.rgb + focus * 0.2f, color.a * circle);\n" // Composing pixel
+		static const char* pKeyFragmentShader =
+			"#version 330 core\n"
+			"out vec4 fragColor;\n"
+			"in vec2 uv;\n"
+			"uniform vec4 color = vec4(1,0,0,1);\n"
+			"uniform vec4 selectionColor = vec4(0,1,1,0.5);\n"
+			"uniform float focus = 0;\n"
+			"uniform float selection = 0;\n"
+			"uniform vec4 stencil;\n"
+			"const int innerBorder = 10;\n"
+			"void main() {\n"
+			"   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
+			"   {\n"
+			"       discard;\n"
+			"   }\n"
+			"   float gradient = length(2*uv-1);\n" // Simple gradient as base
+			"   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
+			"   float inner = clamp(circle - (selection * innerBorder), 0, 1);\n" // Inner circle for character
+			"	float outer = clamp(circle, 0, 1);\n" // Outer circle for selection
+			"	vec4 col = vec4((1.0-focus) * color.rgb +  focus * (1.0-color.rgb), color.a);\n" // Color and focus
+			"   vec4 customSelectionColor = selectionColor;\n"
+			"	customSelectionColor.a *= 0.5;\n" // Perpare selection color
+			"	col += selection * customSelectionColor * (1.0-inner);\n" // Add custom selection color
+            "   fragColor = vec4(col.rgb , col.a * outer);\n" // Composing pixel
             "}\n";
 
 

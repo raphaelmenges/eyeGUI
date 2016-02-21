@@ -26,6 +26,8 @@ namespace eyegui
         mSize = 0;
         mFocused = false;
         mFocus.setValue(0);
+		mSelected = false;
+		mSelection.setValue(0);
 
         // Fetch render item for key circle
         mpCirlceRenderItem = mpAssetManager->fetchRenderItem(
@@ -43,6 +45,8 @@ namespace eyegui
         mSize = rOtherKey.mSize;
         mFocused = rOtherKey.mFocused;
         mFocus.setValue(rOtherKey.mFocus.getValue());
+		mSelected = rOtherKey.mSelected;
+		mSelection.setValue(rOtherKey.mSelection.getValue());
         mpCirlceRenderItem = rOtherKey.mpCirlceRenderItem;
     }
 
@@ -74,25 +78,42 @@ namespace eyegui
 
     void Key::update(float tpf)
     {
-        // TODO: parameter
-        mFocus.update(6 * tpf, !mFocused);
+        mFocus.update(tpf / KEY_FOCUS_DURATION, !mFocused);
+		mSelection.update(tpf / KEY_SELECT_DURATION, !mSelected);
     }
 
     void Key::reset()
     {
         mFocused = false;
         mFocus.setValue(0);
+		mSelected = false;
+		mSelection.setValue(0);
     }
 
-    void Key::setFocus(bool focused)
+    void Key::setFocus(bool doFocus)
     {
-        mFocused = focused;
+        mFocused = doFocus;
     }
 
     bool Key::isFocused() const
     {
         return mFocused;
     }
+
+	float Key::getFocusValue() const
+	{
+		return mFocus.getValue();
+	}
+
+	void Key::setSelect(bool doSelect)
+	{
+		mSelected = doSelect;
+	}
+
+	bool Key::isSelected() const
+	{
+		return mSelected;
+	}
 
     glm::vec2 Key::getPosition() const
     {
@@ -110,6 +131,7 @@ namespace eyegui
             int oglStencilWidth,
             int oglStencilHeight,
             glm::vec4 color,
+			glm::vec4 selectionColor,
             float alpha) const
     {
         // Bind and fill render item
@@ -123,6 +145,8 @@ namespace eyegui
         // Fill other uniforms
         mpCirlceRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
         mpCirlceRenderItem->getShader()->fillValue("focus", mFocus.getValue());
+		mpCirlceRenderItem->getShader()->fillValue("selection", mSelection.getValue());
+		mpCirlceRenderItem->getShader()->fillValue("selectionColor", selectionColor);
         mpCirlceRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
 
         // Drawing
@@ -223,6 +247,7 @@ namespace eyegui
             int stencilWidth,
             int stencilHeight,
             glm::vec4 color,
+			glm::vec4 selectionColor,
             glm::vec4 iconColor,
             float alpha) const
     {
@@ -233,7 +258,7 @@ namespace eyegui
         int oglStencilHeight = stencilHeight;
 
         // Draw circle of key
-        drawCircle(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight, color, alpha);
+        drawCircle(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight, color, selectionColor, alpha);
 
         // Render character
         mpQuadShader->bind();

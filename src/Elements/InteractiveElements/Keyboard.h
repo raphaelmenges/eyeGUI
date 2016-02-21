@@ -23,13 +23,13 @@ namespace eyegui
     public:
 
         // TODO
-		// - Focus stuff not good enough for swype like behaviour. More like: threshold, until focused! (so extra lerp value in key)
-        // - Use parameters and not hardcoded values (durations, not multiplier)
-        // - Clean up update method
-        // - Everything resolution independend in update method?
-		// - gaze ist after start at 0,0 (and until first input is not NULL)
-		// - better use relative values in keys, not absolute screen stuff
-		// - implement InteractiveElement stuff
+		// - make fast typing more robust (maybe make threshold increase slower)
+		// - What happens, when no key is selected?
+		// - Use selected key for interact?
+		// - implement InteractiveElement stuff (and elements stuff)
+		//	- activity
+		//  - dim
+		//  - mark
 		//	- highlight
 		//  - selection
 
@@ -100,6 +100,8 @@ namespace eyegui
         std::u16string mLastPressedKeyValue;
 		bool mKeyWasPressed;
 		std::vector<PressedKey> mPressedKeys;  // Alpha [0..1] and copy of key
+		bool mUseFastTyping;
+		std::u16string mFastBuffer;
     };
 }
 

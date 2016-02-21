@@ -4,12 +4,7 @@
   - in all block elements: background image / alignment (backgroundsrc, backgroundalignment)
   - more image formats than png can be loaded
 	- textblock new percent attribute: textscale
-  
-- Keyboard
-  - TODO in Keyboard.h header (think about swype like behaviour, let one turn it on and off)
-  - Wiki entry... (extra page or in elements? -> both)
-  - Clean up Key and Keyboard class
-  - Color of focus in keyboard
+	- Wiki entry for keyboard (extra page or in elements? -> both)
 	
 - BUGS
 	- No more working in combination with glew? (internal test with tutorial project)
@@ -18,6 +13,7 @@
 	- In browser prototype, there are the separators of the stack BEHIND the webview (eyeGUI bug)
 
 ### VERSION 0.9
+- TODO in Keyboard.h header
 - Multilingual keyboard with different subboards (for extra characters not used often)
   - Change between small and big letters
   - Think about different key maps (?) (extra letters, smileys)
