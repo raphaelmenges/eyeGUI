@@ -36,7 +36,7 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
-			float scale,
+            float scale,
             std::u16string content);
 
         // Destructor
@@ -78,11 +78,11 @@ namespace eyegui
         // Calculate word
         Word calculateWord(std::u16string content, float scale) const;
 
-		// Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
-		std::vector<Word> calculateWord(std::u16string content, int maxPixelWidth, float scale) const;
+        // Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
+        std::vector<Word> calculateWord(std::u16string content, int maxPixelWidth, float scale) const;
 
-		// Inserts word into vector, returns true at success
-		bool TextFlow::insertWord(std::vector<Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
+        // Inserts word into vector, returns true at success
+        bool insertWord(std::vector<Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
 
         // Members
         GUI const * mpGUI;
@@ -91,7 +91,7 @@ namespace eyegui
         FontSize mFontSize;
         TextFlowAlignment mAlignment;
         TextFlowVerticalAlignment mVerticalAlignment;
-		float mScale;
+        float mScale;
         int mX;
         int mY;
         int mWidth;
