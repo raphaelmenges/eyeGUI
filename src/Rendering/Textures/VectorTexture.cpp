@@ -22,12 +22,6 @@ namespace eyegui
 {
     VectorTexture::VectorTexture(std::string filepath, Filtering filtering, Wrap wrap, float dpi) : Texture()
     {
-        // Check file format
-        if (!checkFileNameExtension(filepath, "svg"))
-        {
-            throwError(OperationNotifier::Operation::IMAGE_LOADING, "Graphics file not found or wrong format", filepath);
-        }
-
         // Parse file
         NSVGimage* svg = nsvgParseFromFile(buildPath(filepath).c_str(), "px", dpi);
 

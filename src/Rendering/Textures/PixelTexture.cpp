@@ -24,12 +24,6 @@ namespace eyegui
         // Setup stb_image
         stbi_set_flip_vertically_on_load(true);
 
-        // Check file format
-        if (!checkFileNameExtension(filepath, "png"))
-        {
-            throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format", filepath);
-        }
-
         // Try to load image (return always 4 channels, otherwise there are sometimes rendering issues....)
         int width, height, channelCount;
         unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, 4);

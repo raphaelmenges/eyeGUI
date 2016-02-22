@@ -125,6 +125,7 @@ namespace eyegui
                 }
                 else
                 {
+					throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format. Replaced with placeholder", filepath);
                     rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 }
             }
