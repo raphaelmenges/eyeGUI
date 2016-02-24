@@ -1,9 +1,9 @@
 ### VERSION 0.8
 - BUGS
-	- No more working in combination with glew? (internal test with tutorial project)
+  - No more working in combination with glew? (internal test with tutorial project)
   - Do glyphs which are not represented in font make problem?
-	- German umlaute in eyeGUI and CEF 3 do not work
-	- In browser prototype, there are the separators of the stack BEHIND the webview (eyeGUI bug)
+  - German umlaute in eyeGUI and CEF 3 do not work
+  - In browser prototype, there are the separators of the stack BEHIND the webview (eyeGUI bug)
 
 ### VERSION 0.9
 - Wiki
@@ -24,6 +24,7 @@
 
 ### VERSION 0.x
 - Try to solve madness of different file endings in input files (stylesheets etc)
+  - http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
 - Expand descriptions in header file
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
