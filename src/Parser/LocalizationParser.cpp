@@ -45,6 +45,7 @@ namespace eyegui
             unsigned int line_count = 1;
             std::string line;
 
+            // TODO: Does not work for CR, use same approach as for other file parsers ;)
             // Iterate through lines
             while (getline(in, line))
             {

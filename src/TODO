@@ -23,8 +23,6 @@
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
-- Try to solve madness of different file endings in input files (stylesheets etc)
-  - http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
 - Expand descriptions in header file
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)

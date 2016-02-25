@@ -57,6 +57,9 @@ namespace eyegui
                     // Close file
                     in.close();
 
+                    // Streamline line endings
+                    streamlineLineEnding(content);
+
                     // Get rid of whitespaces
                     std::string::iterator end_pos = std::remove(content.begin(), content.end(), ' ');
                     content.erase(end_pos, content.end());
@@ -264,10 +267,10 @@ namespace eyegui
             {
                 rStyle.dimColor = value;
             }
-			else if (attribute == "mark-color")
-			{
-				rStyle.markColor = value;
-			}
+            else if (attribute == "mark-color")
+            {
+                rStyle.markColor = value;
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, rStyle.filepath);

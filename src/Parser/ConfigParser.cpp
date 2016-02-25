@@ -50,6 +50,9 @@ namespace eyegui
             // Close file
             in.close();
 
+            // Streamline line endings
+            streamlineLineEnding(content);
+
             // Get rid of whitespaces
             std::string::iterator end_pos = std::remove(content.begin(), content.end(), ' ');
             content.erase(end_pos, content.end());

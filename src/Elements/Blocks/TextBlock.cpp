@@ -31,7 +31,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
-		float textScale,
+        float textScale,
         std::u16string content,
         std::string key) : Block(
             id,
@@ -55,8 +55,8 @@ namespace eyegui
         // Fill members
         mKey = key;
 
-		// Content of text flow
-		std::u16string textFlowContent;
+        // Content of text flow
+        std::u16string textFlowContent;
         if (mKey != EMPTY_STRING_ATTRIBUTE)
         {
             std::u16string localization = mpLayout->getContentFromLocalization(mKey);
@@ -66,21 +66,21 @@ namespace eyegui
                     OperationNotifier::Operation::RUNTIME,
                     "No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
 
-				textFlowContent = content;
+                textFlowContent = content;
             }
             else
             {
-				textFlowContent = localization;
+                textFlowContent = localization;
             }
         }
         else
         {
-			textFlowContent = content;
-            
+            textFlowContent = content;
+
         }
 
-		// Create text flow
-		mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, textScale, textFlowContent));
+        // Create text flow
+        mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, textScale, textFlowContent));
     }
 
     TextBlock::~TextBlock()
@@ -91,7 +91,7 @@ namespace eyegui
     void TextBlock::setContent(std::u16string content)
     {
         // TODO: somehow strange, maybe save the usage of the key in a bool
-        if (mKey != EMPTY_STRING_ATTRIBUTE && mpLayout->getContentFromLocalization(mKey) != LOCALIZATION_NOT_FOUND)
+        if (mKey != EMPTY_STRING_ATTRIBUTE && mpLayout->getContentFromLocalization(mKey) == LOCALIZATION_NOT_FOUND)
         {
             throwWarning(
                 OperationNotifier::Operation::RUNTIME,
