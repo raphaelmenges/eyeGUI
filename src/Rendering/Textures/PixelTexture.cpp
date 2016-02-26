@@ -19,14 +19,14 @@
 
 namespace eyegui
 {
-    PixelTexture::PixelTexture(std::string filepath, Filtering filtering, Wrap wrap) : Texture()
+    PixelTexture::PixelTexture(std::string filepath, Filtering filtering, Wrap wrap, int suspectedChannels) : Texture()
     {
         // Setup stb_image
         stbi_set_flip_vertically_on_load(true);
 
-        // Try to load image (return always 4 channels, otherwise there are sometimes rendering issues....)
+        // Try to load image
         int width, height, channelCount;
-        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, 4);
+        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, suspectedChannels);
 
         // Check whether file was found and parsed
         if (data == NULL)

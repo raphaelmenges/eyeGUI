@@ -121,11 +121,18 @@ namespace eyegui
                 }
                 else if (input.compare("png") == 0 || input.compare("jpg") == 0 || input.compare("jpeg") == 0 || input.compare("tga") == 0 || input.compare("bmp") == 0)
                 {
-                    rupTexture = std::unique_ptr<Texture>(new PixelTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
+                    // For PNG, suspect 4 channels (0 should do it for all cases, but stb_image always tells me about 3 channels and then moving to GPU fails)
+                    int suspectedChannelCount = 3;
+                    if(input.compare("png") == 0)
+                    {
+                        suspectedChannelCount = 4;
+                    }
+
+                    rupTexture = std::unique_ptr<Texture>(new PixelTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, suspectedChannelCount));
                 }
                 else
                 {
-					throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format. Replaced with placeholder", filepath);
+                    throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format. Replaced with placeholder", filepath);
                     rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 }
             }
@@ -319,7 +326,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
-		float scale,
+        float scale,
         std::u16string content)
     {
         return std::move(
@@ -331,7 +338,7 @@ namespace eyegui
                     fontSize,
                     alignment,
                     verticalAlignment,
-					scale,
+                    scale,
                     content)));
     }
 
