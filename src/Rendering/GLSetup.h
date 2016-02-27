@@ -20,6 +20,9 @@ namespace eyegui
     {
     public:
 
+		// Initialization can be static
+		static void init() { ogl_LoadFunctions(); }
+
         // Store current state and set own
         void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
 

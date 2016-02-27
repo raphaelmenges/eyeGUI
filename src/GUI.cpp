@@ -27,6 +27,9 @@ namespace eyegui
         float fontMediumSize,
         float fontSmallSize)
     {
+		// Initialize OpenGL
+		GLSetup::init();
+
         // Initialize members
         mWidth = width;
         mHeight = height;
@@ -44,9 +47,6 @@ namespace eyegui
         mFontTallSize = fontTallSize;
         mFontMediumSize = fontMediumSize;
         mFontSmallSize = fontSmallSize;
-
-        // Initialize OpenGL
-        ogl_LoadFunctions();
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
