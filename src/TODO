@@ -1,10 +1,10 @@
 ### VERSION 0.8
+- Some error when glyphs are used which are not represented in character set
+- Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
+
 - BUGS
   - No more working in combination with glew? (internal test with tutorial project)
-  - Do glyphs which are not represented in font make problem?
-  - German umlaute in eyeGUI and CEF 3 do not work
   - In browser prototype, there are the separators of the stack BEHIND the webview (eyeGUI bug)
-  - Compile with CEF3 flags to (warnings are error or so)
 
 ### VERSION 0.9
 - Wiki
