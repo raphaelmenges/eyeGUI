@@ -230,9 +230,9 @@ namespace eyegui
 		// Some parameters which may or may not be defineable in config file
 		float PRESSED_KEY_FADING_DURATION = 0.5f;
 		float PRESSED_KEY_SCALING_MULTIPLIER = 5.f;
-		float GAZE_FILTER_RADIUS = 4.f;
-		float GAZE_DIRECT_USAGE_MULTIPLIER = 5.f;
-		float GAZE_DELTA_WEIGHT_RADIUS = 2.f;
+		float GAZE_FILTER_RADIUS = 5.f;
+		float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f;
+		float GAZE_DELTA_WEIGHT_RADIUS = 1.0f;
 		float THRESHOLD_DECREASE_AFTER_PRESS_DURATION = 0.2f;
 		float THRESHOLD_INCREASE_DURATION = 0.5f;
 		float THRESHOLD_DECREASE_DURATION = 1.f;

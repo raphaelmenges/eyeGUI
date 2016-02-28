@@ -144,7 +144,6 @@ namespace eyegui
 
         // Fill other uniforms
         mpCirlceRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
-        mpCirlceRenderItem->getShader()->fillValue("focus", mFocus.getValue());
 		mpCirlceRenderItem->getShader()->fillValue("selection", mSelection.getValue());
 		mpCirlceRenderItem->getShader()->fillValue("selectionColor", selectionColor);
         mpCirlceRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));

@@ -349,7 +349,6 @@ namespace eyegui
 
         // Uniforms:
         // vec4 color
-        // float focus
 		// float select
         // vec4 stencil
 		static const char* pKeyFragmentShader =
@@ -358,7 +357,6 @@ namespace eyegui
 			"in vec2 uv;\n"
 			"uniform vec4 color = vec4(1,0,0,1);\n"
 			"uniform vec4 selectionColor = vec4(0,1,1,0.5);\n"
-			"uniform float focus = 0;\n"
 			"uniform float selection = 0;\n"
 			"uniform vec4 stencil;\n"
 			"const int innerBorder = 10;\n"
@@ -371,7 +369,7 @@ namespace eyegui
 			"   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
 			"   float inner = clamp(circle - (selection * innerBorder), 0, 1);\n" // Inner circle for character
 			"	float outer = clamp(circle, 0, 1);\n" // Outer circle for selection
-			"	vec4 col = vec4((1.0-focus) * color.rgb +  focus * (1.0-color.rgb), color.a);\n" // Color and focus
+			"	vec4 col = color;\n" // Color
 			"   vec4 customSelectionColor = selectionColor;\n"
 			"	customSelectionColor.a *= 0.5;\n" // Perpare selection color
 			"	col += selection * customSelectionColor * (1.0-inner);\n" // Add custom selection color
