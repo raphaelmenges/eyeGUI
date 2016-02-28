@@ -3,9 +3,6 @@
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - TODO in Keyboard.h header
 
-- BUGS
-  - In browser prototype, there are the separators of the stack BEHIND the webview (eyeGUI bug)
-
 ### VERSION 0.9
 - Wiki
 	- Wiki entry for keyboard (extra page or in elements? -> both)
