@@ -1,6 +1,7 @@
 ### VERSION 0.8
 - Some error when glyphs are used which are not represented in character set
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
+- TODO in Keyboard.h header
 
 - BUGS
   - In browser prototype, there are the separators of the stack BEHIND the webview (eyeGUI bug)
@@ -8,7 +9,7 @@
 ### VERSION 0.9
 - Wiki
 	- Wiki entry for keyboard (extra page or in elements? -> both)
-- TODO in Keyboard.h header
+
 - Multilingual keyboard with different subboards (for extra characters not used often)
   - Change between small and big letters
   - Think about different key maps (?) (extra letters, smileys)
