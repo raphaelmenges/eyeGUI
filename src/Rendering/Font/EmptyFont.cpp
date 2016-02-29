@@ -56,6 +56,11 @@ namespace eyegui
 		return 0;
 	}
 
+	float EmptyFont::getTargetGlyphHeight(FontSize fontSize) const
+	{
+		return 0;
+	}
+
 	void EmptyFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering ) const
 	{
 		// Nothing to do

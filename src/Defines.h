@@ -45,6 +45,8 @@ namespace eyegui
 	static const std::u16string TEXT_FLOW_OVERFLOW_MARK = u"...";
 	static const float KEY_FOCUS_DURATION = 0.3f;
 	static const float KEY_SELECT_DURATION = 0.1f;
+	static const float KEY_MIN_SCALE = 0.5f;
+	static const char16_t FONT_FALLBACK_CHARACTER = u' ';
 }
 
 #endif // DEFINES_H_

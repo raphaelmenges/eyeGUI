@@ -84,33 +84,39 @@ namespace eyegui
 
     float AtlasFont::getLineHeight(FontSize fontSize) const
     {
-        // Values seems to be not correct (not depending on bitmap size)
-        /*switch(fontSize)
-        {
-        case FontSize::TALL:
-        return mTallLineHeight;
-        break;
-        case FontSize::MEDIUM:
-        return mMediumLineHeight;
-        break;
-        case FontSize::SMALL:
-        return mSmallLineHeight;
-        break;
-        }*/
-
-        switch (fontSize)
-        {
-        case FontSize::TALL:
-            return (float)mTallPixelHeight;
-            break;
-        case FontSize::MEDIUM:
-            return (float)mMediumPixelHeight;
-            break;
-        case FontSize::SMALL:
-            return (float)mSmallPixelHeight;
-            break;
-        }
+        // At the moment, same as target glyph height
+		return getTargetGlyphHeight(fontSize);
     }
+
+	float AtlasFont::getTargetGlyphHeight(FontSize fontSize) const
+	{
+		// Values seems to be not correct (not depending on bitmap size)
+		/*switch(fontSize)
+		{
+		case FontSize::TALL:
+		return mTallLineHeight;
+		break;
+		case FontSize::MEDIUM:
+		return mMediumLineHeight;
+		break;
+		case FontSize::SMALL:
+		return mSmallLineHeight;
+		break;
+		}*/
+
+		switch (fontSize)
+		{
+		case FontSize::TALL:
+			return (float)mTallPixelHeight;
+			break;
+		case FontSize::MEDIUM:
+			return (float)mMediumPixelHeight;
+			break;
+		case FontSize::SMALL:
+			return (float)mSmallPixelHeight;
+			break;
+		}
+	}
 
     void AtlasFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering) const
     {

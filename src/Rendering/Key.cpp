@@ -168,6 +168,10 @@ namespace eyegui
         // Get glyph from font
         mpGlyph = mpFont->getGlyph(FontSize::TALL, mCharacter);
 
+		// Calculate relative size of character
+		float targetGlyphHeight = mpFont->getTargetGlyphHeight(FontSize::TALL);
+		mCharacterSize = std::max(KEY_MIN_SCALE, mpGlyph->size.y / targetGlyphHeight);
+		
         // Prepare quad for displaying the character
         prepareQuad();
     }
@@ -179,6 +183,7 @@ namespace eyegui
         mCharacter = rOtherKey.mCharacter;
         mpQuadShader = rOtherKey.mpQuadShader;
         mpGlyph = rOtherKey.mpGlyph;
+		mCharacterSize = rOtherKey.mCharacterSize;
 
         // But create own quad!
         prepareQuad();
@@ -297,15 +302,20 @@ namespace eyegui
         glGenBuffers(1, &mQuadTextureCoordinateBuffer);
         glGenVertexArrays(1, &mQuadVertexArrayObject);
 
+		// Coordinates of quad
+		float border = (1.0f - mCharacterSize) / 2.0f;
+		float a = border;
+		float b = 1.0f - border;
+
         // Fill vertex buffer (in OpenGL space)
         glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);
         std::vector<glm::vec3> vertices;
-        vertices.push_back(glm::vec3(0, 0, 0));
-        vertices.push_back(glm::vec3(1, 0, 0));
-        vertices.push_back(glm::vec3(1, 1, 0));
-        vertices.push_back(glm::vec3(1, 1, 0));
-        vertices.push_back(glm::vec3(0, 1, 0));
-        vertices.push_back(glm::vec3(0, 0, 0));
+        vertices.push_back(glm::vec3(a, a, 0));
+        vertices.push_back(glm::vec3(b, a, 0));
+        vertices.push_back(glm::vec3(b, b, 0));
+        vertices.push_back(glm::vec3(b, b, 0));
+        vertices.push_back(glm::vec3(a, b, 0));
+        vertices.push_back(glm::vec3(a, a, 0));
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * 3 * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
         // Texture coordinates are dynamic and filled in transformAndSize method

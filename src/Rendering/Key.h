@@ -152,6 +152,7 @@ namespace eyegui
         Font const * mpFont;
         char16_t mCharacter;
         Glyph const * mpGlyph;
+		float mCharacterSize;
         Shader const * mpQuadShader;
         GLuint mQuadVertexBuffer;
         GLuint mQuadTextureCoordinateBuffer;

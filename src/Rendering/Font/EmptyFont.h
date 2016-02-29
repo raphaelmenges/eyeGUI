@@ -36,6 +36,9 @@ namespace eyegui
 		// Get height of line
 		virtual float getLineHeight(FontSize fontSize) const;
 
+		// Get target glyph height
+		virtual float getTargetGlyphHeight(FontSize fontSize) const;
+
 		// Bind atlas texture of font
 		virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const;
 
