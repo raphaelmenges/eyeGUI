@@ -15,7 +15,6 @@
 			- mark
 			- highlight
 			- selection
-- TODO in Keyboard.h header
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - Extra texture atlas for keyboard
 - Wiki
