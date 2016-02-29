@@ -52,7 +52,7 @@ namespace eyegui
 		mKeyWasPressed = false;
 
 		// TODO: Fast typing (make it changeable via interface)
-		mUseFastTyping = false;
+		mUseFastTyping = true;
 		mFastBuffer = u"";
 
         // Fetch render item for background
@@ -227,19 +227,40 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
+		// *** SET UP PARAMETERS ***
+
+		// Radius stuff is given in key radii (since normalized with that value)
+
+		// General speed multiplier (maybe used in config?)
+		float KEYBOARD_SPEED_MULTIPLIER = 1.0f;
+
 		// Some parameters which may or may not be defineable in config file
-		float PRESSED_KEY_FADING_DURATION = 0.5f;
-		float PRESSED_KEY_SCALING_MULTIPLIER = 5.f;
-		float GAZE_FILTER_RADIUS = 5.f;
-		float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f;
-		float GAZE_DELTA_WEIGHT_RADIUS = 1.0f;
-		float THRESHOLD_DECREASE_AFTER_PRESS_DURATION = 0.2f;
-		float THRESHOLD_INCREASE_DURATION = 0.5f;
-		float THRESHOLD_DECREASE_DURATION = 1.f;
-		float FOCUS_RADIUS = 3.0f;
-		float KEY_POSITION_DELTA_MULTIPLIER = 0.25f;
-		float KEY_SIZE_DELTA_MULTIPLIER = 0.5f;
-		float MINIMAL_KEY_SIZE = 0.75f;
+		float GAZE_DELTA_WEIGHT_RADIUS = 0.5f; // Radius in which gaze has to be so that threshold is increased
+		float THRESHOLD_INCREASE_DURATION = 0.25f; // Duration of threshold to become one (depending very much on other parameters)
+
+		// Not that important parameters
+		float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
+		float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
+		float PRESSED_KEY_FADING_DURATION = 0.5f; // Just animation duration of pressed key which is moving and fading towards user
+		float PRESSED_KEY_SCALING_MULTIPLIER = 5.f; // Just animation scale of pressed key which is moving and fading towards user
+		float THRESHOLD_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of threshold after pressing
+		float THRESHOLD_DECREASE_DURATION = 1.f; // General decrease duration of threshold if no gaze is upon element
+		float FOCUS_RADIUS = 3.0f; // Radius of gaze affected keys (in the center bigger, else smaller)
+		float KEY_POSITION_DELTA_MULTIPLIER = 0.25f; // Delta position multiplier of keys in focus
+		float KEY_SIZE_DELTA_MULTIPLIER = 0.5f; // Delta size multiplier of keys in focus
+		float MINIMAL_KEY_SIZE = 0.75f; // Cap minimal key size for those in focus area
+
+		// Some adjustments for fast typing
+		if (mUseFastTyping)
+		{
+			GAZE_DELTA_WEIGHT_RADIUS *= 2.0f;
+			THRESHOLD_INCREASE_DURATION *= 1.5f;
+		}
+
+		// Use speed multiplier
+		THRESHOLD_INCREASE_DURATION /= KEYBOARD_SPEED_MULTIPLIER;
+
+		// *** SETUP ***
 
 		// Call super
 		InteractiveElement::specialUpdate(tpf, pInput);

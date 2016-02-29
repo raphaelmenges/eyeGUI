@@ -23,15 +23,16 @@ namespace eyegui
     public:
 
         // TODO
-		// - make fast typing more robust (maybe make threshold increase slower)
 		// - What happens, when no key is selected?
 		// - Use selected key for interact?
+		// - togglening between different keymaps (2 are enough? -> better methode: how many and direct setter)
 		// - implement InteractiveElement stuff (and elements stuff)
 		//	- activity
 		//  - dim
 		//  - mark
 		//	- highlight
 		//  - selection
+		//  - determine sizes of characters and scale all of them by the biggest... (or use standard size and scale them by that)
 
         // Notes
         // - icon color is used here for font rendering
@@ -81,17 +82,28 @@ namespace eyegui
 		// Typedefs
 		typedef std::pair<float, std::unique_ptr<Key> > PressedKey;
 
+		// Struct for keymap
+		struct Keymap
+		{
+			
+		};
+
         // Add key to keyboard
         void addKey(char16_t character);
 
         // Start new line for keyboard
         void newLine();
 
+		// Keymap creation methods
+		//std::vector<> createGermanGerma
+
         // Members
         RenderItem const * mpBackground;
-        std::vector<std::vector<std::unique_ptr<Key> > > mKeys;
-        std::vector<std::vector<glm::vec2> > mInitialKeyPositions;
+
+		std::vector<std::vector<std::unique_ptr<Key> > > mKeys;
+		std::vector<std::vector<glm::vec2> > mInitialKeyPositions;
         float mInitialKeySize;
+
         LerpValue mThreshold;
         int mFocusedKeyRow;
         int mFocusedKeyColumn;
