@@ -172,6 +172,10 @@ namespace eyegui
             {
                 rConfig.gazeVisualizationMaxSize = std::stof(value);
             }
+			else if (attribute == "keyboard-speed-multiplier")
+			{
+				rConfig.keyboardSpeedMultiplier = std::stof(value);
+			}
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);

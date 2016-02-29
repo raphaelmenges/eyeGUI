@@ -2,15 +2,13 @@
 - Some error when glyphs are used which are not represented in character set
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - TODO in Keyboard.h header
-
-### VERSION 0.9
+- Extra texture atlas for keyboard
+- Change between small and big letters
 - Wiki
 	- Wiki entry for keyboard (extra page or in elements? -> both)
 
+### VERSION 0.9
 - Multilingual keyboard with different subboards (for extra characters not used often)
-  - Change between small and big letters
-  - Think about different key maps (?) (extra letters, smileys)
-- extra font atlas for keyboard (do not use tall one anymore)
 - Advanced TextInput
   - "Guesser" (tries to guess what you want to write)
 	  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)

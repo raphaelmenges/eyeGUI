@@ -10,6 +10,7 @@
 #include "NotificationQueue.h"
 #include "OperationNotifier.h"
 #include "externals/utfcpp/source/utf8.h"
+#include "Layout.h"
 
 // TODO: Testing
 #include <iostream>
@@ -231,9 +232,6 @@ namespace eyegui
 
 		// Radius stuff is given in key radii (since normalized with that value)
 
-		// General speed multiplier (maybe used in config?)
-		float KEYBOARD_SPEED_MULTIPLIER = 1.0f;
-
 		// Some parameters which may or may not be defineable in config file
 		float GAZE_DELTA_WEIGHT_RADIUS = 0.5f; // Radius in which gaze has to be so that threshold is increased
 		float THRESHOLD_INCREASE_DURATION = 0.25f; // Duration of threshold to become one (depending very much on other parameters)
@@ -258,7 +256,7 @@ namespace eyegui
 		}
 
 		// Use speed multiplier
-		THRESHOLD_INCREASE_DURATION /= KEYBOARD_SPEED_MULTIPLIER;
+		THRESHOLD_INCREASE_DURATION /= mpLayout->getConfig()->keyboardSpeedMultiplier;
 
 		// *** SETUP ***
 
