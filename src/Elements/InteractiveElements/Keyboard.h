@@ -32,7 +32,7 @@ namespace eyegui
 		//  - mark
 		//	- highlight
 		//  - selection
-		//  - determine sizes of characters and scale all of them by the biggest... (or use standard size and scale them by that)
+		// - determine sizes of characters and scale all of them by the biggest... (or use standard size and scale them by that)
 
         // Notes
         // - icon color is used here for font rendering
