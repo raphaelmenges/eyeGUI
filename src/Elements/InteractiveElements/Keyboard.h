@@ -69,7 +69,7 @@ namespace eyegui
 
 		// Typedefs
 		typedef std::pair<float, std::unique_ptr<Key> > PressedKey; // Alpha and copy of key
-		typedef std::vector<std::vector<std::unique_ptr<Key> > > SubKeymap; // Sub keymap
+		typedef std::vector<std::vector<std::unique_ptr<Key> > > SubKeymap; // Sub keymap (only used to hold either small or big versions of characters
 		typedef std::vector<std::vector<glm::vec2> > PositionMap; // Positions of keys in keymap
 
 		// Struct for keymap which holds sub keymaps of small and big letters

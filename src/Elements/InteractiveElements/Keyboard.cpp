@@ -73,8 +73,6 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
-		/*
-
 		// *** SET UP PARAMETERS ***
 
 		// Radius stuff is given in key radii (since normalized with that value)
@@ -113,6 +111,19 @@ namespace eyegui
 		// Check for penetration by input
 		bool penetrated = penetratedByInput(pInput);
 
+		// Get stuff from currently active keymap
+		SubKeymap* pKeys = NULL;
+		PositionMap* pInitialKeyPositions = &(mKeymaps[mCurrentKeymapIndex].initialKeyPositions);
+		float initialKeySize = mKeymaps[mCurrentKeymapIndex].initialKeySize;
+		if (mBigCharactersActive)
+		{
+			pKeys = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
+		}
+		else
+		{
+			pKeys = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
+		}
+
 		// *** UPDATE ANIMATED PRESSED KEYES ***
 		std::vector<int> dyingPressedKeys;
 		for (int i = 0; i < mPressedKeys.size(); i++)
@@ -120,7 +131,7 @@ namespace eyegui
 			// Update alpha and size
 			mPressedKeys[i].first -= tpf / PRESSED_KEY_FADING_DURATION;
 			Key* pKey = mPressedKeys[i].second.get();
-			pKey->transformAndSize((int)pKey->getPosition().x, (int)pKey->getPosition().y, (int)(pKey->getSize() + PRESSED_KEY_SCALING_MULTIPLIER * tpf * mInitialKeySize));
+			pKey->transformAndSize((int)pKey->getPosition().x, (int)pKey->getPosition().y, (int)(pKey->getSize() + PRESSED_KEY_SCALING_MULTIPLIER * tpf * initialKeySize));
 
 			// Check, whether still visible
 			if (mPressedKeys[i].first <= 0)
@@ -143,14 +154,14 @@ namespace eyegui
 		}
 
 		// Filter only, when delta is small
-		float gazeFilterRadius = GAZE_FILTER_RADIUS * mInitialKeySize;
+		float gazeFilterRadius = GAZE_FILTER_RADIUS * initialKeySize;
 		float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
 		float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, GAZE_DIRECT_USAGE_MULTIPLIER * tpf);
 		mGazePosition += gazeFilter * rawGazeDelta;
 
 		// Use gaze delta as weight for threshold (is one if low delta in gaze)
 		float gazeDelta = glm::abs(glm::length(rawGazeDelta)); // In pixels!
-		float gazeDeltaWeight = 1.f - clamp(gazeDelta / (GAZE_DELTA_WEIGHT_RADIUS * mInitialKeySize), 0, 1); // Key size used for normalization
+		float gazeDeltaWeight = 1.f - clamp(gazeDelta / (GAZE_DELTA_WEIGHT_RADIUS * initialKeySize), 0, 1); // Key size used for normalization
 
 		// *** CHECK FOR PENETRATION ***
 
@@ -179,12 +190,12 @@ namespace eyegui
             float minDistance = 1000000;
             int newFocusedKeyRow = -1;
             int newFocusedKeyColumn = -1;
-            for(int i = 0; i < mKeys.size(); i++)
+            for(int i = 0; i < pKeys->size(); i++)
             {
-                for(int j = 0; j < mKeys[i].size(); j++)
+                for(int j = 0; j < (*pKeys)[i].size(); j++)
                 {
                     // Use position in keys to get position after last update
-                    float currentDistance = glm::abs(glm::distance(mGazePosition, mKeys[i][j]->getPosition()));
+                    float currentDistance = glm::abs(glm::distance(mGazePosition, (*pKeys)[i][j]->getPosition()));
                     if(currentDistance < minDistance)
                     {
                         minDistance = currentDistance;
@@ -200,20 +211,20 @@ namespace eyegui
                 // Unset old focus
                 if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
                 {
-                    mKeys[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
-					mKeys[mFocusedKeyRow][mFocusedKeyColumn]->setSelect(false);
+                    (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
+					(*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setSelect(false);
                 }
 
                 // Set new focus
                 mFocusedKeyRow = newFocusedKeyRow;
                 mFocusedKeyColumn = newFocusedKeyColumn;
-                mKeys[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
+				(*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
             }
 
 			// Selection of focused key
 			if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
 			{
-				Key* pFocusedKey = mKeys[mFocusedKeyRow][mFocusedKeyColumn].get();
+				Key* pFocusedKey = (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn].get();
 				if (!pFocusedKey->isSelected() && pFocusedKey->getFocusValue() >= 1.f)
 				{
 					pFocusedKey->setSelect(true);
@@ -229,21 +240,21 @@ namespace eyegui
         // Update focus position
         if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
         {
-            mFocusPosition = mInitialKeyPositions[mFocusedKeyRow][mFocusedKeyColumn];
+            mFocusPosition = (*pInitialKeyPositions)[mFocusedKeyRow][mFocusedKeyColumn];
         }
 
         // *** UPDATE KEY POSITIONS ***
 
         // Update keys (they have to be transformed and sized each update)
-        for(int i = 0; i < mKeys.size(); i++)
+        for(int i = 0; i < pKeys->size(); i++)
         {
-            for(int j = 0; j < mKeys[i].size(); j++)
+            for(int j = 0; j < (*pKeys)[i].size(); j++)
             {
                 // Get delta between position of initial key position and gaze position
-                glm::vec2 positionDelta = mInitialKeyPositions[i][j] - mGazePosition;
+                glm::vec2 positionDelta = (*pInitialKeyPositions)[i][j] - mGazePosition;
 
                 // Radius of focus
-                float focusWeight = 1.f - glm::length(positionDelta) / (FOCUS_RADIUS * mInitialKeySize); // Key size used for normalization
+                float focusWeight = 1.f - glm::length(positionDelta) / (FOCUS_RADIUS * initialKeySize); // Key size used for normalization
                 focusWeight = clamp(focusWeight, 0, 1);
 
                 // Only near keys have to be moved
@@ -251,9 +262,9 @@ namespace eyegui
                 positionDelta *= KEY_POSITION_DELTA_MULTIPLIER;
 
                 // Calculate delta of size
-                float sizeDelta = mInitialKeySize - glm::length(mKeys[i][j]->getPosition() - mGazePosition);
+                float sizeDelta = initialKeySize - glm::length((*pKeys)[i][j]->getPosition() - mGazePosition);
                 sizeDelta = (1.f - focusWeight) + sizeDelta * focusWeight;
-                sizeDelta = std::max(-(1.f - MINIMAL_KEY_SIZE) * mInitialKeySize, sizeDelta); // Subtracted from initial size
+                sizeDelta = std::max(-(1.f - MINIMAL_KEY_SIZE) * initialKeySize, sizeDelta); // Subtracted from initial size
                 sizeDelta *= KEY_SIZE_DELTA_MULTIPLIER;
 
                 // Weight with threshold
@@ -261,18 +272,18 @@ namespace eyegui
                 sizeDelta *= mThreshold.getValue();
 
                 // Calc stuff for key
-				int keyPositionX = (int)(mInitialKeyPositions[i][j].x + positionDelta.x);
-				int keyPositionY = (int)(mInitialKeyPositions[i][j].y + positionDelta.y);
-                int keySize = (int)(mInitialKeySize + sizeDelta);
+				int keyPositionX = (int)((*pInitialKeyPositions)[i][j].x + positionDelta.x);
+				int keyPositionY = (int)((*pInitialKeyPositions)[i][j].y + positionDelta.y);
+                int keySize = (int)(initialKeySize + sizeDelta);
 
                 // Transform and size
-                mKeys[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
+				(*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
 
                 // Updating
-                mKeys[i][j]->update(tpf);
+				(*pKeys)[i][j]->update(tpf);
 
                 // Check for "key pressed"
-                if(!mKeyWasPressed && mThreshold.getValue() >= 1.f && mKeys[i][j]->isFocused())
+                if(!mKeyWasPressed && mThreshold.getValue() >= 1.f && (*pKeys)[i][j]->isFocused())
                 {
                     // Check, whether gaze is really on focused key
                     if(
@@ -290,7 +301,7 @@ namespace eyegui
 						else
 						{
 							// Save value in member to have it when notification queue calls the pipe method
-							mLastPressedKeyValue = mKeys[i][j]->getValue();
+							mLastPressedKeyValue = (*pKeys)[i][j]->getValue();
 						}
 
 						// Reset fast buffer
@@ -303,15 +314,13 @@ namespace eyegui
                         mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
 
 						// Add pressed key for nice animation
-						std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)(mKeys[i][j].get())));
+						std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)((*pKeys)[i][j].get())));
 						upPressedKey->transformAndSize();
 						mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
                     }
                 }
             }
         }
-
-		*/
 
         return 0;
     }

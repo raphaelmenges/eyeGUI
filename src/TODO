@@ -1,13 +1,12 @@
 ### VERSION 0.8
-- Update of keyboard
-- Change between big and small letters via interface
-- Make second keymap (testing needs a second ;) )
-  - Get count of keymaps interface
-	- Set keymap in interface (by index)
+- Fade out previous subkeymap / fade in new one?
+- Interface
+	- Change between big and small characters
+	- Get count of keymaps
+	- Set keymap in interface (by index) + toggle
 - General keyboard
   - What happens, when no key is selected?
 		- Use selected key for interact?
-		- toggling between different keymaps (2 are enough? -> better methode: how many and direct setter)
 		- implement InteractiveElement stuff (and elements stuff)
 			- activity
 			- dim
