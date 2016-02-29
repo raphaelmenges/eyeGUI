@@ -51,7 +51,7 @@ namespace eyegui
         mGazePosition = glm::vec2(0,0);
 		mKeyWasPressed = false;
 		mCurrentKeymapIndex = 0;
-		mBigCharactersActive = false;
+		mBigCharactersActive = false ;
 
 		// TODO: Fast typing (make it changeable via interface)
 		mUseFastTyping = true;
@@ -63,7 +63,7 @@ namespace eyegui
             meshes::Type::QUAD);
 
         // Create keymaps (mKeymaps)
-		initKeymaps();
+		initKeymaps(mpLayout->getCharacterSet());
     }
 
     Keyboard::~Keyboard()
@@ -508,87 +508,80 @@ namespace eyegui
         }
     }
 
-	void Keyboard::initKeymaps()
+	void Keyboard::initKeymaps(CharacterSet set)
 	{
-		// Small letters
 		mKeymaps.push_back(Keymap());
-		Keymap& rKeymap = mKeymaps.back();
-		SubKeymap& rSmallKeys = rKeymap.smallKeys;
-		SubKeymap& rBigKeys = rKeymap.bigKeys;
-		PositionMap& rInitialPositions = rKeymap.initialKeyPositions;
 
-		newLine(rSmallKeys, rBigKeys, rInitialPositions);
+		switch (set)
+		{
+		case CharacterSet::US_ENGLISH:
+			addKeys(
+				mKeymaps.back().smallKeys,
+				mKeymaps.back().bigKeys,
+				mKeymaps.back().initialKeyPositions,
+				std::vector<std::vector<CPair> >
+			{
+				{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
+				{ CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'y', u'Y'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
+				{ CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
+				{ CPair(u'#'), CPair(u'Z', u'Z'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
+			});
+			break;
+		// TODO: add umlaute or replace with umlaute
+		case CharacterSet::GERMANY_GERMAN:
+			addKeys(
+				mKeymaps.back().smallKeys,
+				mKeymaps.back().bigKeys,
+				mKeymaps.back().initialKeyPositions,
+				std::vector<std::vector<CPair> >
+			{
+				{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
+				{ CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'z', u'Z'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
+				{ CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
+				{ CPair(u'#'), CPair(u'y', u'Y'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
+			});
+			break;
+		default:
+			throwError(OperationNotifier::Operation::BUG, "Tried to initialize keyboard of unkown character set");
+		}
 
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'1');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'2');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'3');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'4');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'5');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'6');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'7');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'8');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'9');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'0');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'/');
+		// TODO: Testing: Add some stuff as second keymap for testing purposes
+		mKeymaps.push_back(Keymap());
 
-		newLine(rSmallKeys, rBigKeys, rInitialPositions);
+		addKeys(
+			mKeymaps.back().smallKeys,
+			mKeymaps.back().bigKeys,
+			mKeymaps.back().initialKeyPositions,
+			std::vector<std::vector<CPair> >
+		{
+			{ CPair(u'a'), CPair(u'b'), CPair(u'c'), CPair(u'd'), CPair(u'e') }
+		});
 
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'q', u'Q');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'w', u'W');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'e', u'E');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'r', u'R');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u't', u'T');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'y', u'Y');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'u', u'U');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'i', u'I');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'o', u'O');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'p', u'P');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'+');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'-');
-
-		newLine(rSmallKeys, rBigKeys, rInitialPositions);
-
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'a', u'A');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u's', u'S');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'd', u'D');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'f', u'F');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'g', u'G');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'h', u'H');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'j', u'J');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'k', u'K');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'l', u'L');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'(');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u')');
-
-		newLine(rSmallKeys, rBigKeys, rInitialPositions);
-
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'#');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'z', u'Z');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'x', u'X');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'c', u'C');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'v', u'V');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'b', u'B');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'n', u'N');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'm', u'M');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'.');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u':');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'<');
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'>');
 
 		// Transform and size has to be called to set initial key size (depending on size of element)
 	}
 
+	void Keyboard::addKeys(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, std::vector<std::vector<CPair> >& input)
+	{
+		// Go over lines of input
+		for (const auto& rLine : input)
+		{
+			newLine(rSmallKeys, rBigKeys, rInitialPositions);
+
+			// Go over keys inside line
+			for (const auto& rKey : rLine)
+			{
+				addKey(rSmallKeys, rBigKeys, rInitialPositions, rKey.small, rKey.big);
+			}
+		}
+	}
+
     void Keyboard::addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const
     {
-		rSmallKeys[rSmallKeys.size()-1].push_back(std::move(mpAssetManager->createKey(mpLayout, smallCharacter)));
+		rSmallKeys[rSmallKeys.size() - 1].push_back(std::move(mpAssetManager->createKey(mpLayout, smallCharacter)));
 		rBigKeys[rBigKeys.size() - 1].push_back(std::move(mpAssetManager->createKey(mpLayout, bigCharacter)));
-		rInitialPositions[rInitialPositions.size()-1].push_back(glm::vec2());
+		rInitialPositions[rInitialPositions.size() - 1].push_back(glm::vec2());
     }
-
-	void Keyboard::addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t character) const
-	{
-		addKey(rSmallKeys, rBigKeys, rInitialPositions, character, character);
-	}
 
     void Keyboard::newLine(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions) const
     {

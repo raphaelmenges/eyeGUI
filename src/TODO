@@ -1,7 +1,6 @@
 ### VERSION 0.8
 - Update of keyboard
 - Change between big and small letters via interface
-- German characters for keyboard
 - Make second keymap (testing needs a second ;) )
   - Get count of keymaps interface
 	- Set keymap in interface (by index)

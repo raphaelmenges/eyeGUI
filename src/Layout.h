@@ -65,6 +65,9 @@ namespace eyegui
         // Get pointer to config of owning GUI
         Config const * getConfig() const;
 
+		// Get used character set
+		CharacterSet getCharacterSet() const;
+
         // Get main frame of layout
         Frame* getMainFrame();
 

@@ -158,6 +158,11 @@ namespace eyegui
         return mpGUI->getConfig();
     }
 
+	CharacterSet Layout::getCharacterSet() const
+	{
+		return mpGUI->getCharacterSet();
+	}
+
     Frame* Layout::getMainFrame()
     {
         return mupMainFrame.get();

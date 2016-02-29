@@ -81,15 +81,36 @@ namespace eyegui
 			float initialKeySize;
 		};
 
+		// Struct for pairs of small and big characters used to initialize the keyboard
+		struct CPair
+		{
+			CPair(char16_t small, char16_t big)
+			{
+				this->small = small;
+				this->big = big;
+			}
+
+			CPair(char16_t character)
+			{
+				this->small = character;
+				this->big = character;
+			}
+
+			char16_t small;
+			char16_t big;
+		};
+
 		// Keymap creation methods
-		void initKeymaps(); // TODO: other character set than us english
+		void initKeymaps(CharacterSet set);
 
-        // Add key to keyboard
-		void addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const;
-        void addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t character) const;
+		// Add many keys at once
+		void addKeys(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, std::vector<std::vector<CPair> >& input);
 
-        // Start new line for keyboard
-        void newLine(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions) const;
+		// Add key to sub keymaps
+		void Keyboard::addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const;
+
+		// Add new line to sub keymaps
+		void Keyboard::newLine(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions) const;
 
         // Members
         RenderItem const * mpBackground;
