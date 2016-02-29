@@ -79,6 +79,38 @@ namespace eyegui
             break;
         }
 
+		// Check whether key was found
+		if (pGlyph == NULL)
+		{
+			throwWarning(
+				OperationNotifier::Operation::RUNTIME,
+				"Failed to find a character, check font file and character set",
+				mFilepath);
+
+			// Try to load fallback
+			switch (fontSize)
+			{
+			case FontSize::TALL:
+				pGlyph = getGlyph(mTallGlyphs, FONT_FALLBACK_CHARACTER);
+				break;
+			case FontSize::MEDIUM:
+				pGlyph = getGlyph(mMediumGlyphs, FONT_FALLBACK_CHARACTER);
+				break;
+			case FontSize::SMALL:
+				pGlyph = getGlyph(mSmallGlyphs, FONT_FALLBACK_CHARACTER);
+				break;
+			}
+
+			// Check fallback
+			if (pGlyph == NULL)
+			{
+				throwError(
+					OperationNotifier::Operation::RUNTIME,
+					"Fallback character not found, check font file and character set",
+					mFilepath);
+			}
+		}
+
         return pGlyph;
     }
 
@@ -230,7 +262,7 @@ namespace eyegui
             {
                 throwWarning(
                     OperationNotifier::Operation::RUNTIME,
-                    "Failed to find following character in font file: " + c,
+                    "Failed to find character in font file, check coverage of font",
                     mFilepath);
                 continue;
             }

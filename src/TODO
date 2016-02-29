@@ -1,5 +1,4 @@
 ### VERSION 0.8
-- Some error when glyphs are used which are not represented in character set
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - TODO in Keyboard.h header
 - Extra texture atlas for keyboard
@@ -8,7 +7,6 @@
 	- Wiki entry for keyboard (extra page or in elements? -> both)
 
 ### VERSION 0.9
-- Multilingual keyboard with different subboards (for extra characters not used often)
 - Advanced TextInput
   - "Guesser" (tries to guess what you want to write)
 	  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
