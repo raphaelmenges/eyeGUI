@@ -23,6 +23,7 @@ namespace eyegui
     public:
 
         // TODO
+		// - Big / small letters
 		// - What happens, when no key is selected?
 		// - Use selected key for interact?
 		// - togglening between different keymaps (2 are enough? -> better methode: how many and direct setter)
@@ -81,29 +82,30 @@ namespace eyegui
 
 		// Typedefs
 		typedef std::pair<float, std::unique_ptr<Key> > PressedKey;
+		typedef std::vector<std::vector<std::unique_ptr<Key> > > SubKeymap;
+		typedef std::vector<std::vector<glm::vec2> > PositionMap;
 
 		// Struct for keymap
 		struct Keymap
 		{
-			
+			SubKeymap smallKeys;
+			SubKeymap bigKeys;
+			PositionMap initialKeyPositions;
+			float initialKeySize;
 		};
 
+		// Keymap creation methods
+		std::vector<Keymap> create_US_ENLGISH();
+
         // Add key to keyboard
-        void addKey(char16_t character);
+		void addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const;
+        void addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t character) const;
 
         // Start new line for keyboard
-        void newLine();
-
-		// Keymap creation methods
-		//std::vector<> createGermanGerma
+        void newLine(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions) const;
 
         // Members
         RenderItem const * mpBackground;
-
-		std::vector<std::vector<std::unique_ptr<Key> > > mKeys;
-		std::vector<std::vector<glm::vec2> > mInitialKeyPositions;
-        float mInitialKeySize;
-
         LerpValue mThreshold;
         int mFocusedKeyRow;
         int mFocusedKeyColumn;

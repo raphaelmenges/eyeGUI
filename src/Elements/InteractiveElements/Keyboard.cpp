@@ -44,7 +44,6 @@ namespace eyegui
         mType = Type::KEYBOARD;
 
         // Initialize members
-        mInitialKeySize = 0;
         mThreshold.setValue(0);
         mFocusedKeyRow = -1;
         mFocusedKeyColumn = -1;
@@ -61,164 +60,7 @@ namespace eyegui
             shaders::Type::BLOCK,
             meshes::Type::QUAD);
 
-        // Initialize keys
-        newLine();
-
-        // Add keys
-		addKey(u'1');
-		addKey(u'2');
-		addKey(u'3');
-		addKey(u'4');
-		addKey(u'5');
-		addKey(u'6');
-		addKey(u'7');
-		addKey(u'8');
-		addKey(u'9');
-		addKey(u'0');
-		addKey(u'/');
-
-		newLine();
-
-		addKey(u'q');
-		addKey(u'w');
-		addKey(u'e');
-		addKey(u'r');
-		addKey(u't');
-		addKey(u'y');
-		addKey(u'u');
-		addKey(u'i');
-		addKey(u'o');
-		addKey(u'p');
-		addKey(u'+');
-		addKey(u'-');
-
-		newLine();
-
-		addKey(u'a');
-		addKey(u's');
-		addKey(u'd');
-		addKey(u'f');
-		addKey(u'g');
-		addKey(u'h');
-		addKey(u'j');
-		addKey(u'k');
-		addKey(u'l');
-		addKey(u'(');
-		addKey(u')');
-
-		newLine();
-
-		addKey(u'#');
-		addKey(u'z');
-		addKey(u'x');
-		addKey(u'c');
-		addKey(u'v');
-		addKey(u'b');
-		addKey(u'n');
-		addKey(u'm');
-		addKey(u'.');
-		addKey(u':');
-		addKey(u'<');
-		addKey(u'>');
-
-		// QWERTZ layout, does not work within CEF3 because of german umlaute for the moment
-		/*addKey(u'1');
-		addKey(u'2');
-		addKey(u'3');
-		addKey(u'4');
-		addKey(u'5');
-		addKey(u'6');
-		addKey(u'7');
-		addKey(u'8');
-		addKey(u'9');
-		addKey(u'0');
-		addKey(u'#');
-
-		newLine();
-
-        addKey(u'q');
-        addKey(u'w');
-        addKey(u'e');
-        addKey(u'r');
-        addKey(u't');
-        addKey(u'z');
-        addKey(u'u');
-        addKey(u'i');
-        addKey(u'o');
-        addKey(u'p');
-        addKey(u'\u00fc');
-        addKey(u'+');
-
-        newLine();
-
-        addKey(u'a');
-        addKey(u's');
-        addKey(u'd');
-        addKey(u'f');
-        addKey(u'g');
-        addKey(u'h');
-        addKey(u'j');
-        addKey(u'k');
-        addKey(u'l');
-        addKey(u'\u00f6');
-        addKey(u'\u00e4');
-
-        newLine();
-
-        addKey(u'<');
-        addKey(u'y');
-        addKey(u'x');
-        addKey(u'c');
-        addKey(u'v');
-        addKey(u'b');
-        addKey(u'n');
-        addKey(u'm');
-        addKey(u'.');
-        addKey(u'-');
-        addKey(u'/');
-        addKey(u'#'); */
-
-        /*addKey(u'Q');
-        addKey(u'W');
-        addKey(u'E');
-        addKey(u'R');
-        addKey(u'T');
-        addKey(u'Z');
-        addKey(u'U');
-        addKey(u'I');
-        addKey(u'O');
-        addKey(u'P');
-        addKey(u'\u00dc');
-        addKey(u'*');
-
-        newLine();
-
-        addKey(u'A');
-        addKey(u'S');
-        addKey(u'D');
-        addKey(u'F');
-        addKey(u'G');
-        addKey(u'H');
-        addKey(u'J');
-        addKey(u'K');
-        addKey(u'L');
-        addKey(u'\u00d6');
-        addKey(u'\u00c4');
-
-        newLine();
-
-        addKey(u'>');
-        addKey(u'Y');
-        addKey(u'X');
-        addKey(u'C');
-        addKey(u'V');
-        addKey(u'B');
-        addKey(u'N');
-        addKey(u'M');
-        addKey(u';');
-        addKey(u':');
-        addKey(u'_');
-        addKey(u'#'); */
+        // TODO: init keys
     }
 
     Keyboard::~Keyboard()
@@ -503,6 +345,8 @@ namespace eyegui
 
     void Keyboard::specialTransformAndSize()
     {
+		// TODO: call on all subkey maps
+
         // Get line with maximum count
         int maxCountInLine = -1;
         for(const auto& rLine : mKeys)
@@ -619,15 +463,94 @@ namespace eyegui
         }
     }
 
-    void Keyboard::addKey(char16_t character)
+	std::vector<Keyboard::Keymap> Keyboard::create_US_ENLGISH()
+	{
+		std::vector<Keymap> keymaps;
+
+		// Small letters
+		keymaps.push_back(Keymap());
+		Keymap& rKeymap = keymaps.back();
+		SubKeymap& rSmallKeys = rKeymap.smallKeys;
+		SubKeymap& rBigKeys = rKeymap.bigKeys;
+		PositionMap& rInitialPositions = rKeymap.initialKeyPositions;
+
+		newLine(rSmallKeys, rBigKeys, rInitialPositions);
+
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'1');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'2');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'3');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'4');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'5');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'6');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'7');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'8');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'9');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'0');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'/');
+
+		newLine(rSmallKeys, rBigKeys, rInitialPositions);
+
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'q', u'Q');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'w', u'W');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'e', u'E');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'r', u'R');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u't', u'T');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'y', u'Y');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'u', u'U');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'i', u'I');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'o', u'O');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'p', u'P');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'+');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'-');
+
+		newLine(rSmallKeys, rBigKeys, rInitialPositions);
+
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'a', u'A');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u's', u'S');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'd', u'D');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'f', u'F');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'g', u'G');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'h', u'H');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'j', u'J');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'k', u'K');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'l', u'L');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'(');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u')');
+
+		newLine(rSmallKeys, rBigKeys, rInitialPositions);
+
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'#');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'z', u'Z');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'x', u'X');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'c', u'C');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'v', u'V');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'b', u'B');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'n', u'N');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'm', u'M');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'.');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u':');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'<');
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, u'>');
+
+		// Transform and size has to be called to set initial key size (depending on size of element)
+	}
+
+    void Keyboard::addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const
     {
-        mKeys[mKeys.size()-1].push_back(mpAssetManager->createKey(mpLayout, character));
-        mInitialKeyPositions[mInitialKeyPositions.size()-1].push_back(glm::vec2());
+		rSmallKeys[rSmallKeys.size()-1].push_back(mpAssetManager->createKey(mpLayout, smallCharacter));
+		rBigKeys[rBigKeys.size() - 1].push_back(mpAssetManager->createKey(mpLayout, bigCharacter));
+		rInitialPositions[rInitialPositions.size()-1].push_back(glm::vec2());
     }
 
-    void Keyboard::newLine()
+	void Keyboard::addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t character) const
+	{
+		addKey(rSmallKeys, rBigKeys, rInitialPositions, character, character);
+	}
+
+    void Keyboard::newLine(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions) const
     {
-        mKeys.push_back(std::vector<std::unique_ptr<Key> >());
-        mInitialKeyPositions.push_back(std::vector<glm::vec2>());
+		rSmallKeys.push_back(std::vector<std::unique_ptr<Key> >());
+		rBigKeys.push_back(std::vector<std::unique_ptr<Key> >());
+		rInitialPositions.push_back(std::vector<glm::vec2>());
     }
 }
