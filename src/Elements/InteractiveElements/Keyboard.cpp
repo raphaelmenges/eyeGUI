@@ -50,6 +50,8 @@ namespace eyegui
         mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
 		mKeyWasPressed = false;
+		mCurrentKeymapIndex = 0;
+		mBigCharactersActive = false;
 
 		// TODO: Fast typing (make it changeable via interface)
 		mUseFastTyping = true;
@@ -60,7 +62,8 @@ namespace eyegui
             shaders::Type::BLOCK,
             meshes::Type::QUAD);
 
-        // TODO: init keys
+        // Create keymaps (mKeymaps)
+		initKeymaps();
     }
 
     Keyboard::~Keyboard()
@@ -70,6 +73,8 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
+		/*
+
 		// *** SET UP PARAMETERS ***
 
 		// Radius stuff is given in key radii (since normalized with that value)
@@ -306,6 +311,8 @@ namespace eyegui
             }
         }
 
+		*/
+
         return 0;
     }
 
@@ -328,7 +335,20 @@ namespace eyegui
         }
 
         // *** RENDER KEYS ***
-        for(const auto& rLine : mKeys)
+
+		// Determine, which sub keymap to draw
+		SubKeymap const * pSubKeymap = NULL;
+		if (mBigCharactersActive)
+		{
+			pSubKeymap = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
+		}
+		else
+		{
+			pSubKeymap = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
+		}
+
+		// Draw the sub keymap
+        for(const auto& rLine : *pSubKeymap)
         {
             for(const auto& rupKey : rLine)
             {
@@ -345,58 +365,68 @@ namespace eyegui
 
     void Keyboard::specialTransformAndSize()
     {
-		// TODO: call on all subkey maps
+		// Sets initial key size and position on all keymaps and their submaps
+		// Has the assumption, that in small and big sub keymap the amount of keys in each row are equal
+		// Therefore, everywhere small keymap is used
+		for (Keymap& rKeymap : mKeymaps)
+		{
+			// Get line with maximum count
+			int maxCountInLine = -1;
+			for (const auto& rLine : rKeymap.smallKeys)
+			{
+				int countInLine = (int)rLine.size();
+				if (countInLine > maxCountInLine)
+				{
+					maxCountInLine = countInLine;
+				}
+			}
 
-        // Get line with maximum count
-        int maxCountInLine = -1;
-        for(const auto& rLine : mKeys)
-        {
-            int countInLine = (int)rLine.size();
-            if(countInLine > maxCountInLine)
-            {
-                maxCountInLine = countInLine;
-            }
-        }
+			// Calculate size of keys
+			int keySize;
+			int maxHorizontalKeySize = (mWidth / maxCountInLine);
+			maxHorizontalKeySize -= (int)(maxHorizontalKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE); // Substract distance
+			int maxVerticalKeySize = (int)(mHeight / rKeymap.smallKeys.size());
+			keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
+			int halfKeySize = keySize / 2;
 
-        // Calculate size of keys
-        int keySize;
-        int maxHorizontalKeySize = (mWidth / maxCountInLine);
-        maxHorizontalKeySize -= (int)(maxHorizontalKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE); // Substract distance
-        int maxVerticalKeySize = (int)(mHeight / mKeys.size());
-        keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
-        int halfKeySize = keySize / 2;
+			// Set size of keys in keymap
+			rKeymap.initialKeySize = (float)keySize;
 
-        // Calculate offset to center
-        int xCenterOffset, yCenterOffset;
-        xCenterOffset = (int)((mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2.f);
-        yCenterOffset = (int)((mHeight - (mKeys.size() * keySize)) / 2.f);
+			// Calculate offset to center
+			int xCenterOffset, yCenterOffset;
+			xCenterOffset = (int)((mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2.f);
+			yCenterOffset = (int)((mHeight - (rKeymap.smallKeys.size() * keySize)) / 2.f);
 
-        // Save initial key positions
-        for(int i = 0; i < mKeys.size(); i++) // Go over lines
-        {
-            // Count of keys in current row
-            int keyCount = (int)mKeys[i].size();
+			// Save initial key positions
+			for (int i = 0; i < rKeymap.smallKeys.size(); i++) // Go over lines
+			{
+				// Count of keys in current row
+				int keyCount = (int)rKeymap.smallKeys[i].size();
 
-            // Decide, whether keys are shifted in that line
-            int xOffset = (int)(halfKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
-            if((keyCount - maxCountInLine) % 2 != 0)
-            {
-                // Add shift
-                xOffset += halfKeySize;
-            }
+				// Decide, whether keys are shifted in that line
+				int xOffset = (int)(halfKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
+				if ((keyCount - maxCountInLine) % 2 != 0)
+				{
+					// Add shift
+					xOffset += halfKeySize;
+				}
 
-			// Go over keys to save initial position
-            for(int j = 0; j < keyCount; j++)
-            {
-                mInitialKeyPositions[i][j] = glm::vec2(
-                    mX + xCenterOffset + halfKeySize + (j * keySize) + xOffset,
-                    mY + yCenterOffset + halfKeySize + (i * keySize));
+				// Go over keys to save initial position
+				for (int j = 0; j < keyCount; j++)
+				{
+					rKeymap.initialKeyPositions[i][j] = glm::vec2(
+						mX + xCenterOffset + halfKeySize + (j * keySize) + xOffset,
+						mY + yCenterOffset + halfKeySize + (i * keySize));
 
-                xOffset += (int)(keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
-            }
-        }
+					xOffset += (int)(keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
 
-        mInitialKeySize = (float)keySize;
+					// Set it for keymaps, may be overridden by update later that frame
+					glm::ivec2 pos = (glm::ivec2)(rKeymap.initialKeyPositions[i][j]);
+					rKeymap.smallKeys[i][j]->transformAndSize(pos.x, pos.y, (int)(rKeymap.initialKeySize));
+					rKeymap.bigKeys[i][j]->transformAndSize(pos.x, pos.y, (int)(rKeymap.initialKeySize));
+				}
+			}
+		}
     }
 
     void Keyboard::specialReset()
@@ -412,15 +442,30 @@ namespace eyegui
 		mKeyWasPressed = false;
 		mPressedKeys.clear();
 		mFastBuffer = u"";
+		mCurrentKeymapIndex = 0;
+		mBigCharactersActive = false;
 
-        // Reset keys
-        for(const auto& rLine : mKeys)
-        {
-            for(const auto& rKey : rLine)
-            {
-                rKey->reset();
-            }
-        }
+        // Reset keys on all keymaps (primary, secondary etc)
+		for (const auto& rKeymap : mKeymaps)
+		{
+			// Go over sub keymap with small keys
+			for (const auto& rLine : rKeymap.smallKeys)
+			{
+				for (const auto& rKey : rLine)
+				{
+					rKey->reset();
+				}
+			}
+
+			// Go over sub keymap with big keys
+			for (const auto& rLine : rKeymap.bigKeys)
+			{
+				for (const auto& rKey : rLine)
+				{
+					rKey->reset();
+				}
+			}
+		}
     }
 
     bool Keyboard::mayConsumeInput()
@@ -463,13 +508,11 @@ namespace eyegui
         }
     }
 
-	std::vector<Keyboard::Keymap> Keyboard::create_US_ENLGISH()
+	void Keyboard::initKeymaps()
 	{
-		std::vector<Keymap> keymaps;
-
 		// Small letters
-		keymaps.push_back(Keymap());
-		Keymap& rKeymap = keymaps.back();
+		mKeymaps.push_back(Keymap());
+		Keymap& rKeymap = mKeymaps.back();
 		SubKeymap& rSmallKeys = rKeymap.smallKeys;
 		SubKeymap& rBigKeys = rKeymap.bigKeys;
 		PositionMap& rInitialPositions = rKeymap.initialKeyPositions;
@@ -537,8 +580,8 @@ namespace eyegui
 
     void Keyboard::addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const
     {
-		rSmallKeys[rSmallKeys.size()-1].push_back(mpAssetManager->createKey(mpLayout, smallCharacter));
-		rBigKeys[rBigKeys.size() - 1].push_back(mpAssetManager->createKey(mpLayout, bigCharacter));
+		rSmallKeys[rSmallKeys.size()-1].push_back(std::move(mpAssetManager->createKey(mpLayout, smallCharacter)));
+		rBigKeys[rBigKeys.size() - 1].push_back(std::move(mpAssetManager->createKey(mpLayout, bigCharacter)));
 		rInitialPositions[rInitialPositions.size()-1].push_back(glm::vec2());
     }
 

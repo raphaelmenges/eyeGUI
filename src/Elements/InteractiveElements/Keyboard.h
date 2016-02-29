@@ -22,19 +22,6 @@ namespace eyegui
     {
     public:
 
-        // TODO
-		// - Big / small letters
-		// - What happens, when no key is selected?
-		// - Use selected key for interact?
-		// - togglening between different keymaps (2 are enough? -> better methode: how many and direct setter)
-		// - implement InteractiveElement stuff (and elements stuff)
-		//	- activity
-		//  - dim
-		//  - mark
-		//	- highlight
-		//  - selection
-		// - determine sizes of characters and scale all of them by the biggest... (or use standard size and scale them by that)
-
         // Notes
         // - icon color is used here for font rendering
 
@@ -81,11 +68,11 @@ namespace eyegui
     private:
 
 		// Typedefs
-		typedef std::pair<float, std::unique_ptr<Key> > PressedKey;
-		typedef std::vector<std::vector<std::unique_ptr<Key> > > SubKeymap;
-		typedef std::vector<std::vector<glm::vec2> > PositionMap;
+		typedef std::pair<float, std::unique_ptr<Key> > PressedKey; // Alpha and copy of key
+		typedef std::vector<std::vector<std::unique_ptr<Key> > > SubKeymap; // Sub keymap
+		typedef std::vector<std::vector<glm::vec2> > PositionMap; // Positions of keys in keymap
 
-		// Struct for keymap
+		// Struct for keymap which holds sub keymaps of small and big letters
 		struct Keymap
 		{
 			SubKeymap smallKeys;
@@ -95,7 +82,7 @@ namespace eyegui
 		};
 
 		// Keymap creation methods
-		std::vector<Keymap> create_US_ENLGISH();
+		void initKeymaps(); // TODO: other character set than us english
 
         // Add key to keyboard
 		void addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const;
@@ -116,6 +103,9 @@ namespace eyegui
 		std::vector<PressedKey> mPressedKeys;  // Alpha [0..1] and copy of key
 		bool mUseFastTyping;
 		std::u16string mFastBuffer;
+		std::vector<Keymap> mKeymaps;
+		int mCurrentKeymapIndex;
+		bool mBigCharactersActive;
     };
 }
 

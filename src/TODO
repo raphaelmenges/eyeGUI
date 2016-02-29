@@ -1,8 +1,23 @@
 ### VERSION 0.8
-- Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
+- Update of keyboard
+- Change between big and small letters via interface
+- German characters for keyboard
+- Make second keymap (testing needs a second ;) )
+  - Get count of keymaps interface
+	- Set keymap in interface (by index)
+- General keyboard
+  - What happens, when no key is selected?
+		- Use selected key for interact?
+		- toggling between different keymaps (2 are enough? -> better methode: how many and direct setter)
+		- implement InteractiveElement stuff (and elements stuff)
+			- activity
+			- dim
+			- mark
+			- highlight
+			- selection
 - TODO in Keyboard.h header
+- Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - Extra texture atlas for keyboard
-- Change between small and big letters
 - Wiki
 	- Wiki entry for keyboard (extra page or in elements? -> both)
 
