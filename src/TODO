@@ -4,7 +4,7 @@
 	- Change between big and small characters
 	- Get count of keymaps
 	- Set keymap in interface (by index) + toggle
-	  - Reset stuff (focused key, selection?)
+	- Reset stuff (focused key, selection?)
 - General keyboard
   - What happens, when no key is selected?
 		- Use selected key for interact?

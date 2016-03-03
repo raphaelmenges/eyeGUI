@@ -49,13 +49,13 @@ namespace eyegui
         mFocusedKeyColumn = -1;
         mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
-		mKeyWasPressed = false;
-		mCurrentKeymapIndex = 0;
-		mBigCharactersActive = false ;
+        mKeyWasPressed = false;
+        mCurrentKeymapIndex = 0;
+        mBigCharactersActive = false ;
 
-		// TODO: Fast typing (make it changeable via interface)
-		mUseFastTyping = true;
-		mFastBuffer = u"";
+        // TODO: Fast typing (make it changeable via interface)
+        mUseFastTyping = true;
+        mFastBuffer = u"";
 
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
@@ -63,7 +63,7 @@ namespace eyegui
             meshes::Type::QUAD);
 
         // Create keymaps (mKeymaps)
-		initKeymaps(mpLayout->getCharacterSet());
+        initKeymaps(mpLayout->getCharacterSet());
     }
 
     Keyboard::~Keyboard()
@@ -73,115 +73,115 @@ namespace eyegui
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
-		// *** SET UP PARAMETERS ***
+        // *** SET UP PARAMETERS ***
 
-		// Radius stuff is given in key radii (since normalized with that value)
+        // Radius stuff is given in key radii (since normalized with that value)
 
-		// Some parameters which may or may not be defineable in config file
-		float GAZE_DELTA_WEIGHT_RADIUS = 0.5f; // Radius in which gaze has to be so that threshold is increased
-		float THRESHOLD_INCREASE_DURATION = 0.25f; // Duration of threshold to become one (depending very much on other parameters)
+        // Some parameters which may or may not be defineable in config file
+        float GAZE_DELTA_WEIGHT_RADIUS = 0.5f; // Radius in which gaze has to be so that threshold is increased
+        float THRESHOLD_INCREASE_DURATION = 0.25f; // Duration of threshold to become one (depending very much on other parameters)
 
-		// Not that important parameters
-		float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
-		float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
-		float PRESSED_KEY_FADING_DURATION = 0.5f; // Just animation duration of pressed key which is moving and fading towards user
-		float PRESSED_KEY_SCALING_MULTIPLIER = 5.f; // Just animation scale of pressed key which is moving and fading towards user
-		float THRESHOLD_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of threshold after pressing
-		float THRESHOLD_DECREASE_DURATION = 1.f; // General decrease duration of threshold if no gaze is upon element
-		float FOCUS_RADIUS = 3.0f; // Radius of gaze affected keys (in the center bigger, else smaller)
-		float KEY_POSITION_DELTA_MULTIPLIER = 0.25f; // Delta position multiplier of keys in focus
-		float KEY_SIZE_DELTA_MULTIPLIER = 0.5f; // Delta size multiplier of keys in focus
-		float MINIMAL_KEY_SIZE = 0.75f; // Cap minimal key size for those in focus area
+        // Not that important parameters
+        float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
+        float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
+        float PRESSED_KEY_FADING_DURATION = 0.5f; // Just animation duration of pressed key which is moving and fading towards user
+        float PRESSED_KEY_SCALING_MULTIPLIER = 5.f; // Just animation scale of pressed key which is moving and fading towards user
+        float THRESHOLD_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of threshold after pressing
+        float THRESHOLD_DECREASE_DURATION = 1.f; // General decrease duration of threshold if no gaze is upon element
+        float FOCUS_RADIUS = 3.0f; // Radius of gaze affected keys (in the center bigger, else smaller)
+        float KEY_POSITION_DELTA_MULTIPLIER = 0.25f; // Delta position multiplier of keys in focus
+        float KEY_SIZE_DELTA_MULTIPLIER = 0.5f; // Delta size multiplier of keys in focus
+        float MINIMAL_KEY_SIZE = 0.75f; // Cap minimal key size for those in focus area
 
-		// Some adjustments for fast typing
-		if (mUseFastTyping)
-		{
-			GAZE_DELTA_WEIGHT_RADIUS *= 2.0f;
-			THRESHOLD_INCREASE_DURATION *= 1.5f;
-		}
+        // Some adjustments for fast typing
+        if (mUseFastTyping)
+        {
+            GAZE_DELTA_WEIGHT_RADIUS *= 2.0f;
+            THRESHOLD_INCREASE_DURATION *= 1.5f;
+        }
 
-		// Use speed multiplier
-		THRESHOLD_INCREASE_DURATION /= mpLayout->getConfig()->keyboardSpeedMultiplier;
+        // Use speed multiplier
+        THRESHOLD_INCREASE_DURATION /= mpLayout->getConfig()->keyboardSpeedMultiplier;
 
-		// *** SETUP ***
+        // *** SETUP ***
 
-		// Call super
-		InteractiveElement::specialUpdate(tpf, pInput);
+        // Call super
+        InteractiveElement::specialUpdate(tpf, pInput);
 
-		// Check for penetration by input
-		bool penetrated = penetratedByInput(pInput);
+        // Check for penetration by input
+        bool penetrated = penetratedByInput(pInput);
 
-		// Get stuff from currently active keymap
-		SubKeymap* pKeys = NULL;
-		PositionMap* pInitialKeyPositions = &(mKeymaps[mCurrentKeymapIndex].initialKeyPositions);
-		float initialKeySize = mKeymaps[mCurrentKeymapIndex].initialKeySize;
-		if (mBigCharactersActive)
-		{
-			pKeys = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
-		}
-		else
-		{
-			pKeys = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
-		}
+        // Get stuff from currently active keymap
+        SubKeymap* pKeys = NULL;
+        PositionMap* pInitialKeyPositions = &(mKeymaps[mCurrentKeymapIndex].initialKeyPositions);
+        float initialKeySize = mKeymaps[mCurrentKeymapIndex].initialKeySize;
+        if (mBigCharactersActive)
+        {
+            pKeys = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
+        }
+        else
+        {
+            pKeys = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
+        }
 
-		// *** UPDATE ANIMATED PRESSED KEYES ***
-		std::vector<int> dyingPressedKeys;
-		for (int i = 0; i < mPressedKeys.size(); i++)
-		{
-			// Update alpha and size
-			mPressedKeys[i].first -= tpf / PRESSED_KEY_FADING_DURATION;
-			Key* pKey = mPressedKeys[i].second.get();
-			pKey->transformAndSize((int)pKey->getPosition().x, (int)pKey->getPosition().y, (int)(pKey->getSize() + PRESSED_KEY_SCALING_MULTIPLIER * tpf * initialKeySize));
+        // *** UPDATE ANIMATED PRESSED KEYES ***
+        std::vector<int> dyingPressedKeys;
+        for (int i = 0; i < mPressedKeys.size(); i++)
+        {
+            // Update alpha and size
+            mPressedKeys[i].first -= tpf / PRESSED_KEY_FADING_DURATION;
+            Key* pKey = mPressedKeys[i].second.get();
+            pKey->transformAndSize((int)pKey->getPosition().x, (int)pKey->getPosition().y, (int)(pKey->getSize() + PRESSED_KEY_SCALING_MULTIPLIER * tpf * initialKeySize));
 
-			// Check, whether still visible
-			if (mPressedKeys[i].first <= 0)
-			{
-				dyingPressedKeys.push_back(i);
-			}
-		}
+            // Check, whether still visible
+            if (mPressedKeys[i].first <= 0)
+            {
+                dyingPressedKeys.push_back(i);
+            }
+        }
 
-		// Delete dying pressed keys (go backwards through it)
-		for (int i = (int)dyingPressedKeys.size()-1; i >= 0; i--)
-		{
-			mPressedKeys.erase(mPressedKeys.begin() + i);
-		}
+        // Delete dying pressed keys (go backwards through it)
+        for (int i = (int)dyingPressedKeys.size()-1; i >= 0; i--)
+        {
+            mPressedKeys.erase(mPressedKeys.begin() + i);
+        }
 
         // *** FILTER USER'S GAZE ***
-		glm::vec2 rawGazeDelta = glm::vec2(0,0);
-		if (pInput != NULL)
-		{
-			rawGazeDelta = glm::vec2(pInput->gazeX, pInput->gazeY) - mGazePosition;
-		}
+        glm::vec2 rawGazeDelta = glm::vec2(0,0);
+        if (pInput != NULL)
+        {
+            rawGazeDelta = glm::vec2(pInput->gazeX, pInput->gazeY) - mGazePosition;
+        }
 
-		// Filter only, when delta is small
-		float gazeFilterRadius = GAZE_FILTER_RADIUS * initialKeySize;
-		float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
-		float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, GAZE_DIRECT_USAGE_MULTIPLIER * tpf);
-		mGazePosition += gazeFilter * rawGazeDelta;
+        // Filter only, when delta is small
+        float gazeFilterRadius = GAZE_FILTER_RADIUS * initialKeySize;
+        float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
+        float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, GAZE_DIRECT_USAGE_MULTIPLIER * tpf);
+        mGazePosition += gazeFilter * rawGazeDelta;
 
-		// Use gaze delta as weight for threshold (is one if low delta in gaze)
-		float gazeDelta = glm::abs(glm::length(rawGazeDelta)); // In pixels!
-		float gazeDeltaWeight = 1.f - clamp(gazeDelta / (GAZE_DELTA_WEIGHT_RADIUS * initialKeySize), 0, 1); // Key size used for normalization
+        // Use gaze delta as weight for threshold (is one if low delta in gaze)
+        float gazeDelta = glm::abs(glm::length(rawGazeDelta)); // In pixels!
+        float gazeDeltaWeight = 1.f - clamp(gazeDelta / (GAZE_DELTA_WEIGHT_RADIUS * initialKeySize), 0, 1); // Key size used for normalization
 
-		// *** CHECK FOR PENETRATION ***
+        // *** CHECK FOR PENETRATION ***
 
-		// Threshold (used to determine pressing a key)
-		if (mKeyWasPressed)
-		{
-			mThreshold.update(-tpf / THRESHOLD_DECREASE_AFTER_PRESS_DURATION);
-			if (mThreshold.getValue() <= 0)
-			{
-				mKeyWasPressed = false;
-			}
-		}
-		else if (penetrated)
-		{
-			mThreshold.update((tpf * (gazeDeltaWeight - 0.8f)) / THRESHOLD_INCREASE_DURATION);
-		}
-		else
-		{
-			mThreshold.update(-tpf / THRESHOLD_DECREASE_DURATION);
-		}
+        // Threshold (used to determine pressing a key)
+        if (mKeyWasPressed)
+        {
+            mThreshold.update(-tpf / THRESHOLD_DECREASE_AFTER_PRESS_DURATION);
+            if (mThreshold.getValue() <= 0)
+            {
+                mKeyWasPressed = false;
+            }
+        }
+        else if (penetrated)
+        {
+            mThreshold.update((tpf * (gazeDeltaWeight - 0.8f)) / THRESHOLD_INCREASE_DURATION);
+        }
+        else
+        {
+            mThreshold.update(-tpf / THRESHOLD_DECREASE_DURATION);
+        }
 
         // *** DETERMINE FOCUSED KEY ***
         if(penetrated)
@@ -212,27 +212,27 @@ namespace eyegui
                 if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
                 {
                     (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
-					(*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setSelect(false);
+                    (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setSelect(false);
                 }
 
                 // Set new focus
                 mFocusedKeyRow = newFocusedKeyRow;
                 mFocusedKeyColumn = newFocusedKeyColumn;
-				(*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
+                (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
             }
 
-			// Selection of focused key
-			if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
-			{
-				Key* pFocusedKey = (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn].get();
-				if (!pFocusedKey->isSelected() && pFocusedKey->getFocusValue() >= 1.f)
-				{
-					pFocusedKey->setSelect(true);
+            // Selection of focused key
+            if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
+            {
+                Key* pFocusedKey = (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn].get();
+                if (!pFocusedKey->isSelected() && pFocusedKey->getFocusValue() >= 1.f)
+                {
+                    pFocusedKey->setSelect(true);
 
-					// Add selected key's value to buffer
-					mFastBuffer += pFocusedKey->getValue();
-				}
-			}
+                    // Add selected key's value to buffer
+                    mFastBuffer += pFocusedKey->getValue();
+                }
+            }
         }
 
         // *** UPDATE POSITION OF FOCUS ***
@@ -272,15 +272,15 @@ namespace eyegui
                 sizeDelta *= mThreshold.getValue();
 
                 // Calc stuff for key
-				int keyPositionX = (int)((*pInitialKeyPositions)[i][j].x + positionDelta.x);
-				int keyPositionY = (int)((*pInitialKeyPositions)[i][j].y + positionDelta.y);
+                int keyPositionX = (int)((*pInitialKeyPositions)[i][j].x + positionDelta.x);
+                int keyPositionY = (int)((*pInitialKeyPositions)[i][j].y + positionDelta.y);
                 int keySize = (int)(initialKeySize + sizeDelta);
 
                 // Transform and size
-				(*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
+                (*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
 
                 // Updating
-				(*pKeys)[i][j]->update(tpf);
+                (*pKeys)[i][j]->update(tpf);
 
                 // Check for "key pressed"
                 if(!mKeyWasPressed && mThreshold.getValue() >= 1.f && (*pKeys)[i][j]->isFocused())
@@ -292,31 +292,31 @@ namespace eyegui
                                 glm::vec2(keyPositionX, keyPositionY),
                                 mGazePosition))
                         < keySize / 2)
-					{
-						if (mUseFastTyping)
-						{
-							// If fast typing is used, initial last pressed key value with buffer
-							mLastPressedKeyValue = mFastBuffer;
-						}
-						else
-						{
-							// Save value in member to have it when notification queue calls the pipe method
-							mLastPressedKeyValue = (*pKeys)[i][j]->getValue();
-						}
+                    {
+                        if (mUseFastTyping)
+                        {
+                            // If fast typing is used, initial last pressed key value with buffer
+                            mLastPressedKeyValue = mFastBuffer;
+                        }
+                        else
+                        {
+                            // Save value in member to have it when notification queue calls the pipe method
+                            mLastPressedKeyValue = (*pKeys)[i][j]->getValue();
+                        }
 
-						// Reset fast buffer
-						mFastBuffer = u"";
+                        // Reset fast buffer
+                        mFastBuffer = u"";
 
-						// Just a reminder for the threshold to decrease
-						mKeyWasPressed = true;
+                        // Just a reminder for the threshold to decrease
+                        mKeyWasPressed = true;
 
                         // Inform listener after updating
                         mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
 
-						// Add pressed key for nice animation
-						std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)((*pKeys)[i][j].get())));
-						upPressedKey->transformAndSize();
-						mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
+                        // Add pressed key for nice animation
+                        std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)((*pKeys)[i][j].get())));
+                        upPressedKey->transformAndSize();
+                        mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
                     }
                 }
             }
@@ -345,18 +345,18 @@ namespace eyegui
 
         // *** RENDER KEYS ***
 
-		// Determine, which sub keymap to draw
-		SubKeymap const * pSubKeymap = NULL;
-		if (mBigCharactersActive)
-		{
-			pSubKeymap = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
-		}
-		else
-		{
-			pSubKeymap = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
-		}
+        // Determine, which sub keymap to draw
+        SubKeymap const * pSubKeymap = NULL;
+        if (mBigCharactersActive)
+        {
+            pSubKeymap = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
+        }
+        else
+        {
+            pSubKeymap = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
+        }
 
-		// Draw the sub keymap
+        // Draw the sub keymap
         for(const auto& rLine : *pSubKeymap)
         {
             for(const auto& rupKey : rLine)
@@ -365,149 +365,149 @@ namespace eyegui
             }
         }
 
-		// Render animation of pressed keys
-		for (const auto& rPressedKey : mPressedKeys)
-		{
-			rPressedKey.second->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->selectionColor, getStyle()->iconColor, mAlpha * rPressedKey.first);
-		}
+        // Render animation of pressed keys
+        for (const auto& rPressedKey : mPressedKeys)
+        {
+            rPressedKey.second->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->selectionColor, getStyle()->iconColor, mAlpha * rPressedKey.first);
+        }
     }
 
     void Keyboard::specialTransformAndSize()
     {
-		// Sets initial key size and position on all keymaps and their submaps
-		// Has the assumption, that in small and big sub keymap the amount of keys in each row are equal
-		// Therefore, everywhere small keymap is used
-		for (Keymap& rKeymap : mKeymaps)
-		{
-			// Get line with maximum count
-			int maxCountInLine = -1;
-			for (const auto& rLine : rKeymap.smallKeys)
-			{
-				int countInLine = (int)rLine.size();
-				if (countInLine > maxCountInLine)
-				{
-					maxCountInLine = countInLine;
-				}
-			}
+        // Sets initial key size and position on all keymaps and their submaps
+        // Has the assumption, that in small and big sub keymap the amount of keys in each row are equal
+        // Therefore, everywhere small keymap is used
+        for (Keymap& rKeymap : mKeymaps)
+        {
+            // Get line with maximum count
+            int maxCountInLine = -1;
+            for (const auto& rLine : rKeymap.smallKeys)
+            {
+                int countInLine = (int)rLine.size();
+                if (countInLine > maxCountInLine)
+                {
+                    maxCountInLine = countInLine;
+                }
+            }
 
-			// Calculate size of keys
-			int keySize;
-			int maxHorizontalKeySize = (mWidth / maxCountInLine);
-			maxHorizontalKeySize -= (int)(maxHorizontalKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE); // Substract distance
-			int maxVerticalKeySize = (int)(mHeight / rKeymap.smallKeys.size());
-			keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
-			int halfKeySize = keySize / 2;
+            // Calculate size of keys
+            int keySize;
+            int maxHorizontalKeySize = (mWidth / maxCountInLine);
+            maxHorizontalKeySize -= (int)(maxHorizontalKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE); // Substract distance
+            int maxVerticalKeySize = (int)(mHeight / rKeymap.smallKeys.size());
+            keySize = maxHorizontalKeySize > maxVerticalKeySize ? maxVerticalKeySize : maxHorizontalKeySize;
+            int halfKeySize = keySize / 2;
 
-			// Set size of keys in keymap
-			rKeymap.initialKeySize = (float)keySize;
+            // Set size of keys in keymap
+            rKeymap.initialKeySize = (float)keySize;
 
-			// Calculate offset to center
-			int xCenterOffset, yCenterOffset;
-			xCenterOffset = (int)((mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2.f);
-			yCenterOffset = (int)((mHeight - (rKeymap.smallKeys.size() * keySize)) / 2.f);
+            // Calculate offset to center
+            int xCenterOffset, yCenterOffset;
+            xCenterOffset = (int)((mWidth - (maxCountInLine * (keySize + (keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE)))) / 2.f);
+            yCenterOffset = (int)((mHeight - (rKeymap.smallKeys.size() * keySize)) / 2.f);
 
-			// Save initial key positions
-			for (int i = 0; i < rKeymap.smallKeys.size(); i++) // Go over lines
-			{
-				// Count of keys in current row
-				int keyCount = (int)rKeymap.smallKeys[i].size();
+            // Save initial key positions
+            for (int i = 0; i < rKeymap.smallKeys.size(); i++) // Go over lines
+            {
+                // Count of keys in current row
+                int keyCount = (int)rKeymap.smallKeys[i].size();
 
-				// Decide, whether keys are shifted in that line
-				int xOffset = (int)(halfKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
-				if ((keyCount - maxCountInLine) % 2 != 0)
-				{
-					// Add shift
-					xOffset += halfKeySize;
-				}
+                // Decide, whether keys are shifted in that line
+                int xOffset = (int)(halfKeySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
+                if ((keyCount - maxCountInLine) % 2 != 0)
+                {
+                    // Add shift
+                    xOffset += halfKeySize;
+                }
 
-				// Go over keys to save initial position
-				for (int j = 0; j < keyCount; j++)
-				{
-					rKeymap.initialKeyPositions[i][j] = glm::vec2(
-						mX + xCenterOffset + halfKeySize + (j * keySize) + xOffset,
-						mY + yCenterOffset + halfKeySize + (i * keySize));
+                // Go over keys to save initial position
+                for (int j = 0; j < keyCount; j++)
+                {
+                    rKeymap.initialKeyPositions[i][j] = glm::vec2(
+                        mX + xCenterOffset + halfKeySize + (j * keySize) + xOffset,
+                        mY + yCenterOffset + halfKeySize + (i * keySize));
 
-					xOffset += (int)(keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
+                    xOffset += (int)(keySize * KEYBOARD_HORIZONTAL_KEY_DISTANCE);
 
-					// Set it for keymaps, may be overridden by update later that frame
-					glm::ivec2 pos = (glm::ivec2)(rKeymap.initialKeyPositions[i][j]);
-					rKeymap.smallKeys[i][j]->transformAndSize(pos.x, pos.y, (int)(rKeymap.initialKeySize));
-					rKeymap.bigKeys[i][j]->transformAndSize(pos.x, pos.y, (int)(rKeymap.initialKeySize));
-				}
-			}
-		}
+                    // Set it for keymaps, may be overridden by update later that frame
+                    glm::ivec2 pos = (glm::ivec2)(rKeymap.initialKeyPositions[i][j]);
+                    rKeymap.smallKeys[i][j]->transformAndSize(pos.x, pos.y, (int)(rKeymap.initialKeySize));
+                    rKeymap.bigKeys[i][j]->transformAndSize(pos.x, pos.y, (int)(rKeymap.initialKeySize));
+                }
+            }
+        }
     }
 
     void Keyboard::specialReset()
     {
-		// Call super
-		InteractiveElement::specialReset();
+        // Call super
+        InteractiveElement::specialReset();
 
         mThreshold.setValue(0);
         mFocusedKeyRow = -1;
         mFocusedKeyColumn = -1;
         mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
-		mKeyWasPressed = false;
-		mPressedKeys.clear();
-		mFastBuffer = u"";
-		mCurrentKeymapIndex = 0;
-		mBigCharactersActive = false;
+        mKeyWasPressed = false;
+        mPressedKeys.clear();
+        mFastBuffer = u"";
+        mCurrentKeymapIndex = 0;
+        mBigCharactersActive = false;
 
         // Reset keys on all keymaps (primary, secondary etc)
-		for (const auto& rKeymap : mKeymaps)
-		{
-			// Go over sub keymap with small keys
-			for (const auto& rLine : rKeymap.smallKeys)
-			{
-				for (const auto& rKey : rLine)
-				{
-					rKey->reset();
-				}
-			}
+        for (const auto& rKeymap : mKeymaps)
+        {
+            // Go over sub keymap with small keys
+            for (const auto& rLine : rKeymap.smallKeys)
+            {
+                for (const auto& rKey : rLine)
+                {
+                    rKey->reset();
+                }
+            }
 
-			// Go over sub keymap with big keys
-			for (const auto& rLine : rKeymap.bigKeys)
-			{
-				for (const auto& rKey : rLine)
-				{
-					rKey->reset();
-				}
-			}
-		}
+            // Go over sub keymap with big keys
+            for (const auto& rLine : rKeymap.bigKeys)
+            {
+                for (const auto& rKey : rLine)
+                {
+                    rKey->reset();
+                }
+            }
+        }
     }
 
     bool Keyboard::mayConsumeInput()
     {
-		// Call super
-		InteractiveElement::mayConsumeInput();
+        // Call super
+        InteractiveElement::mayConsumeInput();
 
         return true;
     }
 
-	void Keyboard::specialInteract()
-	{
-		// TODO (what should happen at simple interaction?)
-	}
+    void Keyboard::specialInteract()
+    {
+        // TODO (what should happen at simple interaction?)
+    }
 
     void Keyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
     {
-		// Has to be declared here, otherwise Visual Studio does not compile...
-		std::string lastPressedKeyValue8;
+        // Has to be declared here, otherwise Visual Studio does not compile...
+        std::string lastPressedKeyValue8;
 
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
         case NotificationType::KEYBOARD_KEY_PRESSED:
 
-			// Notify listener method with UTF-16 string
-			notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), mLastPressedKeyValue);
+            // Notify listener method with UTF-16 string
+            notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), mLastPressedKeyValue);
 
-			// Convert last pressed value to UTF-8 string
-			utf8::utf16to8(mLastPressedKeyValue.begin(), mLastPressedKeyValue.end(), back_inserter(lastPressedKeyValue8));
-  
-			// Notify listener method with UTF-8 string
-			notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), lastPressedKeyValue8);
+            // Convert last pressed value to UTF-8 string
+            utf8::utf16to8(mLastPressedKeyValue.begin(), mLastPressedKeyValue.end(), back_inserter(lastPressedKeyValue8));
+
+            // Notify listener method with UTF-8 string
+            notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), lastPressedKeyValue8);
             break;
         default:
             throwWarning(
@@ -517,85 +517,85 @@ namespace eyegui
         }
     }
 
-	void Keyboard::initKeymaps(CharacterSet set)
-	{
-		mKeymaps.push_back(Keymap());
+    void Keyboard::initKeymaps(CharacterSet set)
+    {
+        mKeymaps.push_back(Keymap());
 
-		switch (set)
-		{
-		case CharacterSet::US_ENGLISH:
-			addKeys(
-				mKeymaps.back().smallKeys,
-				mKeymaps.back().bigKeys,
-				mKeymaps.back().initialKeyPositions,
-				std::vector<std::vector<CPair> >
-			{
-				{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
-				{ CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'y', u'Y'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
-				{ CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
-				{ CPair(u'#'), CPair(u'Z', u'Z'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
-			});
-			break;
-		// TODO: add umlaute or replace with umlaute
-		case CharacterSet::GERMANY_GERMAN:
-			addKeys(
-				mKeymaps.back().smallKeys,
-				mKeymaps.back().bigKeys,
-				mKeymaps.back().initialKeyPositions,
-				std::vector<std::vector<CPair> >
-			{
-				{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
-				{ CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'z', u'Z'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
-				{ CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
-				{ CPair(u'#'), CPair(u'y', u'Y'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
-			});
-			break;
-		default:
-			throwError(OperationNotifier::Operation::BUG, "Tried to initialize keyboard of unkown character set");
-		}
+        switch (set)
+        {
+        case CharacterSet::US_ENGLISH:
+            addKeys(
+                mKeymaps.back().smallKeys,
+                mKeymaps.back().bigKeys,
+                mKeymaps.back().initialKeyPositions,
+                std::vector<std::vector<CPair> >
+            {
+                { CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
+                { CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'y', u'Y'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
+                { CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
+                { CPair(u'#'), CPair(u'Z', u'Z'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
+            });
+            break;
+        // TODO: add umlaute or replace with umlaute
+        case CharacterSet::GERMANY_GERMAN:
+            addKeys(
+                mKeymaps.back().smallKeys,
+                mKeymaps.back().bigKeys,
+                mKeymaps.back().initialKeyPositions,
+                std::vector<std::vector<CPair> >
+            {
+                { CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
+                { CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'z', u'Z'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
+                { CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
+                { CPair(u'#'), CPair(u'y', u'Y'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
+            });
+            break;
+        default:
+            throwError(OperationNotifier::Operation::BUG, "Tried to initialize keyboard of unkown character set");
+        }
 
-		// TODO: Testing: Add some stuff as second keymap for testing purposes
-		mKeymaps.push_back(Keymap());
+        // TODO: Testing: Add some stuff as second keymap for testing purposes
+        mKeymaps.push_back(Keymap());
 
-		addKeys(
-			mKeymaps.back().smallKeys,
-			mKeymaps.back().bigKeys,
-			mKeymaps.back().initialKeyPositions,
-			std::vector<std::vector<CPair> >
-		{
-			{ CPair(u'a'), CPair(u'b'), CPair(u'c'), CPair(u'd'), CPair(u'e') }
-		});
+        addKeys(
+            mKeymaps.back().smallKeys,
+            mKeymaps.back().bigKeys,
+            mKeymaps.back().initialKeyPositions,
+            std::vector<std::vector<CPair> >
+        {
+            { CPair(u'a'), CPair(u'b'), CPair(u'c'), CPair(u'd'), CPair(u'e') }
+        });
 
 
-		// Transform and size has to be called to set initial key size (depending on size of element)
-	}
+        // Transform and size has to be called to set initial key size (depending on size of element)
+    }
 
-	void Keyboard::addKeys(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, std::vector<std::vector<CPair> >& input)
-	{
-		// Go over lines of input
-		for (const auto& rLine : input)
-		{
-			newLine(rSmallKeys, rBigKeys, rInitialPositions);
+    void Keyboard::addKeys(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, const std::vector<std::vector<CPair> >& input)
+    {
+        // Go over lines of input
+        for (const auto& rLine : input)
+        {
+            newLine(rSmallKeys, rBigKeys, rInitialPositions);
 
-			// Go over keys inside line
-			for (const auto& rKey : rLine)
-			{
-				addKey(rSmallKeys, rBigKeys, rInitialPositions, rKey.small, rKey.big);
-			}
-		}
-	}
+            // Go over keys inside line
+            for (const auto& rKey : rLine)
+            {
+                addKey(rSmallKeys, rBigKeys, rInitialPositions, rKey.small, rKey.big);
+            }
+        }
+    }
 
     void Keyboard::addKey(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, char16_t smallCharacter, char16_t bigCharacter) const
     {
-		rSmallKeys[rSmallKeys.size() - 1].push_back(std::move(mpAssetManager->createKey(mpLayout, smallCharacter)));
-		rBigKeys[rBigKeys.size() - 1].push_back(std::move(mpAssetManager->createKey(mpLayout, bigCharacter)));
-		rInitialPositions[rInitialPositions.size() - 1].push_back(glm::vec2());
+        rSmallKeys[rSmallKeys.size() - 1].push_back(std::move(mpAssetManager->createKey(mpLayout, smallCharacter)));
+        rBigKeys[rBigKeys.size() - 1].push_back(std::move(mpAssetManager->createKey(mpLayout, bigCharacter)));
+        rInitialPositions[rInitialPositions.size() - 1].push_back(glm::vec2());
     }
 
     void Keyboard::newLine(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions) const
     {
-		rSmallKeys.push_back(std::vector<std::unique_ptr<Key> >());
-		rBigKeys.push_back(std::vector<std::unique_ptr<Key> >());
-		rInitialPositions.push_back(std::vector<glm::vec2>());
+        rSmallKeys.push_back(std::vector<std::unique_ptr<Key> >());
+        rBigKeys.push_back(std::vector<std::unique_ptr<Key> >());
+        rInitialPositions.push_back(std::vector<glm::vec2>());
     }
 }
