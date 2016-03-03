@@ -121,7 +121,7 @@ namespace eyegui
             mupMainFrame->draw();
 
             // Draw floating frames
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 Frame* pFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
                 if (pFrame != NULL)
@@ -571,6 +571,8 @@ namespace eyegui
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
         }
+
+        return 0;
     }
 
     void Layout::setKeymapOfKeyboard(std::string id, uint keymapIndex)
@@ -720,7 +722,7 @@ namespace eyegui
                 // Go over all remaining frame indices until interactive element found or null
                 if (indexOfStartFrameIndex >= 0)
                 {
-                    for (int i = indexOfStartFrameIndex; i < mFloatingFramesOrderingIndices.size(); i++)
+                    for (uint i = indexOfStartFrameIndex; i < mFloatingFramesOrderingIndices.size(); i++)
                     {
                         Frame* pNextFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
                         if (!pNextFrame->isRemoved())
@@ -1127,7 +1129,7 @@ namespace eyegui
 
         // Go through floating frames and search for free place
         int freeIndex = -1;
-        for (int i = 0; i < mFloatingFrames.size(); i++)
+        for (uint i = 0; i < mFloatingFrames.size(); i++)
         {
             Frame* pFrame = mFloatingFrames[i].get();
             if (pFrame == NULL)
@@ -1271,7 +1273,7 @@ namespace eyegui
         {
             // Search for it in sorted vector
             int index = -1;
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
                 {
@@ -1296,7 +1298,7 @@ namespace eyegui
         {
             // Search for it in sorted vector
             int index = -1;
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
                 {
@@ -1536,7 +1538,7 @@ namespace eyegui
         int movedFrameIndex = mFloatingFramesOrderingIndices[oldIndex];
         mFloatingFramesOrderingIndices.erase(mFloatingFramesOrderingIndices.begin() + oldIndex);
 
-        if (newIndex >= mFloatingFramesOrderingIndices.size())
+        if (newIndex >= (int)mFloatingFramesOrderingIndices.size())
         {
             mFloatingFramesOrderingIndices.push_back(movedFrameIndex);
         }

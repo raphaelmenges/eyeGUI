@@ -166,7 +166,7 @@ namespace eyegui
         glSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
 
         // Draw all layouts
-        for (int i = 0; i < mLayouts.size(); i++)
+        for (uint i = 0; i < mLayouts.size(); i++)
         {
             mLayouts[i]->draw();
         }
@@ -294,6 +294,9 @@ namespace eyegui
         case FontSize::KEYBOARD:
             return FONT_KEYBOARD_SIZE;
             break;
+        default:
+            return 0;
+            break;
         }
     }
 
@@ -301,7 +304,7 @@ namespace eyegui
     {
         // Try to find index of layout in vector
         int index = -1;
-        for (int i = 0; i < mLayouts.size(); i++)
+        for (uint i = 0; i < mLayouts.size(); i++)
         {
             if (mLayouts[i].get() == pLayout)
             {
@@ -318,7 +321,7 @@ namespace eyegui
         std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
         mLayouts.erase(mLayouts.begin() + oldIndex);
 
-        if (newIndex >= mLayouts.size())
+        if (newIndex >= (int)(mLayouts.size()))
         {
             mLayouts.push_back(std::move(upLayout));
         }
@@ -425,7 +428,7 @@ namespace eyegui
             mpGUI->mLayouts.end());
 
         // Check, whether something has changed
-        if(mpGUI->mLayouts.size() == layoutCount)
+        if((int)(mpGUI->mLayouts.size() )== layoutCount)
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Tried to remove layout that did not exist");
         }

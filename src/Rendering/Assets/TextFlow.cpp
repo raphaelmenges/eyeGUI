@@ -237,7 +237,7 @@ namespace eyegui
             if (!failure)
             {
                 // Prepare some values
-                int wordIndex = 0;
+                uint wordIndex = 0;
                 bool hasNext = !words.empty();
 
                 // Go over lines to write paragraph
@@ -308,10 +308,10 @@ namespace eyegui
 
                     // Combine word geometry to one line
                     float xPixelPen = xOffset;
-                    for (int i = 0; i < line.size(); i++)
+                    for (uint i = 0; i < line.size(); i++)
                     {
                         // Assuming, that the count of vertices and texture coordinates is equal
-                        for (int j = 0; j < line[i]->spVertices->size(); j++)
+                        for (uint j = 0; j < line[i]->spVertices->size(); j++)
                         {
                             const glm::vec3& rVertex = line[i]->spVertices->at(j);
                             vertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
@@ -363,7 +363,7 @@ namespace eyegui
 
         // Fill word with data
         float xPixelPen = 0;
-        for (int i = 0; i < content.size(); i++)
+        for (uint i = 0; i < content.size(); i++)
         {
             Glyph const * pGlyph = mpFont->getGlyph(mFontSize, content[i]);
             if (pGlyph == NULL)

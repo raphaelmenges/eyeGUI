@@ -107,7 +107,7 @@ namespace eyegui
             }
 
             // Update front elements (other way than expected because inner ones are added first)
-            for (int i = 0; i < mFrontElements.size(); i++)
+            for (uint i = 0; i < mFrontElements.size(); i++)
             {
                 // Alpha value final, do not multiply with mAlpha or combined alpha
                 Element* pElement = mFrontElements[i];

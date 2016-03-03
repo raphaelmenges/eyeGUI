@@ -30,7 +30,10 @@ namespace eyegui
         bool adaptiveScaling) : Object()
     {
         // Initialize members
-        mX, mY, mWidth, mHeight = 0;
+        mX = 0;
+        mY = 0;
+        mWidth = 0;
+        mHeight = 0;
         mOrientation = Element::Orientation::VERTICAL;
         mType = Type::ELEMENT;
         mId = id;

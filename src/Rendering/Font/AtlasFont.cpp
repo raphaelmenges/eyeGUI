@@ -154,6 +154,8 @@ namespace eyegui
         case FontSize::KEYBOARD:
             return (float)mKeyboardPixelHeight;
             break;
+        default:
+            return 0;
         }
     }
 
@@ -352,7 +354,7 @@ namespace eyegui
             int width = rGlyphBitmapPair.first->size.x + 2 * padding;
             bool check = false;
 
-            for (int j = 0; j < rows.size(); j++)
+            for (uint j = 0; j < rows.size(); j++)
             {
                 // Does this word fit in this row?
                 if ((rows[j] + width) < xResolution)
@@ -417,10 +419,10 @@ namespace eyegui
 
         // Write bitmaps into texture and save further values to the glyph
         int yPen = yResolution - pixelHeight - 2 * padding;
-        for (int i = 0; i < bitmapOrder.size(); i++)
+        for (uint i = 0; i < bitmapOrder.size(); i++)
         {
             int xPen = 0;
-            for (int j = 0; j < bitmapOrder[i].size(); j++)
+            for (uint j = 0; j < bitmapOrder[i].size(); j++)
             {
                 int bitmapWidth = bitmapOrder[i][j]->first->size.x;
                 int bitmapHeight = bitmapOrder[i][j]->first->size.y;

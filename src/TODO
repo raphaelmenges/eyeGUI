@@ -1,11 +1,9 @@
 ### VERSION 0.8
-- Keyboard: Better german and english layout
-- Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - Wiki
   - Wiki entry for keyboard (extra page or in elements? -> both)
 
 ### VERSION 0.9
-
+- Keyboard: Better german and english layout
 - Advanced TextInput
   - "Guesser" (tries to guess what you want to write)
 	  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)

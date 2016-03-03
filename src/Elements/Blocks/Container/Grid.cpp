@@ -238,7 +238,7 @@ namespace eyegui
 
             // Scale sum of relative widths back to 100 percent
             float normalization = 1.0f / completeRelativeWidth;
-            for (int j = 0; j < temp.size(); j++)
+            for (uint j = 0; j < temp.size(); j++)
             {
                 temp[j] = temp[j] * normalization;
             }

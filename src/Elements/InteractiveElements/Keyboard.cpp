@@ -180,7 +180,7 @@ namespace eyegui
 
         // *** UPDATE ANIMATED PRESSED KEYES ***
         std::vector<int> dyingPressedKeys;
-        for (int i = 0; i < mPressedKeys.size(); i++)
+        for (uint i = 0; i < mPressedKeys.size(); i++)
         {
             // Update alpha and size
             mPressedKeys[i].first -= tpf / PRESSED_KEY_FADING_DURATION;
@@ -244,9 +244,9 @@ namespace eyegui
             float minDistance = 1000000;
             int newFocusedKeyRow = -1;
             int newFocusedKeyColumn = -1;
-            for(int i = 0; i < pKeys->size(); i++)
+            for(uint i = 0; i < pKeys->size(); i++)
             {
-                for(int j = 0; j < (*pKeys)[i].size(); j++)
+                for(uint j = 0; j < (*pKeys)[i].size(); j++)
                 {
                     // Use position in keys to get position after last update
                     float currentDistance = glm::abs(glm::distance(mGazePosition, (*pKeys)[i][j]->getPosition()));
@@ -302,9 +302,9 @@ namespace eyegui
         // *** UPDATE KEY POSITIONS ***
 
         // Update keys (they have to be transformed and sized each update)
-        for(int i = 0; i < pKeys->size(); i++)
+        for(uint i = 0; i < pKeys->size(); i++)
         {
-            for(int j = 0; j < (*pKeys)[i].size(); j++)
+            for(uint j = 0; j < (*pKeys)[i].size(); j++)
             {
                 // Get delta between position of initial key position and gaze position
                 glm::vec2 positionDelta = (*pInitialKeyPositions)[i][j] - mGazePosition;
@@ -358,7 +358,7 @@ namespace eyegui
                             mLastPressedKeyValue = mFastBuffer;
 
                             // Check whether one has to add pressed key as well, because only new picked keys were added so far
-                            if(i != mLastFastKeyRow && j != mLastFastKeyColumn)
+                            if((int)i != mLastFastKeyRow && (int)j != mLastFastKeyColumn)
                             {
                                 mLastPressedKeyValue.append(pressedValue);
                             }
@@ -504,7 +504,7 @@ namespace eyegui
             yCenterOffset = (int)((mHeight - (rKeymap.smallKeys.size() * keySize)) / 2.f);
 
             // Save initial key positions
-            for (int i = 0; i < rKeymap.smallKeys.size(); i++) // Go over lines
+            for (uint i = 0; i < rKeymap.smallKeys.size(); i++) // Go over lines
             {
                 // Count of keys in current row
                 int keyCount = (int)rKeymap.smallKeys[i].size();
