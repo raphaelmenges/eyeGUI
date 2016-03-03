@@ -12,9 +12,6 @@
 #include "externals/utfcpp/source/utf8.h"
 #include "Layout.h"
 
-// TODO: Testing
-#include <iostream>
-
 namespace eyegui
 {
     Keyboard::Keyboard(

@@ -90,7 +90,7 @@ namespace eyegui
 
     void TextBlock::setContent(std::u16string content)
     {
-        // TODO: somehow strange, maybe save the usage of the key in a bool
+        // Check whether value from key is in use
         if (mKey != EMPTY_STRING_ATTRIBUTE && mpLayout->getContentFromLocalization(mKey) == LOCALIZATION_NOT_FOUND)
         {
             throwWarning(

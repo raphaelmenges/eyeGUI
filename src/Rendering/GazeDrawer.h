@@ -25,7 +25,7 @@ namespace eyegui
     public:
 
         // Constructor
-        GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager); // TODO: asset manager (create line asset ?!)
+        GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager);
 
         // Destructor
         virtual ~GazeDrawer();
