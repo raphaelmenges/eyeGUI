@@ -1,9 +1,7 @@
 ### VERSION 0.8
 - Fade out previous subkeymap / fade in new one?
 - Interface
-	- Get count of keymaps
-	- Set keymap in interface (by index) + toggle
-	- Reset stuff (focused key, selection?)
+	- Reset stuff at change of keymap (focused key, selection?)
 - General keyboard
   - What happens, when no key is selected?
 		- Use selected key for interact?

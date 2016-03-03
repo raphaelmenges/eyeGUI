@@ -45,6 +45,12 @@ namespace eyegui
         // Set whether small or big characters are used
         void setCase(KeyboardCase keyboardCase);
 
+        // Get count of keymaps
+        uint getCountOfKeymaps() const;
+
+        // Set displayed keymap by index
+        void setKeymap(uint keymapIndex);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
@@ -128,7 +134,7 @@ namespace eyegui
         bool mUseFastTyping;
         std::u16string mFastBuffer;
         std::vector<Keymap> mKeymaps;
-        int mCurrentKeymapIndex;
+        uint mCurrentKeymapIndex;
         bool mBigCharactersActive;
         int mLastFastKeyRow;
         int mLastFastKeyColumn;

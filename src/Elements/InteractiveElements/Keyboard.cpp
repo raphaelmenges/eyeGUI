@@ -85,8 +85,25 @@ namespace eyegui
             mBigCharactersActive = true;
         break;
         }
+    }
 
+    uint Keyboard::getCountOfKeymaps() const
+    {
+        return (uint)(mKeymaps.size());
+    }
 
+    void Keyboard::setKeymap(uint keymapIndex)
+    {
+        if(keymapIndex < 0 || keymapIndex >= getCountOfKeymaps())
+        {
+            throwWarning(
+                OperationNotifier::Operation::RUNTIME,
+                "Keymap id does not exist in keyboard: " + getId());
+        }
+        else
+        {
+            mCurrentKeymapIndex = keymapIndex;
+        }
     }
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)

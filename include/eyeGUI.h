@@ -579,6 +579,22 @@ namespace eyegui
     */
     void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase);
 
+    //! Get count of available keymaps in keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return count of keymaps
+    */
+    unsigned int getCountOfKeymapsInKeyboard(Layout const * pLayout, std::string id);
+
+    //! Set keymap of keyboard by index.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param keymapIndex is index of keymap.
+    */
+    void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
+
     //! Register listener to button.
     /*!
       \param pLayout pointer to layout.

@@ -299,6 +299,16 @@ namespace eyegui
         pLayout->setCaseOfKeyboard(id, keyboardCase);
     }
 
+    unsigned int getCountOfKeymapsInKeyboard(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getCountOfKeymapsInKeyboard(id);
+    }
+
+    void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex)
+    {
+        pLayout->setKeymapOfKeyboard(id, keymapIndex);
+    }
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);

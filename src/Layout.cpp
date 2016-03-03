@@ -547,6 +547,32 @@ namespace eyegui
         }
     }
 
+    uint Layout::getCountOfKeymapsInKeyboard(std::string id) const
+    {
+        Keyboard const * pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            return pKeyboard->getCountOfKeymaps();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
+    void Layout::setKeymapOfKeyboard(std::string id, uint keymapIndex)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setKeymap(keymapIndex);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         Button* pButton = toButton(fetchElement(id));

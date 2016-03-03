@@ -159,6 +159,12 @@ namespace eyegui
         // Set case of keyboard
         void setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase);
 
+        // Get count of keymaps in keyboard
+        uint getCountOfKeymapsInKeyboard(std::string id) const;
+
+        // Set keymap of keyboard by index
+        void setKeymapOfKeyboard(std::string id, uint keymapIndex);
+
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
 
