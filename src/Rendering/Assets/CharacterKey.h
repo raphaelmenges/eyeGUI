@@ -44,6 +44,10 @@ namespace eyegui
             glm::vec4 selectionColor,
             glm::vec4 iconColor,
             float activity,
+            glm::vec4 dimColor,
+            float dim,
+            glm::vec4 markColor,
+            float mark,
             float alpha) const;
 
         // Get value

@@ -133,6 +133,10 @@ namespace eyegui
             glm::vec4 color,
             glm::vec4 selectionColor,
             float activity,
+            glm::vec4 dimColor,
+            float dim,
+            glm::vec4 markColor,
+            float mark,
             float alpha) const
     {
         // Bind and fill render item
@@ -149,6 +153,11 @@ namespace eyegui
         mpCircleRenderItem->getShader()->fillValue("selectionColor", selectionColor);
         mpCircleRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
         mpCircleRenderItem->getShader()->fillValue("activity", activity);
+        mpCircleRenderItem->getShader()->fillValue("dimColor", dimColor);
+        mpCircleRenderItem->getShader()->fillValue("dim", dim);
+        mpCircleRenderItem->getShader()->fillValue("markColor", markColor);
+        mpCircleRenderItem->getShader()->fillValue("mark", mark);
+
 
         // Drawing
         mpCircleRenderItem->draw();

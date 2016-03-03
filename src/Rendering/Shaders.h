@@ -349,18 +349,26 @@ namespace eyegui
 
         // Uniforms:
         // vec4 color
+        // vec4 dimColor
+        // vec4 markColor
         // float select
         // vec4 stencil
         // float activity
+        // float dim
+        // float mark
         static const char* pKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 dimColor;\n"
+            "uniform vec4 markColor;\n"
             "uniform vec4 selectionColor = vec4(0,1,1,0.5);\n"
             "uniform float selection = 0;\n"
             "uniform vec4 stencil;\n"
             "uniform float activity;\n"
+            "uniform float dim;\n"
+            "uniform float mark;\n"
             "const int innerBorder = 10;\n"
             "void main() {\n"
             "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
@@ -373,7 +381,8 @@ namespace eyegui
             "	float outer = clamp(circle, 0, 1);\n" // Outer circle for selection
             "	vec4 col = color;\n" // Color
             "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
-            //"	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   vec4 customSelectionColor = selectionColor;\n"
             "	customSelectionColor.a *= 0.5;\n" // Perpare selection color
             "	col += selection * customSelectionColor * (1.0-inner);\n" // Add custom selection color
@@ -384,16 +393,24 @@ namespace eyegui
         // Uniforms:
         // sampler2D atlas
         // vec4 color
+        // vec4 dimColor
+        // vec4 markColor
         // vec4 stencil
         // float activity
+        // float dim
+        // float mark
         static const char* pCharacterKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform sampler2D atlas;\n"
-            "uniform vec4 color = vec4(1,0,0,1);\n"
             "uniform vec4 stencil;\n"
+            "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 dimColor;\n"
+            "uniform vec4 markColor;\n"
             "uniform float activity;\n"
+            "uniform float dim;\n"
+            "uniform float mark;\n"
             "void main() {\n"
             "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
             "   {"
@@ -402,7 +419,8 @@ namespace eyegui
             "   float value = texture(atlas, uv).r;\n"
             "   vec4 col = color;\n"
             "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
-            //"	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   fragColor = vec4(col.rgb, col.a * value);\n" // Composing pixel
             "}\n";
     }

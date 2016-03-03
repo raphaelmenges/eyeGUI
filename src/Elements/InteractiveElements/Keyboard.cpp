@@ -420,6 +420,10 @@ namespace eyegui
                     getStyle()->selectionColor,
                     getStyle()->iconColor,
                     mActivity.getValue(),
+                    getStyle()->dimColor,
+                    mDim.getValue(),
+                    getStyle()->markColor,
+                    mMark.getValue(),
                     mAlpha);
             }
         }
@@ -436,6 +440,10 @@ namespace eyegui
                 getStyle()->selectionColor,
                 getStyle()->iconColor,
                 mActivity.getValue(),
+                getStyle()->dimColor,
+                mDim.getValue(),
+                getStyle()->markColor,
+                mMark.getValue(),
                 mAlpha * rPressedKey.first);
         }
     }

@@ -116,6 +116,10 @@ namespace eyegui
             glm::vec4 selectionColor,
             glm::vec4 iconColor,
             float activity,
+            glm::vec4 dimColor,
+            float dim,
+            glm::vec4 markColor,
+            float mark,
             float alpha) const
     {
         // Convert stencil values to OpenGL coordinate system
@@ -133,6 +137,10 @@ namespace eyegui
             color,
             selectionColor,
             activity,
+            dimColor,
+            dim,
+            markColor,
+            mark,
             alpha);
 
         // Render character
@@ -151,6 +159,10 @@ namespace eyegui
         mpQuadShader->fillValue("matrix", mQuadMatrix); // Matrix is updated in transform and size
         mpQuadShader->fillValue("stencil", glm::vec4(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight));
         mpQuadShader->fillValue("activity", activity);
+        mpQuadShader->fillValue("dimColor", dimColor);
+        mpQuadShader->fillValue("dim", dim);
+        mpQuadShader->fillValue("markColor", markColor);
+        mpQuadShader->fillValue("mark", mark);
 
         // Draw character quad (vertex count must be 6)
         glDrawArrays(GL_TRIANGLES, 0, 6);
