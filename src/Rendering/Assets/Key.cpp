@@ -26,8 +26,8 @@ namespace eyegui
         mSize = 0;
         mFocused = false;
         mFocus.setValue(0);
-        mSelected = false;
-        mSelection.setValue(0);
+        mPicked = false;
+        mPick.setValue(0);
 
         // Fetch render item for key circle
         mpCircleRenderItem = mpAssetManager->fetchRenderItem(
@@ -45,8 +45,8 @@ namespace eyegui
         mSize = rOtherKey.mSize;
         mFocused = rOtherKey.mFocused;
         mFocus.setValue(rOtherKey.mFocus.getValue());
-        mSelected = rOtherKey.mSelected;
-        mSelection.setValue(rOtherKey.mSelection.getValue());
+        mPicked = rOtherKey.mPicked;
+        mPick.setValue(rOtherKey.mPick.getValue());
         mpCircleRenderItem = rOtherKey.mpCircleRenderItem;
     }
 
@@ -79,15 +79,15 @@ namespace eyegui
     void Key::update(float tpf)
     {
         mFocus.update(tpf / KEY_FOCUS_DURATION, !mFocused);
-        mSelection.update(tpf / KEY_SELECT_DURATION, !mSelected);
+        mPick.update(tpf / KEY_SELECT_DURATION, !mPicked);
     }
 
     void Key::reset()
     {
         mFocused = false;
         mFocus.setValue(0);
-        mSelected = false;
-        mSelection.setValue(0);
+        mPicked = false;
+        mPick.setValue(0);
     }
 
     void Key::setFocus(bool doFocus)
@@ -105,14 +105,14 @@ namespace eyegui
         return mFocus.getValue();
     }
 
-    void Key::setSelect(bool doSelect)
+    void Key::setPicked(bool picked)
     {
-        mSelected = doSelect;
+        mPicked = picked;
     }
 
-    bool Key::isSelected() const
+    bool Key::isPicked() const
     {
-        return mSelected;
+        return mPicked;
     }
 
     glm::vec2 Key::getPosition() const
@@ -131,7 +131,7 @@ namespace eyegui
             int oglStencilWidth,
             int oglStencilHeight,
             glm::vec4 color,
-            glm::vec4 selectionColor,
+            glm::vec4 pickColor,
             float activity,
             glm::vec4 dimColor,
             float dim,
@@ -152,8 +152,8 @@ namespace eyegui
         // Fill other uniforms
         mpCircleRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
         mpCircleRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
-        mpCircleRenderItem->getShader()->fillValue("selection", mSelection.getValue());
-        mpCircleRenderItem->getShader()->fillValue("selectionColor", selectionColor);
+        mpCircleRenderItem->getShader()->fillValue("pickColor", pickColor);
+        mpCircleRenderItem->getShader()->fillValue("pick", mPick.getValue());
         mpCircleRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
         mpCircleRenderItem->getShader()->fillValue("activity", activity);
         mpCircleRenderItem->getShader()->fillValue("dimColor", dimColor);

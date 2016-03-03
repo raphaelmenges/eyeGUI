@@ -51,7 +51,7 @@ namespace eyegui
             int stencilWidth,
             int stencilHeight,
             glm::vec4 color,
-            glm::vec4 selectionColor,
+            glm::vec4 pickColor,
             glm::vec4 iconColor,
             float activity,
             glm::vec4 dimColor,
@@ -74,11 +74,11 @@ namespace eyegui
         // Get value of focus
         float getFocusValue() const;
 
-        // Select
-        void setSelect(bool doSelect);
+        // Picked
+        void setPicked(bool picked);
 
-        // Get select
-        bool isSelected() const;
+        // Get picked
+        bool isPicked() const;
 
         // Get position on GUI
         glm::vec2 getPosition() const;
@@ -98,7 +98,7 @@ namespace eyegui
             int oglStencilWidth,
             int oglStencilHeight,
             glm::vec4 color,
-            glm::vec4 selectionColor,
+            glm::vec4 pickColor,
             float activity,
             glm::vec4 dimColor,
             float dim,
@@ -117,8 +117,8 @@ namespace eyegui
         RenderItem const * mpCircleRenderItem;
         bool mFocused;
         LerpValue mFocus;
-        bool mSelected;
-        LerpValue mSelection;
+        bool mPicked;
+        LerpValue mPick;
         glm::mat4 mCircleMatrix;
     };
 }

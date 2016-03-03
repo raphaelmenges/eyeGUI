@@ -350,11 +350,12 @@ namespace eyegui
         // Uniforms:
         // float time
         // vec4 color
+        // vec4 pickColor
         // vec4 dimColor
         // vec4 markColor
         // vec4 highlightColor
-        // float select
         // vec4 stencil
+        // float pick
         // float activity
         // float dim
         // float mark
@@ -365,12 +366,12 @@ namespace eyegui
             "in vec2 uv;\n"
             "uniform float time;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 pickColor = vec4(0,1,1,0.5);\n"
             "uniform vec4 dimColor;\n"
             "uniform vec4 markColor;\n"
             "uniform vec4 highlightColor = vec4(0,1,0,1);\n"
-            "uniform vec4 selectionColor = vec4(0,1,1,0.5);\n"
-            "uniform float selection = 0;\n"
             "uniform vec4 stencil;\n"
+            "uniform float pick = 0;\n"
             "uniform float activity;\n"
             "uniform float dim;\n"
             "uniform float mark;\n"
@@ -383,16 +384,16 @@ namespace eyegui
             "   }\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
-            "   float inner = clamp(circle - (selection * innerBorder), 0, 1);\n" // Inner circle for character
-            "	float outer = clamp(circle, 0, 1);\n" // Outer circle for selection
+            "   float inner = clamp(circle - (pick * innerBorder), 0, 1);\n" // Inner circle for character
+            "	float outer = clamp(circle, 0, 1);\n" // Outer circle for pick
             "	vec4 col = color;\n" // Color
             "   col.rgb = mix(col.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
             "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
             "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
             "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
-            "   vec4 customSelectionColor = selectionColor;\n"
-            "	customSelectionColor.a *= 0.5;\n" // Perpare selection color
-            "	col += selection * customSelectionColor * (1.0-inner);\n" // Add custom selection color
+            "   vec4 customPickColor = pickColor;\n"
+            "	customPickColor.a *= 0.5;\n" // Perpare pick color
+            "	col += pick * customPickColor * (1.0-inner);\n" // Add custom pick color
             "   fragColor = vec4(col.rgb , col.a * outer);\n" // Composing pixel
             "}\n";
 

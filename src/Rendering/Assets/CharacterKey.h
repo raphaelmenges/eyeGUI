@@ -41,7 +41,7 @@ namespace eyegui
             int stencilWidth,
             int stencilHeight,
             glm::vec4 color,
-            glm::vec4 selectionColor,
+            glm::vec4 pickColor,
             glm::vec4 iconColor,
             float activity,
             glm::vec4 dimColor,

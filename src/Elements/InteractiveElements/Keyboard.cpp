@@ -257,7 +257,7 @@ namespace eyegui
                 if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
                 {
                     (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
-                    (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setSelect(false);
+                    (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setPicked(false);
                 }
 
                 // Set new focus
@@ -266,15 +266,15 @@ namespace eyegui
                 (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
             }
 
-            // Selection of focused key
+            // Pick of focused key
             if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
             {
                 Key* pFocusedKey = (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn].get();
-                if (!pFocusedKey->isSelected() && pFocusedKey->getFocusValue() >= 1.f)
+                if (!pFocusedKey->isPicked() && pFocusedKey->getFocusValue() >= 1.f)
                 {
-                    pFocusedKey->setSelect(true);
+                    pFocusedKey->setPicked(true);
 
-                    // Add selected key's value to buffer (only adds new selected keys)
+                    // Add picked key's value to buffer (only adds new picked keys)
                     mFastBuffer += pFocusedKey->getValue();
                     mLastFastKeyRow = mFocusedKeyRow;
                     mLastFastKeyColumn = mFocusedKeyColumn;
@@ -348,7 +348,7 @@ namespace eyegui
                             // If fast typing is used, initial last pressed key value with buffer
                             mLastPressedKeyValue = mFastBuffer;
 
-                            // Check whether one has to add pressed key as well, because only new selected keys were added so far
+                            // Check whether one has to add pressed key as well, because only new picked keys were added so far
                             if(i != mLastFastKeyRow && j != mLastFastKeyColumn)
                             {
                                 mLastPressedKeyValue.append(pressedValue);
