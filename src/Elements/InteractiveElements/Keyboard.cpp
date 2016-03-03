@@ -75,7 +75,7 @@ namespace eyegui
 
     void Keyboard::setCase(KeyboardCase keyboardCase)
     {
-        // Everything else is done in update and draw
+        // Set case
         switch (keyboardCase)
         {
         case KeyboardCase::LOWER:
@@ -94,6 +94,7 @@ namespace eyegui
 
     void Keyboard::setKeymap(uint keymapIndex)
     {
+        // Set keymap
         if(keymapIndex < 0 || keymapIndex >= getCountOfKeymaps())
         {
             throwWarning(
@@ -104,6 +105,9 @@ namespace eyegui
         {
             mCurrentKeymapIndex = keymapIndex;
         }
+
+        // Reset state
+        resetKeymapsAndState();
     }
 
     float Keyboard::specialUpdate(float tpf, Input* pInput)
@@ -491,42 +495,15 @@ namespace eyegui
         // Call super
         InteractiveElement::specialReset();
 
-        mThreshold.setValue(0);
-        mFocusedKeyRow = -1;
-        mFocusedKeyColumn = -1;
         mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
-        mKeyWasPressed = false;
         mPressedKeys.clear();
-        mFastBuffer = u"";
-        mLastFastKeyRow = -1;
-        mLastFastKeyColumn = -1;
+
+        resetKeymapsAndState();
 
         // Following should be probably not reset
         // mCurrentKeymapIndex = 0;
         // mBigCharactersActive = false;
-
-        // Reset keys on all keymaps (primary, secondary etc)
-        for (const auto& rKeymap : mKeymaps)
-        {
-            // Go over sub keymap with small keys
-            for (const auto& rLine : rKeymap.smallKeys)
-            {
-                for (const auto& rKey : rLine)
-                {
-                    rKey->reset();
-                }
-            }
-
-            // Go over sub keymap with big keys
-            for (const auto& rLine : rKeymap.bigKeys)
-            {
-                for (const auto& rKey : rLine)
-                {
-                    rKey->reset();
-                }
-            }
-        }
     }
 
     bool Keyboard::mayConsumeInput()
@@ -649,5 +626,38 @@ namespace eyegui
         rSmallKeys.push_back(std::vector<std::unique_ptr<Key> >());
         rBigKeys.push_back(std::vector<std::unique_ptr<Key> >());
         rInitialPositions.push_back(std::vector<glm::vec2>());
+    }
+
+    void Keyboard::resetKeymapsAndState()
+    {
+        mThreshold.setValue(0);
+        mKeyWasPressed = false;
+        mFocusedKeyRow = -1;
+        mFocusedKeyColumn = -1;
+        mFastBuffer = u"";
+        mLastFastKeyRow = -1;
+        mLastFastKeyColumn = -1;
+
+        // Reset keys on all keymaps
+        for (const auto& rKeymap : mKeymaps)
+        {
+            // Go over sub keymap with small keys
+            for (const auto& rLine : rKeymap.smallKeys)
+            {
+                for (const auto& rKey : rLine)
+                {
+                    rKey->reset();
+                }
+            }
+
+            // Go over sub keymap with big keys
+            for (const auto& rLine : rKeymap.bigKeys)
+            {
+                for (const auto& rKey : rLine)
+                {
+                    rKey->reset();
+                }
+            }
+        }
     }
 }

@@ -121,6 +121,9 @@ namespace eyegui
         // Add new line to sub keymaps
         void newLine(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions) const;
 
+        // Reset keymaps
+        void resetKeymapsAndState();
+
         // Members
         RenderItem const * mpBackground;
         LerpValue mThreshold;
