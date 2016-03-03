@@ -588,11 +588,14 @@ namespace eyegui
 
     void Keyboard::initKeymaps(CharacterSet set)
     {
-        mKeymaps.push_back(Keymap());
+
 
         switch (set)
         {
         case CharacterSet::US_ENGLISH:
+
+            // Primary keymap
+            mKeymaps.push_back(Keymap());
             addKeys(
                 mKeymaps.back().smallKeys,
                 mKeymaps.back().bigKeys,
@@ -602,39 +605,56 @@ namespace eyegui
                 { CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
                 { CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'y', u'Y'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
                 { CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
-                { CPair(u'#'), CPair(u'Z', u'Z'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
+                { CPair(u'@'), CPair(u'Z', u'Z'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'?'), CPair(u'!') }
             });
-            break;
-        // TODO: add umlaute or replace with umlaute
-        case CharacterSet::GERMANY_GERMAN:
+
+            // Secondary keymap
+            mKeymaps.push_back(Keymap());
             addKeys(
                 mKeymaps.back().smallKeys,
                 mKeymaps.back().bigKeys,
                 mKeymaps.back().initialKeyPositions,
                 std::vector<std::vector<CPair> >
             {
-                { CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'/') },
-                { CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'z', u'Z'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'+'), CPair(u'-') },
-                { CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'('), CPair(u')') },
-                { CPair(u'#'), CPair(u'y', u'Y'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'<'), CPair(u'>') }
+                { CPair(u'\u00A7'), CPair(u'$'), CPair(u'\u20AC'), CPair(u'#')},
+                { CPair(u'['), CPair(u']'), CPair(u'{'), CPair(u'}'), CPair(u'%') },
+                { CPair(u'<'), CPair(u'>'), CPair(u'('), CPair(u')')},
             });
+
+            break;
+        case CharacterSet::GERMANY_GERMAN:
+
+            // Primary keymap
+            mKeymaps.push_back(Keymap());
+            addKeys(
+                mKeymaps.back().smallKeys,
+                mKeymaps.back().bigKeys,
+                mKeymaps.back().initialKeyPositions,
+                std::vector<std::vector<CPair> >
+            {
+                { CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'\u00df') },
+                { CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'z', u'Z'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'\u00fc', u'\u00dc'), CPair(u'\u20AC') },
+                { CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'\u00f6', u'\u00d6'), CPair(u'\u00e4', u'\u00c4') },
+                { CPair(u'@'), CPair(u'y', u'Y'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'!'), CPair(u'?') }
+            });
+
+            // Secondary keymap
+            mKeymaps.push_back(Keymap());
+            addKeys(
+                mKeymaps.back().smallKeys,
+                mKeymaps.back().bigKeys,
+                mKeymaps.back().initialKeyPositions,
+                std::vector<std::vector<CPair> >
+            {
+                { CPair(u'+'), CPair(u'-'), CPair(u'$'), CPair(u'#')},
+                { CPair(u'['), CPair(u']'), CPair(u'{'), CPair(u'}'), CPair(u'%') },
+                { CPair(u'<'), CPair(u'>'), CPair(u'('), CPair(u')')},
+            });
+
             break;
         default:
             throwError(OperationNotifier::Operation::BUG, "Tried to initialize keyboard of unkown character set");
         }
-
-        // TODO: Testing: Add some stuff as second keymap for testing purposes
-        mKeymaps.push_back(Keymap());
-
-        addKeys(
-            mKeymaps.back().smallKeys,
-            mKeymaps.back().bigKeys,
-            mKeymaps.back().initialKeyPositions,
-            std::vector<std::vector<CPair> >
-        {
-            { CPair(u'a'), CPair(u'b'), CPair(u'c'), CPair(u'd'), CPair(u'e') }
-        });
-
 
         // Transform and size has to be called to set initial key size (depending on size of element)
     }

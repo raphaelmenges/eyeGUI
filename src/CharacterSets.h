@@ -35,7 +35,8 @@ namespace eyegui
             u'\u00f6', // oe
             u'\u00dc', // UE
             u'\u00fc', // ue
-            u'\u00df'  // sz
+            u'\u00df', // sz
+            u'\u20AC'  // Euro
         };
     }
 }
