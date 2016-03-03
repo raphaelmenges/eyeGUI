@@ -294,6 +294,11 @@ namespace eyegui
         pLayout->setKeyOfTextBlock(id, key);
     }
 
+    void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase)
+    {
+        pLayout->setCaseOfKeyboard(id, keyboardCase);
+    }
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);
@@ -346,19 +351,19 @@ namespace eyegui
     }
 
     void replaceElementWithTextBlock(
-		Layout* pLayout,
-		std::string id,
-		bool consumeInput,
-		FontSize fontSize,
-		TextFlowAlignment alignment,
-		TextFlowVerticalAlignment verticalAlignment,
-		std::u16string content,
-		float innerBorder,
-		float textScale,
-		std::string key,
-		std::string backgroundFilepath,
-		ImageAlignment backgroundAlignment,
-		bool fade)
+        Layout* pLayout,
+        std::string id,
+        bool consumeInput,
+        FontSize fontSize,
+        TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
+        std::u16string content,
+        float innerBorder,
+        float textScale,
+        std::string key,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
+        bool fade)
     {
         pLayout->replaceElementWithTextBlock(
             id,
@@ -368,7 +373,7 @@ namespace eyegui
             fontSize,
             alignment,
             verticalAlignment,
-			textScale,
+            textScale,
             content,
             innerBorder,
             key,

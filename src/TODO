@@ -1,7 +1,6 @@
 ### VERSION 0.8
 - Fade out previous subkeymap / fade in new one?
 - Interface
-	- Change between big and small characters
 	- Get count of keymaps
 	- Set keymap in interface (by index) + toggle
 	- Reset stuff (focused key, selection?)

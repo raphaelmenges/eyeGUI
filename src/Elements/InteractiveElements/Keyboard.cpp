@@ -51,10 +51,12 @@ namespace eyegui
         mGazePosition = glm::vec2(0,0);
         mKeyWasPressed = false;
         mCurrentKeymapIndex = 0;
-        mBigCharactersActive = false ;
+        mBigCharactersActive = false;
+        mLastFastKeyRow = -1;
+        mLastFastKeyColumn = -1;
 
         // TODO: Fast typing (make it changeable via interface)
-        mUseFastTyping = true;
+        mUseFastTyping = false;
         mFastBuffer = u"";
 
         // Fetch render item for background
@@ -71,6 +73,22 @@ namespace eyegui
         // Nothing to do
     }
 
+    void Keyboard::setCase(KeyboardCase keyboardCase)
+    {
+        // Everything else is done in update and draw
+        switch (keyboardCase)
+        {
+        case KeyboardCase::LOWER:
+            mBigCharactersActive = false;
+        break;
+        case KeyboardCase::UPPER:
+            mBigCharactersActive = true;
+        break;
+        }
+
+
+    }
+
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
         // *** SET UP PARAMETERS ***
@@ -78,7 +96,7 @@ namespace eyegui
         // Radius stuff is given in key radii (since normalized with that value)
 
         // Some parameters which may or may not be defineable in config file
-        float GAZE_DELTA_WEIGHT_RADIUS = 0.5f; // Radius in which gaze has to be so that threshold is increased
+        float GAZE_DELTA_WEIGHT_RADIUS = 1.0f; // Radius in which gaze has to be so that threshold is increased
         float THRESHOLD_INCREASE_DURATION = 0.25f; // Duration of threshold to become one (depending very much on other parameters)
 
         // Not that important parameters
@@ -96,7 +114,7 @@ namespace eyegui
         // Some adjustments for fast typing
         if (mUseFastTyping)
         {
-            GAZE_DELTA_WEIGHT_RADIUS *= 2.0f;
+            GAZE_DELTA_WEIGHT_RADIUS *= 0.3f;
             THRESHOLD_INCREASE_DURATION *= 1.5f;
         }
 
@@ -229,8 +247,10 @@ namespace eyegui
                 {
                     pFocusedKey->setSelect(true);
 
-                    // Add selected key's value to buffer
+                    // Add selected key's value to buffer (only adds new selected keys)
                     mFastBuffer += pFocusedKey->getValue();
+                    mLastFastKeyRow = mFocusedKeyRow;
+                    mLastFastKeyColumn = mFocusedKeyColumn;
                 }
             }
         }
@@ -293,19 +313,30 @@ namespace eyegui
                                 mGazePosition))
                         < keySize / 2)
                     {
+                        // Get value of pressed key
+                        std::u16string pressedValue = (*pKeys)[i][j]->getValue();
+
                         if (mUseFastTyping)
                         {
                             // If fast typing is used, initial last pressed key value with buffer
                             mLastPressedKeyValue = mFastBuffer;
+
+                            // Check whether one has to add pressed key as well, because only new selected keys were added so far
+                            if(i != mLastFastKeyRow && j != mLastFastKeyColumn)
+                            {
+                                mLastPressedKeyValue.append(pressedValue);
+                            }
                         }
                         else
                         {
                             // Save value in member to have it when notification queue calls the pipe method
-                            mLastPressedKeyValue = (*pKeys)[i][j]->getValue();
+                            mLastPressedKeyValue = pressedValue;
                         }
 
                         // Reset fast buffer
                         mFastBuffer = u"";
+                        mLastFastKeyRow = -1;
+                        mLastFastKeyColumn = -1;
 
                         // Just a reminder for the threshold to decrease
                         mKeyWasPressed = true;
@@ -451,8 +482,12 @@ namespace eyegui
         mKeyWasPressed = false;
         mPressedKeys.clear();
         mFastBuffer = u"";
-        mCurrentKeymapIndex = 0;
-        mBigCharactersActive = false;
+        mLastFastKeyRow = -1;
+        mLastFastKeyColumn = -1;
+
+        // Following should be probably not reset
+        // mCurrentKeymapIndex = 0;
+        // mBigCharactersActive = false;
 
         // Reset keys on all keymaps (primary, secondary etc)
         for (const auto& rKeymap : mKeymaps)

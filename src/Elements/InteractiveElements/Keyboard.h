@@ -42,6 +42,9 @@ namespace eyegui
         // Destructor
         virtual ~Keyboard();
 
+        // Set whether small or big characters are used
+        void setCase(KeyboardCase keyboardCase);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
@@ -127,6 +130,8 @@ namespace eyegui
         std::vector<Keymap> mKeymaps;
         int mCurrentKeymapIndex;
         bool mBigCharactersActive;
+        int mLastFastKeyRow;
+        int mLastFastKeyColumn;
     };
 }
 

@@ -158,10 +158,10 @@ namespace eyegui
         return mpGUI->getConfig();
     }
 
-	CharacterSet Layout::getCharacterSet() const
-	{
-		return mpGUI->getCharacterSet();
-	}
+    CharacterSet Layout::getCharacterSet() const
+    {
+        return mpGUI->getCharacterSet();
+    }
 
     Frame* Layout::getMainFrame()
     {
@@ -403,7 +403,7 @@ namespace eyegui
         IconInteractiveElement* pIconInteractiveElement = toIconInteractiveElement(fetchElement(id));
         if (pIconInteractiveElement != NULL)
         {
-			pIconInteractiveElement->setIcon(iconFilepath);
+            pIconInteractiveElement->setIcon(iconFilepath);
         }
         else
         {
@@ -531,6 +531,19 @@ namespace eyegui
         else
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text block with id: " + id);
+        }
+    }
+
+    void Layout::setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            return pKeyboard->setCase(keyboardCase);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
         }
     }
 
@@ -981,7 +994,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
-		float textScale,
+        float textScale,
         std::u16string content,
         float innerBorder,
         std::string key,
@@ -1010,7 +1023,7 @@ namespace eyegui
                 fontSize,
                 alignment,
                 verticalAlignment,
-				textScale,
+                textScale,
                 content,
                 key));
 
