@@ -424,6 +424,8 @@ namespace eyegui
                     mDim.getValue(),
                     getStyle()->markColor,
                     mMark.getValue(),
+                    getStyle()->highlightColor,
+                    mHighlight.getValue(),
                     mAlpha);
             }
         }
@@ -444,6 +446,8 @@ namespace eyegui
                 mDim.getValue(),
                 getStyle()->markColor,
                 mMark.getValue(),
+                getStyle()->highlightColor,
+                mHighlight.getValue(),
                 mAlpha * rPressedKey.first);
         }
     }

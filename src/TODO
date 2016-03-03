@@ -3,7 +3,6 @@
   - What happens, when no key is selected?
 		- Use selected key for interact?
 		- implement InteractiveElement stuff (and elements stuff)
-			- highlight
 			- selection
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - Wiki

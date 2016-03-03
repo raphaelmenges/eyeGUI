@@ -58,6 +58,8 @@ namespace eyegui
             float dim,
             glm::vec4 markColor,
             float mark,
+            glm::vec4 highlightColor,
+            float highlight,
             float alpha) const = 0;
 
         // Reset
@@ -102,6 +104,8 @@ namespace eyegui
             float dim,
             glm::vec4 markColor,
             float mark,
+            glm::vec4 highlightColor,
+            float highlight,
             float alpha) const;
 
         // Members

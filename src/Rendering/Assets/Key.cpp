@@ -137,6 +137,8 @@ namespace eyegui
             float dim,
             glm::vec4 markColor,
             float mark,
+            glm::vec4 highlightColor,
+            float highlight,
             float alpha) const
     {
         // Bind and fill render item
@@ -148,6 +150,7 @@ namespace eyegui
         mpCircleRenderItem->getShader()->fillValue("color", circleColor);
 
         // Fill other uniforms
+        mpCircleRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
         mpCircleRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
         mpCircleRenderItem->getShader()->fillValue("selection", mSelection.getValue());
         mpCircleRenderItem->getShader()->fillValue("selectionColor", selectionColor);
@@ -157,7 +160,8 @@ namespace eyegui
         mpCircleRenderItem->getShader()->fillValue("dim", dim);
         mpCircleRenderItem->getShader()->fillValue("markColor", markColor);
         mpCircleRenderItem->getShader()->fillValue("mark", mark);
-
+        mpCircleRenderItem->getShader()->fillValue("highlightColor", highlightColor);
+        mpCircleRenderItem->getShader()->fillValue("highlight", highlight);
 
         // Drawing
         mpCircleRenderItem->draw();
