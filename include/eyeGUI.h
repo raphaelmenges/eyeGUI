@@ -571,6 +571,14 @@ namespace eyegui
     */
     void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key);
 
+    //! Set fast typing for keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param useFastTyping indicates, whether fast typing should be used or not.
+    */
+    void setFastTypingOfKeyboard(Layout* pLayout, std::string id, bool useFastTyping);
+
     //! Set case of letters in keyboard.
     /*!
     \param pLayout pointer to layout.

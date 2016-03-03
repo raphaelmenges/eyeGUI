@@ -71,6 +71,18 @@ namespace eyegui
         // Nothing to do
     }
 
+    void Keyboard::setFastTyping(bool useFastTyping)
+    {
+        // First check, whether set is necessary
+        if(useFastTyping != mUseFastTyping)
+        {
+            mUseFastTyping = useFastTyping;
+            mFastBuffer = u"";
+            mLastFastKeyRow = -1;
+            mLastFastKeyColumn = -1;
+        }
+    }
+
     void Keyboard::setCase(KeyboardCase keyboardCase)
     {
         // Set case
@@ -266,8 +278,8 @@ namespace eyegui
                 (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
             }
 
-            // Pick of focused key
-            if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
+            // Pick focused key when using fast typing
+            if (mUseFastTyping && mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
             {
                 Key* pFocusedKey = (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn].get();
                 if (!pFocusedKey->isPicked() && pFocusedKey->getFocusValue() >= 1.f)
@@ -425,7 +437,7 @@ namespace eyegui
                     mWidth,
                     mHeight,
                     getStyle()->color,
-                    getStyle()->selectionColor,
+                    getStyle()->pickColor,
                     getStyle()->iconColor,
                     mActivity.getValue(),
                     getStyle()->dimColor,
@@ -447,7 +459,7 @@ namespace eyegui
                 mWidth,
                 mHeight,
                 getStyle()->color,
-                getStyle()->selectionColor,
+                getStyle()->pickColor,
                 getStyle()->iconColor,
                 mActivity.getValue(),
                 getStyle()->dimColor,

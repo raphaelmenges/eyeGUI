@@ -534,12 +534,25 @@ namespace eyegui
         }
     }
 
+    void Layout::setFastTypingOfKeyboard(std::string id, bool useFastTyping)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setFastTyping(useFastTyping);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
     void Layout::setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase)
     {
         Keyboard* pKeyboard = toKeyboard(fetchElement(id));
         if (pKeyboard != NULL)
         {
-            return pKeyboard->setCase(keyboardCase);
+            pKeyboard->setCase(keyboardCase);
         }
         else
         {

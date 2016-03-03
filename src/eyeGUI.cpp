@@ -294,6 +294,11 @@ namespace eyegui
         pLayout->setKeyOfTextBlock(id, key);
     }
 
+    void setFastTypingOfKeyboard(Layout* pLayout, std::string id, bool useFastTyping)
+    {
+        pLayout->setFastTypingOfKeyboard(id, useFastTyping);
+    }
+
     void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase)
     {
         pLayout->setCaseOfKeyboard(id, keyboardCase);

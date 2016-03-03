@@ -271,6 +271,10 @@ namespace eyegui
             {
                 rStyle.markColor = value;
             }
+            else if (attribute == "pick-color")
+            {
+                rStyle.pickColor = value;
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, rStyle.filepath);

@@ -156,6 +156,9 @@ namespace eyegui
         // Set key of text block
         void setKeyOfTextBlock(std::string id, std::string key);
 
+        // Set fast typing for keyboard
+        void setFastTypingOfKeyboard(std::string id, bool useFastTyping);
+
         // Set case of keyboard
         void setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase);
 

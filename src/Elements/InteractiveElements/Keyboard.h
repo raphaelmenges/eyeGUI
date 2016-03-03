@@ -42,6 +42,9 @@ namespace eyegui
         // Destructor
         virtual ~Keyboard();
 
+        // Set fast typing
+        void setFastTyping(bool useFastTyping);
+
         // Set whether small or big characters are used
         void setCase(KeyboardCase keyboardCase);
 
