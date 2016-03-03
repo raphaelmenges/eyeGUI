@@ -1,5 +1,4 @@
 ### VERSION 0.8
-- Fade out previous subkeymap / fade in new one?
 - General keyboard
   - What happens, when no key is selected?
 		- Use selected key for interact?
@@ -10,7 +9,6 @@
 			- highlight
 			- selection
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
-- Extra texture atlas for keyboard
 - Wiki
 	- Wiki entry for keyboard (extra page or in elements? -> both)
 

@@ -26,8 +26,8 @@ namespace eyegui
         mSize = 0;
         mFocused = false;
         mFocus.setValue(0);
-		mSelected = false;
-		mSelection.setValue(0);
+        mSelected = false;
+        mSelection.setValue(0);
 
         // Fetch render item for key circle
         mpCirlceRenderItem = mpAssetManager->fetchRenderItem(
@@ -45,8 +45,8 @@ namespace eyegui
         mSize = rOtherKey.mSize;
         mFocused = rOtherKey.mFocused;
         mFocus.setValue(rOtherKey.mFocus.getValue());
-		mSelected = rOtherKey.mSelected;
-		mSelection.setValue(rOtherKey.mSelection.getValue());
+        mSelected = rOtherKey.mSelected;
+        mSelection.setValue(rOtherKey.mSelection.getValue());
         mpCirlceRenderItem = rOtherKey.mpCirlceRenderItem;
     }
 
@@ -79,15 +79,15 @@ namespace eyegui
     void Key::update(float tpf)
     {
         mFocus.update(tpf / KEY_FOCUS_DURATION, !mFocused);
-		mSelection.update(tpf / KEY_SELECT_DURATION, !mSelected);
+        mSelection.update(tpf / KEY_SELECT_DURATION, !mSelected);
     }
 
     void Key::reset()
     {
         mFocused = false;
         mFocus.setValue(0);
-		mSelected = false;
-		mSelection.setValue(0);
+        mSelected = false;
+        mSelection.setValue(0);
     }
 
     void Key::setFocus(bool doFocus)
@@ -100,20 +100,20 @@ namespace eyegui
         return mFocused;
     }
 
-	float Key::getFocusValue() const
-	{
-		return mFocus.getValue();
-	}
+    float Key::getFocusValue() const
+    {
+        return mFocus.getValue();
+    }
 
-	void Key::setSelect(bool doSelect)
-	{
-		mSelected = doSelect;
-	}
+    void Key::setSelect(bool doSelect)
+    {
+        mSelected = doSelect;
+    }
 
-	bool Key::isSelected() const
-	{
-		return mSelected;
-	}
+    bool Key::isSelected() const
+    {
+        return mSelected;
+    }
 
     glm::vec2 Key::getPosition() const
     {
@@ -131,7 +131,7 @@ namespace eyegui
             int oglStencilWidth,
             int oglStencilHeight,
             glm::vec4 color,
-			glm::vec4 selectionColor,
+            glm::vec4 selectionColor,
             float alpha) const
     {
         // Bind and fill render item
@@ -144,8 +144,8 @@ namespace eyegui
 
         // Fill other uniforms
         mpCirlceRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
-		mpCirlceRenderItem->getShader()->fillValue("selection", mSelection.getValue());
-		mpCirlceRenderItem->getShader()->fillValue("selectionColor", selectionColor);
+        mpCirlceRenderItem->getShader()->fillValue("selection", mSelection.getValue());
+        mpCirlceRenderItem->getShader()->fillValue("selectionColor", selectionColor);
         mpCirlceRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
 
         // Drawing
@@ -166,12 +166,12 @@ namespace eyegui
         mpQuadShader = mpAssetManager->fetchShader(shaders::Type::CHARACTER_KEY);
 
         // Get glyph from font
-        mpGlyph = mpFont->getGlyph(FontSize::TALL, mCharacter);
+        mpGlyph = mpFont->getGlyph(FontSize::KEYBOARD, mCharacter);
 
-		// Calculate relative size of character
-		float targetGlyphHeight = mpFont->getTargetGlyphHeight(FontSize::TALL);
-		mCharacterSize = std::max(KEY_MIN_SCALE, mpGlyph->size.y / targetGlyphHeight);
-		
+        // Calculate relative size of character
+        float targetGlyphHeight = mpFont->getTargetGlyphHeight(FontSize::KEYBOARD);
+        mCharacterSize = std::max(KEY_MIN_SCALE, mpGlyph->size.y / targetGlyphHeight);
+
         // Prepare quad for displaying the character
         prepareQuad();
     }
@@ -183,7 +183,7 @@ namespace eyegui
         mCharacter = rOtherKey.mCharacter;
         mpQuadShader = rOtherKey.mpQuadShader;
         mpGlyph = rOtherKey.mpGlyph;
-		mCharacterSize = rOtherKey.mCharacterSize;
+        mCharacterSize = rOtherKey.mCharacterSize;
 
         // But create own quad!
         prepareQuad();
@@ -251,7 +251,7 @@ namespace eyegui
             int stencilWidth,
             int stencilHeight,
             glm::vec4 color,
-			glm::vec4 selectionColor,
+            glm::vec4 selectionColor,
             glm::vec4 iconColor,
             float alpha) const
     {
@@ -269,7 +269,7 @@ namespace eyegui
         glBindVertexArray(mQuadVertexArrayObject);
 
         // Bind atlas texture
-        mpFont->bindAtlasTexture(FontSize::TALL, 0, true);
+        mpFont->bindAtlasTexture(FontSize::KEYBOARD, 0, true);
 
         // Fill color
         glm::vec4 characterColor = iconColor;
@@ -302,10 +302,10 @@ namespace eyegui
         glGenBuffers(1, &mQuadTextureCoordinateBuffer);
         glGenVertexArrays(1, &mQuadVertexArrayObject);
 
-		// Coordinates of quad
-		float border = (1.0f - mCharacterSize) / 2.0f;
-		float a = border;
-		float b = 1.0f - border;
+        // Coordinates of quad
+        float border = (1.0f - mCharacterSize) / 2.0f;
+        float a = border;
+        float b = 1.0f - border;
 
         // Fill vertex buffer (in OpenGL space)
         glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);

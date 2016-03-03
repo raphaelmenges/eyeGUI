@@ -54,8 +54,6 @@ namespace eyegui
         mBigCharactersActive = false;
         mLastFastKeyRow = -1;
         mLastFastKeyColumn = -1;
-
-        // TODO: Fast typing (make it changeable via interface)
         mUseFastTyping = false;
         mFastBuffer = u"";
 

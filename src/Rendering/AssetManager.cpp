@@ -294,13 +294,10 @@ namespace eyegui
                     // Give face to a font object (it will delete it in the end)
                     rupFont = std::unique_ptr<Font>(
                         new AtlasFont(
+                            mpGUI,
                             filepath,
                             std::move(upFace),
-                            characters,
-                            mpGUI->getWindowHeight(),
-                            mpGUI->getFontTallSize(),
-                            mpGUI->getFontMediumSize(),
-                            mpGUI->getFontSmallSize()));
+                            characters));
                 }
             }
 
@@ -318,7 +315,7 @@ namespace eyegui
     {
         for (auto& rPair : mFonts)
         {
-            rPair.second->resizeFontAtlases(mpGUI->getWindowHeight());
+            rPair.second->resizeFontAtlases();
         }
     }
 

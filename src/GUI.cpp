@@ -27,8 +27,8 @@ namespace eyegui
         float fontMediumSize,
         float fontSmallSize)
     {
-		// Initialize OpenGL
-		GLSetup::init();
+        // Initialize OpenGL
+        GLSetup::init();
 
         // Initialize members
         mWidth = width;
@@ -278,19 +278,23 @@ namespace eyegui
         return mVectorGraphicsDPI;
     }
 
-    float GUI::getFontTallSize() const
+    float GUI::getSizeOfFont(FontSize fontSize) const
     {
-        return mFontTallSize;
-    }
-
-    float GUI::getFontMediumSize() const
-    {
-        return mFontMediumSize;
-    }
-
-    float GUI::getFontSmallSize() const
-    {
-        return mFontSmallSize;
+        switch (fontSize)
+        {
+        case FontSize::TALL:
+            return mFontTallSize;
+            break;
+        case FontSize::MEDIUM:
+            return mFontMediumSize;
+            break;
+        case FontSize::SMALL:
+            return mFontSmallSize;
+            break;
+        case FontSize::KEYBOARD:
+            return FONT_KEYBOARD_SIZE;
+            break;
+        }
     }
 
     int GUI::findLayout(Layout const * pLayout) const

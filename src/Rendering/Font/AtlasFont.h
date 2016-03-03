@@ -30,19 +30,16 @@ namespace eyegui
 
         // Constructor (takes responsibility for face)
         AtlasFont(
+            GUI const * pGUI,
             std::string filepath,
             std::unique_ptr<FT_Face> upFace,
-            std::set<char16_t> characterSet,
-            int windowHeight,
-            float fontTallSize,
-            float fontMediumSize,
-            float fontSmallSize);
+            std::set<char16_t> characterSet);
 
         // Destructor
         virtual ~AtlasFont();
 
         // Resize font atlases
-        virtual void resizeFontAtlases(int windowHeight);
+        virtual void resizeFontAtlases();
 
         // Get glyph (may return NULL if not found)
         virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
@@ -50,8 +47,8 @@ namespace eyegui
         // Get height of line
         virtual float getLineHeight(FontSize fontSize) const;
 
-		// Get target glyph height
-		virtual float getTargetGlyphHeight(FontSize fontSize) const;
+        // Get target glyph height
+        virtual float getTargetGlyphHeight(FontSize fontSize) const;
 
         // Bind atlas texture of font
         virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const;
@@ -65,7 +62,7 @@ namespace eyegui
         int calculatePadding(int pixelHeight);
 
         // Fill pixel heights
-        void fillPixelHeights(int windowHeight);
+        void fillPixelHeights();
 
         // Fill all atlases
         void fillAtlases();
@@ -79,28 +76,29 @@ namespace eyegui
             int padding);
 
         // Members
+        GUI const * mpGUI;
         std::unique_ptr<FT_Face> mupFace;
         std::set<char16_t> mCharacterSet;
-
-        float mFontTallSize;
-        float mFontMediumSize;
-        float mFontSmallSize;
 
         std::map<char16_t, Glyph> mTallGlyphs;
         std::map<char16_t, Glyph> mMediumGlyphs;
         std::map<char16_t, Glyph> mSmallGlyphs;
+        std::map<char16_t, Glyph> mKeyboardGlyphs;
 
         float mTallLinePixelHeight;
         float mMediumLinePixelHeight;
         float mSmallLinePixelHeight;
+        float mKeyboardLinePixelHeight;
 
         GLuint mTallTexture;
         GLuint mMediumTexture;
         GLuint mSmallTexture;
+        GLuint mKeyboardTexture;
 
         int mTallPixelHeight;
         int mMediumPixelHeight;
         int mSmallPixelHeight;
+        int mKeyboardPixelHeight;
 
         std::string mFilepath;
     };

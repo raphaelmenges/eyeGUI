@@ -109,14 +109,8 @@ namespace eyegui
         // Get dpi for rasterization of vector graphics
         float getVectorGraphicsDPI() const;
 
-        // Get size for tall font
-        float getFontTallSize() const;
-
-        // Get size for medium font
-        float getFontMediumSize() const;
-
-        // Get size for small font
-        float getFontSmallSize() const;
+        // Get size for font
+        float getSizeOfFont(FontSize fontSize) const;
 
     private:
 
