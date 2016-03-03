@@ -51,6 +51,9 @@ namespace eyegui
         // Set displayed keymap by index
         void setKeymap(uint keymapIndex);
 
+        // Tries to fetch next interactive element for selecting, returns NULL if fails
+        virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
@@ -64,9 +67,6 @@ namespace eyegui
 
         // Reset filled by subclasses
         virtual void specialReset();
-
-        // Implemented by subclasses
-        virtual bool mayConsumeInput();
 
         // Interaction fill by subclasses
         virtual void specialInteract();

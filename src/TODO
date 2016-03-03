@@ -1,14 +1,11 @@
 ### VERSION 0.8
-- General keyboard
-  - What happens, when no key is selected?
-		- Use selected key for interact?
-		- implement InteractiveElement stuff (and elements stuff)
-			- selection
+- Keyboard: Better german and english layout
 - Compile with CEF3 flags to (warnings are error or so) (Linux + Windows)
 - Wiki
-	- Wiki entry for keyboard (extra page or in elements? -> both)
+  - Wiki entry for keyboard (extra page or in elements? -> both)
 
 ### VERSION 0.9
+
 - Advanced TextInput
   - "Guesser" (tries to guess what you want to write)
 	  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
@@ -44,6 +41,7 @@
 - Some members of element could be private but getters necessary..
 
 Notes:
+- Altough Keyboard is interactive element, interact and select are NOT implemented because not trivial and not that important
 - RenderItem: some shader programs optimize uv attribute away, so cannot be set and throw opengl error
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)

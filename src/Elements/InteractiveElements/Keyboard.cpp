@@ -108,6 +108,14 @@ namespace eyegui
         resetKeymapsAndState();
     }
 
+    InteractiveElement* Keyboard::internalNextInteractiveElement(Element const * pChildCaller)
+    {
+        // Not implemented for keyboard
+        // If selection visualization and interact is implemented, just delete
+        // this method because InteractiveElement implements it correctly, already.
+        return NULL;
+    }
+
     float Keyboard::specialUpdate(float tpf, Input* pInput)
     {
         // *** SET UP PARAMETERS ***
@@ -534,17 +542,9 @@ namespace eyegui
         // mBigCharactersActive = false;
     }
 
-    bool Keyboard::mayConsumeInput()
-    {
-        // Call super
-        InteractiveElement::mayConsumeInput();
-
-        return true;
-    }
-
     void Keyboard::specialInteract()
     {
-        // TODO (what should happen at simple interaction?)
+        // Not implemented for keyboard
     }
 
     void Keyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
