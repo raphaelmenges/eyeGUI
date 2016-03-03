@@ -35,10 +35,10 @@ namespace eyegui
         }
 
         // Create vector out of data
-        std::vector<unsigned char> image(data, data + width * height * channelCount);
+        std::vector<unsigned char> image(data, data + width * height * suspectedChannels);
 
         // Create OpenGL texture
-        createOpenGLTexture(image, filtering, wrap, width, height, channelCount, filepath);
+        createOpenGLTexture(image, filtering, wrap, width, height, suspectedChannels, filepath);
 
         // Delete raw image data
         stbi_image_free(data);
