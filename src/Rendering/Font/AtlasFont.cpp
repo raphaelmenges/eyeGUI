@@ -8,7 +8,7 @@
 #include "AtlasFont.h"
 
 #include "GUI.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "Defines.h"
 #include <algorithm>
 

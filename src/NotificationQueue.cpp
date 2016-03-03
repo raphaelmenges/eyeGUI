@@ -9,7 +9,7 @@
 
 #include "Defines.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "Elements/ElementCasting.h"
 
 namespace eyegui

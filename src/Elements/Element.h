@@ -24,7 +24,7 @@
 #include "Object.h"
 #include "Rendering/AssetManager.h"
 #include "Style.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <memory>
@@ -50,7 +50,7 @@ namespace eyegui
             BLANK,
             NOTIFIER_ELEMENT,
             INTERACTIVE_ELEMENT,
-			ICON_INTERACTIVE_ELEMENT,
+            ICON_INTERACTIVE_ELEMENT,
             SENSOR,
             BUTTON,
             CIRCLE_BUTTON,

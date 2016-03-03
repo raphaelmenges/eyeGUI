@@ -219,7 +219,7 @@ namespace eyegui
         bool mResizing;
         float mResizeWaitTime;
         RenderItem const * mpResizeBlend;
-        std::unique_ptr<localizationMap> mupLocalizationMap;
+        std::unique_ptr<LocalizationMap> mupLocalizationMap;
         std::vector<std::unique_ptr<GUIJob> > mJobs;
         std::unique_ptr<GazeDrawer> mupGazeDrawer;
         bool mDrawGazeVisualization;

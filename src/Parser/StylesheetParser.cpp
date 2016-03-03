@@ -8,10 +8,10 @@
 #include "StylesheetParser.h"
 
 #include "Defines.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 #include "ParserHelper.h"
-#include "PathBuilder.h"
+#include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
 #include <fstream>

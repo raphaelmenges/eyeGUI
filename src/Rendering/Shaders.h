@@ -349,30 +349,34 @@ namespace eyegui
 
         // Uniforms:
         // vec4 color
-		// float select
+        // float select
         // vec4 stencil
-		static const char* pKeyFragmentShader =
-			"#version 330 core\n"
-			"out vec4 fragColor;\n"
-			"in vec2 uv;\n"
-			"uniform vec4 color = vec4(1,0,0,1);\n"
-			"uniform vec4 selectionColor = vec4(0,1,1,0.5);\n"
-			"uniform float selection = 0;\n"
-			"uniform vec4 stencil;\n"
-			"const int innerBorder = 10;\n"
-			"void main() {\n"
-			"   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
-			"   {\n"
-			"       discard;\n"
-			"   }\n"
-			"   float gradient = length(2*uv-1);\n" // Simple gradient as base
-			"   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
-			"   float inner = clamp(circle - (selection * innerBorder), 0, 1);\n" // Inner circle for character
-			"	float outer = clamp(circle, 0, 1);\n" // Outer circle for selection
-			"	vec4 col = color;\n" // Color
-			"   vec4 customSelectionColor = selectionColor;\n"
-			"	customSelectionColor.a *= 0.5;\n" // Perpare selection color
-			"	col += selection * customSelectionColor * (1.0-inner);\n" // Add custom selection color
+        // float activity
+        static const char* pKeyFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 selectionColor = vec4(0,1,1,0.5);\n"
+            "uniform float selection = 0;\n"
+            "uniform vec4 stencil;\n"
+            "uniform float activity;\n"
+            "const int innerBorder = 10;\n"
+            "void main() {\n"
+            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
+            "   {\n"
+            "       discard;\n"
+            "   }\n"
+            "   float gradient = length(2*uv-1);\n" // Simple gradient as base
+            "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
+            "   float inner = clamp(circle - (selection * innerBorder), 0, 1);\n" // Inner circle for character
+            "	float outer = clamp(circle, 0, 1);\n" // Outer circle for selection
+            "	vec4 col = color;\n" // Color
+            "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
+            //"	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "   vec4 customSelectionColor = selectionColor;\n"
+            "	customSelectionColor.a *= 0.5;\n" // Perpare selection color
+            "	col += selection * customSelectionColor * (1.0-inner);\n" // Add custom selection color
             "   fragColor = vec4(col.rgb , col.a * outer);\n" // Composing pixel
             "}\n";
 
@@ -381,6 +385,7 @@ namespace eyegui
         // sampler2D atlas
         // vec4 color
         // vec4 stencil
+        // float activity
         static const char* pCharacterKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -388,13 +393,17 @@ namespace eyegui
             "uniform sampler2D atlas;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
             "uniform vec4 stencil;\n"
+            "uniform float activity;\n"
             "void main() {\n"
             "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
             "   {"
             "       discard;\n"
             "   }"
             "   float value = texture(atlas, uv).r;\n"
-            "   fragColor = vec4(color.rgb, color.a * value);\n" // Composing pixel
+            "   vec4 col = color;\n"
+            "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
+            //"	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "   fragColor = vec4(col.rgb, col.a * value);\n" // Composing pixel
             "}\n";
     }
 }

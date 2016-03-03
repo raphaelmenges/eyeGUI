@@ -8,7 +8,7 @@
 #include "GUI.h"
 
 #include "Defines.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 

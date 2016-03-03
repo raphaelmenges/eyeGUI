@@ -17,15 +17,15 @@
 namespace eyegui
 {
     // Typedefs
-    typedef std::map<std::string, std::u16string> localizationMap;
+    typedef std::map<std::string, std::u16string> LocalizationMap;
 
     namespace localization_parser
     {
         // Parsing
-        std::unique_ptr<localizationMap> parse(std::string filepath);
+        std::unique_ptr<LocalizationMap> parse(std::string filepath);
 
         // Parse a line
-        void parseLine(localizationMap& rLocalizationMap, std::string line, std::string filepath);
+        void parseLine(LocalizationMap& rLocalizationMap, std::string line, std::string filepath);
     }
 }
 

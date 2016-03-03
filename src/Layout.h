@@ -20,7 +20,7 @@
 #include "Parser/StylesheetParser.h"
 #include "Parser/BrickParser.h"
 #include "NotificationQueue.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 
 #include <memory>
 #include <map>

@@ -8,7 +8,7 @@
 #include "TextBlock.h"
 
 #include "Layout.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 
 namespace eyegui
 {

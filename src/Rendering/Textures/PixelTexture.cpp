@@ -7,10 +7,9 @@
 
 #include "PixelTexture.h"
 
-#include "Helper.h"
-#include "OperationNotifier.h"
-
-#include "PathBuilder.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // stb_image wants those defines
 #define STB_IMAGE_IMPLEMENTATION

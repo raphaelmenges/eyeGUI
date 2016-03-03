@@ -8,7 +8,7 @@
 #include "Stack.h"
 
 #include "Layout.h"
-#include "Helper.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {

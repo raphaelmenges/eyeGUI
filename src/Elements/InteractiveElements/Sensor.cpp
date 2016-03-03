@@ -9,8 +9,8 @@
 
 #include "Layout.h"
 #include "NotificationQueue.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {
@@ -95,29 +95,29 @@ namespace eyegui
     void Sensor::specialDraw() const
     {
         // Bind render item before setting values and drawing
-		mpIconRenderItem->bind();
+        mpIconRenderItem->bind();
 
         // Super call
         IconInteractiveElement::specialDraw();
 
         // Fill other values
-		mpIconRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
+        mpIconRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
 
         // Scale of icon
-		mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
+        mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
 
         // Draw render item
-		mpIconRenderItem->draw();
+        mpIconRenderItem->draw();
     }
 
-	void Sensor::specialTransformAndSize()
-	{
-		// Nothing to do, but must be implemented
-	}
+    void Sensor::specialTransformAndSize()
+    {
+        // Nothing to do, but must be implemented
+    }
 
     void Sensor::specialReset()
     {
-		IconInteractiveElement::specialReset();
+        IconInteractiveElement::specialReset();
 
         // Reset some values
         mPenetration.setValue(0);

@@ -8,7 +8,7 @@
 #include "Keyboard.h"
 
 #include "NotificationQueue.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/utfcpp/source/utf8.h"
 #include "Layout.h"
 
@@ -411,14 +411,32 @@ namespace eyegui
         {
             for(const auto& rupKey : rLine)
             {
-                rupKey->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->selectionColor, getStyle()->iconColor, mAlpha);
+                rupKey->draw(
+                    mX,
+                    mY,
+                    mWidth,
+                    mHeight,
+                    getStyle()->color,
+                    getStyle()->selectionColor,
+                    getStyle()->iconColor,
+                    mActivity.getValue(),
+                    mAlpha);
             }
         }
 
         // Render animation of pressed keys
         for (const auto& rPressedKey : mPressedKeys)
         {
-            rPressedKey.second->draw(mX, mY, mWidth, mHeight, getStyle()->color, getStyle()->selectionColor, getStyle()->iconColor, mAlpha * rPressedKey.first);
+            rPressedKey.second->draw(
+                mX,
+                mY,
+                mWidth,
+                mHeight,
+                getStyle()->color,
+                getStyle()->selectionColor,
+                getStyle()->iconColor,
+                mActivity.getValue(),
+                mAlpha * rPressedKey.first);
         }
     }
 

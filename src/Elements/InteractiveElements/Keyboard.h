@@ -11,8 +11,8 @@
 
 #include "src/Elements/InteractiveElements/InteractiveElement.h"
 #include "src/Elements/NotifierTemplate.h"
+#include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
-#include "src/LerpValue.h"
 
 #include <vector>
 

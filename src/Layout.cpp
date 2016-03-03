@@ -8,10 +8,10 @@
 #include "Layout.h"
 
 #include "GUI.h"
-#include "Helper.h"
+#include "src/Utilities/Helper.h"
 #include "Elements/ElementCasting.h"
 #include "Defines.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/utfcpp/source/utf8.h"
 
 #include <algorithm>

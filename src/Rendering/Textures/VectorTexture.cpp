@@ -7,9 +7,9 @@
 
 #include "VectorTexture.h"
 
-#include "Helper.h"
-#include "OperationNotifier.h"
-#include "PathBuilder.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // NanoSVG wants those defines
 #define NANOSVG_IMPLEMENTATION

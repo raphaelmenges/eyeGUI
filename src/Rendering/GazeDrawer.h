@@ -10,7 +10,7 @@
 #define GAZE_DRAWER_H_
 
 #include "AssetManager.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <vector>

@@ -9,7 +9,7 @@
 
 #include "Defines.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/utfcpp/source/utf8.h"
 
 namespace eyegui
@@ -510,8 +510,8 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Unknown vertical alignment used in text block: " + verticalAlignmentValue, filepath);
             }
 
-			// Get text scale
-			float textScale = parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
+            // Get text scale
+            float textScale = parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
 
             // Get content
             std::string contentValue = parseStringAttribute("content", xmlTextBlock);
@@ -548,7 +548,7 @@ namespace eyegui
                         fontSize,
                         alignment,
                         verticalAlignment,
-						textScale,
+                        textScale,
                         content,
                         key));
 

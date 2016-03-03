@@ -16,9 +16,10 @@
 #include "Textures/Texture.h"
 #include "RenderItem.h"
 #include "Font/Font.h"
-#include "TextFlow.h"
-#include "Key.h"
-#include "Image.h"
+#include "Assets/TextFlow.h"
+#include "Assets/Key.h"
+#include "Assets/CharacterKey.h"
+#include "Assets/Image.h"
 
 #include "externals/FreeType2/include/ft2build.h"
 #include FT_FREETYPE_H
@@ -72,7 +73,7 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
-			float scale,
+            float scale,
             std::u16string content);
 
         // Create key for keyboard and return it as unique pointer

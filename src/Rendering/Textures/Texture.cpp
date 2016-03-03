@@ -7,7 +7,7 @@
 
 #include "Texture.h"
 
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 
 #include <fstream>
 

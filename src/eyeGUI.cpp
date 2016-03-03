@@ -9,8 +9,8 @@
 
 #include "GUI.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
-#include "PathBuilder.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // Version
 static const std::string VERSION_STRING = "0.8";

@@ -9,9 +9,9 @@
 
 #include "StylesheetParser.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
-#include "PathBuilder.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/PathBuilder.h"
 
 namespace eyegui
 {

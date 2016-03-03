@@ -7,9 +7,9 @@
 
 #include "TextFlow.h"
 
-#include "GUI.h"
-#include "AssetManager.h"
-#include "OperationNotifier.h"
+#include "src/GUI.h"
+#include "src/Rendering/AssetManager.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
 #include <cmath>

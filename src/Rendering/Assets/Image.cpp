@@ -7,8 +7,8 @@
 
 #include "Image.h"
 
-#include "Layout.h"
-#include "Rendering/AssetManager.h"
+#include "src/Layout.h"
+#include "src/Rendering/AssetManager.h"
 
 namespace eyegui
 {
@@ -142,7 +142,7 @@ namespace eyegui
         return (uint)(mpTexture->getWidth());
     }
 
-	unsigned int Image::getTextureHeight() const
+    unsigned int Image::getTextureHeight() const
     {
         return (uint)(mpTexture->getHeight());
     }

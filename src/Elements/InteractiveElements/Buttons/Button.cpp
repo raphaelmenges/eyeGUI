@@ -9,8 +9,8 @@
 
 #include "Layout.h"
 #include "NotificationQueue.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {
@@ -181,18 +181,18 @@ namespace eyegui
         // Super call
         IconInteractiveElement::specialDraw();
 
-		mpIconRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
-		mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
+        mpIconRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
+        mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
     }
 
-	void Button::specialTransformAndSize()
-	{
-		// Nothing to do, but must be implemented
-	}
+    void Button::specialTransformAndSize()
+    {
+        // Nothing to do, but must be implemented
+    }
 
     void Button::specialReset()
     {
-		IconInteractiveElement::specialReset();
+        IconInteractiveElement::specialReset();
 
         mIsDown = false;
         mThreshold.setValue(0);

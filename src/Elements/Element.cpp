@@ -8,9 +8,9 @@
 #include "Element.h"
 
 #include "Layout.h"
-#include "Helper.h"
+#include "src/Utilities/Helper.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 
 #include <algorithm>
 
