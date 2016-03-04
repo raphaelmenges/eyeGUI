@@ -77,6 +77,14 @@ namespace eyegui
             mFastBuffer = u"";
             mLastFastKeyRow = -1;
             mLastFastKeyColumn = -1;
+
+            // Unset picked if possible
+            if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
+            {
+                // Just do it for both
+                mKeymaps[mCurrentKeymapIndex].smallKeys[mFocusedKeyRow][mFocusedKeyColumn]->setPicked(false);
+                mKeymaps[mCurrentKeymapIndex].bigKeys[mFocusedKeyRow][mFocusedKeyColumn]->setPicked(false);
+            }
         }
     }
 
