@@ -7,9 +7,9 @@
 
 #include "VectorTexture.h"
 
-#include "Helper.h"
-#include "OperationNotifier.h"
-#include "PathBuilder.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // NanoSVG wants those defines
 #define NANOSVG_IMPLEMENTATION
@@ -60,8 +60,6 @@ namespace eyegui
 
     void VectorTexture::rasterizeGraphics(NSVGimage* svg, Filtering filtering, Wrap wrap, std::string filepath)
     {
-        // TODO: Size depending on image scale. Better depend on rendering resolution
-
         uint width = (uint)(svg->width);
         uint height = (uint)(svg->height);
         const uint channelCount = 4;

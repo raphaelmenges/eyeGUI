@@ -13,12 +13,12 @@
 #include "Meshes.h"
 #include "Graphics.h"
 #include "CharacterSets.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 #include "GUI.h"
 #include "Font/AtlasFont.h"
 #include "Font/EmptyFont.h"
-#include "PathBuilder.h"
+#include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
 
@@ -294,13 +294,10 @@ namespace eyegui
                     // Give face to a font object (it will delete it in the end)
                     rupFont = std::unique_ptr<Font>(
                         new AtlasFont(
+                            mpGUI,
                             filepath,
                             std::move(upFace),
-                            characters,
-                            mpGUI->getWindowHeight(),
-                            mpGUI->getFontTallSize(),
-                            mpGUI->getFontMediumSize(),
-                            mpGUI->getFontSmallSize()));
+                            characters));
                 }
             }
 
@@ -318,7 +315,7 @@ namespace eyegui
     {
         for (auto& rPair : mFonts)
         {
-            rPair.second->resizeFontAtlases(mpGUI->getWindowHeight());
+            rPair.second->resizeFontAtlases();
         }
     }
 

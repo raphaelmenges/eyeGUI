@@ -8,7 +8,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 ## Features
 
 #### Version 0.8
-* Simple keyboard
+* Keyboard
 * Image background for blocks possible
 * Text can be scaled
 

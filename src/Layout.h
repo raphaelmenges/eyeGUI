@@ -20,7 +20,7 @@
 #include "Parser/StylesheetParser.h"
 #include "Parser/BrickParser.h"
 #include "NotificationQueue.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 
 #include <memory>
 #include <map>
@@ -65,8 +65,8 @@ namespace eyegui
         // Get pointer to config of owning GUI
         Config const * getConfig() const;
 
-		// Get used character set
-		CharacterSet getCharacterSet() const;
+        // Get used character set
+        CharacterSet getCharacterSet() const;
 
         // Get main frame of layout
         Frame* getMainFrame();
@@ -156,6 +156,18 @@ namespace eyegui
         // Set key of text block
         void setKeyOfTextBlock(std::string id, std::string key);
 
+        // Set fast typing for keyboard
+        void setFastTypingOfKeyboard(std::string id, bool useFastTyping);
+
+        // Set case of keyboard
+        void setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase);
+
+        // Get count of keymaps in keyboard
+        uint getCountOfKeymapsInKeyboard(std::string id) const;
+
+        // Set keymap of keyboard by index
+        void setKeymapOfKeyboard(std::string id, uint keymapIndex);
+
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
 
@@ -224,7 +236,7 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
-			float textScale,
+            float textScale,
             std::u16string content,
             float innerBorder,
             std::string key,

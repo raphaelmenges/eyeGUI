@@ -8,7 +8,7 @@
 #include "GUI.h"
 
 #include "Defines.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
@@ -27,8 +27,8 @@ namespace eyegui
         float fontMediumSize,
         float fontSmallSize)
     {
-		// Initialize OpenGL
-		GLSetup::init();
+        // Initialize OpenGL
+        GLSetup::init();
 
         // Initialize members
         mWidth = width;
@@ -166,7 +166,7 @@ namespace eyegui
         glSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
 
         // Draw all layouts
-        for (int i = 0; i < mLayouts.size(); i++)
+        for (uint i = 0; i < mLayouts.size(); i++)
         {
             mLayouts[i]->draw();
         }
@@ -278,26 +278,33 @@ namespace eyegui
         return mVectorGraphicsDPI;
     }
 
-    float GUI::getFontTallSize() const
+    float GUI::getSizeOfFont(FontSize fontSize) const
     {
-        return mFontTallSize;
-    }
-
-    float GUI::getFontMediumSize() const
-    {
-        return mFontMediumSize;
-    }
-
-    float GUI::getFontSmallSize() const
-    {
-        return mFontSmallSize;
+        switch (fontSize)
+        {
+        case FontSize::TALL:
+            return mFontTallSize;
+            break;
+        case FontSize::MEDIUM:
+            return mFontMediumSize;
+            break;
+        case FontSize::SMALL:
+            return mFontSmallSize;
+            break;
+        case FontSize::KEYBOARD:
+            return FONT_KEYBOARD_SIZE;
+            break;
+        default:
+            return 0;
+            break;
+        }
     }
 
     int GUI::findLayout(Layout const * pLayout) const
     {
         // Try to find index of layout in vector
         int index = -1;
-        for (int i = 0; i < mLayouts.size(); i++)
+        for (uint i = 0; i < mLayouts.size(); i++)
         {
             if (mLayouts[i].get() == pLayout)
             {
@@ -314,7 +321,7 @@ namespace eyegui
         std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
         mLayouts.erase(mLayouts.begin() + oldIndex);
 
-        if (newIndex >= mLayouts.size())
+        if (newIndex >= (int)(mLayouts.size()))
         {
             mLayouts.push_back(std::move(upLayout));
         }
@@ -421,7 +428,7 @@ namespace eyegui
             mpGUI->mLayouts.end());
 
         // Check, whether something has changed
-        if(mpGUI->mLayouts.size() == layoutCount)
+        if((int)(mpGUI->mLayouts.size() )== layoutCount)
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Tried to remove layout that did not exist");
         }

@@ -42,24 +42,22 @@ namespace eyegui
     class Frame;
 
     //! Enumeration of possible character sets for font rendering.
-    /*! This enum is defined directly in the interface because it is needed by initialization. */
     enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH };
 
-    //! Enumeration of possible font sizes.
-    /*! This enum is defined directly in the interface because it is needed by some functions. */
-    enum class FontSize { TALL, MEDIUM, SMALL };
+    //! Enumeration of possible font sizes. Size of keyboard font cannot be set in GUIBuilder.
+    enum class FontSize { TALL, MEDIUM, SMALL, KEYBOARD };
 
     //! Enumeration of possible text flow alignments
-    /*! This enum is defined directly in the interface because it is needed by some functions. */
     enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY };
 
     //! Enumeration of possible vertical text flow alignments
-    /*! This enum is defined directly in the interface because it is needed by some functions. */
     enum class TextFlowVerticalAlignment { TOP, CENTER, BOTTOM };
 
     //! Enumeration of possible image alignments.
-    /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */
     enum class ImageAlignment { ORIGINAL, STRETCHED, ZOOMED };
+
+    //! Enumeration of cases of keyboard.
+    enum class KeyboardCase { LOWER, UPPER };
 
     //! Abstract listener class for buttons.
     class ButtonListener
@@ -573,6 +571,38 @@ namespace eyegui
     */
     void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key);
 
+    //! Set fast typing for keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param useFastTyping indicates, whether fast typing should be used or not.
+    */
+    void setFastTypingOfKeyboard(Layout* pLayout, std::string id, bool useFastTyping);
+
+    //! Set case of letters in keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param case indicates case of displayed letters.
+    */
+    void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase);
+
+    //! Get count of available keymaps in keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return count of keymaps
+    */
+    unsigned int getCountOfKeymapsInKeyboard(Layout const * pLayout, std::string id);
+
+    //! Set keymap of keyboard by index.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param keymapIndex is index of keymap.
+    */
+    void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
+
     //! Register listener to button.
     /*!
       \param pLayout pointer to layout.
@@ -702,12 +732,12 @@ namespace eyegui
       \param alignment is alignment of text.
       \param verticalAlignment is vertical alignment of text.
       \param content is the content of the displayed text.
-	  \param innerBorder is space between border and text.
+      \param innerBorder is space between border and text.
       \param textScale is scale of text.
       \param key is used for localization.
-	  \param backgroundFilepath is path to image rendered in background.
-			 Use empty string to indicate no background image.
-	  \param backgroundAlignment indicates alignment of background image.
+      \param backgroundFilepath is path to image rendered in background.
+             Use empty string to indicate no background image.
+      \param backgroundAlignment indicates alignment of background image.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithTextBlock(
@@ -719,7 +749,7 @@ namespace eyegui
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
         float innerBorder = 0.0f,
-		float textScale = 1.0f,
+        float textScale = 1.0f,
         std::string key = "",
         std::string backgroundFilepath = "",
         ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,

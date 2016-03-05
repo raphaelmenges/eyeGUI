@@ -14,7 +14,7 @@
 #include "include/eyeGUI.h"
 #include "Object.h"
 #include "Elements/Elements.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 
 #include <memory>
 #include <map>

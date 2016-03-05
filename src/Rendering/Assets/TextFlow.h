@@ -12,8 +12,8 @@
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
 
-#include "Font/Font.h"
-#include "Rendering/Shader.h"
+#include "src/Rendering/Font/Font.h"
+#include "src/Rendering/Shader.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
 #include <vector>

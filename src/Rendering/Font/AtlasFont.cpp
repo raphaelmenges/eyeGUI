@@ -7,36 +7,33 @@
 
 #include "AtlasFont.h"
 
-#include "OperationNotifier.h"
+#include "GUI.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "Defines.h"
 #include <algorithm>
 
 namespace eyegui
 {
     AtlasFont::AtlasFont(
+        GUI const * pGUI,
         std::string filepath,
         std::unique_ptr<FT_Face> upFace,
-        std::set<char16_t> characterSet,
-        int windowHeight,
-        float fontTallSize,
-        float fontMediumSize,
-        float fontSmallSize) : Font()
+        std::set<char16_t> characterSet) : Font()
     {
         // Fill members
+        mpGUI = pGUI;
         mFilepath = filepath;
         mupFace = std::move(upFace);
         mCharacterSet = characterSet;
-        mFontTallSize = fontTallSize;
-        mFontMediumSize = fontMediumSize;
-        mFontSmallSize = fontSmallSize;
 
         // Initilialize textures
         glGenTextures(1, &mTallTexture);
         glGenTextures(1, &mMediumTexture);
         glGenTextures(1, &mSmallTexture);
+        glGenTextures(1, &mKeyboardTexture);
 
         // Update pixel heights
-        fillPixelHeights(windowHeight);
+        fillPixelHeights();
 
         // Fill atlases the first time
         fillAtlases();
@@ -48,15 +45,16 @@ namespace eyegui
         glDeleteTextures(1, &mTallTexture);
         glDeleteTextures(1, &mMediumTexture);
         glDeleteTextures(1, &mSmallTexture);
+        glDeleteTextures(1, &mKeyboardTexture);
 
         // Delete used face
         FT_Done_Face(*(mupFace.get()));
     }
 
-    void AtlasFont::resizeFontAtlases(int windowHeight)
+    void AtlasFont::resizeFontAtlases()
     {
         // Update pixel heights
-        fillPixelHeights(windowHeight);
+        fillPixelHeights();
 
         // Update all atlases
         fillAtlases();
@@ -77,39 +75,45 @@ namespace eyegui
         case FontSize::SMALL:
             pGlyph = getGlyph(mSmallGlyphs, character);
             break;
+        case FontSize::KEYBOARD:
+            pGlyph = getGlyph(mKeyboardGlyphs, character);
+            break;
         }
 
-		// Check whether key was found
-		if (pGlyph == NULL)
-		{
-			throwWarning(
-				OperationNotifier::Operation::RUNTIME,
-				"Failed to find a character, check font file and character set",
-				mFilepath);
+        // Check whether key was found
+        if (pGlyph == NULL)
+        {
+            throwWarning(
+                OperationNotifier::Operation::RUNTIME,
+                "Failed to find a character, check font file and character set",
+                mFilepath);
 
-			// Try to load fallback
-			switch (fontSize)
-			{
-			case FontSize::TALL:
-				pGlyph = getGlyph(mTallGlyphs, FONT_FALLBACK_CHARACTER);
-				break;
-			case FontSize::MEDIUM:
-				pGlyph = getGlyph(mMediumGlyphs, FONT_FALLBACK_CHARACTER);
-				break;
-			case FontSize::SMALL:
-				pGlyph = getGlyph(mSmallGlyphs, FONT_FALLBACK_CHARACTER);
-				break;
-			}
+            // Try to load fallback
+            switch (fontSize)
+            {
+            case FontSize::TALL:
+                pGlyph = getGlyph(mTallGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            case FontSize::MEDIUM:
+                pGlyph = getGlyph(mMediumGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            case FontSize::SMALL:
+                pGlyph = getGlyph(mSmallGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            case FontSize::KEYBOARD:
+                pGlyph = getGlyph(mKeyboardGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            }
 
-			// Check fallback
-			if (pGlyph == NULL)
-			{
-				throwError(
-					OperationNotifier::Operation::RUNTIME,
-					"Fallback character not found, check font file and character set",
-					mFilepath);
-			}
-		}
+            // Check fallback
+            if (pGlyph == NULL)
+            {
+                throwError(
+                    OperationNotifier::Operation::RUNTIME,
+                    "Fallback character not found, check font file and character set",
+                    mFilepath);
+            }
+        }
 
         return pGlyph;
     }
@@ -117,38 +121,43 @@ namespace eyegui
     float AtlasFont::getLineHeight(FontSize fontSize) const
     {
         // At the moment, same as target glyph height
-		return getTargetGlyphHeight(fontSize);
+        return getTargetGlyphHeight(fontSize);
     }
 
-	float AtlasFont::getTargetGlyphHeight(FontSize fontSize) const
-	{
-		// Values seems to be not correct (not depending on bitmap size)
-		/*switch(fontSize)
-		{
-		case FontSize::TALL:
-		return mTallLineHeight;
-		break;
-		case FontSize::MEDIUM:
-		return mMediumLineHeight;
-		break;
-		case FontSize::SMALL:
-		return mSmallLineHeight;
-		break;
-		}*/
+    float AtlasFont::getTargetGlyphHeight(FontSize fontSize) const
+    {
+        // Values seems to be not correct (not depending on bitmap size)
+        /*switch(fontSize)
+        {
+        case FontSize::TALL:
+        return mTallLineHeight;
+        break;
+        case FontSize::MEDIUM:
+        return mMediumLineHeight;
+        break;
+        case FontSize::SMALL:
+        return mSmallLineHeight;
+        break;
+        }*/
 
-		switch (fontSize)
-		{
-		case FontSize::TALL:
-			return (float)mTallPixelHeight;
-			break;
-		case FontSize::MEDIUM:
-			return (float)mMediumPixelHeight;
-			break;
-		case FontSize::SMALL:
-			return (float)mSmallPixelHeight;
-			break;
-		}
-	}
+        switch (fontSize)
+        {
+        case FontSize::TALL:
+            return (float)mTallPixelHeight;
+            break;
+        case FontSize::MEDIUM:
+            return (float)mMediumPixelHeight;
+            break;
+        case FontSize::SMALL:
+            return (float)mSmallPixelHeight;
+            break;
+        case FontSize::KEYBOARD:
+            return (float)mKeyboardPixelHeight;
+            break;
+        default:
+            return 0;
+        }
+    }
 
     void AtlasFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering) const
     {
@@ -166,6 +175,9 @@ namespace eyegui
             break;
         case FontSize::SMALL:
             glBindTexture(GL_TEXTURE_2D, mSmallTexture);
+            break;
+        case FontSize::KEYBOARD:
+            glBindTexture(GL_TEXTURE_2D, mKeyboardTexture);
             break;
         }
 
@@ -203,11 +215,13 @@ namespace eyegui
             (int)(pixelHeight * FONT_CHARACTER_PADDING));
     }
 
-    void AtlasFont::fillPixelHeights(int windowHeight)
+    void AtlasFont::fillPixelHeights()
     {
-        mTallPixelHeight = (int)(windowHeight * mFontTallSize);
-        mMediumPixelHeight = (int)(windowHeight * mFontMediumSize);
-        mSmallPixelHeight = (int)(windowHeight * mFontSmallSize);
+        float windowHeight = mpGUI->getWindowHeight();
+        mTallPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::TALL));
+        mMediumPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::MEDIUM));
+        mSmallPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::SMALL));
+        mKeyboardPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::KEYBOARD));
     }
 
     void AtlasFont::fillAtlases()
@@ -230,6 +244,12 @@ namespace eyegui
             mSmallLinePixelHeight,
             mSmallTexture,
             calculatePadding(mSmallPixelHeight));
+        fillAtlas(
+            mKeyboardPixelHeight,
+            mKeyboardGlyphs,
+            mKeyboardLinePixelHeight,
+            mKeyboardTexture,
+            calculatePadding(mKeyboardPixelHeight));
     }
 
     void AtlasFont::fillAtlas(
@@ -334,7 +354,7 @@ namespace eyegui
             int width = rGlyphBitmapPair.first->size.x + 2 * padding;
             bool check = false;
 
-            for (int j = 0; j < rows.size(); j++)
+            for (uint j = 0; j < rows.size(); j++)
             {
                 // Does this word fit in this row?
                 if ((rows[j] + width) < xResolution)
@@ -399,10 +419,10 @@ namespace eyegui
 
         // Write bitmaps into texture and save further values to the glyph
         int yPen = yResolution - pixelHeight - 2 * padding;
-        for (int i = 0; i < bitmapOrder.size(); i++)
+        for (uint i = 0; i < bitmapOrder.size(); i++)
         {
             int xPen = 0;
-            for (int j = 0; j < bitmapOrder[i].size(); j++)
+            for (uint j = 0; j < bitmapOrder[i].size(); j++)
             {
                 int bitmapWidth = bitmapOrder[i][j]->first->size.x;
                 int bitmapHeight = bitmapOrder[i][j]->first->size.y;

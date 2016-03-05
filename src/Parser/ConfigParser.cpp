@@ -8,10 +8,10 @@
 #include "ConfigParser.h"
 
 #include "Defines.h"
-#include "Helper.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "ParserHelper.h"
-#include "PathBuilder.h"
+#include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
 #include <sstream>
@@ -172,10 +172,10 @@ namespace eyegui
             {
                 rConfig.gazeVisualizationMaxSize = std::stof(value);
             }
-			else if (attribute == "keyboard-speed-multiplier")
-			{
-				rConfig.keyboardSpeedMultiplier = std::stof(value);
-			}
+            else if (attribute == "keyboard-speed-multiplier")
+            {
+                rConfig.keyboardSpeedMultiplier = std::stof(value);
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);

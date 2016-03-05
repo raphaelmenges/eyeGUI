@@ -9,7 +9,7 @@
 
 #include "Defines.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "Elements/ElementCasting.h"
 
 namespace eyegui
@@ -57,7 +57,7 @@ namespace eyegui
                 mupNotificatons = std::unique_ptr<NotificationVector>(new NotificationVector);
 
                 // Work on notifications
-                for (int i = 0; i < upNotifications->size(); i++)
+                for (uint i = 0; i < upNotifications->size(); i++)
                 {
                     // Listeners of notifications could fill the notifications in this layout again... (just a note)
                     NotificationPair notification = upNotifications->at(i);

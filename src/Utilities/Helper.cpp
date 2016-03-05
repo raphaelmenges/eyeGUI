@@ -4,25 +4,17 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Static helper functions.
 
-#ifndef HELPER_H_
-#define HELPER_H_
-
-#include "externals/GLM/glm/glm.hpp"
-#include "externals/GLM/glm/gtc/matrix_transform.hpp"
-
-#include <string>
-#include <algorithm>
+#include "Helper.h"
 
 namespace eyegui
 {
-    static float clamp(float value, float lowerBound, float upperBound)
+    float clamp(float value, float lowerBound, float upperBound)
     {
         return value < lowerBound ? lowerBound : (value > upperBound ? upperBound : value);
     }
 
-    static bool checkFileNameExtension(std::string filepath, std::string expectedExtension)
+    bool checkFileNameExtension(std::string filepath, std::string expectedExtension)
     {
         // Extract token behind last dot
         std::string delimiter = ".";
@@ -41,7 +33,7 @@ namespace eyegui
         return (filepath.compare(expectedExtension) == 0);
     }
 
-    static void replaceString(std::string& rInput, const std::string &rTarget, const std::string& rReplacement)
+    void replaceString(std::string& rInput, const std::string &rTarget, const std::string& rReplacement)
     {
         // Check whether there is a target
         if(rTarget.empty())
@@ -58,8 +50,7 @@ namespace eyegui
         }
     }
 
-    // Convert pixel space to drawing space (origin top left)
-    static glm::mat4 calculateDrawMatrix(int layoutWidth, int layoutHeight, int x, int y, int width, int height)
+    glm::mat4 calculateDrawMatrix(int layoutWidth, int layoutHeight, int x, int y, int width, int height)
     {
         // Get values from layout
         float floatLayoutWidth = (float)(layoutWidth);
@@ -88,5 +79,3 @@ namespace eyegui
         return matrix;
     }
 }
-
-#endif // HELPER_H_

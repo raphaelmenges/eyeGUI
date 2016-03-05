@@ -8,10 +8,10 @@
 #include "Layout.h"
 
 #include "GUI.h"
-#include "Helper.h"
+#include "src/Utilities/Helper.h"
 #include "Elements/ElementCasting.h"
 #include "Defines.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/utfcpp/source/utf8.h"
 
 #include <algorithm>
@@ -121,7 +121,7 @@ namespace eyegui
             mupMainFrame->draw();
 
             // Draw floating frames
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 Frame* pFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
                 if (pFrame != NULL)
@@ -158,10 +158,10 @@ namespace eyegui
         return mpGUI->getConfig();
     }
 
-	CharacterSet Layout::getCharacterSet() const
-	{
-		return mpGUI->getCharacterSet();
-	}
+    CharacterSet Layout::getCharacterSet() const
+    {
+        return mpGUI->getCharacterSet();
+    }
 
     Frame* Layout::getMainFrame()
     {
@@ -403,7 +403,7 @@ namespace eyegui
         IconInteractiveElement* pIconInteractiveElement = toIconInteractiveElement(fetchElement(id));
         if (pIconInteractiveElement != NULL)
         {
-			pIconInteractiveElement->setIcon(iconFilepath);
+            pIconInteractiveElement->setIcon(iconFilepath);
         }
         else
         {
@@ -531,6 +531,60 @@ namespace eyegui
         else
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text block with id: " + id);
+        }
+    }
+
+    void Layout::setFastTypingOfKeyboard(std::string id, bool useFastTyping)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setFastTyping(useFastTyping);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
+    void Layout::setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setCase(keyboardCase);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
+    uint Layout::getCountOfKeymapsInKeyboard(std::string id) const
+    {
+        Keyboard const * pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            return pKeyboard->getCountOfKeymaps();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+
+        return 0;
+    }
+
+    void Layout::setKeymapOfKeyboard(std::string id, uint keymapIndex)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setKeymap(keymapIndex);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
         }
     }
 
@@ -668,7 +722,7 @@ namespace eyegui
                 // Go over all remaining frame indices until interactive element found or null
                 if (indexOfStartFrameIndex >= 0)
                 {
-                    for (int i = indexOfStartFrameIndex; i < mFloatingFramesOrderingIndices.size(); i++)
+                    for (uint i = indexOfStartFrameIndex; i < mFloatingFramesOrderingIndices.size(); i++)
                     {
                         Frame* pNextFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
                         if (!pNextFrame->isRemoved())
@@ -981,7 +1035,7 @@ namespace eyegui
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
-		float textScale,
+        float textScale,
         std::u16string content,
         float innerBorder,
         std::string key,
@@ -1010,7 +1064,7 @@ namespace eyegui
                 fontSize,
                 alignment,
                 verticalAlignment,
-				textScale,
+                textScale,
                 content,
                 key));
 
@@ -1075,7 +1129,7 @@ namespace eyegui
 
         // Go through floating frames and search for free place
         int freeIndex = -1;
-        for (int i = 0; i < mFloatingFrames.size(); i++)
+        for (uint i = 0; i < mFloatingFrames.size(); i++)
         {
             Frame* pFrame = mFloatingFrames[i].get();
             if (pFrame == NULL)
@@ -1219,7 +1273,7 @@ namespace eyegui
         {
             // Search for it in sorted vector
             int index = -1;
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
                 {
@@ -1244,7 +1298,7 @@ namespace eyegui
         {
             // Search for it in sorted vector
             int index = -1;
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
                 {
@@ -1484,7 +1538,7 @@ namespace eyegui
         int movedFrameIndex = mFloatingFramesOrderingIndices[oldIndex];
         mFloatingFramesOrderingIndices.erase(mFloatingFramesOrderingIndices.begin() + oldIndex);
 
-        if (newIndex >= mFloatingFramesOrderingIndices.size())
+        if (newIndex >= (int)mFloatingFramesOrderingIndices.size())
         {
             mFloatingFramesOrderingIndices.push_back(movedFrameIndex);
         }

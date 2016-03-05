@@ -111,17 +111,17 @@ namespace eyegui
             }
         }
 
-		// Notify listener about something (one need to know which method to call from listener)
-		void notifyListener(
-			void (T::*method) (Layout*, std::string, std::string),
-			Layout* pLayout, std::string id, std::string value)
-		{
-			// Inform listener
-			for (std::shared_ptr<T>& spListener : getListener())
-			{
-				(spListener.get()->*method)(pLayout, id, value);
-			}
-		}
+        // Notify listener about something (one need to know which method to call from listener)
+        void notifyListener(
+            void (T::*method) (Layout*, std::string, std::string),
+            Layout* pLayout, std::string id, std::string value)
+        {
+            // Inform listener
+            for (std::shared_ptr<T>& spListener : getListener())
+            {
+                (spListener.get()->*method)(pLayout, id, value);
+            }
+        }
 
     private:
 
@@ -132,7 +132,7 @@ namespace eyegui
             std::vector<int> deadListeners;
 
             // Inform listener
-            for (int i = 0; i < mListeners.size(); i++)
+            for (uint i = 0; i < mListeners.size(); i++)
             {
                 std::weak_ptr<T>& wpListener = mListeners[i];
 
@@ -150,7 +150,7 @@ namespace eyegui
             }
 
             // Delete dead listeners from member vector
-            for (int i = 0; i < deadListeners.size(); i++)
+            for (uint i = 0; i < deadListeners.size(); i++)
             {
                 mListeners.erase(mListeners.begin() + i);
             }

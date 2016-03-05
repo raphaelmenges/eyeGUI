@@ -11,59 +11,59 @@
 
 namespace eyegui
 {
-	EmptyFont::EmptyFont() : Font()
-	{
-		// Create some empty texture just in case...
-		glGenTextures(1, &mTexture);
+    EmptyFont::EmptyFont() : Font()
+    {
+        // Create some empty texture just in case...
+        glGenTextures(1, &mTexture);
 
-		std::vector<GLubyte> emptyData(4 * 4, 0);
-		glBindTexture(GL_TEXTURE_2D, mTexture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_RED,
-			4,
-			4,
-			0,
-			GL_RED,
-			GL_UNSIGNED_BYTE,
-			emptyData.data());
+        std::vector<GLubyte> emptyData(4 * 4, 0);
+        glBindTexture(GL_TEXTURE_2D, mTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RED,
+            4,
+            4,
+            0,
+            GL_RED,
+            GL_UNSIGNED_BYTE,
+            emptyData.data());
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
-	EmptyFont::~EmptyFont()
-	{
-		glDeleteTextures(1, &mTexture);
-	}
+    EmptyFont::~EmptyFont()
+    {
+        glDeleteTextures(1, &mTexture);
+    }
 
-	void EmptyFont::resizeFontAtlases(int windowHeight)
-	{
-		// Nothing to do
-	}
+    void EmptyFont::resizeFontAtlases()
+    {
+        // Nothing to do
+    }
 
-	Glyph const * EmptyFont::getGlyph(FontSize fontSize, char16_t character) const
-	{
-		return NULL;
-	}
+    Glyph const * EmptyFont::getGlyph(FontSize fontSize, char16_t character) const
+    {
+        return NULL;
+    }
 
-	float EmptyFont::getLineHeight(FontSize fontSize) const
-	{
-		return 0;
-	}
+    float EmptyFont::getLineHeight(FontSize fontSize) const
+    {
+        return 0;
+    }
 
-	float EmptyFont::getTargetGlyphHeight(FontSize fontSize) const
-	{
-		return 0;
-	}
+    float EmptyFont::getTargetGlyphHeight(FontSize fontSize) const
+    {
+        return 0;
+    }
 
-	void EmptyFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering ) const
-	{
-		// Nothing to do
-	}
+    void EmptyFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering ) const
+    {
+        // Nothing to do
+    }
 
 }

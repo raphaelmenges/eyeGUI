@@ -9,8 +9,8 @@
 
 #include "GUI.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
-#include "PathBuilder.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // Version
 static const std::string VERSION_STRING = "0.8";
@@ -294,6 +294,26 @@ namespace eyegui
         pLayout->setKeyOfTextBlock(id, key);
     }
 
+    void setFastTypingOfKeyboard(Layout* pLayout, std::string id, bool useFastTyping)
+    {
+        pLayout->setFastTypingOfKeyboard(id, useFastTyping);
+    }
+
+    void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase)
+    {
+        pLayout->setCaseOfKeyboard(id, keyboardCase);
+    }
+
+    unsigned int getCountOfKeymapsInKeyboard(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getCountOfKeymapsInKeyboard(id);
+    }
+
+    void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex)
+    {
+        pLayout->setKeymapOfKeyboard(id, keymapIndex);
+    }
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);
@@ -346,19 +366,19 @@ namespace eyegui
     }
 
     void replaceElementWithTextBlock(
-		Layout* pLayout,
-		std::string id,
-		bool consumeInput,
-		FontSize fontSize,
-		TextFlowAlignment alignment,
-		TextFlowVerticalAlignment verticalAlignment,
-		std::u16string content,
-		float innerBorder,
-		float textScale,
-		std::string key,
-		std::string backgroundFilepath,
-		ImageAlignment backgroundAlignment,
-		bool fade)
+        Layout* pLayout,
+        std::string id,
+        bool consumeInput,
+        FontSize fontSize,
+        TextFlowAlignment alignment,
+        TextFlowVerticalAlignment verticalAlignment,
+        std::u16string content,
+        float innerBorder,
+        float textScale,
+        std::string key,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
+        bool fade)
     {
         pLayout->replaceElementWithTextBlock(
             id,
@@ -368,7 +388,7 @@ namespace eyegui
             fontSize,
             alignment,
             verticalAlignment,
-			textScale,
+            textScale,
             content,
             innerBorder,
             key,

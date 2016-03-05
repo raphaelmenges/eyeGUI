@@ -8,9 +8,9 @@
 #include "LocalizationParser.h"
 
 #include "Defines.h"
-#include "Helper.h"
-#include "OperationNotifier.h"
-#include "PathBuilder.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 #include "externals/utfcpp/source/utf8.h"
 
 #include <string>
@@ -21,7 +21,7 @@ namespace eyegui
 {
     namespace localization_parser
     {
-        std::unique_ptr<localizationMap> parse(std::string filepath)
+        std::unique_ptr<LocalizationMap> parse(std::string filepath)
         {
             // Check file name
             if (!checkFileNameExtension(filepath, LOCALIZATION_EXTENSION))
@@ -30,7 +30,7 @@ namespace eyegui
             }
 
             // Create map
-            std::unique_ptr<localizationMap> upMap = std::unique_ptr<localizationMap>(new localizationMap);
+            std::unique_ptr<LocalizationMap> upMap = std::unique_ptr<LocalizationMap>(new LocalizationMap);
 
             // Read file
             std::ifstream in(buildPath(filepath));
@@ -66,7 +66,7 @@ namespace eyegui
             return std::move(upMap);
         }
 
-        void parseLine(localizationMap& rLocalizationMap, std::string line, std::string filepath)
+        void parseLine(LocalizationMap& rLocalizationMap, std::string line, std::string filepath)
         {
             // Split left and right side
             std::string delimiter = "=";

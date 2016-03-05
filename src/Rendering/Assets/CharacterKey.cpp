@@ -5,153 +5,15 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 
-#include "Key.h"
+#include "CharacterKey.h"
 
-#include "Layout.h"
-#include "AssetManager.h"
-#include "Defines.h"
-#include "Helper.h"
+#include "src/Layout.h"
+#include "src/Rendering/AssetManager.h"
+#include "src/Defines.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {
-    Key::Key(Layout const * pLayout, AssetManager* pAssetManager)
-    {
-        // Initialize members
-        mpLayout = pLayout;
-        mpAssetManager = pAssetManager;
-
-        // TransformAndSize has to be called before usage
-        mX = 0;
-        mY = 0;
-        mSize = 0;
-        mFocused = false;
-        mFocus.setValue(0);
-		mSelected = false;
-		mSelection.setValue(0);
-
-        // Fetch render item for key circle
-        mpCirlceRenderItem = mpAssetManager->fetchRenderItem(
-            shaders::Type::KEY,
-            meshes::Type::QUAD);
-    }
-
-    Key::Key(const Key& rOtherKey)
-    {
-        // Copy members
-        mpLayout = rOtherKey.mpLayout;
-        mpAssetManager = rOtherKey.mpAssetManager;
-        mX = rOtherKey.mX;
-        mY = rOtherKey.mY;
-        mSize = rOtherKey.mSize;
-        mFocused = rOtherKey.mFocused;
-        mFocus.setValue(rOtherKey.mFocus.getValue());
-		mSelected = rOtherKey.mSelected;
-		mSelection.setValue(rOtherKey.mSelection.getValue());
-        mpCirlceRenderItem = rOtherKey.mpCirlceRenderItem;
-    }
-
-    Key::~Key()
-    {
-        // Nothing to do
-    }
-
-    void Key::transformAndSize()
-    {
-        // Draw matrix for cirlce
-        mCircleMatrix = calculateDrawMatrix(
-            mpLayout->getLayoutWidth(),
-            mpLayout->getLayoutHeight(),
-            mX - mSize / 2,
-            mY - mSize / 2,
-            mSize,
-            mSize);
-    }
-
-    void Key::transformAndSize(int x, int y, int size)
-    {
-        mX = x;
-        mY = y;
-        mSize = size;
-
-        transformAndSize();
-    }
-
-    void Key::update(float tpf)
-    {
-        mFocus.update(tpf / KEY_FOCUS_DURATION, !mFocused);
-		mSelection.update(tpf / KEY_SELECT_DURATION, !mSelected);
-    }
-
-    void Key::reset()
-    {
-        mFocused = false;
-        mFocus.setValue(0);
-		mSelected = false;
-		mSelection.setValue(0);
-    }
-
-    void Key::setFocus(bool doFocus)
-    {
-        mFocused = doFocus;
-    }
-
-    bool Key::isFocused() const
-    {
-        return mFocused;
-    }
-
-	float Key::getFocusValue() const
-	{
-		return mFocus.getValue();
-	}
-
-	void Key::setSelect(bool doSelect)
-	{
-		mSelected = doSelect;
-	}
-
-	bool Key::isSelected() const
-	{
-		return mSelected;
-	}
-
-    glm::vec2 Key::getPosition() const
-    {
-        return glm::vec2(mX, mY);
-    }
-
-    int Key::getSize() const
-    {
-        return mSize;
-    }
-
-    void Key::drawCircle(
-            int oglStencilX,
-            int oglSencilY,
-            int oglStencilWidth,
-            int oglStencilHeight,
-            glm::vec4 color,
-			glm::vec4 selectionColor,
-            float alpha) const
-    {
-        // Bind and fill render item
-        mpCirlceRenderItem->bind();
-
-        // Fill color
-        glm::vec4 circleColor = color;
-        circleColor.a *= alpha;
-        mpCirlceRenderItem->getShader()->fillValue("color", circleColor);
-
-        // Fill other uniforms
-        mpCirlceRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
-		mpCirlceRenderItem->getShader()->fillValue("selection", mSelection.getValue());
-		mpCirlceRenderItem->getShader()->fillValue("selectionColor", selectionColor);
-        mpCirlceRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
-
-        // Drawing
-        mpCirlceRenderItem->draw();
-    }
-
     CharacterKey::CharacterKey(
         Layout const * pLayout,
         AssetManager* pAssetManager,
@@ -166,12 +28,12 @@ namespace eyegui
         mpQuadShader = mpAssetManager->fetchShader(shaders::Type::CHARACTER_KEY);
 
         // Get glyph from font
-        mpGlyph = mpFont->getGlyph(FontSize::TALL, mCharacter);
+        mpGlyph = mpFont->getGlyph(FontSize::KEYBOARD, mCharacter);
 
-		// Calculate relative size of character
-		float targetGlyphHeight = mpFont->getTargetGlyphHeight(FontSize::TALL);
-		mCharacterSize = std::max(KEY_MIN_SCALE, mpGlyph->size.y / targetGlyphHeight);
-		
+        // Calculate relative size of character
+        float targetGlyphHeight = mpFont->getTargetGlyphHeight(FontSize::KEYBOARD);
+        mCharacterSize = std::max(KEY_MIN_SCALE, mpGlyph->size.y / targetGlyphHeight);
+
         // Prepare quad for displaying the character
         prepareQuad();
     }
@@ -183,7 +45,7 @@ namespace eyegui
         mCharacter = rOtherKey.mCharacter;
         mpQuadShader = rOtherKey.mpQuadShader;
         mpGlyph = rOtherKey.mpGlyph;
-		mCharacterSize = rOtherKey.mCharacterSize;
+        mCharacterSize = rOtherKey.mCharacterSize;
 
         // But create own quad!
         prepareQuad();
@@ -251,8 +113,15 @@ namespace eyegui
             int stencilWidth,
             int stencilHeight,
             glm::vec4 color,
-			glm::vec4 selectionColor,
+            glm::vec4 pickColor,
             glm::vec4 iconColor,
+            float activity,
+            glm::vec4 dimColor,
+            float dim,
+            glm::vec4 markColor,
+            float mark,
+            glm::vec4 highlightColor,
+            float highlight,
             float alpha) const
     {
         // Convert stencil values to OpenGL coordinate system
@@ -262,14 +131,28 @@ namespace eyegui
         int oglStencilHeight = stencilHeight;
 
         // Draw circle of key
-        drawCircle(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight, color, selectionColor, alpha);
+        drawCircle(
+            oglStencilX,
+            oglStencilY,
+            oglStencilWidth,
+            oglStencilHeight,
+            color,
+            pickColor,
+            activity,
+            dimColor,
+            dim,
+            markColor,
+            mark,
+            highlightColor,
+            highlight,
+            alpha);
 
         // Render character
         mpQuadShader->bind();
         glBindVertexArray(mQuadVertexArrayObject);
 
         // Bind atlas texture
-        mpFont->bindAtlasTexture(FontSize::TALL, 0, true);
+        mpFont->bindAtlasTexture(FontSize::KEYBOARD, 0, true);
 
         // Fill color
         glm::vec4 characterColor = iconColor;
@@ -277,8 +160,16 @@ namespace eyegui
         mpQuadShader->fillValue("color", characterColor);
 
         // Fill other uniforms
+        mpQuadShader->fillValue("time", mpLayout->getAccPeriodicTime());
         mpQuadShader->fillValue("matrix", mQuadMatrix); // Matrix is updated in transform and size
         mpQuadShader->fillValue("stencil", glm::vec4(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight));
+        mpQuadShader->fillValue("activity", activity);
+        mpQuadShader->fillValue("dimColor", dimColor);
+        mpQuadShader->fillValue("dim", dim);
+        mpQuadShader->fillValue("markColor", markColor);
+        mpQuadShader->fillValue("mark", mark);
+        mpQuadShader->fillValue("highlightColor", highlightColor);
+        mpQuadShader->fillValue("highlight", highlight);
 
         // Draw character quad (vertex count must be 6)
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -302,10 +193,10 @@ namespace eyegui
         glGenBuffers(1, &mQuadTextureCoordinateBuffer);
         glGenVertexArrays(1, &mQuadVertexArrayObject);
 
-		// Coordinates of quad
-		float border = (1.0f - mCharacterSize) / 2.0f;
-		float a = border;
-		float b = 1.0f - border;
+        // Coordinates of quad
+        float border = (1.0f - mCharacterSize) / 2.0f;
+        float a = border;
+        float b = 1.0f - border;
 
         // Fill vertex buffer (in OpenGL space)
         glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);

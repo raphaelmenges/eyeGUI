@@ -109,14 +109,8 @@ namespace eyegui
         // Get dpi for rasterization of vector graphics
         float getVectorGraphicsDPI() const;
 
-        // Get size for tall font
-        float getFontTallSize() const;
-
-        // Get size for medium font
-        float getFontMediumSize() const;
-
-        // Get size for small font
-        float getFontSmallSize() const;
+        // Get size for font
+        float getSizeOfFont(FontSize fontSize) const;
 
     private:
 
@@ -225,7 +219,7 @@ namespace eyegui
         bool mResizing;
         float mResizeWaitTime;
         RenderItem const * mpResizeBlend;
-        std::unique_ptr<localizationMap> mupLocalizationMap;
+        std::unique_ptr<LocalizationMap> mupLocalizationMap;
         std::vector<std::unique_ptr<GUIJob> > mJobs;
         std::unique_ptr<GazeDrawer> mupGazeDrawer;
         bool mDrawGazeVisualization;

@@ -7,10 +7,9 @@
 
 #include "PixelTexture.h"
 
-#include "Helper.h"
-#include "OperationNotifier.h"
-
-#include "PathBuilder.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // stb_image wants those defines
 #define STB_IMAGE_IMPLEMENTATION
@@ -35,10 +34,10 @@ namespace eyegui
         }
 
         // Create vector out of data
-        std::vector<unsigned char> image(data, data + width * height * channelCount);
+        std::vector<unsigned char> image(data, data + width * height * suspectedChannels);
 
         // Create OpenGL texture
-        createOpenGLTexture(image, filtering, wrap, width, height, channelCount, filepath);
+        createOpenGLTexture(image, filtering, wrap, width, height, suspectedChannels, filepath);
 
         // Delete raw image data
         stbi_image_free(data);
