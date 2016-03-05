@@ -30,22 +30,20 @@
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
-- Expand descriptions in header file
+- Get rid of characterset and take "toload" characters from keyboard? Maybe one texture atlas is enough (or finally do multiatlas support)
+- Font has sometimes little rendering issues
+	- Caused by oversized letters. More intelligent packing algorithm needed!
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
-- Font has sometimes little rendering issues
-	- Caused by oversized letters. More intelligent packing algorithm needed!
 - Adaptive scaling is not that smooth
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
 - Desc(ription) for elements
 	- lookup in localization file
 	- global "help" mode or just per element?
-- OpenGL state: bound texture not rescued  (neither in texture/font class nor in GLSetup)
 - uniform absolute include pathes
-- common base class for TextFlow, Key and Image
 - Think about: how to automatically fit text into box or fit box around text
 	
 ### VERSION 1.0
@@ -55,6 +53,7 @@
 - Some members of element could be private but getters necessary..
 
 Notes:
+- OpenGL state: bound texture not rescued  (neither in texture/font class nor in GLSetup)
 - RenderItem: some shader programs optimize uv attribute away, so cannot be set and throw opengl error
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)
