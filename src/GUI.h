@@ -22,6 +22,7 @@
 #include "Rendering/GLSetup.h"
 #include "Config.h"
 #include "Rendering/GazeDrawer.h"
+#include "Utilities/Dictionary.h"
 
 #include <memory>
 #include <vector>
@@ -227,6 +228,9 @@ namespace eyegui
         float mFontTallSize;
         float mFontMediumSize;
         float mFontSmallSize;
+
+        // TODO: Test
+        Dictionary mDictionary;
     };
 }
 
