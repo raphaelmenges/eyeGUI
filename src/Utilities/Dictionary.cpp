@@ -19,6 +19,7 @@ Dictionary::Dictionary()
     // Read file with instream
     std::ifstream in("/home/raphael/Downloads/german.dic");
 
+    // Just print all the words (quite a lot)
     if(in)
     {
         std::string line;
