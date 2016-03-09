@@ -49,8 +49,12 @@ private:
     // Add single word to dictionary
     void addWord(const std::u16string& rWord);
 
-    // Possible cases for word, using 1 byte char as structure
-    enum class WordCase : char {LOWER, UPPER, BOTH};
+    // To lower case
+    std::u16string toLower(const std::u16string& rWord) const;
+
+    // TODO: word case == case of FIRST letter (more like word state or so)
+    // Possible cases for word, using 1 byte char as structure. None is used for "here is no word"
+    enum class WordCase : char {NONE, LOWER, UPPER, BOTH};
 
     // Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
     class Node
@@ -58,7 +62,7 @@ private:
     public:
 
         // Constructor
-        Node(char16_t letter, WordCase wordCase) : letter(letter), wordCase(wordCase) {}
+        Node(char16_t letter) : letter(letter), wordCase(WordCase::NONE) {}
 
         // Members
         char16_t letter; // Letter in node
