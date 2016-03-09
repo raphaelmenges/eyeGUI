@@ -8,7 +8,7 @@
 #include "TextBlock.h"
 
 #include "Layout.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 
 namespace eyegui
 {
@@ -25,10 +25,13 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         float innerBorder,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
+        float textScale,
         std::u16string content,
         std::string key) : Block(
             id,
@@ -43,6 +46,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
             innerBorder)
     {
         mType = Type::TEXT_BLOCK;
@@ -50,7 +55,8 @@ namespace eyegui
         // Fill members
         mKey = key;
 
-        // Create text flow
+        // Content of text flow
+        std::u16string textFlowContent;
         if (mKey != EMPTY_STRING_ATTRIBUTE)
         {
             std::u16string localization = mpLayout->getContentFromLocalization(mKey);
@@ -60,17 +66,21 @@ namespace eyegui
                     OperationNotifier::Operation::RUNTIME,
                     "No localization used or one found for following key: " + mKey + ". Element has following id: " + getId());
 
-                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+                textFlowContent = content;
             }
             else
             {
-                mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, localization));
+                textFlowContent = localization;
             }
         }
         else
         {
-            mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, content));
+            textFlowContent = content;
+
         }
+
+        // Create text flow
+        mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, textScale, textFlowContent));
     }
 
     TextBlock::~TextBlock()
@@ -80,8 +90,8 @@ namespace eyegui
 
     void TextBlock::setContent(std::u16string content)
     {
-        // TODO: somehow strange, maybe save the usage of the key in a bool
-        if (mKey != EMPTY_STRING_ATTRIBUTE && mpLayout->getContentFromLocalization(mKey) != LOCALIZATION_NOT_FOUND)
+        // Check whether value from key is in use
+        if (mKey != EMPTY_STRING_ATTRIBUTE && mpLayout->getContentFromLocalization(mKey) == LOCALIZATION_NOT_FOUND)
         {
             throwWarning(
                 OperationNotifier::Operation::RUNTIME,
@@ -123,20 +133,15 @@ namespace eyegui
         // Super call
         Block::specialDraw();
 
-        // Draw text (emulation of shader bevavior for color mixing)
-        glm::vec4 color = getStyle()->fontColor;
-        color.a *= mAlpha;
-
-		// Marking
-		float oldAlpha = color.a;
-		color = (1.0f - (mMark.getValue() * getStyle()->markColor.a)) * color + (mMark.getValue() * getStyle()->markColor.a * getStyle()->markColor);
-		color = glm::vec4(color.r, color.g, color.b, oldAlpha);
-
-		// Dimming
-        color *= (1.0f - mDim.getValue()) + (mDim.getValue() * getStyle()->dimColor);
-
-		// Drawing
-        mupTextFlow->draw(1.0f, color);
+        // Drawing of text flow
+        mupTextFlow->draw(
+            getStyle()->fontColor,
+            mAlpha,
+            mActivity.getValue(),
+            getStyle()->dimColor,
+            mDim.getValue(),
+            getStyle()->markColor,
+            mMark.getValue());
     }
 
     void TextBlock::specialTransformAndSize()

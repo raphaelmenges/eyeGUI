@@ -20,7 +20,7 @@
 #include "Parser/StylesheetParser.h"
 #include "Parser/BrickParser.h"
 #include "NotificationQueue.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 
 #include <memory>
 #include <map>
@@ -64,6 +64,9 @@ namespace eyegui
 
         // Get pointer to config of owning GUI
         Config const * getConfig() const;
+
+        // Get used character set
+        CharacterSet getCharacterSet() const;
 
         // Get main frame of layout
         Frame* getMainFrame();
@@ -123,8 +126,8 @@ namespace eyegui
         // Set interactive element as highlighted
         void highlightInteractiveElement(std::string id, bool doHighlight);
 
-        // Set icon of interactive element
-        void setIconOfInteractiveElement(std::string id, std::string iconFilepath);
+        // Set icon of icon interactive element
+        void setIconOfIconInteractiveElement(std::string id, std::string iconFilepath);
 
         // Interact with interactive element
         void interactWithInteractiveElement(std::string id);
@@ -153,11 +156,26 @@ namespace eyegui
         // Set key of text block
         void setKeyOfTextBlock(std::string id, std::string key);
 
+        // Set fast typing for keyboard
+        void setFastTypingOfKeyboard(std::string id, bool useFastTyping);
+
+        // Set case of keyboard
+        void setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase);
+
+        // Get count of keymaps in keyboard
+        uint getCountOfKeymapsInKeyboard(std::string id) const;
+
+        // Set keymap of keyboard by index
+        void setKeymapOfKeyboard(std::string id, uint keymapIndex);
+
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
 
         // Register sensor listener
         void registerSensorListener(std::string id, std::weak_ptr<SensorListener> wpListener);
+
+        // Register keyboard listener
+        void registerKeyboardListener(std::string id, std::weak_ptr<KeyboardListener> wpListener);
 
         // Select interactive element by id
         void selectInteractiveElement(std::string id);
@@ -187,10 +205,15 @@ namespace eyegui
         void setValueOfStyleAttribute(std::string styleName, std::string attribute, glm::vec4 value);
 
         // Replace any element with block
-        void replaceElementWithBlock(std::string id, bool consumeInput, bool fade);
+        void replaceElementWithBlock(
+            std::string id,
+            bool consumeInput,
+            std::string backgroundFilepath,
+            ImageAlignment backgroundAlignment,
+            bool fade);
 
         // Replace any element with picture
-        void replaceElementWithPicture(std::string id, std::string filepath, PictureAlignment alignment, bool fade);
+        void replaceElementWithPicture(std::string id, std::string filepath, ImageAlignment alignment, bool fade);
 
         // Replace any element with blank
         void replaceElementWithBlank(std::string id, bool fade);
@@ -208,9 +231,12 @@ namespace eyegui
         void replaceElementWithTextBlock(
             std::string id,
             bool consumeInput,
+            std::string backgroundFilepath,
+            ImageAlignment backgroundAlignment,
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
+            float textScale,
             std::u16string content,
             float innerBorder,
             std::string key,

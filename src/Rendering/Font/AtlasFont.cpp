@@ -7,379 +7,457 @@
 
 #include "AtlasFont.h"
 
-#include "OperationNotifier.h"
+#include "GUI.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "Defines.h"
 #include <algorithm>
 
 namespace eyegui
 {
-	AtlasFont::AtlasFont(
-		std::string filepath,
-		std::unique_ptr<FT_Face> upFace,
-		std::set<char16_t> characterSet,
-		int windowHeight) : Font()
-	{
-		// Fill members
-		mFilepath = filepath;
-		mupFace = std::move(upFace);
-		mCharacterSet = characterSet;
+    AtlasFont::AtlasFont(
+        GUI const * pGUI,
+        std::string filepath,
+        std::unique_ptr<FT_Face> upFace,
+        std::set<char16_t> characterSet) : Font()
+    {
+        // Fill members
+        mpGUI = pGUI;
+        mFilepath = filepath;
+        mupFace = std::move(upFace);
+        mCharacterSet = characterSet;
 
-		// Initilialize textures
-		glGenTextures(1, &mTallTexture);
-		glGenTextures(1, &mMediumTexture);
-		glGenTextures(1, &mSmallTexture);
+        // Initilialize textures
+        glGenTextures(1, &mTallTexture);
+        glGenTextures(1, &mMediumTexture);
+        glGenTextures(1, &mSmallTexture);
+        glGenTextures(1, &mKeyboardTexture);
 
-		// Update pixel heights
-		fillPixelHeights(windowHeight);
+        // Update pixel heights
+        fillPixelHeights();
 
-		// Fill atlases the first time
-		fillAtlases();
-	}
+        // Fill atlases the first time
+        fillAtlases();
+    }
 
-	AtlasFont::~AtlasFont()
-	{
-		// Delete textures
-		glDeleteTextures(1, &mTallTexture);
-		glDeleteTextures(1, &mMediumTexture);
-		glDeleteTextures(1, &mSmallTexture);
+    AtlasFont::~AtlasFont()
+    {
+        // Delete textures
+        glDeleteTextures(1, &mTallTexture);
+        glDeleteTextures(1, &mMediumTexture);
+        glDeleteTextures(1, &mSmallTexture);
+        glDeleteTextures(1, &mKeyboardTexture);
 
-		// Delete used face
-		FT_Done_Face(*(mupFace.get()));
-	}
+        // Delete used face
+        FT_Done_Face(*(mupFace.get()));
+    }
 
-	void AtlasFont::resizeFontAtlases(int windowHeight)
-	{
-		// Update pixel heights
-		fillPixelHeights(windowHeight);
+    void AtlasFont::resizeFontAtlases()
+    {
+        // Update pixel heights
+        fillPixelHeights();
 
-		// Update all atlases
-		fillAtlases();
-	}
+        // Update all atlases
+        fillAtlases();
+    }
 
-	Glyph const * AtlasFont::getGlyph(FontSize fontSize, char16_t character) const
-	{
-		Glyph const * pGlyph = NULL;
+    Glyph const * AtlasFont::getGlyph(FontSize fontSize, char16_t character) const
+    {
+        Glyph const * pGlyph = NULL;
 
-		switch (fontSize)
-		{
-		case FontSize::TALL:
-			pGlyph = getGlyph(mTallGlyphs, character);
-			break;
-		case FontSize::MEDIUM:
-			pGlyph = getGlyph(mMediumGlyphs, character);
-			break;
-		case FontSize::SMALL:
-			pGlyph = getGlyph(mSmallGlyphs, character);
-			break;
-		}
+        switch (fontSize)
+        {
+        case FontSize::TALL:
+            pGlyph = getGlyph(mTallGlyphs, character);
+            break;
+        case FontSize::MEDIUM:
+            pGlyph = getGlyph(mMediumGlyphs, character);
+            break;
+        case FontSize::SMALL:
+            pGlyph = getGlyph(mSmallGlyphs, character);
+            break;
+        case FontSize::KEYBOARD:
+            pGlyph = getGlyph(mKeyboardGlyphs, character);
+            break;
+        }
 
-		return pGlyph;
-	}
+        // Check whether key was found
+        if (pGlyph == NULL)
+        {
+            throwWarning(
+                OperationNotifier::Operation::RUNTIME,
+                "Failed to find a character, check font file and character set",
+                mFilepath);
 
-	float AtlasFont::getLineHeight(FontSize fontSize) const
-	{
-		// Values seems to be not correct (not depending on bitmap size)
-		/*switch(fontSize)
-		{
-		case FontSize::TALL:
-		return mTallLineHeight;
-		break;
-		case FontSize::MEDIUM:
-		return mMediumLineHeight;
-		break;
-		case FontSize::SMALL:
-		return mSmallLineHeight;
-		break;
-		}*/
+            // Try to load fallback
+            switch (fontSize)
+            {
+            case FontSize::TALL:
+                pGlyph = getGlyph(mTallGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            case FontSize::MEDIUM:
+                pGlyph = getGlyph(mMediumGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            case FontSize::SMALL:
+                pGlyph = getGlyph(mSmallGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            case FontSize::KEYBOARD:
+                pGlyph = getGlyph(mKeyboardGlyphs, FONT_FALLBACK_CHARACTER);
+                break;
+            }
 
-		switch (fontSize)
-		{
-		case FontSize::TALL:
-			return (float)mTallPixelHeight;
-			break;
-		case FontSize::MEDIUM:
-			return (float)mMediumPixelHeight;
-			break;
-		case FontSize::SMALL:
-			return (float)mSmallPixelHeight;
-			break;
-		}
-	}
+            // Check fallback
+            if (pGlyph == NULL)
+            {
+                throwError(
+                    OperationNotifier::Operation::RUNTIME,
+                    "Fallback character not found, check font file and character set",
+                    mFilepath);
+            }
+        }
 
-	GLuint AtlasFont::getAtlasTextureHandle(FontSize fontSize) const
-	{
-		switch (fontSize)
-		{
-		case FontSize::TALL:
-			return mTallTexture;
-			break;
-		case FontSize::MEDIUM:
-			return mMediumTexture;
-			break;
-		case FontSize::SMALL:
-			return mSmallTexture;
-			break;
-		}
-	}
+        return pGlyph;
+    }
 
-	Glyph const * AtlasFont::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
-	{
-		auto it = rGlyphMap.find(character);
+    float AtlasFont::getLineHeight(FontSize fontSize) const
+    {
+        // At the moment, same as target glyph height
+        return getTargetGlyphHeight(fontSize);
+    }
 
-		if (it != rGlyphMap.end())
-		{
-			return &(it->second);
-		}
-		else
-		{
-			return NULL;
-		}
-	}
+    float AtlasFont::getTargetGlyphHeight(FontSize fontSize) const
+    {
+        // Values seems to be not correct (not depending on bitmap size)
+        /*switch(fontSize)
+        {
+        case FontSize::TALL:
+        return mTallLineHeight;
+        break;
+        case FontSize::MEDIUM:
+        return mMediumLineHeight;
+        break;
+        case FontSize::SMALL:
+        return mSmallLineHeight;
+        break;
+        }*/
 
-	int AtlasFont::calculatePadding(int pixelHeight)
-	{
-		return std::max(
-			FONT_MINIMAL_CHARACTER_PADDING,
-			(int)(pixelHeight * FONT_CHARACTER_PADDING));
-	}
+        switch (fontSize)
+        {
+        case FontSize::TALL:
+            return (float)mTallPixelHeight;
+            break;
+        case FontSize::MEDIUM:
+            return (float)mMediumPixelHeight;
+            break;
+        case FontSize::SMALL:
+            return (float)mSmallPixelHeight;
+            break;
+        case FontSize::KEYBOARD:
+            return (float)mKeyboardPixelHeight;
+            break;
+        default:
+            return 0;
+        }
+    }
 
-	void AtlasFont::fillPixelHeights(int windowHeight)
-	{
-		mTallPixelHeight = (int)(windowHeight * FONT_TALL_SCREEN_HEIGHT);
-		mMediumPixelHeight = (int)(windowHeight * FONT_MEDIUM_SCREEN_HEIGHT);
-		mSmallPixelHeight = (int)(windowHeight * FONT_SMALL_SCREEN_HEIGHT);
-	}
+    void AtlasFont::bindAtlasTexture(FontSize fontSize, uint slot, bool linearFiltering) const
+    {
+        // Choose slot
+        glActiveTexture(GL_TEXTURE0 + slot);
 
-	void AtlasFont::fillAtlases()
-	{
-		fillAtlas(
-			mTallPixelHeight,
-			mTallGlyphs,
-			mTallLinePixelHeight,
-			mTallTexture,
-			calculatePadding(mTallPixelHeight));
-		fillAtlas(
-			mMediumPixelHeight,
-			mMediumGlyphs,
-			mMediumLinePixelHeight,
-			mMediumTexture,
-			calculatePadding(mMediumPixelHeight));
-		fillAtlas(
-			mSmallPixelHeight,
-			mSmallGlyphs,
-			mSmallLinePixelHeight,
-			mSmallTexture,
-			calculatePadding(mSmallPixelHeight));
-	}
+        // Bind atlas texture
+        switch (fontSize)
+        {
+        case FontSize::TALL:
+            glBindTexture(GL_TEXTURE_2D, mTallTexture);
+            break;
+        case FontSize::MEDIUM:
+            glBindTexture(GL_TEXTURE_2D, mMediumTexture);
+            break;
+        case FontSize::SMALL:
+            glBindTexture(GL_TEXTURE_2D, mSmallTexture);
+            break;
+        case FontSize::KEYBOARD:
+            glBindTexture(GL_TEXTURE_2D, mKeyboardTexture);
+            break;
+        }
 
-	void AtlasFont::fillAtlas(
-		int pixelHeight,
-		std::map<char16_t, Glyph>& rGlyphMap,
-		float& rLineHeight,
-		GLuint textureHandle,
-		int padding)
-	{
-		// Some typedef, keeps track of combination of each glyph and its bitmap
-		typedef std::pair<Glyph*, std::vector<unsigned char> > glyphBitmapPair;
+        // Set sampling
+        if (linearFiltering)
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        }
+        else
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        }
+    }
 
-		// Store bitmaps temporarily
-		std::vector<glyphBitmapPair> bitmaps;
+    Glyph const * AtlasFont::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
+    {
+        auto it = rGlyphMap.find(character);
 
-		// Reference to face
-		FT_Face& rFace = *(mupFace.get());
+        if (it != rGlyphMap.end())
+        {
+            return &(it->second);
+        }
+        else
+        {
+            return NULL;
+        }
+    }
 
-		// Set the height for generation of glyphs
-		FT_Set_Pixel_Sizes(rFace, 0, pixelHeight);
+    int AtlasFont::calculatePadding(int pixelHeight)
+    {
+        return std::max(
+            FONT_MINIMAL_CHARACTER_PADDING,
+            (int)(pixelHeight * FONT_CHARACTER_PADDING));
+    }
 
-		// Set line height
-		rLineHeight = (float)(rFace->height) / 64; // Given in 1/64 pixel
+    void AtlasFont::fillPixelHeights()
+    {
+        float windowHeight = mpGUI->getWindowHeight();
+        mTallPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::TALL));
+        mMediumPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::MEDIUM));
+        mSmallPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::SMALL));
+        mKeyboardPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::KEYBOARD));
+    }
 
-		// Go over character set and collect glyphs and bitmaps
-		for (char16_t c : mCharacterSet)
-		{
-			// Load current glyph in face
-			if (FT_Load_Char(rFace, c, FT_LOAD_RENDER))
-			{
-				throwWarning(
-					OperationNotifier::Operation::RUNTIME,
-					"Failed to find following character in font file: " + c,
-					mFilepath);
-				continue;
-			}
+    void AtlasFont::fillAtlases()
+    {
+        fillAtlas(
+            mTallPixelHeight,
+            mTallGlyphs,
+            mTallLinePixelHeight,
+            mTallTexture,
+            calculatePadding(mTallPixelHeight));
+        fillAtlas(
+            mMediumPixelHeight,
+            mMediumGlyphs,
+            mMediumLinePixelHeight,
+            mMediumTexture,
+            calculatePadding(mMediumPixelHeight));
+        fillAtlas(
+            mSmallPixelHeight,
+            mSmallGlyphs,
+            mSmallLinePixelHeight,
+            mSmallTexture,
+            calculatePadding(mSmallPixelHeight));
+        fillAtlas(
+            mKeyboardPixelHeight,
+            mKeyboardGlyphs,
+            mKeyboardLinePixelHeight,
+            mKeyboardTexture,
+            calculatePadding(mKeyboardPixelHeight));
+    }
 
-			// Determine width and height
-			int bitmapWidth = rFace->glyph->bitmap.width;
-			int bitmapHeight = rFace->glyph->bitmap.rows;
+    void AtlasFont::fillAtlas(
+        int pixelHeight,
+        std::map<char16_t, Glyph>& rGlyphMap,
+        float& rLineHeight,
+        GLuint textureHandle,
+        int padding)
+    {
+        // Some typedef, keeps track of combination of each glyph and its bitmap
+        typedef std::pair<Glyph*, std::vector<unsigned char> > glyphBitmapPair;
 
-			// Save some values of the glyph
-			rGlyphMap[c].advance = glm::vec2(
-				(float)(rFace->glyph->advance.x) / 64,   // Given in 1/64 pixel
-				(float)(rFace->glyph->advance.y) / 64);  // Given in 1/64 pixel
-			rGlyphMap[c].size = glm::ivec2(bitmapWidth, bitmapHeight);
-			rGlyphMap[c].bearing = glm::ivec2(
-				rFace->glyph->bitmap_left,
-				rFace->glyph->bitmap_top);
+        // Store bitmaps temporarily
+        std::vector<glyphBitmapPair> bitmaps;
 
-			// Go over rows and write it mirrored into own buffer
-			std::vector<unsigned char> mirrorBuffer;
-			for (int i = bitmapHeight - 1; i >= 0; i--)
-			{
-				for (int j = 0; j < bitmapWidth; j++)
-				{
-					mirrorBuffer.push_back(rFace->glyph->bitmap.buffer[i*bitmapWidth + j]);
-				}
-			}
+        // Reference to face
+        FT_Face& rFace = *(mupFace.get());
 
-			// Fetch current glyph and bitmap and store it in vector as pair
-			bitmaps.push_back(
-				glyphBitmapPair(
-					&rGlyphMap[c],
-					mirrorBuffer));
-		}
+        // Set the height for generation of glyphs
+        FT_Set_Pixel_Sizes(rFace, 0, pixelHeight);
 
-		// Decide, which resolution is minimum when texture would be quadratic
-		int sumPixelWidth = 0;
-		for (const glyphBitmapPair& rGlyphBitmapPair : bitmaps)
-		{
-			sumPixelWidth += rGlyphBitmapPair.first->size.x + 2 * padding;
-		}
-		int pixelCount = (pixelHeight + 2 * padding) * sumPixelWidth;
-		float sqrtPixelCount = sqrt((float)pixelCount);
+        // Set line height
+        rLineHeight = (float)(rFace->height) / 64; // Given in 1/64 pixel
 
-		int i = 5;
-		while (pow(2, i) < sqrtPixelCount)
-		{
-			i++;
-		}
-		int xResolution = (int)pow(2, i);
+        // Go over character set and collect glyphs and bitmaps
+        for (char16_t c : mCharacterSet)
+        {
+            // Load current glyph in face
+            if (FT_Load_Char(rFace, c, FT_LOAD_RENDER))
+            {
+                throwWarning(
+                    OperationNotifier::Operation::RUNTIME,
+                    "Failed to find character in font file, check coverage of font",
+                    mFilepath);
+                continue;
+            }
 
-		// Get the maximum resolution of textures on this GPU
-		int maxTextureResolution;
-		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureResolution);
+            // Determine width and height
+            int bitmapWidth = rFace->glyph->bitmap.width;
+            int bitmapHeight = rFace->glyph->bitmap.rows;
 
-		if (xResolution > maxTextureResolution)
-		{
-			throwError(
-				OperationNotifier::Operation::RUNTIME,
-				"Too many and too big glyphs for texture atlas. GPU supported texture size is insufficient",
-				mFilepath);
-		}
+            // Save some values of the glyph
+            rGlyphMap[c].advance = glm::vec2(
+                (float)(rFace->glyph->advance.x) / 64,   // Given in 1/64 pixel
+                (float)(rFace->glyph->advance.y) / 64);  // Given in 1/64 pixel
+            rGlyphMap[c].size = glm::ivec2(bitmapWidth, bitmapHeight);
+            rGlyphMap[c].bearing = glm::ivec2(
+                rFace->glyph->bitmap_left,
+                rFace->glyph->bitmap_top);
 
-		// Build up rows with vectors of words
-		std::vector<int> rows;
-		std::vector<std::vector<glyphBitmapPair const *> > bitmapOrder;
-		for (const glyphBitmapPair& rGlyphBitmapPair : bitmaps)
-		{
-			// Try different rows
-			int width = rGlyphBitmapPair.first->size.x + 2 * padding;
-			bool check = false;
+            // Go over rows and write it mirrored into own buffer
+            std::vector<unsigned char> mirrorBuffer;
+            for (int i = bitmapHeight - 1; i >= 0; i--)
+            {
+                for (int j = 0; j < bitmapWidth; j++)
+                {
+                    mirrorBuffer.push_back(rFace->glyph->bitmap.buffer[i*bitmapWidth + j]);
+                }
+            }
 
-			for (int j = 0; j < rows.size(); j++)
-			{
-				// Does this word fit in this row?
-				if ((rows[j] + width) < xResolution)
-				{
-					rows[j] += width;
-					bitmapOrder[j].push_back(&rGlyphBitmapPair);
-					check = true;
-					break;
-				}
-			}
-			if (!check)
-			{
-				// No more room in existing rows, add more
-				rows.push_back(width);
-				std::vector<glyphBitmapPair const *> rowBitmapOrder;
-				rowBitmapOrder.push_back(&rGlyphBitmapPair);
-				bitmapOrder.push_back(rowBitmapOrder);
-			}
-		}
+            // Fetch current glyph and bitmap and store it in vector as pair
+            bitmaps.push_back(
+                glyphBitmapPair(
+                    &rGlyphMap[c],
+                    mirrorBuffer));
+        }
 
-		// Calculate necessary rows
-		i = 5;
-		int yResolution = (int)rows.size() * (pixelHeight + 2 * padding);
-		while (pow(2, i) < yResolution)
-		{
-			i++;
-		}
+        // Decide, which resolution is minimum when texture would be quadratic
+        int sumPixelWidth = 0;
+        for (const glyphBitmapPair& rGlyphBitmapPair : bitmaps)
+        {
+            sumPixelWidth += rGlyphBitmapPair.first->size.x + 2 * padding;
+        }
+        int pixelCount = (pixelHeight + 2 * padding) * sumPixelWidth;
+        float sqrtPixelCount = sqrt((float)pixelCount);
 
-		// Let's make y resolution also power of two
-		yResolution = (int)pow(2, i);
+        int i = 5;
+        while (pow(2, i) < sqrtPixelCount)
+        {
+            i++;
+        }
+        int xResolution = (int)pow(2, i);
 
-		// Do check for vertical resolution as well
-		if (yResolution > maxTextureResolution)
-		{
-			throwError(
-				OperationNotifier::Operation::RUNTIME,
-				"Too many and too big glyphs for texture atlas. GPU supported texture size is insufficient",
-				mFilepath);
-		}
+        // Get the maximum resolution of textures on this GPU
+        int maxTextureResolution;
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureResolution);
 
-		// Enable writing of non power of two
-		GLint oldUnpackAlignment;
-		glGetIntegerv(GL_UNPACK_ALIGNMENT, &oldUnpackAlignment);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        if (xResolution > maxTextureResolution)
+        {
+            throwError(
+                OperationNotifier::Operation::RUNTIME,
+                "Too many and too big glyphs for texture atlas. GPU supported texture size is insufficient",
+                mFilepath);
+        }
 
-		// Initialize texture for atlas
-		glBindTexture(GL_TEXTURE_2D, textureHandle);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        // Build up rows with vectors of words
+        std::vector<int> rows;
+        std::vector<std::vector<glyphBitmapPair const *> > bitmapOrder;
+        for (const glyphBitmapPair& rGlyphBitmapPair : bitmaps)
+        {
+            // Try different rows
+            int width = rGlyphBitmapPair.first->size.x + 2 * padding;
+            bool check = false;
 
-		std::vector<GLubyte> emptyData(xResolution * yResolution, 0);
-		glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_RED,
-			xResolution,
-			yResolution,
-			0,
-			GL_RED,
-			GL_UNSIGNED_BYTE,
-			emptyData.data());
+            for (uint j = 0; j < rows.size(); j++)
+            {
+                // Does this word fit in this row?
+                if ((rows[j] + width) < xResolution)
+                {
+                    rows[j] += width;
+                    bitmapOrder[j].push_back(&rGlyphBitmapPair);
+                    check = true;
+                    break;
+                }
+            }
+            if (!check)
+            {
+                // No more room in existing rows, add more
+                rows.push_back(width);
+                std::vector<glyphBitmapPair const *> rowBitmapOrder;
+                rowBitmapOrder.push_back(&rGlyphBitmapPair);
+                bitmapOrder.push_back(rowBitmapOrder);
+            }
+        }
 
-		// Write bitmaps into texture and save further values to the glyph
-		int yPen = yResolution - pixelHeight - 2 * padding;
-		for (int i = 0; i < bitmapOrder.size(); i++)
-		{
-			int xPen = 0;
-			for (int j = 0; j < bitmapOrder[i].size(); j++)
-			{
-				int bitmapWidth = bitmapOrder[i][j]->first->size.x;
-				int bitmapHeight = bitmapOrder[i][j]->first->size.y;
+        // Calculate necessary rows
+        i = 5;
+        int yResolution = (int)rows.size() * (pixelHeight + 2 * padding);
+        while (pow(2, i) < yResolution)
+        {
+            i++;
+        }
 
-				// Write into texture
-				glTexSubImage2D(
-					GL_TEXTURE_2D,
-					0,
-					xPen + padding,
-					yPen + padding,
-					bitmapWidth,
-					bitmapHeight,
-					GL_RED,
-					GL_UNSIGNED_BYTE,
-					bitmapOrder[i][j]->second.data());
+        // Let's make y resolution also power of two
+        yResolution = (int)pow(2, i);
 
-				// Save further values to glyph structure
-				bitmapOrder[i][j]->first->atlasPosition = glm::vec4(
-					(float)(xPen + padding) / xResolution,
-					(float)(yPen + padding) / yResolution,
-					(float)(xPen + padding + bitmapWidth) / xResolution,
-					(float)(yPen + padding + bitmapHeight) / yResolution);
+        // Do check for vertical resolution as well
+        if (yResolution > maxTextureResolution)
+        {
+            throwError(
+                OperationNotifier::Operation::RUNTIME,
+                "Too many and too big glyphs for texture atlas. GPU supported texture size is insufficient",
+                mFilepath);
+        }
 
-				// Advance pen
-				xPen += bitmapWidth + 2 * padding;
-			}
+        // Enable writing of non power of two
+        GLint oldUnpackAlignment = 4;
+        glGetIntegerv(GL_UNPACK_ALIGNMENT, &oldUnpackAlignment);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			// Advance pen
-			yPen -= pixelHeight + 2 * padding;
-		}
+        // Initialize texture for atlas (filtering set at texture binding)
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-		// Unbind texture
-		glBindTexture(GL_TEXTURE_2D, 0);
+        std::vector<GLubyte> emptyData(xResolution * yResolution, 0);
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_R8,
+            xResolution,
+            yResolution,
+            0,
+            GL_RED,
+            GL_UNSIGNED_BYTE,
+            emptyData.data());
 
-		// Reset unpack alignment
-		glPixelStorei(GL_UNPACK_ALIGNMENT, oldUnpackAlignment);
-	}
+        // Write bitmaps into texture and save further values to the glyph
+        int yPen = yResolution - pixelHeight - 2 * padding;
+        for (uint i = 0; i < bitmapOrder.size(); i++)
+        {
+            int xPen = 0;
+            for (uint j = 0; j < bitmapOrder[i].size(); j++)
+            {
+                int bitmapWidth = bitmapOrder[i][j]->first->size.x;
+                int bitmapHeight = bitmapOrder[i][j]->first->size.y;
+
+                // Write into texture
+                glTexSubImage2D(
+                    GL_TEXTURE_2D,
+                    0,
+                    xPen + padding,
+                    yPen + padding,
+                    bitmapWidth,
+                    bitmapHeight,
+                    GL_RED,
+                    GL_UNSIGNED_BYTE,
+                    bitmapOrder[i][j]->second.data());
+
+                // Save further values to glyph structure
+                bitmapOrder[i][j]->first->atlasPosition = glm::vec4(
+                    (float)(xPen + padding) / xResolution,
+                    (float)(yPen + padding) / yResolution,
+                    (float)(xPen + padding + bitmapWidth) / xResolution,
+                    (float)(yPen + padding + bitmapHeight) / yResolution);
+
+                // Advance pen
+                xPen += bitmapWidth + 2 * padding;
+            }
+
+            // Advance pen
+            yPen -= pixelHeight + 2 * padding;
+        }
+
+        // Unbind texture
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Reset unpack alignment
+        glPixelStorei(GL_UNPACK_ALIGNMENT, oldUnpackAlignment);
+    }
 }

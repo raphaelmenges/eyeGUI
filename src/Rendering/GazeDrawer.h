@@ -10,7 +10,7 @@
 #define GAZE_DRAWER_H_
 
 #include "AssetManager.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <vector>
@@ -25,7 +25,7 @@ namespace eyegui
     public:
 
         // Constructor
-        GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager); // TODO: asset manager (create line asset ?!)
+        GazeDrawer(GUI const * pGUI, AssetManager* pAssetManager);
 
         // Destructor
         virtual ~GazeDrawer();

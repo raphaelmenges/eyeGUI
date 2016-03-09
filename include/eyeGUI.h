@@ -24,7 +24,7 @@
  *  \brief     Interface to access eyeGUI functions.
  *  \details   This interface provides multiply functions and abstract class declarations to create, render and manipulate the eyeGUI user interface.
  *  \author    Raphael Menges
- *  \version   0.7
+ *  \version   0.8
  *  \license   This project is released under the MIT License (MIT)
  */
 
@@ -42,24 +42,22 @@ namespace eyegui
     class Frame;
 
     //! Enumeration of possible character sets for font rendering.
-    /*! This enum is defined directly in the interface because it is needed by initialization. */
     enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH };
 
-    //! Enumeration of possible font sizes.
-    /*! This enum is defined directly in the interface because it is needed by some functions. */
-    enum class FontSize { TALL, MEDIUM, SMALL };
+    //! Enumeration of possible font sizes. Size of keyboard font cannot be set in GUIBuilder.
+    enum class FontSize { TALL, MEDIUM, SMALL, KEYBOARD };
 
     //! Enumeration of possible text flow alignments
-    /*! This enum is defined directly in the interface because it is needed by some functions. */
     enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY };
 
     //! Enumeration of possible vertical text flow alignments
-    /*! This enum is defined directly in the interface because it is needed by some functions. */
     enum class TextFlowVerticalAlignment { TOP, CENTER, BOTTOM };
 
-    //! Enumeration of possible picture alignments.
-    /*! This enum is defined directly in the interface because it is needed by the replacing funtions. */
-    enum class PictureAlignment { ORIGINAL, STRETCHED };
+    //! Enumeration of possible image alignments.
+    enum class ImageAlignment { ORIGINAL, STRETCHED, ZOOMED };
+
+    //! Enumeration of cases of keyboard.
+    enum class KeyboardCase { LOWER, UPPER };
 
     //! Abstract listener class for buttons.
     class ButtonListener
@@ -70,7 +68,7 @@ namespace eyegui
         ButtonListener();
 
         //! Destructor.
-        virtual ~ButtonListener();
+        virtual ~ButtonListener() = 0;
 
         //! Callback for hitting of button.
         /*!
@@ -103,7 +101,7 @@ namespace eyegui
         SensorListener();
 
         //! Destructor.
-        virtual ~SensorListener();
+        virtual ~SensorListener() = 0;
 
         //! Callback for penetration of sensor.
         /*!
@@ -112,6 +110,34 @@ namespace eyegui
           \param amount is the value of penetration at time of callback.
         */
         void virtual penetrated(Layout* pLayout, std::string id, float amount) = 0;
+    };
+
+    //! Abstract listener class for keyboards.
+    class KeyboardListener
+    {
+    public:
+
+        //! Constructor.
+        KeyboardListener();
+
+        //! Destructor.
+        virtual ~KeyboardListener() = 0;
+
+        //! Callback for pressing keys of keyboard.
+        /*!
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the keyboard which causes the callback.
+          \param value is the u16string given by pressed key.
+        */
+        void virtual keyPressed(Layout* pLayout, std::string id, std::u16string value) = 0;
+
+        //! Callback for pressing keys of keyboard.
+        /*!
+        \param pLayout pointer to layout from which callback is coming.
+        \param id is the unique id of the keyboard which causes the callback.
+        \param value is the string given by pressed key.
+        */
+        void virtual keyPressed(Layout* pLayout, std::string id, std::string value) = 0;
     };
 
     //! Struct for relative values of position and size
@@ -141,21 +167,22 @@ namespace eyegui
         bool instantInteraction = false; //!< Instant interaction with element beneath gaze
     };
 
-    //! Creates GUI and returns pointer to it.
-    /*!
-      \param width of GUI as integer.
-      \param height of GUI as integer
-      \param fontFilepath is path to a .ttf font file
-      \param characterSet used to initialize font rendering.
-      \param localizationFilepath is path to a .leyegui file
-      \return pointer to created GUI.
-    */
-    GUI* createGUI(
-        int width,
-        int height,
-        std::string fontFilepath = "",
-        CharacterSet characterSet = CharacterSet::US_ENGLISH,
-        std::string localizationFilepath = "");
+    //! Builder for GUI
+    class GUIBuilder
+    {
+    public:
+
+        GUI* construct() const; //!< returns pointer to built GUI
+        int width; //!< width of GUI as integer
+        int height; //!< height of GUI as integer
+        std::string fontFilepath = ""; //!< fontFilepath is path to a .ttf font file
+        CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< characterSet used to initialize font rendering
+        std::string localizationFilepath = ""; //!< localizationFilepath is path to a .leyegui file
+        float vectorGraphicsDPI = 96.0f; //!< dpi which are used to rasterize vector graphics
+        float fontTallSize = 0.1f; //!< Height of tall font in percentage of GUI height
+        float fontMediumSize = 0.04f; //!< Height of medium font in percentage of GUI height
+        float fontSmallSize = 0.0175f; //!< Height of small font in percentage of GUI height
+    };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.
     /*!
@@ -186,11 +213,11 @@ namespace eyegui
     /*!
     \param pGUI pointer to GUI.
     */
-    void drawGUI(GUI* pGUI);
+    void drawGUI(GUI const * pGUI);
 
     //! Terminate GUI.
     /*!
-      \param pGUI pointer to GUI which should be termianted.
+      \param pGUI pointer to GUI which should be terminated.
     */
     void terminateGUI(GUI* pGUI);
 
@@ -438,13 +465,13 @@ namespace eyegui
         float b,
         float a);
 
-    //! Set icon of interactive element.
+    //! Set icon of icon interactive element.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
     */
-    void setIconOfInteractiveElement(
+    void setIconOfIconInteractiveElement(
         Layout* pLayout,
         std::string id,
         std::string iconFilepath);
@@ -536,7 +563,6 @@ namespace eyegui
     */
     void setContentOfTextBlock(Layout* pLayout, std::string id, std::string content);
 
-
     //! Set key of text block. Works only if used localization file includes key.
     /*!
     \param pLayout pointer to layout.
@@ -544,6 +570,38 @@ namespace eyegui
     \param key is new key for text block.
     */
     void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key);
+
+    //! Set fast typing for keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param useFastTyping indicates, whether fast typing should be used or not.
+    */
+    void setFastTypingOfKeyboard(Layout* pLayout, std::string id, bool useFastTyping);
+
+    //! Set case of letters in keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param case indicates case of displayed letters.
+    */
+    void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase);
+
+    //! Get count of available keymaps in keyboard.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \return count of keymaps
+    */
+    unsigned int getCountOfKeymapsInKeyboard(Layout const * pLayout, std::string id);
+
+    //! Set keymap of keyboard by index.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param keymapIndex is index of keymap.
+    */
+    void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
 
     //! Register listener to button.
     /*!
@@ -567,17 +625,33 @@ namespace eyegui
         std::string id,
         std::weak_ptr<SensorListener> wpListener);
 
+    //! Register listener to keyboard.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param wpListener is weak pointer to listener that should be registered.
+    */
+    void registerKeyboardListener(
+        Layout* pLayout,
+        std::string id,
+        std::weak_ptr<KeyboardListener> wpListener);
+
     //! Replace element with block.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param consumeInput indicates, whether block consumes given input.
+      \param backgroundFilepath is path to image rendered in background.
+             Use empty string to indicate no background image.
+      \param backgroundAlignment indicates alignment of background image.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithBlock(
         Layout* pLayout,
         std::string id,
         bool consumeInput,
+        std::string backgroundFilepath = "",
+        ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,
         bool fade = false);
 
     //! Replace element with picture.
@@ -585,15 +659,14 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param filepath is the path to the image used in the picture element.
-      \param alignment is the inner alignment of the picture.
+      \param alignment is the alignment of the picture.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithPicture(
         Layout* pLayout,
         std::string id,
         std::string filepath,
-        PictureAlignment
-        alignment,
+        ImageAlignment alignment,
         bool fade = false);
 
     //! Replace element with blank.
@@ -660,7 +733,11 @@ namespace eyegui
       \param verticalAlignment is vertical alignment of text.
       \param content is the content of the displayed text.
       \param innerBorder is space between border and text.
+      \param textScale is scale of text.
       \param key is used for localization.
+      \param backgroundFilepath is path to image rendered in background.
+             Use empty string to indicate no background image.
+      \param backgroundAlignment indicates alignment of background image.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithTextBlock(
@@ -671,8 +748,11 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
-        float innerBorder,
+        float innerBorder = 0.0f,
+        float textScale = 1.0f,
         std::string key = "",
+        std::string backgroundFilepath = "",
+        ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,
         bool fade = false);
 
     //! Replace element with brick.

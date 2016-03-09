@@ -8,7 +8,7 @@
 #include "Shader.h"
 
 #include "externals/GLM/glm/gtc/type_ptr.hpp"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 
 #include <fstream>
 

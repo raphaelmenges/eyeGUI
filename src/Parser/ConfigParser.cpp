@@ -8,10 +8,10 @@
 #include "ConfigParser.h"
 
 #include "Defines.h"
-#include "Helper.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "ParserHelper.h"
-#include "PathBuilder.h"
+#include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
 #include <sstream>
@@ -49,6 +49,9 @@ namespace eyegui
 
             // Close file
             in.close();
+
+            // Streamline line endings
+            streamlineLineEnding(content);
 
             // Get rid of whitespaces
             std::string::iterator end_pos = std::remove(content.begin(), content.end(), ' ');
@@ -168,6 +171,10 @@ namespace eyegui
             else if (attribute == "gaze-visualization-max-size")
             {
                 rConfig.gazeVisualizationMaxSize = std::stof(value);
+            }
+            else if (attribute == "keyboard-speed-multiplier")
+            {
+                rConfig.keyboardSpeedMultiplier = std::stof(value);
             }
             else
             {

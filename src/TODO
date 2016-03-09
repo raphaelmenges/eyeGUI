@@ -1,39 +1,40 @@
-### VERSION 0.8
-- glGetError...
-- TextInput
-	- Wiki entry... (extra page or in elements? -> both)
-  - Keyboard and "Guesser" (tries to guess what you want to write)
-  - Both are indepenend
-  - Should support unicode...
-  - Differet speeds
-    - Letters get bigger and after threshold: selection
-    - Only last letter focused for longer time
-	- Use discard in shader instead of stencil buffer, because much overhead to setting up and restoring
-
 ### VERSION 0.9
+- Keyboard: Better german and english layout
+-"Guesser" (tries to guess what you want to write)
+  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
+- TextEdit element for easy text editing (zoom, cursor etc)
+
+### VERSION 0.10
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
+- Get rid of characterset and take "toload" characters from keyboard? Maybe one texture atlas is enough (or finally do multiatlas support)
+- Font has sometimes little rendering issues
+	- Caused by oversized letters. More intelligent packing algorithm needed!
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
-- Font has sometimes little rendering issues
 - Adaptive scaling is not that smooth
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
 - Desc(ription) for elements
 	- lookup in localization file
 	- global "help" mode or just per element?
-- OpenGL state: bound texture not rescued  (neither in texture/font class nor in GLSetup)
+- uniform absolute include pathes
+- Think about: how to automatically fit text into box or fit box around text
 	
 ### VERSION 1.0
 - Code review!
+  - valgrind
 - Getting rid of freetype2
 - Some members of element could be private but getters necessary..
 
 Notes:
+- OpenGL state: bound texture not rescued  (neither in texture/font class nor in GLSetup)
+- Altough Keyboard is interactive element, interact and select are NOT implemented because not trivial and not that important
+- RenderItem: some shader programs optimize uv attribute away, so cannot be set and throw opengl error
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)
 - Maybe use sampler states for textures instead of per texture settings

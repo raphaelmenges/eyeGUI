@@ -146,6 +146,9 @@ namespace eyegui
             case Operation::RUNTIME:
                 operationString = "Runtime " + typeString + ": ";
                 break;
+            case Operation::BUG:
+                operationString = "Bug " + typeString + ": ";
+                break;
             }
 
             // Decide about file

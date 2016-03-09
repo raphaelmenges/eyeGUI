@@ -9,8 +9,8 @@
 
 #include "Layout.h"
 #include "NotificationQueue.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {
@@ -26,7 +26,7 @@ namespace eyegui
         float border,
         bool dimming,
         bool adaptiveScaling,
-        std::string iconFilepath) : InteractiveElement(
+        std::string iconFilepath) : IconInteractiveElement(
             id,
             styleName,
             pParent,
@@ -42,7 +42,7 @@ namespace eyegui
     {
         // Fill members
         mType = Type::SENSOR;
-        mpRenderItem = mpAssetManager->fetchRenderItem(
+        mpIconRenderItem = mpAssetManager->fetchRenderItem(
             shaders::Type::SENSOR,
             meshes::Type::QUAD);
         mPenetration.setValue(0);
@@ -65,7 +65,7 @@ namespace eyegui
     float Sensor::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
-        InteractiveElement::specialUpdate(tpf, pInput);
+        IconInteractiveElement::specialUpdate(tpf, pInput);
 
         // Penetration by input
         bool penetrated = penetratedByInput(pInput);
@@ -86,7 +86,7 @@ namespace eyegui
         // Inform listener after updating when penetrated
         if (mPenetration.getValue() > 0)
         {
-            mpNotificationQueue->enqueue(getId(), Notification::SENSOR_PENETRATED);
+            mpNotificationQueue->enqueue(getId(), NotificationType::SENSOR_PENETRATED);
         }
 
         return 0;
@@ -95,24 +95,29 @@ namespace eyegui
     void Sensor::specialDraw() const
     {
         // Bind render item before setting values and drawing
-        mpRenderItem->bind();
+        mpIconRenderItem->bind();
 
         // Super call
-        InteractiveElement::specialDraw();
+        IconInteractiveElement::specialDraw();
 
         // Fill other values
-        mpRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
+        mpIconRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
 
         // Scale of icon
-        mpRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
+        mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
 
         // Draw render item
-        mpRenderItem->draw();
+        mpIconRenderItem->draw();
+    }
+
+    void Sensor::specialTransformAndSize()
+    {
+        // Nothing to do, but must be implemented
     }
 
     void Sensor::specialReset()
     {
-        InteractiveElement::specialReset();
+        IconInteractiveElement::specialReset();
 
         // Reset some values
         mPenetration.setValue(0);
@@ -123,12 +128,12 @@ namespace eyegui
         penetrate(mpLayout->getConfig()->sensorInteractionPenetrationAmount);
     }
 
-    void Sensor::specialPipeNotification(Notification notification, Layout* pLayout)
+    void Sensor::specialPipeNotification(NotificationType notification, Layout* pLayout)
     {
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
-        case Notification::SENSOR_PENETRATED:
+        case NotificationType::SENSOR_PENETRATED:
             notifyListener(&SensorListener::penetrated, pLayout, getId(), mPenetration.getValue());
             break;
         default:

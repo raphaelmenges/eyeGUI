@@ -8,10 +8,10 @@
 #include "Layout.h"
 
 #include "GUI.h"
-#include "Helper.h"
+#include "src/Utilities/Helper.h"
 #include "Elements/ElementCasting.h"
 #include "Defines.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/utfcpp/source/utf8.h"
 
 #include <algorithm>
@@ -121,7 +121,7 @@ namespace eyegui
             mupMainFrame->draw();
 
             // Draw floating frames
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 Frame* pFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
                 if (pFrame != NULL)
@@ -156,6 +156,11 @@ namespace eyegui
     Config const * Layout::getConfig() const
     {
         return mpGUI->getConfig();
+    }
+
+    CharacterSet Layout::getCharacterSet() const
+    {
+        return mpGUI->getCharacterSet();
     }
 
     Frame* Layout::getMainFrame()
@@ -393,12 +398,12 @@ namespace eyegui
         }
     }
 
-    void Layout::setIconOfInteractiveElement(std::string id, std::string iconFilepath)
+    void Layout::setIconOfIconInteractiveElement(std::string id, std::string iconFilepath)
     {
-        InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));
-        if (pInteractiveElement != NULL)
+        IconInteractiveElement* pIconInteractiveElement = toIconInteractiveElement(fetchElement(id));
+        if (pIconInteractiveElement != NULL)
         {
-            pInteractiveElement->setIcon(iconFilepath);
+            pIconInteractiveElement->setIcon(iconFilepath);
         }
         else
         {
@@ -529,6 +534,60 @@ namespace eyegui
         }
     }
 
+    void Layout::setFastTypingOfKeyboard(std::string id, bool useFastTyping)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setFastTyping(useFastTyping);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
+    void Layout::setCaseOfKeyboard(std::string id, KeyboardCase keyboardCase)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setCase(keyboardCase);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
+    uint Layout::getCountOfKeymapsInKeyboard(std::string id) const
+    {
+        Keyboard const * pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            return pKeyboard->getCountOfKeymaps();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+
+        return 0;
+    }
+
+    void Layout::setKeymapOfKeyboard(std::string id, uint keymapIndex)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->setKeymap(keymapIndex);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+        }
+    }
+
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         Button* pButton = toButton(fetchElement(id));
@@ -552,6 +611,19 @@ namespace eyegui
         else
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find sensor with id: " + id);
+        }
+    }
+
+    void Layout::registerKeyboardListener(std::string id, std::weak_ptr<KeyboardListener> wpListener)
+    {
+        Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+        if (pKeyboard != NULL)
+        {
+            pKeyboard->registerListener(wpListener);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
         }
     }
 
@@ -650,7 +722,7 @@ namespace eyegui
                 // Go over all remaining frame indices until interactive element found or null
                 if (indexOfStartFrameIndex >= 0)
                 {
-                    for (int i = indexOfStartFrameIndex; i < mFloatingFramesOrderingIndices.size(); i++)
+                    for (uint i = indexOfStartFrameIndex; i < mFloatingFramesOrderingIndices.size(); i++)
                     {
                         Frame* pNextFrame = mFloatingFrames[mFloatingFramesOrderingIndices[i]].get();
                         if (!pNextFrame->isRemoved())
@@ -741,7 +813,12 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithBlock(std::string id, bool consumeInput, bool fade)
+    void Layout::replaceElementWithBlock(
+        std::string id,
+        bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
+        bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -759,7 +836,9 @@ namespace eyegui
                 pElement->getBorder(),
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
-                consumeInput));
+                consumeInput,
+                backgroundFilepath,
+                backgroundAlignment));
                 // innerBorder is 0 by default and not necessary for block
 
             Element* pBlock = upBlock.get();
@@ -776,7 +855,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithPicture(std::string id, std::string filepath, PictureAlignment alignment, bool fade)
+    void Layout::replaceElementWithPicture(std::string id, std::string filepath, ImageAlignment alignment, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -951,9 +1030,12 @@ namespace eyegui
     void Layout::replaceElementWithTextBlock(
         std::string id,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
+        float textScale,
         std::u16string content,
         float innerBorder,
         std::string key,
@@ -976,10 +1058,13 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 consumeInput,
+                backgroundFilepath,
+                backgroundAlignment,
                 innerBorder,
                 fontSize,
                 alignment,
                 verticalAlignment,
+                textScale,
                 content,
                 key));
 
@@ -1044,7 +1129,7 @@ namespace eyegui
 
         // Go through floating frames and search for free place
         int freeIndex = -1;
-        for (int i = 0; i < mFloatingFrames.size(); i++)
+        for (uint i = 0; i < mFloatingFrames.size(); i++)
         {
             Frame* pFrame = mFloatingFrames[i].get();
             if (pFrame == NULL)
@@ -1188,7 +1273,7 @@ namespace eyegui
         {
             // Search for it in sorted vector
             int index = -1;
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
                 {
@@ -1213,7 +1298,7 @@ namespace eyegui
         {
             // Search for it in sorted vector
             int index = -1;
-            for (int i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
+            for (uint i = 0; i < mFloatingFramesOrderingIndices.size(); i++)
             {
                 if (mFloatingFrames[mFloatingFramesOrderingIndices[i]].get() == pFrame)
                 {
@@ -1453,7 +1538,7 @@ namespace eyegui
         int movedFrameIndex = mFloatingFramesOrderingIndices[oldIndex];
         mFloatingFramesOrderingIndices.erase(mFloatingFramesOrderingIndices.begin() + oldIndex);
 
-        if (newIndex >= mFloatingFramesOrderingIndices.size())
+        if (newIndex >= (int)mFloatingFramesOrderingIndices.size())
         {
             mFloatingFramesOrderingIndices.push_back(movedFrameIndex);
         }

@@ -10,12 +10,11 @@
 #ifndef SENSOR_H_
 #define SENSOR_H_
 
-#include "InteractiveElement.h"
-#include "Elements/NotifierTemplate.h"
+#include "Elements/InteractiveElements//IconInteractiveElement.h"
 
 namespace eyegui
 {
-    class Sensor : public InteractiveElement, public NotifierTemplate<SensorListener>
+    class Sensor : public IconInteractiveElement, public NotifierTemplate<SensorListener>
     {
     public:
 
@@ -48,6 +47,9 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
+		// Transformation filled by subclasses
+		virtual void specialTransformAndSize();
+
         // Reset filld by subclasses
         virtual void specialReset();
 
@@ -55,7 +57,7 @@ namespace eyegui
         virtual void specialInteract();
 
         // Filled by subclass and called by layout after updating and before drawing
-        virtual void specialPipeNotification(Notification notification, Layout* pLayout);
+        virtual void specialPipeNotification(NotificationType notification, Layout* pLayout);
 
     private:
 

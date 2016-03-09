@@ -7,33 +7,25 @@
 
 #include "PixelTexture.h"
 
-#include "Helper.h"
-#include "OperationNotifier.h"
-
-#include "PathBuilder.h"
+#include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // stb_image wants those defines
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_ONLY_PNG // Force people to use a good pixel graphics format
 
 #include "externals/stb/stb_image.h"
 
 namespace eyegui
 {
-    PixelTexture::PixelTexture(std::string filepath, Filtering filtering, Wrap wrap) : Texture()
+    PixelTexture::PixelTexture(std::string filepath, Filtering filtering, Wrap wrap, int suspectedChannels) : Texture()
     {
         // Setup stb_image
         stbi_set_flip_vertically_on_load(true);
 
-        // Check file format
-        if (!checkFileNameExtension(filepath, "png"))
-        {
-            throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format", filepath);
-        }
-
         // Try to load image
         int width, height, channelCount;
-        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, 0);
+        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, suspectedChannels);
 
         // Check whether file was found and parsed
         if (data == NULL)
@@ -42,10 +34,10 @@ namespace eyegui
         }
 
         // Create vector out of data
-        std::vector<unsigned char> image(data, data + width * height * channelCount);
+        std::vector<unsigned char> image(data, data + width * height * suspectedChannels);
 
         // Create OpenGL texture
-        createOpenGLTexture(image, filtering, wrap, width, height, channelCount, filepath);
+        createOpenGLTexture(image, filtering, wrap, width, height, suspectedChannels, filepath);
 
         // Delete raw image data
         stbi_image_free(data);

@@ -40,7 +40,7 @@ namespace eyegui
         mType = Type::BOX_BUTTON;
 
         // Fetch stuff for rendering
-        mpRenderItem = mpAssetManager->fetchRenderItem(
+		mpIconRenderItem = mpAssetManager->fetchRenderItem(
             shaders::Type::BOX_BUTTON,
             meshes::Type::QUAD);
     }
@@ -53,13 +53,13 @@ namespace eyegui
     void BoxButton::specialDraw() const
     {
         // Bind render item before setting values and drawing
-        mpRenderItem->bind();
+		mpIconRenderItem->bind();
 
         // Super call
         Button::specialDraw();
 
         // Scale of icon
-        mpRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
+		mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
 
         // Orientation
         float orientation = 0;
@@ -70,9 +70,9 @@ namespace eyegui
                 orientation = 1;
             }
         }
-        mpRenderItem->getShader()->fillValue("orientation", orientation);
+		mpIconRenderItem->getShader()->fillValue("orientation", orientation);
 
         // Draw render item
-        mpRenderItem->draw();
+		mpIconRenderItem->draw();
     }
 }

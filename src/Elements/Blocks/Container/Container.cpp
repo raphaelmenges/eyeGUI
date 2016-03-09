@@ -22,6 +22,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         float innerBorder,
         bool showBackground) : Block(
             id,
@@ -36,6 +38,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
             innerBorder)
     {
         // Fill members

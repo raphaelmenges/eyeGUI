@@ -1,5 +1,5 @@
 //============================================================================
-// Distributed under the MIT License. (See accompanying file LICENSE 
+// Distributed under the MIT License. (See accompanying file LICENSE
 // or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
 //============================================================================
 
@@ -20,126 +20,153 @@
 
 namespace eyegui
 {
-	template <class T>
-	class NotifierTemplate
-	{
-	public:
+    // Ugly enumeration, but somehow layout must remember to call correct notification
+    enum class NotificationType { BUTTON_HIT, BUTTON_DOWN, BUTTON_UP, SENSOR_PENETRATED, KEYBOARD_KEY_PRESSED};
 
-		// Constructors
-		NotifierTemplate() {}
+    template <class T>
+    class NotifierTemplate
+    {
+    public:
 
-		// Destructor
-		virtual ~NotifierTemplate() = 0;
+        // Constructors
+        NotifierTemplate() {}
 
-		// Register listeners for pressing etc
-		bool registerListener(std::weak_ptr<T> wpListener)
-		{
-			bool success = true;
+        // Destructor
+        virtual ~NotifierTemplate() = 0;
 
-			// Get raw pointer from weak pointer
-			T* ptr = NULL;
-			if (auto wp = wpListener.lock())
-			{
-				ptr = wp.get();
-			}
+        // Register listeners for pressing etc
+        bool registerListener(std::weak_ptr<T> wpListener)
+        {
+            bool success = true;
 
-			// Only continue if there is still a pointer
-			if (ptr != NULL)
-			{
-				// Check whether listener is already listening
-				for (std::weak_ptr<T>& listener : mListeners)
-				{
-					// Compare raw pointer for equality
-					if (auto sp = listener.lock())
-					{
-						if (sp.get() == ptr)
-						{
-							success = false;
-							break;
-						}
-					}
-				}
+            // Get raw pointer from weak pointer
+            T* ptr = NULL;
+            if (auto wp = wpListener.lock())
+            {
+                ptr = wp.get();
+            }
 
-				if (success)
-				{
-					// Not yet listening, change it
-					mListeners.push_back(wpListener);
-				}
-			}
+            // Only continue if there is still a pointer
+            if (ptr != NULL)
+            {
+                // Check whether listener is already listening
+                for (std::weak_ptr<T>& listener : mListeners)
+                {
+                    // Compare raw pointer for equality
+                    if (auto sp = listener.lock())
+                    {
+                        if (sp.get() == ptr)
+                        {
+                            success = false;
+                            break;
+                        }
+                    }
+                }
 
-			return success;
-		}
+                if (success)
+                {
+                    // Not yet listening, change it
+                    mListeners.push_back(wpListener);
+                }
+            }
 
-	protected:
+            return success;
+        }
 
-		// Notify listener about something (one need to know which method to call from listener)
-		void notifyListener(
-			void (T::*method) (Layout*, std::string),
-			Layout* pLayout, std::string id)
-		{
-			// Inform listener
-			for (std::shared_ptr<T>& spListener : getListener())
-			{
-				(spListener.get()->*method)(pLayout, id);
-			}
-		}
+    protected:
 
-		// Notify listener about something (one need to know which method to call from listener)
-		void notifyListener(
-			void (T::*method) (Layout*, std::string, float),
-			Layout* pLayout, std::string id, float value)
-		{
-			// Inform listener
-			for (std::shared_ptr<T>& spListener : getListener())
-			{
-				(spListener.get()->*method)(pLayout, id, value);
-			}
-		}
+        // Notify listener about something (one need to know which method to call from listener)
+        void notifyListener(
+            void (T::*method) (Layout*, std::string),
+            Layout* pLayout, std::string id)
+        {
+            // Inform listener
+            for (std::shared_ptr<T>& spListener : getListener())
+            {
+                (spListener.get()->*method)(pLayout, id);
+            }
+        }
 
-	private:
+        // Notify listener about something (one need to know which method to call from listener)
+        void notifyListener(
+            void (T::*method) (Layout*, std::string, float),
+            Layout* pLayout, std::string id, float value)
+        {
+            // Inform listener
+            for (std::shared_ptr<T>& spListener : getListener())
+            {
+                (spListener.get()->*method)(pLayout, id, value);
+            }
+        }
 
-		// Helper for notifications (shared pointer somehow expensive)
-		std::vector<std::shared_ptr<T> > getListener()
-		{
-			std::vector<std::shared_ptr<T> > listeners;
-			std::vector<int> deadListeners;
+        // Notify listener about something (one need to know which method to call from listener)
+        void notifyListener(
+            void (T::*method) (Layout*, std::string, std::u16string),
+            Layout* pLayout, std::string id, std::u16string value)
+        {
+            // Inform listener
+            for (std::shared_ptr<T>& spListener : getListener())
+            {
+                (spListener.get()->*method)(pLayout, id, value);
+            }
+        }
 
-			// Inform listener
-			for (int i = 0; i < mListeners.size(); i++)
-			{
-				std::weak_ptr<T>& wpListener = mListeners[i];
+        // Notify listener about something (one need to know which method to call from listener)
+        void notifyListener(
+            void (T::*method) (Layout*, std::string, std::string),
+            Layout* pLayout, std::string id, std::string value)
+        {
+            // Inform listener
+            for (std::shared_ptr<T>& spListener : getListener())
+            {
+                (spListener.get()->*method)(pLayout, id, value);
+            }
+        }
 
-				// Check weak pointer getting them
-				if (auto sp = wpListener.lock())
-				{
-					// Add to return vector
-					listeners.push_back(sp);
-				}
-				else
-				{
-					// Dead listeners even not added to return vector
-					deadListeners.push_back(i);
-				}
-			}
+    private:
 
-			// Delete dead listeners from member vector
-			for (int i = 0; i < deadListeners.size(); i++)
-			{
-				mListeners.erase(mListeners.begin() + i);
-			}
+        // Helper for notifications (shared pointer somehow expensive)
+        std::vector<std::shared_ptr<T> > getListener()
+        {
+            std::vector<std::shared_ptr<T> > listeners;
+            std::vector<int> deadListeners;
 
-			return listeners;
-		}
+            // Inform listener
+            for (uint i = 0; i < mListeners.size(); i++)
+            {
+                std::weak_ptr<T>& wpListener = mListeners[i];
 
-		// Members
-		std::vector<std::weak_ptr<T> > mListeners;
-	};
+                // Check weak pointer getting them
+                if (auto sp = wpListener.lock())
+                {
+                    // Add to return vector
+                    listeners.push_back(sp);
+                }
+                else
+                {
+                    // Dead listeners even not added to return vector
+                    deadListeners.push_back(i);
+                }
+            }
 
-	template <class T>
-	NotifierTemplate<T>::~NotifierTemplate()
-	{
-		// Empty destructor
-	}
+            // Delete dead listeners from member vector
+            for (uint i = 0; i < deadListeners.size(); i++)
+            {
+                mListeners.erase(mListeners.begin() + i);
+            }
+
+            return listeners;
+        }
+
+        // Members
+        std::vector<std::weak_ptr<T> > mListeners;
+    };
+
+    template <class T>
+    NotifierTemplate<T>::~NotifierTemplate()
+    {
+        // Empty destructor
+    }
 }
 
 #endif // NOTIFIER_TEMPLATE_H_

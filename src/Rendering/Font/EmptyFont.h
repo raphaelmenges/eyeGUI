@@ -17,33 +17,36 @@
 
 namespace eyegui
 {
-	class EmptyFont : public Font
-	{
-	public:
+    class EmptyFont : public Font
+    {
+    public:
 
-		// Constructor
-		EmptyFont();
+        // Constructor
+        EmptyFont();
 
-		// Destructor
-		virtual ~EmptyFont();
+        // Destructor
+        virtual ~EmptyFont();
 
-		// Resize font atlases
-		virtual void resizeFontAtlases(int windowHeight);
+        // Resize font atlases
+        virtual void resizeFontAtlases();
 
-		// Get glyph (may return NULL if not found)
-		virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
+        // Get glyph (may return NULL if not found)
+        virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const;
 
-		// Get height of line
-		virtual float getLineHeight(FontSize fontSize) const;
+        // Get height of line
+        virtual float getLineHeight(FontSize fontSize) const;
 
-		// Get handle of texture atlas
-		virtual uint getAtlasTextureHandle(FontSize fontSize) const;
+        // Get target glyph height
+        virtual float getTargetGlyphHeight(FontSize fontSize) const;
 
-	private:
+        // Bind atlas texture of font
+        virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const;
 
-		// Members
-		GLuint mTexture;
-	};
+    private:
+
+        // Members
+        GLuint mTexture;
+    };
 }
 
 #endif // EMPTY_FONT_H_

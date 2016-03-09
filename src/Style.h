@@ -19,14 +19,15 @@ namespace eyegui
         // Initialize with fallback values
         std::string filepath;
         glm::vec4 color = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
-        glm::vec4 backgroundColor = glm::vec4(0, 0, 0, 0);
+        glm::vec4 backgroundColor = glm::vec4(0, 0, 0, 1.0f);
         glm::vec4 highlightColor = glm::vec4(1, 1, 0, 0.5f);
         glm::vec4 separatorColor = glm::vec4(0.2f, 0.2f, 0.2f, 1);
         glm::vec4 selectionColor = glm::vec4(0, 1, 1, 0.5f);
         glm::vec4 iconColor = glm::vec4(1, 1, 1, 1);
         glm::vec4 fontColor = glm::vec4(1, 1, 1, 1);
         glm::vec4 dimColor = glm::vec4(0.5f, 0.5f, 0.5f, 0.2f);
-		glm::vec4 markColor = glm::vec4(0.0f, 0.5f, 1.0f, 0.2f);
+        glm::vec4 markColor = glm::vec4(0.0f, 0.5f, 1.0f, 0.2f);
+        glm::vec4 pickColor = glm::vec4(0.2f, 1, 0, 0.5f);
     };
 }
 

@@ -35,7 +35,7 @@ namespace eyegui
         virtual ~Font() {}
 
         // Resize font atlases
-        virtual void resizeFontAtlases(int windowHeight) = 0;
+        virtual void resizeFontAtlases() = 0;
 
         // Get glyph (may return NULL if not found)
         virtual Glyph const * getGlyph(FontSize fontSize, char16_t character) const = 0;
@@ -43,8 +43,11 @@ namespace eyegui
         // Get height of line
         virtual float getLineHeight(FontSize fontSize) const = 0;
 
-        // Get handle of texture atlas
-        virtual uint getAtlasTextureHandle(FontSize fontSize) const = 0;
+        // Get target glyph height
+        virtual float getTargetGlyphHeight(FontSize fontSize) const = 0;
+
+        // Bind atlas texture of font
+        virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const = 0;
     };
 }
 

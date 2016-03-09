@@ -18,7 +18,7 @@ namespace eyegui
     public:
 
         // Constructor
-        PixelTexture(std::string filepath, Filtering filtering, Wrap wrap);
+        PixelTexture(std::string filepath, Filtering filtering, Wrap wrap, int suspectedChannels = 0);
 
         // Destructor
         virtual ~PixelTexture();

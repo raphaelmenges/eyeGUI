@@ -9,7 +9,7 @@
 
 #include "Defines.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/utfcpp/source/utf8.h"
 
 namespace eyegui
@@ -110,10 +110,10 @@ namespace eyegui
             {
                 upElement = std::move(parseDropButton(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
             }
-			else if (value == "keyboard")
-			{
-				upElement = std::move(parseKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
-			}
+            else if (value == "keyboard")
+            {
+                upElement = std::move(parseKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown element found: " + std::string(xmlElement->Value()), filepath);
@@ -133,11 +133,12 @@ namespace eyegui
 
         std::unique_ptr<Grid> parseGrid(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlGrid, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
-            // Consume input?
-            bool consumeInput = parseBoolAttribute("consumeinput", xmlGrid);
-
-            // Get inner border
-            float innerBorder = parsePercentAttribute("innerborder", xmlGrid);
+            // Fetch values for block from xml
+            bool consumeInput;
+            std::string backgroundFilepath;
+            ImageAlignment backgroundAlignment;
+            float innerBorder;
+            blockHelper(xmlGrid, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Show background?
             bool showBackground = parseBoolAttribute("showbackground", xmlGrid);
@@ -175,6 +176,8 @@ namespace eyegui
                     dimming,
                     adaptiveScaling,
                     consumeInput,
+                    backgroundFilepath,
+                    backgroundAlignment,
                     innerBorder,
                     showBackground,
                     rows));
@@ -271,11 +274,31 @@ namespace eyegui
 
         std::unique_ptr<Block> parseBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBlock, Element* pParent, std::string filepath)
         {
-            // Consume input?
-            bool consumeInput = parseBoolAttribute("consumeinput", xmlBlock);
+            // Fetch values for block from xml
+            bool consumeInput;
+            std::string backgroundFilepath;
+            ImageAlignment backgroundAlignment;
+            float innerBorder;
+            blockHelper(xmlBlock, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Create block and return
-            std::unique_ptr<Block> upBlock = std::unique_ptr<Block>(new Block(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, consumeInput));
+            std::unique_ptr<Block> upBlock =
+                std::unique_ptr<Block>(
+                    new Block(
+                        id,
+                        styleName,
+                        pParent,
+                        pLayout,
+                        pFrame,
+                        pAssetManager,
+                        pNotificationQueue,
+                        relativeScale,
+                        border,
+                        dimming,
+                        adaptiveScaling,
+                        consumeInput,
+                        backgroundFilepath,
+                        backgroundAlignment));
             return (std::move(upBlock));
         }
 
@@ -286,14 +309,18 @@ namespace eyegui
 
             // Get alignment
             std::string alignmentValue = parseStringAttribute("alignment", xmlPicture);
-            PictureAlignment alignment;
+            ImageAlignment alignment;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "original")
             {
-                alignment = PictureAlignment::ORIGINAL;
+                alignment = ImageAlignment::ORIGINAL;
             }
             else if (alignmentValue == "stretched")
             {
-                alignment = PictureAlignment::STRETCHED;
+                alignment = ImageAlignment::STRETCHED;
+            }
+            else if (alignmentValue == "zoomed")
+            {
+                alignment = ImageAlignment::ZOOMED;
             }
             else
             {
@@ -307,11 +334,12 @@ namespace eyegui
 
         std::unique_ptr<Stack> parseStack(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlStack, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
-            // Consume input?
-            bool consumeInput = parseBoolAttribute("consumeinput", xmlStack);
-
-            // Get inner border
-            float innerBorder = parsePercentAttribute("innerborder", xmlStack);
+            // Fetch values for block from xml
+            bool consumeInput;
+            std::string backgroundFilepath;
+            ImageAlignment backgroundAlignment;
+            float innerBorder;
+            blockHelper(xmlStack, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Show background?
             bool showBackground = parseBoolAttribute("showbackground", xmlStack);
@@ -385,6 +413,8 @@ namespace eyegui
                     dimming,
                     adaptiveScaling,
                     consumeInput,
+                    backgroundFilepath,
+                    backgroundAlignment,
                     innerBorder,
                     showBackground,
                     relativeScaling,
@@ -409,11 +439,12 @@ namespace eyegui
 
         std::unique_ptr<TextBlock> parseTextBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlTextBlock, Element* pParent, std::string filepath)
         {
-            // Consume input?
-            bool consumeInput = parseBoolAttribute("consumeinput", xmlTextBlock);
-
-            // Get inner border
-            float innerBorder = parsePercentAttribute("innerborder", xmlTextBlock);
+            // Fetch values for block from xml
+            bool consumeInput;
+            std::string backgroundFilepath;
+            ImageAlignment backgroundAlignment;
+            float innerBorder;
+            blockHelper(xmlTextBlock, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Get font size
             std::string fontSizeValue = parseStringAttribute("fontsize", xmlTextBlock);
@@ -479,8 +510,16 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Unknown vertical alignment used in text block: " + verticalAlignmentValue, filepath);
             }
 
+            // Get text scale
+            float textScale = parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
+
             // Get content
             std::string contentValue = parseStringAttribute("content", xmlTextBlock);
+
+            // Xml parser replaces new lines with visible "\n"
+            replaceString(contentValue, "\\n", "\n");
+
+            // Convert to utf-16 string
             std::u16string content;
             utf8::utf8to16(contentValue.begin(), contentValue.end(), back_inserter(content));
 
@@ -488,7 +527,30 @@ namespace eyegui
             std::string key = parseStringAttribute("key", xmlTextBlock);
 
             // Create text block
-            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, consumeInput, innerBorder, fontSize, alignment, verticalAlignment, content, key));
+            std::unique_ptr<TextBlock> upTextBlock =
+                std::unique_ptr<TextBlock>(
+                    new TextBlock(
+                        id,
+                        styleName,
+                        pParent,
+                        pLayout,
+                        pFrame,
+                        pAssetManager,
+                        pNotificationQueue,
+                        relativeScale,
+                        border,
+                        dimming,
+                        adaptiveScaling,
+                        consumeInput,
+                        backgroundFilepath,
+                        backgroundAlignment,
+                        innerBorder,
+                        fontSize,
+                        alignment,
+                        verticalAlignment,
+                        textScale,
+                        content,
+                        key));
 
             // Return text block
             return std::move(upTextBlock);
@@ -569,16 +631,52 @@ namespace eyegui
             return (std::move(upDropButton));
         }
 
-		std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
-		{
-			// Create and return keyboard
-			std::unique_ptr<Keyboard> upKeyboard = std::unique_ptr<Keyboard>(new Keyboard(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling));
-			return (std::move(upKeyboard));
-		}
-
-        bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& expectedValue)
+        std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
         {
-            if (xmlElement == NULL || std::string(xmlElement->Value()).compare(expectedValue) != 0)
+            // Create and return keyboard
+            std::unique_ptr<Keyboard> upKeyboard = std::unique_ptr<Keyboard>(new Keyboard(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling));
+            return (std::move(upKeyboard));
+        }
+
+        void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder)
+        {
+            rConsumeInput = parseBoolAttribute("consumeinput", xmlBlock);
+            rBackgroundFilepath = parseStringAttribute("backgroundsrc", xmlBlock);
+
+            // Background image alignment
+            if(rBackgroundFilepath == EMPTY_STRING_ATTRIBUTE)
+            {
+                // Not necessary, so just use something
+                rBackgroundAlignment = STANDARD_IMAGE_ALIGNMENT;
+            }
+            else
+            {
+                std::string backgroundAlignmentValue = parseStringAttribute("backgroundalignment", xmlBlock);
+                if(backgroundAlignmentValue == "original")
+                {
+                    rBackgroundAlignment = ImageAlignment::ORIGINAL;
+                }
+                else if(backgroundAlignmentValue == "stretched")
+                {
+                    rBackgroundAlignment = ImageAlignment::STRETCHED;
+                }
+                else if(backgroundAlignmentValue == "zoomed")
+                {
+                    rBackgroundAlignment = ImageAlignment::ZOOMED;
+                }
+                else
+                {
+                    // Just use the standard
+                    rBackgroundAlignment = STANDARD_IMAGE_ALIGNMENT;
+                }
+            }
+
+            rInnerBorder = parsePercentAttribute("innerborder", xmlBlock);
+        }
+
+        bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& rExpectedValue)
+        {
+            if (xmlElement == NULL || std::string(xmlElement->Value()).compare(rExpectedValue) != 0)
             {
                 return false;
             }

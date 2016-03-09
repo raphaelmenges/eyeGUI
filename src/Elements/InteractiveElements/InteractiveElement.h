@@ -10,16 +10,14 @@
 #ifndef INTERACTIVE_ELEMENT_H_
 #define INTERACTIVE_ELEMENT_H_
 
-#include "Elements/Element.h"
+#include "Elements/NotifierElement.h"
+#include "Elements/NotifierTemplate.h"
 
 namespace eyegui
 {
-    class InteractiveElement : public Element
+    class InteractiveElement : public NotifierElement
     {
     public:
-
-        // Ugly enumeration, but somehow layout must remember to call correct noficiaton
-        enum class Notification { BUTTON_HIT, BUTTON_DOWN, BUTTON_UP, SENSOR_PENETRATED };
 
         // Constructors
         InteractiveElement(
@@ -33,8 +31,7 @@ namespace eyegui
             float relativeScale,
             float border,
             bool dimming,
-            bool adaptiveScaling,
-            std::string iconFilepath);
+            bool adaptiveScaling);
 
         // Destructor
         virtual ~InteractiveElement() = 0;
@@ -51,12 +48,6 @@ namespace eyegui
         // Select button, returns whether successful
         void select(bool doSelect);
 
-        // Set icon
-        void setIcon(std::string filepath);
-
-        // Called by layout after updating
-        void pipeNotification(Notification notification, Layout* pLayout);
-
         // Tries to fetch next interactive element for selecting, returns NULL if fails
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
@@ -64,12 +55,6 @@ namespace eyegui
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
-
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
-
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
 
         // Reset filld by subclasses
         virtual void specialReset();
@@ -80,23 +65,11 @@ namespace eyegui
         // Interaction fill by subclasses
         virtual void specialInteract() = 0;
 
-        // Filled by subclass and called by layout after updating
-        virtual void specialPipeNotification(Notification notification, Layout* pLayout) = 0;
-
-        // Calculate aspect ratio correction for icon on gizmo
-        glm::vec2 iconAspectRatioCorrection() const;
-
-        // Members
-        RenderItem const * mpRenderItem; // has to be initialized by subclasses
-
-    private:
-
         // Members
         LerpValue mHighlight;
         bool mIsHighlighted;
         LerpValue mSelection;
         bool mIsSelected;
-        Texture const * mpIcon;
     };
 }
 

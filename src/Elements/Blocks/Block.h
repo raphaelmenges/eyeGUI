@@ -31,6 +31,8 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             bool consumeInput,
+            std::string backgroundFilepath,
+            ImageAlignment backgroundAlignment,
             float innerBorder = 0);
 
         // Destructor
@@ -63,6 +65,7 @@ namespace eyegui
 
         // Members
         RenderItem const * mpBackground;
+        std::unique_ptr<Image> mupImage;
         float mInnerBorder; // [0..1]
         bool mConsumeInput;
     };

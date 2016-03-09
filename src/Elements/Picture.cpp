@@ -22,7 +22,7 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string filepath,
-        PictureAlignment alignment) : Element(
+        ImageAlignment alignment) : Element(
             id,
             styleName,
             pParent,
@@ -38,14 +38,12 @@ namespace eyegui
         mType = Type::PICTURE;
 
         // Fill members
-        mpQuad = mpAssetManager->fetchRenderItem(shaders::Type::PICTURE, meshes::Type::QUAD);
-        mpImage = mpAssetManager->fetchTexture(filepath);
-        mAlignment = alignment;
+        mupImage = std::move(mpAssetManager->createImage(mpLayout, filepath, alignment));
 
-        // Aspect ratio of border should be preserved if necessary
-        if (mAlignment == PictureAlignment::ORIGINAL)
+        // Aspect ratio of border should be preserved if necessary (only when pictue is neither zoomed nor stretched)
+        if (alignment == ImageAlignment::ORIGINAL)
         {
-            mBorderAspectRatio = (float)(mpImage->getWidth()) / (float)(mpImage->getHeight());
+            mBorderAspectRatio = (float)(mupImage->getTextureWidth()) / (float)(mupImage->getTextureHeight());
         }
 
     }
@@ -61,33 +59,7 @@ namespace eyegui
         int& rWidth,
         int& rHeight) const
     {
-        if (mAlignment == PictureAlignment::ORIGINAL)
-        {
-            float availableAspectRatio = ((float)availableWidth) / ((float)availableHeight);
-            float aspectRatio = (float)(mpImage->getWidth()) / (float)(mpImage->getHeight());
-
-            if (availableAspectRatio < aspectRatio)
-            {
-                // Horizontal space less than necessary
-                rWidth = availableWidth;
-
-                // Adjust vertical size
-                rHeight = (int)((float)rWidth / aspectRatio);
-            }
-            else
-            {
-                // Vertical space less than necessary
-                rHeight = availableHeight;
-
-                // Adjust horizontal size
-                rWidth = (int)((float)rHeight * aspectRatio);
-            }
-        }
-        else
-        {
-            rWidth = availableWidth;
-            rHeight = availableHeight;
-        }
+        mupImage->evaluateSize(availableWidth, availableHeight, rWidth, rHeight);
     }
 
     float Picture::specialUpdate(float tpf, Input* pInput)
@@ -97,36 +69,19 @@ namespace eyegui
 
     void Picture::specialDraw() const
     {
-        // Bind render item before setting values and drawing
-        mpQuad->bind();
-
-        // Fill matrix in shader
-        mpQuad->getShader()->fillValue("matrix", mFullDrawMatrix);
-
-        // Fill alpha
-        mpQuad->getShader()->fillValue("alpha", mAlpha);
-
-        // Fill activity
-        mpQuad->getShader()->fillValue("activity", mActivity.getValue());
-
-        // Fill dimming
-        mpQuad->getShader()->fillValue("dimColor", getStyle()->dimColor);
-        mpQuad->getShader()->fillValue("dim", mDim.getValue());
-
-		// Fill marking
-		mpQuad->getShader()->fillValue("markColor", getStyle()->markColor);
-		mpQuad->getShader()->fillValue("mark", mMark.getValue());
-
-        // Bind image
-        mpImage->bind(0);
-
-        // Draw render item
-        mpQuad->draw();
+        // Draw image owned by this
+        mupImage->draw(
+            mAlpha,
+            mActivity.getValue(),
+            getStyle()->dimColor,
+            mDim.getValue(),
+            getStyle()->markColor,
+            mMark.getValue());
     }
 
     void Picture::specialTransformAndSize()
     {
-        // Nothing to do
+        mupImage->transformAndSize(mX, mY, mWidth, mHeight);
     }
 
     void Picture::specialReset()

@@ -16,7 +16,10 @@
 #include "Textures/Texture.h"
 #include "RenderItem.h"
 #include "Font/Font.h"
-#include "Font/TextFlow.h"
+#include "Assets/TextFlow.h"
+#include "Assets/Key.h"
+#include "Assets/CharacterKey.h"
+#include "Assets/Image.h"
 
 #include "externals/FreeType2/include/ft2build.h"
 #include FT_FREETYPE_H
@@ -27,7 +30,7 @@
 namespace eyegui
 {
     // Available assets
-    namespace shaders { enum class Type { COLOR, CIRCLE, SEPARATOR, BLOCK, PICTURE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, FONT, KEY }; }
+    namespace shaders { enum class Type { COLOR, CIRCLE, SEPARATOR, BLOCK, IMAGE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, TEXT_FLOW, KEY, CHARACTER_KEY}; }
     namespace meshes { enum class Type { QUAD, LINE }; }
     namespace graphics { enum class Type { CIRCLE, NOT_FOUND }; }
 
@@ -53,6 +56,12 @@ namespace eyegui
         // Fetch graphics
         Texture const * fetchTexture(graphics::Type graphic);
 
+        // Fetch shader
+        Shader const * fetchShader(shaders::Type shader);
+
+        // Fetch mesh
+        Mesh const * fetchMesh(meshes::Type mesh);
+
         // Fetch font
         Font const * fetchFont(std::string filepath);
 
@@ -64,15 +73,16 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
+            float scale,
             std::u16string content);
 
+        // Create key for keyboard and return it as unique pointer
+        std::unique_ptr<Key> createKey(Layout const * pLayout, char16_t character);
+
+        // Create image and return it as unique pointer
+        std::unique_ptr<Image> createImage(Layout const * pLayout, std::string filepath, ImageAlignment alignment);
+
     private:
-
-        // Fetch shader
-        Shader* fetchShader(shaders::Type shader);
-
-        // Fetch mesh
-        Mesh* fetchMesh(meshes::Type mesh);
 
         // Members
         GUI const * mpGUI;

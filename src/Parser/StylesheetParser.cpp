@@ -8,10 +8,10 @@
 #include "StylesheetParser.h"
 
 #include "Defines.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 #include "ParserHelper.h"
-#include "PathBuilder.h"
+#include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
 #include <fstream>
@@ -56,6 +56,9 @@ namespace eyegui
 
                     // Close file
                     in.close();
+
+                    // Streamline line endings
+                    streamlineLineEnding(content);
 
                     // Get rid of whitespaces
                     std::string::iterator end_pos = std::remove(content.begin(), content.end(), ' ');
@@ -264,10 +267,14 @@ namespace eyegui
             {
                 rStyle.dimColor = value;
             }
-			else if (attribute == "mark-color")
-			{
-				rStyle.markColor = value;
-			}
+            else if (attribute == "mark-color")
+            {
+                rStyle.markColor = value;
+            }
+            else if (attribute == "pick-color")
+            {
+                rStyle.pickColor = value;
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, rStyle.filepath);

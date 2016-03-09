@@ -10,12 +10,11 @@
 #ifndef BUTTON_H_
 #define BUTTON_H_
 
-#include "Elements/InteractiveElements//InteractiveElement.h"
-#include "Elements/NotifierTemplate.h"
+#include "Elements/InteractiveElements//IconInteractiveElement.h"
 
 namespace eyegui
 {
-    class Button : public InteractiveElement, public NotifierTemplate<ButtonListener>
+    class Button : public IconInteractiveElement, public NotifierTemplate<ButtonListener>
     {
     public:
 
@@ -57,6 +56,9 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
+		// Transformation filled by subclasses
+		virtual void specialTransformAndSize();
+
         // Reset filld by subclasses
         virtual void specialReset();
 
@@ -64,7 +66,7 @@ namespace eyegui
         virtual void specialInteract();
 
         // Filled by subclass and called by layout after updating and before drawing
-        virtual void specialPipeNotification(Notification notification, Layout* pLayout);
+        virtual void specialPipeNotification(NotificationType notification, Layout* pLayout);
 
     private:
 

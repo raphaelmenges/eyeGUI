@@ -11,7 +11,6 @@
 #define TEXT_BLOCK_H_
 
 #include "Block.h"
-#include "Rendering/Font/TextFlow.h"
 
 namespace eyegui
 {
@@ -33,10 +32,13 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             bool consumeInput,
+            std::string backgroundFilepath,
+            ImageAlignment backgroundAlignment,
             float innerBorder,
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
+			float textScale,
             std::u16string content,
             std::string key);
 

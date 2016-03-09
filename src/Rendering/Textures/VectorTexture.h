@@ -20,10 +20,10 @@ namespace eyegui
     public:
 
         // Constructor for graphics on disk
-        VectorTexture(std::string filepath, Filtering filtering, Wrap wrap);
+        VectorTexture(std::string filepath, Filtering filtering, Wrap wrap, float dpi);
 
         // Constructor for internal graphics
-        VectorTexture(std::string const * pGraphic, Filtering filtering, Wrap wrap);
+        VectorTexture(std::string const * pGraphic, Filtering filtering, Wrap wrap, float dpi);
 
         // Destructor
         virtual ~VectorTexture();

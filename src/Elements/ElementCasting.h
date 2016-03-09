@@ -14,82 +14,25 @@
 namespace eyegui
 {
     // Tries to cast pointer, returns NULL if fails
-    static InteractiveElement* toInteractiveElement(Element* pElement)
-    {
-        if (pElement != NULL)
-        {
-            Element::Type type = pElement->getType();
-            if (type == Element::Type::INTERACTIVE_ELEMENT
-                || type == Element::Type::BUTTON
-                || type == Element::Type::CIRCLE_BUTTON
-                || type == Element::Type::BOX_BUTTON
-                || type == Element::Type::DROP_BUTTON
-                || type == Element::Type::SENSOR)
-            {
-                return static_cast<InteractiveElement*>(pElement);
-            }
-        }
-        return NULL;
-    }
+    IconInteractiveElement* toIconInteractiveElement(Element* pElement);
 
     // Tries to cast pointer, returns NULL if fails
-    static Button* toButton(Element* pElement)
-    {
-        if (pElement != NULL)
-        {
-            Element::Type type = pElement->getType();
-            if (type == Element::Type::BUTTON
-                || type == Element::Type::CIRCLE_BUTTON
-                || type == Element::Type::BOX_BUTTON
-                || type == Element::Type::DROP_BUTTON)
-            {
-                return static_cast<Button*>(pElement);
-            }
-        }
-        return NULL;
-    }
+    InteractiveElement* toInteractiveElement(Element* pElement);
 
     // Tries to cast pointer, returns NULL if fails
-    static Sensor* toSensor(Element* pElement)
-    {
-        if (pElement != NULL)
-        {
-            Element::Type type = pElement->getType();
-            if (type == Element::Type::SENSOR)
-            {
-                return static_cast<Sensor*>(pElement);
-            }
-        }
-        return NULL;
-    }
+    NotifierElement* toNotifierElement(Element* pElement);
 
     // Tries to cast pointer, returns NULL if fails
-    static TextBlock* toTextBlock(Element* pElement)
-    {
-        if (pElement != NULL)
-        {
-            Element::Type type = pElement->getType();
-            if (type == Element::Type::TEXT_BLOCK)
-            {
-                return static_cast<TextBlock*>(pElement);
-            }
-        }
-        return NULL;
-    }
+    Button* toButton(Element* pElement);
 
-	// Tries to cast pointer, returns NULL if fails
-	static Keyboard* toKeyboard(Element* pElement)
-	{
-		if (pElement != NULL)
-		{
-			Element::Type type = pElement->getType();
-			if (type == Element::Type::KEYBOARD)
-			{
-				return static_cast<Keyboard*>(pElement);
-			}
-		}
-		return NULL;
-	}
+    // Tries to cast pointer, returns NULL if fails
+    Sensor* toSensor(Element* pElement);
+
+    // Tries to cast pointer, returns NULL if fails
+    TextBlock* toTextBlock(Element* pElement);
+
+    // Tries to cast pointer, returns NULL if fails
+    Keyboard* toKeyboard(Element* pElement);
 }
 
 #endif // ELEMENT_CASTING_H_

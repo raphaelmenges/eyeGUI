@@ -77,17 +77,32 @@ namespace eyegui
 
         // Uniforms:
         // sampler2D atlas
-        // float alpha
         // vec4 color
-        static const char* pFontFragmentShader =
+        // vec4 dimColor
+        // vec4 markColor
+        // float alpha
+        // float activity
+        // float dim
+        // float mark
+        static const char* pTextFlowFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform sampler2D atlas;\n"
             "uniform vec4 color;\n"
+            "uniform vec4 dimColor;\n"
+            "uniform vec4 markColor;\n"
+            "uniform float alpha;\n"
+            "uniform float activity;\n"
+            "uniform float dim;\n"
+            "uniform float mark;\n"
             "void main() {\n"
-            "   float text = texture(atlas, uv).r;\n"
-            "   fragColor = vec4(color.rgb, color.a * text);\n"
+            "   float character = texture(atlas, uv).r;\n"
+            "   vec4 col = color;\n"
+            "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
+            "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "   fragColor = vec4(col.rgb, col.a * alpha * character);\n"
             "}\n";
 
         // Uniforms:
@@ -118,25 +133,27 @@ namespace eyegui
 
         // Uniforms:
         // sampler2D icon
+        // vec2 scale
         // vec4 dimColor
         // vec4 markColor
         // float alpha
         // float activity
         // float dim
         // float mark
-        static const char* pPictureFragmentShader =
+        static const char* pImageFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
-            "uniform sampler2D icon;\n"
+            "uniform sampler2D image;\n"
+            "uniform vec2 scale;\n"
+            "uniform float alpha;\n"
             "uniform vec4 dimColor;\n"
             "uniform vec4 markColor;\n"
-            "uniform float alpha;\n"
             "uniform float activity;\n"
             "uniform float dim;\n"
             "uniform float mark;\n"
             "void main() {\n"
-            "   vec4 col = texture(icon, uv);\n"
+            "   vec4 col = texture(image, ((uv - 0.5) * scale) + 0.5);\n" // Fetch color from image
             "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
             "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
             "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
@@ -186,7 +203,7 @@ namespace eyegui
             "   float iconScale = mix(1, 1.5, sinPressing);\n" // Icon scale by pressing value
             "   vec4 iconValue = iconColor * texture(icon, ((uv - 0.5) * iconScale) + 0.5).rgba;\n" // Fetch icon
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
-            "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
+            "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
             "   float bodyMask = clamp(circle - bodyPressBorder * sinPressing + 0.5, 0, 1);\n" // Body mask (Adding 0.5 to hide background border when not pressing)
             "   float buttonMask = clamp(circle, 0, 1);\n" // Mask of whole button
             "   vec4 button = mix(color, vec4(iconValue.rgb, 1), iconValue.a);\n" // Just body with icon
@@ -331,16 +348,95 @@ namespace eyegui
             "}\n";
 
         // Uniforms:
-        // float alpha
+        // float time
+        // vec4 color
+        // vec4 pickColor
+        // vec4 dimColor
+        // vec4 markColor
+        // vec4 highlightColor
+        // vec4 stencil
+        // float pick
+        // float activity
+        // float dim
+        // float mark
+        // float highlight
         static const char* pKeyFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
-            "uniform float alpha = 1;\n"
+            "uniform float time;\n"
+            "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 pickColor = vec4(0,1,1,0.5);\n"
+            "uniform vec4 dimColor;\n"
+            "uniform vec4 markColor;\n"
+            "uniform vec4 highlightColor = vec4(0,1,0,1);\n"
+            "uniform vec4 stencil;\n"
+            "uniform float pick = 0;\n"
+            "uniform float activity;\n"
+            "uniform float dim;\n"
+            "uniform float mark;\n"
+            "uniform float highlight;\n"
+            "const int innerBorder = 10;\n"
             "void main() {\n"
+            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
+            "   {\n"
+            "       discard;\n"
+            "   }\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
-            "   float circle = (1-gradient) * 75;\n" // Extend gradient to unclamped circle
-            "   fragColor = vec4(1, 0.5, 0, circle * alpha);\n"
+            "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
+            "   float inner = clamp(circle - (pick * innerBorder), 0, 1);\n" // Inner circle for character
+            "	float outer = clamp(circle, 0, 1);\n" // Outer circle for pick
+            "	vec4 col = color;\n" // Color
+            "   col.rgb = mix(col.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
+            "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
+            "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "   vec4 customPickColor = pickColor;\n"
+            "	customPickColor.a *= 0.5;\n" // Perpare pick color
+            "	col += pick * customPickColor * (1.0-inner);\n" // Add custom pick color
+            "   fragColor = vec4(col.rgb , col.a * outer);\n" // Composing pixel
+            "}\n";
+
+
+        // Uniforms:
+        // float time
+        // sampler2D atlas
+        // vec4 color
+        // vec4 dimColor
+        // vec4 markColor
+        // vec4 highlightColor
+        // vec4 stencil
+        // float activity
+        // float dim
+        // float mark
+        // float highlight
+        static const char* pCharacterKeyFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform float time;\n"
+            "uniform sampler2D atlas;\n"
+            "uniform vec4 stencil;\n"
+            "uniform vec4 color = vec4(1,0,0,1);\n"
+            "uniform vec4 dimColor;\n"
+            "uniform vec4 markColor;\n"
+            "uniform vec4 highlightColor = vec4(0,1,0,1);\n"
+            "uniform float activity;\n"
+            "uniform float dim;\n"
+            "uniform float mark;\n"
+            "uniform float highlight;\n"
+            "void main() {\n"
+            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
+            "   {"
+            "       discard;\n"
+            "   }"
+            "   float value = texture(atlas, uv).r;\n"
+            "   vec4 col = color;\n"
+            "   col.rgb = mix(col.rgb, highlightColor.rgb, 0.5 * (1 + sin(3 * time)) * highlight * highlightColor.a);\n" // Adding highlight
+            "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
+            "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
+            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
+            "   fragColor = vec4(col.rgb, col.a * value);\n" // Composing pixel
             "}\n";
     }
 }

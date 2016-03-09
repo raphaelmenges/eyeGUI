@@ -24,7 +24,7 @@
 #include "Object.h"
 #include "Rendering/AssetManager.h"
 #include "Style.h"
-#include "LerpValue.h"
+#include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <memory>
@@ -48,7 +48,9 @@ namespace eyegui
             ELEMENT,
             PICTURE,
             BLANK,
+            NOTIFIER_ELEMENT,
             INTERACTIVE_ELEMENT,
+            ICON_INTERACTIVE_ELEMENT,
             SENSOR,
             BUTTON,
             CIRCLE_BUTTON,
@@ -220,9 +222,6 @@ namespace eyegui
 
         // Implemented by subclasses
         virtual bool mayConsumeInput() = 0;
-
-        // Convert pixel space to drawing space (origin top left)
-        glm::mat4 calculateDrawMatrix(int x, int y, int width, int height) const;
 
         // Checks, whether element is penetrated by input
         virtual bool penetratedByInput(Input const * pInput) const;

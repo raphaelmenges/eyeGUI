@@ -13,12 +13,12 @@
 #include "Meshes.h"
 #include "Graphics.h"
 #include "CharacterSets.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 #include "GUI.h"
 #include "Font/AtlasFont.h"
 #include "Font/EmptyFont.h"
-#include "PathBuilder.h"
+#include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
 
@@ -53,8 +53,8 @@ namespace eyegui
         RenderItem* pRenderItem = NULL;
 
         // Fetch shader and mesh
-        Shader* pShader = fetchShader(shader);
-        Mesh* pMesh = fetchMesh(mesh);
+        Shader const * pShader = fetchShader(shader);
+        Mesh const * pMesh = fetchMesh(mesh);
 
         // Search in map for render item
         if (mRenderItems.find(shader) != mRenderItems.end())
@@ -96,7 +96,7 @@ namespace eyegui
             // Check for empty string
             if (filepath == "")
             {
-                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
+                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
             }
             else
             {
@@ -115,17 +115,25 @@ namespace eyegui
                 std::transform(input.begin(), input.end(), input.begin(), ::tolower);
 
                 // Check token
-                if (input.compare("png") == 0)
+                if (input.compare("svg") == 0)
                 {
-                    rupTexture = std::unique_ptr<Texture>(new PixelTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
+                    rupTexture = std::unique_ptr<Texture>(new VectorTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 }
-                else if (input.compare("svg") == 0)
+                else if (input.compare("png") == 0 || input.compare("jpg") == 0 || input.compare("jpeg") == 0 || input.compare("tga") == 0 || input.compare("bmp") == 0)
                 {
-                    rupTexture = std::unique_ptr<Texture>(new VectorTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
+                    // For PNG, suspect 4 channels (0 should do it for all cases, but stb_image always tells me about 3 channels and then moving to GPU fails)
+                    int suspectedChannelCount = 3;
+                    if(input.compare("png") == 0)
+                    {
+                        suspectedChannelCount = 4;
+                    }
+
+                    rupTexture = std::unique_ptr<Texture>(new PixelTexture(filepath, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, suspectedChannelCount));
                 }
                 else
                 {
-                    rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
+                    throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or wrong format. Replaced with placeholder", filepath);
+                    rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 }
             }
             pTexture = rupTexture.get();
@@ -146,10 +154,10 @@ namespace eyegui
             switch (graphic)
             {
             case graphics::Type::CIRCLE:
-                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::circleGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
+                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::circleGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 break;
             case graphics::Type::NOT_FOUND:
-                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP));
+                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 break;
             }
             pTexture = rupTexture.get();
@@ -157,6 +165,81 @@ namespace eyegui
         }
 
         return pTexture;
+    }
+
+    Shader const * AssetManager::fetchShader(shaders::Type shader)
+    {
+        // Search in map for shader and create if needed
+        std::unique_ptr<Shader>& rupShader = mShaders[shader];
+        Shader* pShader = rupShader.get();
+
+        if (pShader == NULL)
+        {
+            switch (shader)
+            {
+            case shaders::Type::COLOR:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pColorFragmentShader));
+                break;
+            case shaders::Type::CIRCLE:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleFragmentShader));
+                break;
+            case shaders::Type::SEPARATOR:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSeparatorFragmentShader));
+                break;
+            case shaders::Type::BLOCK:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBlockFragmentShader));
+                break;
+            case shaders::Type::IMAGE:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pImageFragmentShader));
+                break;
+            case shaders::Type::CIRCLE_BUTTON:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleButtonFragmentShader));
+                break;
+            case shaders::Type::BOX_BUTTON:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBoxButtonFragmentShader));
+                break;
+            case shaders::Type::SENSOR:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSensorFragmentShader));
+                break;
+            case shaders::Type::TEXT_FLOW:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pTextFlowFragmentShader));
+                break;
+            case shaders::Type::KEY:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
+                break;
+            case shaders::Type::CHARACTER_KEY:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCharacterKeyFragmentShader));
+                break;
+            }
+            pShader = rupShader.get();
+            mShaders[shader] = std::move(rupShader);
+        }
+
+        return pShader;
+    }
+
+    Mesh const * AssetManager::fetchMesh(meshes::Type mesh)
+    {
+        // Search in map for mesh and create if needed
+        std::unique_ptr<Mesh>& rupMesh = mMeshes[mesh];
+        Mesh* pMesh = rupMesh.get();
+
+        if (pMesh == NULL)
+        {
+            switch (mesh)
+            {
+            case meshes::Type::QUAD:
+                rupMesh = std::unique_ptr<Mesh>(new Mesh(&meshes::quadVertices, &meshes::quadTextureCoordinates));
+                break;
+            case meshes::Type::LINE:
+                rupMesh = std::unique_ptr<Mesh>(new Mesh(&meshes::lineVertices, &meshes::lineTextureCoordinates));
+                break;
+            }
+            pMesh = rupMesh.get();
+            mMeshes[mesh] = std::move(rupMesh);
+        }
+
+        return pMesh;
     }
 
     Font const * AssetManager::fetchFont(std::string filepath)
@@ -211,10 +294,10 @@ namespace eyegui
                     // Give face to a font object (it will delete it in the end)
                     rupFont = std::unique_ptr<Font>(
                         new AtlasFont(
+                            mpGUI,
                             filepath,
                             std::move(upFace),
-                            characters,
-                            mpGUI->getWindowHeight()));
+                            characters));
                 }
             }
 
@@ -232,97 +315,49 @@ namespace eyegui
     {
         for (auto& rPair : mFonts)
         {
-            rPair.second->resizeFontAtlases(mpGUI->getWindowHeight());
+            rPair.second->resizeFontAtlases();
         }
     }
 
-    std::unique_ptr<TextFlow> AssetManager::AssetManager::createTextFlow(
+    std::unique_ptr<TextFlow> AssetManager::createTextFlow(
         FontSize fontSize,
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
+        float scale,
         std::u16string content)
     {
         return std::move(
             std::unique_ptr<TextFlow>(
                 new TextFlow(
                     mpGUI,
+                    this,
                     mpGUI->getDefaultFont(),
                     fontSize,
                     alignment,
                     verticalAlignment,
-                    fetchShader(shaders::Type::FONT),
+                    scale,
                     content)));
     }
 
-    Shader* AssetManager::fetchShader(shaders::Type shader)
+    std::unique_ptr<Key> AssetManager::createKey(Layout const * pLayout, char16_t character)
     {
-        // Search in map for shader and create if needed
-        std::unique_ptr<Shader>& rupShader = mShaders[shader];
-        Shader* pShader = rupShader.get();
-
-        if (pShader == NULL)
-        {
-            switch (shader)
-            {
-            case shaders::Type::COLOR:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pColorFragmentShader));
-                break;
-            case shaders::Type::CIRCLE:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleFragmentShader));
-                break;
-            case shaders::Type::SEPARATOR:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSeparatorFragmentShader));
-                break;
-            case shaders::Type::BLOCK:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBlockFragmentShader));
-                break;
-            case shaders::Type::PICTURE:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pPictureFragmentShader));
-                break;
-            case shaders::Type::CIRCLE_BUTTON:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleButtonFragmentShader));
-                break;
-            case shaders::Type::BOX_BUTTON:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBoxButtonFragmentShader));
-                break;
-            case shaders::Type::SENSOR:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSensorFragmentShader));
-                break;
-            case shaders::Type::FONT:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pFontFragmentShader));
-                break;
-			case shaders::Type::KEY:
-				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
-				break;
-            }
-            pShader = rupShader.get();
-            mShaders[shader] = std::move(rupShader);
-        }
-
-        return pShader;
+        return std::move(
+            std::unique_ptr<Key>(
+                new CharacterKey(
+                    pLayout,
+                    this,
+                    mpGUI->getDefaultFont(),
+                    character)));
     }
 
-    Mesh* AssetManager::fetchMesh(meshes::Type mesh)
+    std::unique_ptr<Image> AssetManager::createImage(Layout const * pLayout, std::string filepath, ImageAlignment alignment)
     {
-        // Search in map for mesh and create if needed
-        std::unique_ptr<Mesh>& rupMesh = mMeshes[mesh];
-        Mesh* pMesh = rupMesh.get();
-
-        if (pMesh == NULL)
-        {
-            switch (mesh)
-            {
-            case meshes::Type::QUAD:
-                rupMesh = std::unique_ptr<Mesh>(new Mesh(&meshes::quadVertices, &meshes::quadTextureCoordinates));
-                break;
-            case meshes::Type::LINE:
-                rupMesh = std::unique_ptr<Mesh>(new Mesh(&meshes::lineVertices, &meshes::lineTextureCoordinates));
-                break;
-            }
-            pMesh = rupMesh.get();
-            mMeshes[mesh] = std::move(rupMesh);
-        }
-
-        return pMesh;
+        return std::move(
+            std::unique_ptr<Image>(
+                new Image(
+                    pLayout,
+                    this,
+                    filepath,
+                    alignment)));
     }
 }

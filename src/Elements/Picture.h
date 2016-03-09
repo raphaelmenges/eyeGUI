@@ -31,7 +31,7 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             std::string filepath,
-            PictureAlignment alignment);
+            ImageAlignment alignment);
 
         // Destructor
         virtual ~Picture();
@@ -63,9 +63,7 @@ namespace eyegui
     private:
 
         // Members
-        RenderItem const * mpQuad;
-        Texture const * mpImage;
-        PictureAlignment mAlignment;
+        std::unique_ptr<Image> mupImage;
     };
 }
 

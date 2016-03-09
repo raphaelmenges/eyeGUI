@@ -24,6 +24,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         float innerBorder,
         bool showBackground,
         int rows) : Container(
@@ -39,6 +41,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
             innerBorder,
             showBackground)
     {
@@ -234,7 +238,7 @@ namespace eyegui
 
             // Scale sum of relative widths back to 100 percent
             float normalization = 1.0f / completeRelativeWidth;
-            for (int j = 0; j < temp.size(); j++)
+            for (uint j = 0; j < temp.size(); j++)
             {
                 temp[j] = temp[j] * normalization;
             }

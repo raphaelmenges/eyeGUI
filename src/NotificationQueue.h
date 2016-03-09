@@ -5,12 +5,12 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Queue for notifications sent by elements. Should be member of a layout
-// and handling all notifications of its elements.
+// and handling all notifications of its notifier elements.
 
 #ifndef NOTIFICATION_QUEUE_H_
 #define NOTIFICATION_QUEUE_H_
 
-#include "Elements/InteractiveElements/InteractiveElement.h"
+#include "Elements/NotifierElement.h"
 
 #include <memory>
 #include <vector>
@@ -21,7 +21,7 @@ namespace eyegui
     class Layout;
 
     // Typedefs
-    typedef std::pair<std::string, InteractiveElement::Notification> NotificationPair;
+    typedef std::pair<std::string, NotificationType> NotificationPair;
     typedef std::vector<NotificationPair> NotificationVector;
 
     class NotificationQueue
@@ -35,7 +35,7 @@ namespace eyegui
         virtual ~NotificationQueue();
 
         // Enqueue notification which is processed before next updating of layout
-        void enqueue(std::string notifierId, InteractiveElement::Notification notification);
+        void enqueue(std::string notifierId, NotificationType notification);
 
         // Process notifications
         void process();

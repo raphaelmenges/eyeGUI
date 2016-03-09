@@ -7,7 +7,7 @@
 
 #include "Texture.h"
 
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 
 #include <fstream>
 
@@ -90,7 +90,7 @@ namespace eyegui
         switch (mChannelCount)
         {
         case 1:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, &rData[0]);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RED, GL_UNSIGNED_BYTE, &rData[0]);
             break;
         case 3:
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, &rData[0]);

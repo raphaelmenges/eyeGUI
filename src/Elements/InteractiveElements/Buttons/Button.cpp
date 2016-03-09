@@ -9,8 +9,8 @@
 
 #include "Layout.h"
 #include "NotificationQueue.h"
-#include "OperationNotifier.h"
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {
@@ -27,7 +27,7 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string iconFilepath,
-        bool isSwitch) : InteractiveElement(
+        bool isSwitch) : IconInteractiveElement(
             id,
             styleName,
             pParent,
@@ -62,7 +62,7 @@ namespace eyegui
         if (mActive)
         {
             // Inform listener after updating
-            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_HIT);
+            mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_HIT);
 
             // Call context correct method
             if (mIsDown)
@@ -87,7 +87,7 @@ namespace eyegui
             mIsDown = true;
 
             // Inform listener after updating
-            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_DOWN);
+            mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_DOWN);
 
             // Immediately
             if (immediately)
@@ -108,7 +108,7 @@ namespace eyegui
             mIsDown = false;
 
             // Inform listener after updating
-            mpNotificationQueue->enqueue(getId(), Notification::BUTTON_UP);
+            mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_UP);
 
             // Immediately
             if (immediately)
@@ -131,7 +131,7 @@ namespace eyegui
     float Button::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
-        float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
+        float adaptiveScale = IconInteractiveElement::specialUpdate(tpf, pInput);
 
         // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
@@ -179,15 +179,20 @@ namespace eyegui
     void Button::specialDraw() const
     {
         // Super call
-        InteractiveElement::specialDraw();
+        IconInteractiveElement::specialDraw();
 
-        mpRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
-        mpRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
+        mpIconRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
+        mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
+    }
+
+    void Button::specialTransformAndSize()
+    {
+        // Nothing to do, but must be implemented
     }
 
     void Button::specialReset()
     {
-        InteractiveElement::specialReset();
+        IconInteractiveElement::specialReset();
 
         mIsDown = false;
         mThreshold.setValue(0);
@@ -203,18 +208,18 @@ namespace eyegui
         mThreshold.setValue(0);
     }
 
-    void Button::specialPipeNotification(Notification notification, Layout* pLayout)
+    void Button::specialPipeNotification(NotificationType notification, Layout* pLayout)
     {
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
-        case Notification::BUTTON_HIT:
+        case NotificationType::BUTTON_HIT:
             notifyListener(&ButtonListener::hit, pLayout, getId());
             break;
-        case Notification::BUTTON_DOWN:
+        case NotificationType::BUTTON_DOWN:
             notifyListener(&ButtonListener::down, pLayout, getId());
             break;
-        case Notification::BUTTON_UP:
+        case NotificationType::BUTTON_UP:
             notifyListener(&ButtonListener::up, pLayout, getId());
             break;
         default:

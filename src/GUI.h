@@ -40,7 +40,11 @@ namespace eyegui
             int height,
             std::string fontFilepath,
             CharacterSet characterSet,
-            std::string localizationFilepath);
+            std::string localizationFilepath,
+            float vectorGraphicsDPI,
+            float fontTallSize,
+            float fontMediumSize,
+            float fontSmallSize);
 
         // Destructor
         virtual ~GUI();
@@ -58,7 +62,7 @@ namespace eyegui
         Input update(float tpf, const Input input);
 
         // Drawing
-        void draw();
+        void draw() const;
 
         // Move layout to front
         void moveLayoutToFront(Layout* pLayout);
@@ -101,6 +105,12 @@ namespace eyegui
 
         // Get string content from localization
         std::u16string getContentFromLocalization(std::string key) const;
+
+        // Get dpi for rasterization of vector graphics
+        float getVectorGraphicsDPI() const;
+
+        // Get size for font
+        float getSizeOfFont(FontSize fontSize) const;
 
     private:
 
@@ -203,17 +213,20 @@ namespace eyegui
         int mNewWidth, mNewHeight;
         CharacterSet mCharacterSet;
         std::unique_ptr<AssetManager> mupAssetManager;
-        GLSetup mGLSetup;
         float mAccPeriodicTime;
         Config mConfig;
         Font const * mpDefaultFont;
         bool mResizing;
         float mResizeWaitTime;
         RenderItem const * mpResizeBlend;
-        std::unique_ptr<localizationMap> mupLocalizationMap;
+        std::unique_ptr<LocalizationMap> mupLocalizationMap;
         std::vector<std::unique_ptr<GUIJob> > mJobs;
         std::unique_ptr<GazeDrawer> mupGazeDrawer;
         bool mDrawGazeVisualization;
+        float mVectorGraphicsDPI;
+        float mFontTallSize;
+        float mFontMediumSize;
+        float mFontSmallSize;
     };
 }
 

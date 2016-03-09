@@ -8,6 +8,7 @@
 #include "Stack.h"
 
 #include "Layout.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {
@@ -24,6 +25,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         float innerBorder,
         bool showBackground,
         RelativeScaling relativeScaling,
@@ -42,6 +45,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
             innerBorder,
             showBackground)
     {
@@ -90,11 +95,11 @@ namespace eyegui
             mpSeparator->getShader()->fillValue("dimColor", getStyle()->dimColor);
             mpSeparator->getShader()->fillValue("dim", mDim.getValue());
 
-			// Fill marking
-			mpSeparator->getShader()->fillValue("markColor", getStyle()->markColor);
-			mpSeparator->getShader()->fillValue("mark", mMark.getValue());
+            // Fill marking
+            mpSeparator->getShader()->fillValue("markColor", getStyle()->markColor);
+            mpSeparator->getShader()->fillValue("mark", mMark.getValue());
 
-            for (int i = 0; i < mSeparatorDrawMatrices.size(); i++)
+            for (uint i = 0; i < mSeparatorDrawMatrices.size(); i++)
             {
                 // Fill matrix in shader
                 mpSeparator->getShader()->fillValue("matrix", mSeparatorDrawMatrices[i]);
@@ -107,7 +112,6 @@ namespace eyegui
 
     InteractiveElement* Stack::internalNextInteractiveElement(Element const * pChildCaller)
     {
-        int start = 0;
         bool startFound = false;
 
         if (pChildCaller == NULL)
@@ -131,7 +135,6 @@ namespace eyegui
                 // Compare with caller
                 if (upChild.get() == pChildCaller)
                 {
-                    start = index;
                     startFound = true;
                 }
             }
@@ -194,7 +197,7 @@ namespace eyegui
 
             // Collect used size
             std::vector<int> usedWidths, usedHeights;
-            int elementNumber = 1;
+            uint elementNumber = 1;
             for (const std::unique_ptr<Element>& element : mChildren)
             {
                 int usedWidth, usedHeight;
@@ -288,7 +291,7 @@ namespace eyegui
                 usedElemX = finalX + finalWidth + deltaX;
 
                 // Separators (only add new ones if not last element)
-                if (separatorSize > 0 && separatorPositions.size() < separatorCount)
+                if (separatorSize > 0 && (int)(separatorPositions.size()) < separatorCount)
                 {
                     separatorPositions.push_back(usedElemX + offsetX);
                     usedElemX += separatorSize;
@@ -315,7 +318,7 @@ namespace eyegui
 
             // Collect used size
             std::vector<int> usedWidths, usedHeights;
-            int elementNumber = 1;
+            uint elementNumber = 1;
             for (const std::unique_ptr<Element>& element : mChildren)
             {
                 int usedWidth, usedHeight;
@@ -410,7 +413,7 @@ namespace eyegui
                 usedElemY = finalY + finalHeight + deltaY;
 
                 // Separators (only add new ones if not last element)
-                if (separatorSize > 0 && separatorPositions.size() < separatorCount)
+                if (separatorSize > 0 && (int)(separatorPositions.size()) < separatorCount)
                 {
                     separatorPositions.push_back(usedElemY + offsetY);
                     usedElemY += separatorSize;
@@ -448,13 +451,15 @@ namespace eyegui
                 separatorHeight = separatorSize;
             }
 
-            for (int i = 0; i < separatorPositions.size(); i++)
+            for (uint i = 0; i < separatorPositions.size(); i++)
             {
                 // Translation depending on orientation
                 if (getOrientation() == Element::Orientation::HORIZONTAL)
                 {
                     mSeparatorDrawMatrices.push_back(
                         calculateDrawMatrix(
+                            mpLayout->getLayoutWidth(),
+                            mpLayout->getLayoutHeight(),
                             separatorPositions[i],
                             mY,
                             separatorWidth,
@@ -464,6 +469,8 @@ namespace eyegui
                 {
                     mSeparatorDrawMatrices.push_back(
                         calculateDrawMatrix(
+                            mpLayout->getLayoutWidth(),
+                            mpLayout->getLayoutHeight(),
                             mX,
                             separatorPositions[i],
                             separatorWidth,

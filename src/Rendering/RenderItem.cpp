@@ -16,8 +16,9 @@ namespace eyegui
         mpMesh = pMesh;
 
         // Save currently set buffer and vertex array object
-        GLint oldBuffer, oldVAO;
-        glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
+        GLint oldBuffer = -1;
+        GLint oldVAO = -1;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
         glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
 
         // Vertex array object

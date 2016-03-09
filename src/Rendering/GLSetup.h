@@ -7,7 +7,7 @@
 // Stores the current state of used OpenGL functions, sets the necesarry ones
 // for rendering and restores to previous state after rendering. Texture slots
 // are NOT restored because this would be expensive and probably meaningless
-// when the user of this library is sane.
+// when the user of this library is sane. Framebuffers are also not touched.
 
 #ifndef GL_SETUP_H_
 #define GL_SETUP_H_
@@ -16,38 +16,36 @@
 
 namespace eyegui
 {
-	class GLSetup
-	{
-	public:
+    class GLSetup
+    {
+    public:
 
-		// Initialization
-		void init();
+		// Initialization can be static
+		static void init() { ogl_LoadFunctions(); }
 
-		// Store current state and set own
-		void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
+        // Store current state and set own
+        void setup(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
 
-		// Reset stored state
-		void restore();
+        // Reset stored state
+        void restore();
 
-	private:
+    private:
 
-		// Set boolean capability
-		void setCapability(GLenum cap, GLboolean enable) const;
+        // Set boolean capability
+        void setCapability(GLenum cap, GLboolean enable) const;
 
-		// Member
-		GLint mViewport[4];
-		GLboolean mBlend;
-		GLboolean mDepthMask;
-		GLint mBlendSrc;
-		GLint mBlendDst;
-		GLint mShaderProgram;
-		GLint mVertexArrayObject;
-		GLboolean mTexture2D;
-		GLint mActiveTexture;
-		GLboolean mCulling;
-		GLboolean mColorWritemask[4];
-		GLboolean mStencilTest;
-	};
+        // Member
+        GLint mViewport[4];
+        GLboolean mBlend;
+        GLboolean mDepthMask;
+        GLint mBlendSrc;
+        GLint mBlendDst;
+        GLint mShaderProgram;
+        GLint mVertexArrayObject;
+        GLboolean mCulling;
+        GLboolean mColorWritemask[4];
+        GLboolean mStencilTest;
+    };
 }
 
 #endif // GL_SETUP_H_

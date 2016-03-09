@@ -8,7 +8,7 @@
 #include "InteractiveElement.h"
 
 #include "Layout.h"
-#include "Helper.h"
+#include "src/Utilities/Helper.h"
 
 namespace eyegui
 {
@@ -23,8 +23,7 @@ namespace eyegui
         float relativeScale,
         float border,
         bool dimming,
-        bool adaptiveScaling,
-        std::string iconFilepath) : Element(
+        bool adaptiveScaling) : NotifierElement(
             id,
             styleName,
             pParent,
@@ -39,9 +38,7 @@ namespace eyegui
     {
         mType = Type::INTERACTIVE_ELEMENT;
 
-        // Filling members
-        setIcon(iconFilepath);
-        mpRenderItem = NULL;
+        // Filling member
         mHighlight.setValue(0);
         mIsHighlighted = false;
         mSelection.setValue(0);
@@ -76,27 +73,6 @@ namespace eyegui
         mIsSelected = doSelect;
     }
 
-    void InteractiveElement::setIcon(std::string filepath)
-    {
-        if (filepath != EMPTY_STRING_ATTRIBUTE)
-        {
-            mpIcon = mpAssetManager->fetchTexture(filepath);
-        }
-        else
-        {
-            mpIcon = mpAssetManager->fetchTexture(graphics::Type::NOT_FOUND);
-        }
-    }
-
-    void InteractiveElement::pipeNotification(Notification notification, Layout* pLayout)
-    {
-        // Only pipe if visible (so fading elements do not notify)
-        if (mAlpha >= 1)
-        {
-            specialPipeNotification(notification, pLayout);
-        }
-    }
-
     InteractiveElement* InteractiveElement::internalNextInteractiveElement(Element const * pCaller)
     {
         return this;
@@ -120,33 +96,6 @@ namespace eyegui
         return 0;
     }
 
-    void InteractiveElement::specialDraw() const
-    {
-        // Fill shader
-        mpRenderItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpRenderItem->getShader()->fillValue("highlight", mHighlight.getValue());
-        mpRenderItem->getShader()->fillValue("alpha", mAlpha);
-        mpRenderItem->getShader()->fillValue("activity", mActivity.getValue());
-        mpRenderItem->getShader()->fillValue("selection", mSelection.getValue());
-        mpRenderItem->getShader()->fillValue("color", getStyle()->color);
-        mpRenderItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
-        mpRenderItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
-        mpRenderItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
-        mpRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
-        mpRenderItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
-        mpRenderItem->getShader()->fillValue("dim", mDim.getValue());
-        mpRenderItem->getShader()->fillValue("markColor", getStyle()->markColor);
-        mpRenderItem->getShader()->fillValue("mark", mMark.getValue());
-
-        // Bind icon texture
-        mpIcon->bind(0);
-    }
-
-	void InteractiveElement::specialTransformAndSize()
-	{
-		// Nothing to do, but must be implemented
-	}
-
     void InteractiveElement::specialReset()
     {
         mHighlight.setValue(0);
@@ -158,25 +107,5 @@ namespace eyegui
     bool InteractiveElement::mayConsumeInput()
     {
         return true;
-    }
-
-    glm::vec2 InteractiveElement::iconAspectRatioCorrection() const
-    {
-        float aspectRatio = (float)mWidth / (float)mHeight;
-        float iconAspectRatio = mpIcon->getAspectRatio();
-        float relation = aspectRatio / iconAspectRatio;
-        glm::vec2 iconUVScale;
-        if (relation >= 1)
-        {
-            // Render item wider than icon
-            iconUVScale = glm::vec2(relation, 1.0f);
-        }
-        else
-        {
-            // Icon wider than render item
-            iconUVScale = glm::vec2(1.0f, 1.0f / relation);
-        }
-
-        return iconUVScale;
     }
 }

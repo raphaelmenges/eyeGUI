@@ -8,8 +8,9 @@
 #include "GUI.h"
 
 #include "Defines.h"
-#include "OperationNotifier.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
+#include "externals/OpenGLLoader/gl_core_3_3.h"
 
 #include <algorithm>
 
@@ -20,8 +21,15 @@ namespace eyegui
         int height,
         std::string fontFilepath,
         CharacterSet characterSet,
-        std::string localizationFilepath)
+        std::string localizationFilepath,
+        float vectorGraphicsDPI,
+        float fontTallSize,
+        float fontMediumSize,
+        float fontSmallSize)
     {
+        // Initialize OpenGL
+        GLSetup::init();
+
         // Initialize members
         mWidth = width;
         mHeight = height;
@@ -35,9 +43,10 @@ namespace eyegui
         mResizeWaitTime = 0;
         mupGazeDrawer = std::unique_ptr<GazeDrawer>(new GazeDrawer(this, mupAssetManager.get()));
         mDrawGazeVisualization = false;
-
-        // Initialize OpenGL
-        mGLSetup.init();
+        mVectorGraphicsDPI = vectorGraphicsDPI;
+        mFontTallSize = fontTallSize;
+        mFontMediumSize = fontMediumSize;
+        mFontSmallSize = fontSmallSize;
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -133,8 +142,8 @@ namespace eyegui
             mAccPeriodicTime -= ACCUMULATED_TIME_PERIOD;
         }
 
-		// Copy constant input
-		Input copyInput = input;
+        // Copy constant input
+        Input copyInput = input;
 
         // Update all layouts in reversed order
         for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
@@ -150,13 +159,14 @@ namespace eyegui
         return copyInput;
     }
 
-    void GUI::draw()
+    void GUI::draw() const
     {
-        // Setup OpenGL (therefore is draw not const)
-        mGLSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
+        // Setup OpenGL
+        GLSetup glSetup;
+        glSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
 
         // Draw all layouts
-        for (int i = 0; i < mLayouts.size(); i++)
+        for (uint i = 0; i < mLayouts.size(); i++)
         {
             mLayouts[i]->draw();
         }
@@ -180,7 +190,7 @@ namespace eyegui
         }
 
         // Restore OpenGL state of application
-        mGLSetup.restore();
+        glSetup.restore();
     }
 
     void GUI::moveLayoutToFront(Layout* pLayout)
@@ -263,11 +273,38 @@ namespace eyegui
         }
     }
 
+    float GUI::getVectorGraphicsDPI() const
+    {
+        return mVectorGraphicsDPI;
+    }
+
+    float GUI::getSizeOfFont(FontSize fontSize) const
+    {
+        switch (fontSize)
+        {
+        case FontSize::TALL:
+            return mFontTallSize;
+            break;
+        case FontSize::MEDIUM:
+            return mFontMediumSize;
+            break;
+        case FontSize::SMALL:
+            return mFontSmallSize;
+            break;
+        case FontSize::KEYBOARD:
+            return FONT_KEYBOARD_SIZE;
+            break;
+        default:
+            return 0;
+            break;
+        }
+    }
+
     int GUI::findLayout(Layout const * pLayout) const
     {
         // Try to find index of layout in vector
         int index = -1;
-        for (int i = 0; i < mLayouts.size(); i++)
+        for (uint i = 0; i < mLayouts.size(); i++)
         {
             if (mLayouts[i].get() == pLayout)
             {
@@ -284,7 +321,7 @@ namespace eyegui
         std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
         mLayouts.erase(mLayouts.begin() + oldIndex);
 
-        if (newIndex >= mLayouts.size())
+        if (newIndex >= (int)(mLayouts.size()))
         {
             mLayouts.push_back(std::move(upLayout));
         }
@@ -391,7 +428,7 @@ namespace eyegui
             mpGUI->mLayouts.end());
 
         // Check, whether something has changed
-        if(mpGUI->mLayouts.size() == layoutCount)
+        if((int)(mpGUI->mLayouts.size() )== layoutCount)
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Tried to remove layout that did not exist");
         }

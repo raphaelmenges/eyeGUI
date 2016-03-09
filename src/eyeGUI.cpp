@@ -9,22 +9,26 @@
 
 #include "GUI.h"
 #include "Layout.h"
-#include "OperationNotifier.h"
-#include "PathBuilder.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/PathBuilder.h"
 
 // Version
-static const std::string VERSION_STRING = "0.7";
+static const std::string VERSION_STRING = "0.8";
 
 namespace eyegui
 {
-    GUI* createGUI(
-        int width,
-        int height,
-        std::string fontFilepath,
-        CharacterSet characterSet,
-        std::string localizationFilepath)
+    GUI* GUIBuilder::construct() const
     {
-        return (new GUI(width, height, fontFilepath, characterSet, localizationFilepath));
+        return new GUI(
+            width,
+            height,
+            fontFilepath,
+            characterSet,
+            localizationFilepath,
+            vectorGraphicsDPI,
+            fontTallSize,
+            fontMediumSize,
+            fontSmallSize);
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
@@ -42,7 +46,7 @@ namespace eyegui
         return pGUI->update(tpf, input);
     }
 
-    void drawGUI(GUI* pGUI)
+    void drawGUI(GUI const * pGUI)
     {
         pGUI->draw();
     }
@@ -56,7 +60,7 @@ namespace eyegui
         }
         else
         {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "GUI was tried to terminate but is already terminated");
+            throwWarning(OperationNotifier::Operation::RUNTIME, "GUI was tried to terminate but is NULL pointer");
         }
     }
 
@@ -178,6 +182,11 @@ namespace eyegui
         return pLayout->isElementDimming(id);
     }
 
+    bool isElementMarking(Layout const * pLayout, std::string id)
+    {
+        return pLayout->isElementMarking(id);
+    }
+
     void setElementHiding(Layout* pLayout, std::string id, bool hidden)
     {
         pLayout->setElementHiding(id, hidden);
@@ -215,9 +224,9 @@ namespace eyegui
         pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r, g, b, a));
     }
 
-    void setIconOfInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
+    void setIconOfIconInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
     {
-        pLayout->setIconOfInteractiveElement(id, iconFilepath);
+        pLayout->setIconOfIconInteractiveElement(id, iconFilepath);
     }
 
     void interactWithInteractiveElement(Layout* pLayout, std::string id)
@@ -285,6 +294,26 @@ namespace eyegui
         pLayout->setKeyOfTextBlock(id, key);
     }
 
+    void setFastTypingOfKeyboard(Layout* pLayout, std::string id, bool useFastTyping)
+    {
+        pLayout->setFastTypingOfKeyboard(id, useFastTyping);
+    }
+
+    void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase)
+    {
+        pLayout->setCaseOfKeyboard(id, keyboardCase);
+    }
+
+    unsigned int getCountOfKeymapsInKeyboard(Layout const * pLayout, std::string id)
+    {
+        return pLayout->getCountOfKeymapsInKeyboard(id);
+    }
+
+    void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex)
+    {
+        pLayout->setKeymapOfKeyboard(id, keymapIndex);
+    }
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);
@@ -295,12 +324,23 @@ namespace eyegui
         pLayout->registerSensorListener(id, wpListener);
     }
 
-    void replaceElementWithBlock(Layout* pLayout, std::string id, bool consumeInput, bool fade)
+    void registerKeyboardListener(Layout* pLayout, std::string id, std::weak_ptr<KeyboardListener> wpListener)
     {
-        pLayout->replaceElementWithBlock(id, consumeInput, fade);
+        pLayout->registerKeyboardListener(id, wpListener);
     }
 
-    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, PictureAlignment alignment, bool fade)
+    void replaceElementWithBlock(
+        Layout* pLayout,
+        std::string id,
+        bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
+        bool fade)
+    {
+        pLayout->replaceElementWithBlock(id, consumeInput, backgroundFilepath, backgroundAlignment, fade);
+    }
+
+    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, ImageAlignment alignment, bool fade)
     {
         pLayout->replaceElementWithPicture(id, filepath, alignment, fade);
     }
@@ -334,10 +374,25 @@ namespace eyegui
         TextFlowVerticalAlignment verticalAlignment,
         std::u16string content,
         float innerBorder,
+        float textScale,
         std::string key,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
         bool fade)
     {
-        pLayout->replaceElementWithTextBlock(id, consumeInput, fontSize, alignment, verticalAlignment, content, innerBorder, key, fade);
+        pLayout->replaceElementWithTextBlock(
+            id,
+            consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
+            fontSize,
+            alignment,
+            verticalAlignment,
+            textScale,
+            content,
+            innerBorder,
+            key,
+            fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)
