@@ -1,4 +1,11 @@
 ### VERSION 0.9
+- tolower madnes
+  - Get rid of characterset and take "toload" characters from keyboard
+  - Then do some mapping from big to small letters and use it in keyboard (reverse must be possible too)
+  - so letters to load are collected in keyboard class, which uses that mapping from big to small....
+  - additional letters to load may be somehwere in...addition
+
+
 - Keyboard: Better german and english layout
 -"Guesser" (tries to guess what you want to write)
   - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
@@ -9,7 +16,7 @@
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
-- Get rid of characterset and take "toload" characters from keyboard? Maybe one texture atlas is enough (or finally do multiatlas support)
+
 - Font has sometimes little rendering issues
 	- Caused by oversized letters. More intelligent packing algorithm needed!
 - IDEA: disable opengl storing stuff by function (to save computation time)
