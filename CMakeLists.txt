@@ -120,6 +120,18 @@ file(GLOB_RECURSE UTFCPP
 	"${UFTCPP_DIR}/*.h")
 include_directories("${UFTCPP_DIR}")
 
+# Add utf8rewind
+set(UTF8REWIND_DIR "${EXTERNAL_DIR}/utf8rewind")
+file(GLOB UTF8REWIND
+	"${UTF8REWIND_DIR}/source/unicodedatabase.h"
+	"${UTF8REWIND_DIR}/source/unicodedatabase.c"
+	"${UTF8REWIND_DIR}/source/utf8rewind.c"
+	"${UTF8REWIND_DIR}/source/internal/*"
+	)
+
+include_directories("${UTF8REWIND_DIR}/include/utf8rewind")
+
+
 # Collect all code
 set(ALL_CODE
 	${SOURCES}
@@ -130,7 +142,8 @@ set(ALL_CODE
 	${STB_IMAGE}
 	${NANO_SVG}
 	${FREETYPE2}
-	${UTFCPP})
+	${UTFCPP}
+	${UTF8REWIND})
 
 # Filtering for Visual Studio
 IF(MSVC)

@@ -1,10 +1,8 @@
 ### VERSION 0.9
-- tolower madnes
-  - Get rid of characterset and take "toload" characters from keyboard
-  - Then do some mapping from big to small letters and use it in keyboard (reverse must be possible too)
-  - so letters to load are collected in keyboard class, which uses that mapping from big to small....
-  - additional letters to load may be somehwere in...addition
-
+- Dictionary
+  - Create helper class for unicode which uses utf8rewind
+  - Get rid of utfcpp library
+  - Think about other dictionary structure (guess it would be better to preserve lower and upper case from dictionary)
 
 - Keyboard: Better german and english layout
 -"Guesser" (tries to guess what you want to write)
