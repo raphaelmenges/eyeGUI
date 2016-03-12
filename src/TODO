@@ -3,6 +3,7 @@
   - Create helper class for unicode which uses utf8rewind
   - Get rid of utfcpp library
   - Think about other dictionary structure (guess it would be better to preserve lower and upper case from dictionary)
+  - check whether i have used .size() somewhere for a string. Not good. Use length?
 
 - Keyboard: Better german and english layout
 -"Guesser" (tries to guess what you want to write)
