@@ -1,0 +1,153 @@
+sentences that contain all letters commonly used in a language
+--------------------------------------------------------------
+
+markus kuhn <http://www.cl.cam.ac.uk/~mgk25/> -- 2012-04-11
+
+this is an example of a plain-text file encoded in utf-8.
+
+
+danish (da)
+---------
+
+  quizdeltagerne spiste jordbær med fløde, mens cirkusklovnen
+  wolther spillede på xylofon.
+  (= quiz contestants were eating strawbery with cream while wolther
+  the circus clown played on xylophone.)
+
+german (de)
+-----------
+
+  falsches üben von xylophonmusik quält jeden größeren zwerg
+  (= wrongful practicing of xylophone music tortures every larger dwarf)
+
+  zwölf boxkämpfer jagten eva quer über den sylter deich
+  (= twelve boxing fighters hunted eva across the dike of sylt)
+
+  heizölrückstoßabdämpfung
+  (= fuel oil recoil absorber)
+  (jqvwxy missing, but all non-ascii letters in one word)
+
+greek (el)
+----------
+
+  γαζέες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο
+  (= no more shall i see acacias or myrtles in the golden clearing)
+
+  ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία
+  (= i uncover the soul-destroying abhorrence)
+
+  ζαφείρι δέξου πάγκαλο, βαθῶν ψυχῆς τὸ σῆμα.
+  (= receive an excellent sapphire, denoting profundity of soul)
+
+english (en)
+------------
+
+  the quick brown fox jumps over the lazy dog
+
+spanish (es)
+------------
+
+  el pingüino wenceslao hizo kilómetros bajo exhaustiva lluvia y 
+  frío, añoraba a su querido cachorro.
+  (contains every letter and every accent, but not every combination
+  of vowel + acute.)
+
+french (fr)
+-----------
+
+  portez ce vieux whisky au juge blond qui fume sur son île intérieure, à
+  côté de l'alcôve ovoïde, où les bûches se consument dans l'âtre, ce
+  qui lui permet de penser à la cænogenèse de l'être dont il est question
+  dans la cause ambiguë entendue à moÿ, dans un capharnaüm qui,
+  pense-t-il, diminue çà et là la qualité de son œuvre. 
+
+  l'île exiguë
+  où l'obèse jury mûr
+  fête l'haï volapük,
+  âne ex aéquo au whist,
+  ôtez ce vœu déçu.
+
+  le cœur déçu mais l'âme plutôt naïve, louÿs rêva de crapaüter en
+  canoë au delà des îles, près du mälström où brûlent les novæ.
+
+irish gaelic (ga)
+-----------------
+
+  d'fhuascail íosa, úrmhac na hóighe beannaithe, pór éava agus ádhaimh
+
+hungarian (hu)
+--------------
+
+  árvíztűrő tükörfúrógép
+  (= flood-proof mirror-drilling machine, only all non-ascii letters)
+
+icelandic (is)
+--------------
+
+  kæmi ný öxi hér ykist þjófum nú bæði víl og ádrepa
+
+  sævör grét áðan því úlpan var ónýt
+  (some ascii letters missing)
+
+japanese (jp)
+-------------
+
+  hiragana: (iroha)
+
+  いろはにほへとちりぬるを
+  わかよたれそつねならむ
+  うゐのおくやまけふこえて
+  あさきゆめみしゑひもせす
+
+  katakana:
+
+  イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム
+  ウヰノオクヤマ ケフコエテ アサキユメミシ ヱヒモセスン
+
+hebrew (iw)
+-----------
+
+  ? דג סקרן שט בים מאוכזב ולפתע מצא לו חברה איך הקליטה
+
+polish (pl)
+-----------
+
+  pchnąć w tę łódź jeża lub ośm skrzyń fig
+  (= to push a hedgehog or eight bins of figs in this boat)
+
+russian (ru)
+------------
+
+  в чащах юга жил бы цитрус? да, но фальшивый экземпляр!
+  (= would a citrus live in the bushes of south? yes, but only a fake one!)
+
+  съешь же ещё этих мягких французских булок да выпей чаю
+  (= eat some more of these fresh french loafs and have some tea) 
+
+thai (th)
+---------
+
+  [--------------------------|------------------------]
+  ๏ เป็นมนุษย์สุดประเสริฐเลิศคุณค่า  กว่าบรรดาฝูงสัตว์เดรัจฉาน
+  จงฝ่าฟันพัฒนาวิชาการ           อย่าล้างผลาญฤๅเข่นฆ่าบีฑาใคร
+  ไม่ถือโทษโกรธแช่งซัดฮึดฮัดด่า     หัดอภัยเหมือนกีฬาอัชฌาสัย
+  ปฏิบัติประพฤติกฎกำหนดใจ        พูดจาให้จ๊ะๆ จ๋าๆ น่าฟังเอย ฯ
+
+  [the copyright for the thai example is owned by the computer
+  association of thailand under the royal patronage of his majesty the
+  king.]
+
+turkish (tr)
+------------
+
+  pijamalı hasta, yağız şoföre çabucak güvendi.
+  (=patient with pajamas, trusted swarthy driver quickly)
+
+
+special thanks to the people from all over the world who contributed
+these sentences since 1999.
+
+a much larger collection of such pangrams is now available at
+
+  http://en.wikipedia.org/wiki/list_of_pangrams
+

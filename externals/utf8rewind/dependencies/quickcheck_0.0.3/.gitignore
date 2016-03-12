@@ -1,0 +1,5 @@
+*.o
+.sconsign.dblite
+doc
+examples
+tests

@@ -1,0 +1,14 @@
+QuickCheck++ 0.0.3
+
+QuickCheck++ is a tool for testing C++ programs automatically, inspired by
+QuickCheck [1], a similar library for Haskell programs.
+
+[1]: http://www.cs.chalmers.se/~rjmh/QuickCheck/
+
+QuickCheck++ is experimental, best-effort project. It comes with absolutely no
+warranty, see LICENSE for detail. It is subject to change and should not be
+relied on at the present time, except if you are perfectly happy with current
+version.
+
+See doc/html/index.html for usage (first run 'doxygen doxygen.cfg' if there is
+no such folder).

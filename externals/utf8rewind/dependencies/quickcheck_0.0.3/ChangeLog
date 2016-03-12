@@ -1,0 +1,15 @@
+0.0.3 - Wed, 19 Sep 2012 10:31:29 +0200
+
+   * Updated documentation
+   * Improved some conversions
+   * Fixed a two-phase name lookup bug
+   * Fixed a signedness bug in oneOf
+
+0.0.2 - Thu Apr 9 13:31:41 2009 +0200
+
+   * Improved handling of fixed test cases
+   * Updated documentation
+
+0.0.1 - Mon Mar 30 14:39:39 2009 +0200
+
+   * Initial import

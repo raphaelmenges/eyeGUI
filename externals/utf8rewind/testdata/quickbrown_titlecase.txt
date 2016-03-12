@@ -1,0 +1,153 @@
+Sentences That Contain All Letters Commonly Used In A Language
+--------------------------------------------------------------
+
+Markus Kuhn <Http://Www.Cl.Cam.Ac.Uk/~Mgk25/> -- 2012-04-11
+
+This Is An Example Of A Plain-Text File Encoded In Utf-8.
+
+
+Danish (Da)
+---------
+
+  Quizdeltagerne Spiste Jordbær Med Fløde, Mens Cirkusklovnen
+  Wolther Spillede På Xylofon.
+  (= Quiz Contestants Were Eating Strawbery with Cream While Wolther
+  The Circus Clown Played On Xylophone.)
+
+German (De)
+-----------
+
+  Falsches Üben Von Xylophonmusik Quält Jeden Größeren Zwerg
+  (= Wrongful Practicing of Xylophone Music Tortures Every Larger Dwarf)
+
+  Zwölf Boxkämpfer Jagten Eva Quer Über Den Sylter Deich
+  (= Twelve Boxing Fighters Hunted Eva Across The Dike of Sylt)
+
+  Heizölrückstoßabdämpfung
+  (= Fuel Oil Recoil Absorber)
+  (Jqvwxy Missing, But All Non-Ascii Letters In One Word)
+
+Greek (El)
+----------
+
+  Γαζέες Καὶ Μυρτιὲς Δὲν Θὰ Βρῶ Πιὰ Στὸ Χρυσαφὶ Ξέφωτο
+  (= No More Shall I See Acacias or Myrtles in the Golden Clearing)
+
+  Ξεσκεπάζω Τὴν Ψυχοφθόρα Βδελυγμία
+  (= I Uncover The Soul-destroying Abhorrence)
+
+  Ζαφείρι Δέξου Πάγκαλο, Βαθῶν Ψυχῆς Τὸ Σῆμα.
+  (= Receive an Excellent Sapphire, Denoting Profundity of Soul)
+
+English (En)
+------------
+
+  The Quick Brown Fox Jumps Over The Lazy Dog
+
+Spanish (Es)
+------------
+
+  El Pingüino Wenceslao Hizo Kilómetros Bajo Exhaustiva Lluvia Y 
+  Frío, Añoraba A Su Querido Cachorro.
+  (Contains Every Letter And Every Accent, But Not Every Combination
+  Of Vowel + Acute.)
+
+French (Fr)
+-----------
+
+  Portez Ce Vieux Whisky Au Juge Blond Qui Fume Sur Son Île Intérieure, À
+  Côté De L'Alcôve Ovoïde, Où Les Bûches Se Consument Dans L'Âtre, Ce
+  Qui Lui Permet De Penser À La Cænogenèse De L'Être Dont Il Est Question
+  Dans La Cause Ambiguë Entendue À Moÿ, Dans Un Capharnaüm Qui,
+  Pense-T-Il, Diminue Çà Et Là La Qualité De Son Œuvre. 
+
+  L'Île Exiguë
+  Où L'Obèse Jury Mûr
+  Fête L'Haï Volapük,
+  Âne Ex Aéquo Au Whist,
+  Ôtez Ce Vœu Déçu.
+
+  Le Cœur Déçu Mais L'Âme Plutôt Naïve, Louÿs Rêva De Crapaüter En
+  Canoë Au Delà Des Îles, Près Du Mälström Où Brûlent Les Novæ.
+
+Irish Gaelic (Ga)
+-----------------
+
+  D'Fhuascail Íosa, Úrmhac Na Hóighe Beannaithe, Pór Éava Agus Ádhaimh
+
+Hungarian (Hu)
+--------------
+
+  Árvíztűrő Tükörfúrógép
+  (= Flood-Proof Mirror-Drilling Machine, Only All Non-Ascii Letters)
+
+Icelandic (Is)
+--------------
+
+  Kæmi Ný Öxi Hér Ykist Þjófum Nú Bæði Víl Og Ádrepa
+
+  Sævör Grét Áðan Því Úlpan Var Ónýt
+  (Some Ascii Letters Missing)
+
+Japanese (Jp)
+-------------
+
+  Hiragana: (Iroha)
+
+  いろはにほへとちりぬるを
+  わかよたれそつねならむ
+  うゐのおくやまけふこえて
+  あさきゆめみしゑひもせす
+
+  Katakana:
+
+  イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム
+  ウヰノオクヤマ ケフコエテ アサキユメミシ ヱヒモセスン
+
+Hebrew (Iw)
+-----------
+
+  ? דג סקרן שט בים מאוכזב ולפתע מצא לו חברה איך הקליטה
+
+Polish (Pl)
+-----------
+
+  Pchnąć W Tę Łódź Jeża Lub Ośm Skrzyń Fig
+  (= To Push A Hedgehog Or Eight Bins Of Figs In This Boat)
+
+Russian (Ru)
+------------
+
+  В Чащах Юга Жил Бы Цитрус? Да, Но Фальшивый Экземпляр!
+  (= Would a Citrus Live In The Bushes Of South? Yes, But Only A Fake One!)
+
+  Съешь Же Ещё Этих Мягких Французских Булок Да Выпей Чаю
+  (= Eat Some More Of These Fresh French Loafs And Have Some Tea) 
+
+Thai (Th)
+---------
+
+  [--------------------------|------------------------]
+  ๏ เป็นมนุษย์สุดประเสริฐเลิศคุณค่า  กว่าบรรดาฝูงสัตว์เดรัจฉาน
+  จงฝ่าฟันพัฒนาวิชาการ           อย่าล้างผลาญฤๅเข่นฆ่าบีฑาใคร
+  ไม่ถือโทษโกรธแช่งซัดฮึดฮัดด่า     หัดอภัยเหมือนกีฬาอัชฌาสัย
+  ปฏิบัติประพฤติกฎกำหนดใจ        พูดจาให้จ๊ะๆ จ๋าๆ น่าฟังเอย ฯ
+
+  [The Copyright For The Thai Example Is Owned By The Computer
+  Association Of Thailand Under The Royal Patronage Of His Majesty The
+  King.]
+
+Turkish (Tr)
+------------
+
+  Pijamalı Hasta, Yağız Şoföre Çabucak Güvendi.
+  (=Patient With Pajamas, Trusted Swarthy Driver Quickly)
+
+
+Special Thanks To The People From All Over The World Who Contributed
+These Sentences Since 1999.
+
+A Much Larger Collection Of Such Pangrams Is Now Available At
+
+  Http://En.Wikipedia.Org/Wiki/List_Of_Pangrams
+
