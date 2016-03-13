@@ -97,8 +97,7 @@ namespace eyegui
 		if (errors == UTF8_ERR_NONE)
 		{
 			// Use determined size to reserve space
-			uint16_t* space = (uint16_t*)malloc(size + 1);
-			space[size] = 0;
+			uint16_t* space = (uint16_t*)malloc(size);
 
 			// Convert from UTF-8 to UTF-16
 			utf8toutf16(
@@ -107,7 +106,7 @@ namespace eyegui
 				&errors);
 
 			// Copy to referenced output string
-			rOutput = std::u16string((char16_t*)space, size + 1);
+			rOutput = std::u16string((char16_t*)space, (size / sizeof(char16_t)));
 
 			// Free space of malloc
 			free(space);
