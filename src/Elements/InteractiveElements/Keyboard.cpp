@@ -566,23 +566,22 @@ namespace eyegui
 
     void Keyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
     {
-        // Has to be declared here, otherwise Visual Studio does not compile...
-        std::string lastPressedKeyValue8;
-
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
         case NotificationType::KEYBOARD_KEY_PRESSED:
+		{
+			// Notify listener method with UTF-16 string
+			notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), mLastPressedKeyValue);
 
-            // Notify listener method with UTF-16 string
-            notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), mLastPressedKeyValue);
+			// Convert last pressed value to UTF-8 string
+			std::string lastPressedKeyValue8;
+			convertUTF16ToUTF8(mLastPressedKeyValue, lastPressedKeyValue8);
 
-            // Convert last pressed value to UTF-8 string
-            utf8::utf16to8(mLastPressedKeyValue.begin(), mLastPressedKeyValue.end(), back_inserter(lastPressedKeyValue8));
-
-            // Notify listener method with UTF-8 string
-            notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), lastPressedKeyValue8);
-            break;
+			// Notify listener method with UTF-8 string
+			notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), lastPressedKeyValue8);
+			break;
+		}
         default:
             throwWarning(
                 OperationNotifier::Operation::BUG,

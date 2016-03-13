@@ -217,7 +217,7 @@ namespace eyegui
 
     void AtlasFont::fillPixelHeights()
     {
-        float windowHeight = mpGUI->getWindowHeight();
+        float windowHeight =(float) mpGUI->getWindowHeight();
         mTallPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::TALL));
         mMediumPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::MEDIUM));
         mSmallPixelHeight = (int)(windowHeight * mpGUI->getSizeOfFont(FontSize::SMALL));

@@ -115,4 +115,42 @@ namespace eyegui
 		// Return error check
 		return (errors == UTF8_ERR_NONE);
 	}
+
+	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput)
+	{
+		// Variables which will be filled
+		int32_t errors;
+		size_t size;
+
+		// Input size (TODO: why divide through sizeof char16_t?)
+		const size_t inputSize = sizeof(rInput.c_str()) / sizeof(char16_t);
+
+		// First, determine needed size in new string
+		size = utf16toutf8(
+			(utf16_t const *)(rInput.c_str()), inputSize,
+			NULL, 0,
+			&errors);
+
+		// Only proceed when no error occured
+		if (errors == UTF8_ERR_NONE)
+		{
+			// Use determined size to reserve space
+			char* space = (char*)malloc(size);
+
+			// Convert from UTF-16 to UTF-8
+			utf16toutf8(
+				(utf16_t const *)(rInput.c_str()), inputSize,
+				space, size,
+				&errors);
+
+			// Copy to referenced output string
+			rOutput = std::string(space, (size / sizeof(char)));
+
+			// Free space of malloc
+			free(space);
+		}
+
+		// Return error check
+		return (errors == UTF8_ERR_NONE);
+	}
 }
