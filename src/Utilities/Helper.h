@@ -25,6 +25,9 @@ namespace eyegui
 
     // Convert pixel space to drawing space (origin top left)
     glm::mat4 calculateDrawMatrix(int layoutWidth, int layoutHeight, int x, int y, int width, int height);
+
+	// Returns whether conversion was successful
+	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput);
 }
 
 #endif // HELPER_H_

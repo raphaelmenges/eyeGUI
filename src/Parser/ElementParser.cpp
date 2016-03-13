@@ -521,7 +521,8 @@ namespace eyegui
 
             // Convert to utf-16 string
             std::u16string content;
-            utf8::utf8to16(contentValue.begin(), contentValue.end(), back_inserter(content));
+			convertUTF8ToUTF16(contentValue, content);
+            // utf8::utf8to16(contentValue.begin(), contentValue.end(), back_inserter(content));
 
             // Get key for localization
             std::string key = parseStringAttribute("key", xmlTextBlock);

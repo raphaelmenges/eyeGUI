@@ -7,6 +7,8 @@
 
 #include "Helper.h"
 
+#include "externals\utf8rewind\include\utf8rewind\utf8rewind.h"
+
 namespace eyegui
 {
     float clamp(float value, float lowerBound, float upperBound)
@@ -78,4 +80,40 @@ namespace eyegui
 
         return matrix;
     }
+
+	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput)
+	{
+		// Variables which will be filled
+		int32_t errors;
+		size_t size;
+
+		// First, determine needed size in new string
+		size = utf8toutf16(
+			rInput.c_str(), rInput.size(),
+			NULL, 0,
+			&errors);
+
+		// Only proceed when no error occured
+		if (errors == UTF8_ERR_NONE)
+		{
+			// Use determined size to reserve space
+			uint16_t* space = (uint16_t*)malloc(size + 1);
+			space[size] = 0;
+
+			// Convert from UTF-8 to UTF-16
+			utf8toutf16(
+				rInput.c_str(), rInput.size(),
+				space, size,
+				&errors);
+
+			// Copy to referenced output string
+			rOutput = std::u16string((char16_t*)space, size + 1);
+
+			// Free space of malloc
+			free(space);
+		}
+
+		// Return error check
+		return (errors == UTF8_ERR_NONE);
+	}
 }
