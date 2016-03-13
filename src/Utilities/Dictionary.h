@@ -24,55 +24,57 @@
 //    / tripple letters and give a pointer from them to the "real word"
 // - Multiple dictionaries (URLs, Language....)
 
-class Dictionary
+namespace eyegui
 {
-public:
+	class Dictionary
+	{
+	public:
 
-    // Constructor
-    Dictionary();
+		// Constructor
+		Dictionary();
 
-    // Destructor
-    virtual ~Dictionary();
+		// Destructor
+		virtual ~Dictionary();
 
-    // Check for exact word
-    bool checkForWord(const std::u16string& rWord) const;
+		// Check for exact word
+		bool checkForWord(const std::u16string& rWord) const;
 
-    // Give similar words
-    std::vector<std::u16string> similarWords(const std::u16string& rWord, uint count) const;
+		// Give similar words
+		std::vector<std::u16string> similarWords(const std::u16string& rWord, uint count) const;
 
-private:
+	private:
 
-    // Some typedef for the map
-    struct Node;
-    typedef std::map<char16_t,Node> NodeMap;
+		// Some typedef for the map
+		class Node;
+		typedef std::map<char16_t, Node> NodeMap;
 
-    // Add single word to dictionary
-    void addWord(const std::u16string& rWord);
+		// Add single word to dictionary
+		void addWord(const std::u16string& rWord);
 
-    // To lower case
-    std::u16string toLower(const std::u16string& rWord) const;
+		// To lower case
+		std::u16string toLower(const std::u16string& rWord) const;
 
-    // TODO: word case == case of FIRST letter (more like word state or so)
-    // Possible cases for word, using 1 byte char as structure. None is used for "here is no word"
-    enum class WordCase : char {NONE, LOWER, UPPER, BOTH};
+		// TODO: word case == case of FIRST letter (more like word state or so)
+		// Possible cases for word, using 1 byte char as structure. None is used for "here is no word"
+		enum class WordCase : char { NONE, LOWER, UPPER, BOTH };
 
-    // Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
-    class Node
-    {
-    public:
+		// Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
+		class Node
+		{
+		public:
 
-        // Constructor
-        Node(char16_t letter) : letter(letter), wordCase(WordCase::NONE) {}
+			// Constructor
+			Node(char16_t letter) : letter(letter), wordCase(WordCase::NONE) {}
 
-        // Members
-        char16_t letter; // Letter in node
-        WordCase wordCase; // Case of word formed by letters in nodes from root to here
-        NodeMap children; // Further possible letters to form other words
-    };
+			// Members
+			char16_t letter; // Letter in node
+			WordCase wordCase; // Case of word formed by letters in nodes from root to here
+			NodeMap children; // Further possible letters to form other words
+		};
 
-    // Members
-    std::map<char16_t,Node> mRootMap; // Root map
-
-};
+		// Members
+		std::map<char16_t, Node> mRootMap; // Root map
+	};
+}
 
 #endif // DICTIONARY_H_
