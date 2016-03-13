@@ -122,9 +122,12 @@ namespace eyegui
 		int32_t errors;
 		size_t size;
 
+		// u16string's size returns count of letters, not byte size...
+		const size_t inputSize = rInput.size() * sizeof(char16_t);
+
 		// First, determine needed size in new string
 		size = utf16toutf8(
-			(utf16_t const *)(rInput.c_str()), rInput.size(),
+			(utf16_t const *)(rInput.c_str()), inputSize,
 			NULL, 0,
 			&errors);
 
@@ -136,7 +139,7 @@ namespace eyegui
 
 			// Convert from UTF-16 to UTF-8
 			utf16toutf8(
-				(utf16_t const *)(rInput.c_str()), rInput.size(),
+				(utf16_t const *)(rInput.c_str()), inputSize,
 				space, size,
 				&errors);
 
@@ -149,5 +152,13 @@ namespace eyegui
 
 		// Return error check
 		return (errors == UTF8_ERR_NONE);
+	}
+
+	bool setLower(char16_t& rCharacter)
+	{
+		// To char
+		//utf8toupper()
+		// To char16_t
+		return false;
 	}
 }

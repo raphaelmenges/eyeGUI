@@ -31,6 +31,9 @@ namespace eyegui
 
 	// Returns whether conversion was successful
 	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
+	
+	// Returns whether conversion whether change in case was successful
+	bool setLower(char16_t& rCharacter);
 }
 
 #endif // HELPER_H_

@@ -519,10 +519,8 @@ namespace eyegui
             // Xml parser replaces new lines with visible "\n"
             replaceString(contentValue, "\\n", "\n");
 
-            // Convert to utf-16 string (TODO: testing converting by roundtrip)
+            // Convert to utf-16 string
             std::u16string content;
-			convertUTF8ToUTF16(contentValue, content);
-			convertUTF16ToUTF8(content, contentValue);
 			convertUTF8ToUTF16(contentValue, content);
 
             // Get key for localization
