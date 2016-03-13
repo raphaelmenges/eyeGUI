@@ -122,12 +122,9 @@ namespace eyegui
 		int32_t errors;
 		size_t size;
 
-		// Input size (TODO: why divide through sizeof char16_t?)
-		const size_t inputSize = rInput.size();
-
 		// First, determine needed size in new string
 		size = utf16toutf8(
-			(utf16_t const *)(rInput.c_str()), inputSize,
+			(utf16_t const *)(rInput.c_str()), rInput.size(),
 			NULL, 0,
 			&errors);
 
@@ -139,7 +136,7 @@ namespace eyegui
 
 			// Convert from UTF-16 to UTF-8
 			utf16toutf8(
-				(utf16_t const *)(rInput.c_str()), inputSize,
+				(utf16_t const *)(rInput.c_str()), rInput.size(),
 				space, size,
 				&errors);
 
