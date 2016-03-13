@@ -123,7 +123,7 @@ namespace eyegui
 		size_t size;
 
 		// Input size (TODO: why divide through sizeof char16_t?)
-		const size_t inputSize = sizeof(rInput.c_str()) / sizeof(char16_t);
+		const size_t inputSize = rInput.size();
 
 		// First, determine needed size in new string
 		size = utf16toutf8(
