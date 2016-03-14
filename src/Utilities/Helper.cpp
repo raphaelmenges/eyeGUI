@@ -7,125 +7,125 @@
 
 #include "Helper.h"
 
-#include "externals\utf8rewind\include\utf8rewind\utf8rewind.h"
+#include "externals/utf8rewind/include/utf8rewind/utf8rewind.h"
 
 namespace eyegui
 {
-	// ### HELPER HELPERS ###
+    // ### HELPER HELPERS ###
 
-	bool changeCase(char16_t& rCharacter, size_t(*caseFunction) (const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors))
-	{
-		// Variables which will be filled
-		int32_t errors;
+    bool changeCase(char16_t& rCharacter, size_t(*caseFunction) (const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors))
+    {
+        // Variables which will be filled
+        int32_t errors;
 
-		// *** UTF16 -> UTF8 ***
+        // *** UTF16 -> UTF8 ***
 
-		// First, determine needed size for chars
-		size_t originalSize = utf16toutf8(
-			(utf16_t const *)(&rCharacter), sizeof(char16_t),
-			NULL, 0,
-			&errors);
+        // First, determine needed size for chars
+        size_t originalSize = utf16toutf8(
+            (utf16_t const *)(&rCharacter), sizeof(char16_t),
+            NULL, 0,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            return false;
+        }
 
-		// Reserve space for original chars
-		char* originalSpace = (char*)malloc(originalSize);
+        // Reserve space for original chars
+        char* originalSpace = (char*)malloc(originalSize);
 
-		// Convert from UTF-16 to UTF-8
-		utf16toutf8(
-			(utf16_t const *)(&rCharacter), sizeof(char16_t),
-			originalSpace, originalSize,
-			&errors);
+        // Convert from UTF-16 to UTF-8
+        utf16toutf8(
+            (utf16_t const *)(&rCharacter), sizeof(char16_t),
+            originalSpace, originalSize,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			free(originalSpace);
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            free(originalSpace);
+            return false;
+        }
 
-		// *** LOWER CASE ***
+        // *** LOWER CASE ***
 
-		// Determine necessary space for new chars
-		size_t newSize = caseFunction(
-			originalSpace, originalSize,
-			NULL, 0,
-			&errors);
+        // Determine necessary space for new chars
+        size_t newSize = caseFunction(
+            originalSpace, originalSize,
+            NULL, 0,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			free(originalSpace);
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            free(originalSpace);
+            return false;
+        }
 
-		// Reserve space for chars
-		char* newSpace = (char*)malloc(newSize);
+        // Reserve space for chars
+        char* newSpace = (char*)malloc(newSize);
 
-		// Convert to other case
-		newSize = caseFunction(
-			originalSpace, originalSize,
-			newSpace, newSize,
-			&errors);
+        // Convert to other case
+        newSize = caseFunction(
+            originalSpace, originalSize,
+            newSpace, newSize,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			free(originalSpace);
-			free(newSpace);
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            free(originalSpace);
+            free(newSpace);
+            return false;
+        }
 
-		// *** UTF8 -> UTF16 ***
+        // *** UTF8 -> UTF16 ***
 
-		// Determine space necessary for conversion to UTF-16
-		size_t newSize16 = utf8toutf16(
-			newSpace, newSize,
-			NULL, 0,
-			&errors);
+        // Determine space necessary for conversion to UTF-16
+        size_t newSize16 = utf8toutf16(
+            newSpace, newSize,
+            NULL, 0,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			free(originalSpace);
-			free(newSpace);
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            free(originalSpace);
+            free(newSpace);
+            return false;
+        }
 
-		uint16_t* newSpace16 = (uint16_t*)malloc(newSize16);
+        uint16_t* newSpace16 = (uint16_t*)malloc(newSize16);
 
-		// Convert from UTF-8 to UTF-16
-		utf8toutf16(
-			newSpace, newSize,
-			newSpace16, newSize16,
-			&errors);
+        // Convert from UTF-8 to UTF-16
+        utf8toutf16(
+            newSpace, newSize,
+            newSpace16, newSize16,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			free(originalSpace);
-			free(newSpace);
-			free(newSpace16);
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            free(originalSpace);
+            free(newSpace);
+            free(newSpace16);
+            return false;
+        }
 
-		// Save in given char16_t
-		rCharacter = *(char16_t*)newSpace16;
+        // Save in given char16_t
+        rCharacter = *(char16_t*)newSpace16;
 
-		// Free malloc
-		free(originalSpace);
-		free(newSpace);
-		free(newSpace16);
+        // Free malloc
+        free(originalSpace);
+        free(newSpace);
+        free(newSpace16);
 
-		return true;
-	}
+        return true;
+    }
 
 
-	// ### IMPLEMENTATION ###
+    // ### IMPLEMENTATION ###
 
     float clamp(float value, float lowerBound, float upperBound)
     {
@@ -197,146 +197,146 @@ namespace eyegui
         return matrix;
     }
 
-	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput)
-	{
-		// Variables which will be filled
-		int32_t errors;
-		size_t size;
+    bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput)
+    {
+        // Variables which will be filled
+        int32_t errors;
+        size_t size;
 
-		// First, determine needed size in new string
-		size = utf8toutf16(
-			rInput.c_str(), rInput.size(),
-			NULL, 0,
-			&errors);
+        // First, determine needed size in new string
+        size = utf8toutf16(
+            rInput.c_str(), rInput.size(),
+            NULL, 0,
+            &errors);
 
-		// Only proceed when no error occured
-		if (errors == UTF8_ERR_NONE)
-		{
-			// Use determined size to reserve space
-			uint16_t* space = (uint16_t*)malloc(size);
+        // Only proceed when no error occured
+        if (errors == UTF8_ERR_NONE)
+        {
+            // Use determined size to reserve space
+            uint16_t* space = (uint16_t*)malloc(size);
 
-			// Convert from UTF-8 to UTF-16
-			utf8toutf16(
-				rInput.c_str(), rInput.size(),
-				space, size,
-				&errors);
+            // Convert from UTF-8 to UTF-16
+            utf8toutf16(
+                rInput.c_str(), rInput.size(),
+                space, size,
+                &errors);
 
-			// Copy to referenced output string
-			rOutput = std::u16string((char16_t*)space, (size / sizeof(char16_t)));
+            // Copy to referenced output string
+            rOutput = std::u16string((char16_t*)space, (size / sizeof(char16_t)));
 
-			// Free space of malloc
-			free(space);
-		}
+            // Free space of malloc
+            free(space);
+        }
 
-		// Return error check
-		return (errors == UTF8_ERR_NONE);
-	}
+        // Return error check
+        return (errors == UTF8_ERR_NONE);
+    }
 
-	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput)
-	{
-		// Variables which will be filled
-		int32_t errors;
-		size_t size;
+    bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput)
+    {
+        // Variables which will be filled
+        int32_t errors;
+        size_t size;
 
-		// u16string's size returns count of letters, not byte size...
-		const size_t inputSize = rInput.size() * sizeof(char16_t);
+        // u16string's size returns count of letters, not byte size...
+        const size_t inputSize = rInput.size() * sizeof(char16_t);
 
-		// First, determine needed size in new string
-		size = utf16toutf8(
-			(utf16_t const *)(rInput.c_str()), inputSize,
-			NULL, 0,
-			&errors);
+        // First, determine needed size in new string
+        size = utf16toutf8(
+            (utf16_t const *)(rInput.c_str()), inputSize,
+            NULL, 0,
+            &errors);
 
-		// Only proceed when no error occured
-		if (errors == UTF8_ERR_NONE)
-		{
-			// Use determined size to reserve space
-			char* space = (char*)malloc(size);
+        // Only proceed when no error occured
+        if (errors == UTF8_ERR_NONE)
+        {
+            // Use determined size to reserve space
+            char* space = (char*)malloc(size);
 
-			// Convert from UTF-16 to UTF-8
-			utf16toutf8(
-				(utf16_t const *)(rInput.c_str()), inputSize,
-				space, size,
-				&errors);
+            // Convert from UTF-16 to UTF-8
+            utf16toutf8(
+                (utf16_t const *)(rInput.c_str()), inputSize,
+                space, size,
+                &errors);
 
-			// Copy to referenced output string
-			rOutput = std::string(space, (size / sizeof(char)));
+            // Copy to referenced output string
+            rOutput = std::string(space, (size / sizeof(char)));
 
-			// Free space of malloc
-			free(space);
-		}
+            // Free space of malloc
+            free(space);
+        }
 
-		// Return error check
-		return (errors == UTF8_ERR_NONE);
-	}
+        // Return error check
+        return (errors == UTF8_ERR_NONE);
+    }
 
-	bool toLower(std::u16string& rString)
-	{
-		// Variables which will be filled
-		int32_t errors;
+    bool toLower(std::u16string& rString)
+    {
+        // Variables which will be filled
+        int32_t errors;
 
-		// *** UTF16 -> UTF8 ***
+        // *** UTF16 -> UTF8 ***
 
-		// Change to UTF-8
-		std::string string8;
-		bool check = convertUTF16ToUTF8(rString, string8);
+        // Change to UTF-8
+        std::string string8;
+        bool check = convertUTF16ToUTF8(rString, string8);
 
-		// Check for errors
-		if (!check)
-		{
-			return false;
-		}
+        // Check for errors
+        if (!check)
+        {
+            return false;
+        }
 
-		// *** LOWER CASE ***
+        // *** LOWER CASE ***
 
-		// Determine necessary space for lower chars
-		size_t size = utf8tolower(
-			string8.c_str(), string8.size(),
-			NULL, 0,
-			&errors);
+        // Determine necessary space for lower chars
+        size_t size = utf8tolower(
+            string8.c_str(), string8.size(),
+            NULL, 0,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            return false;
+        }
 
-		// Reserve space for chars
-		char* space = (char*)malloc(size);
+        // Reserve space for chars
+        char* space = (char*)malloc(size);
 
-		// Convert to low
-		size_t newSize = utf8tolower(
-			string8.c_str(), string8.size(),
-			space, size,
-			&errors);
+        // Convert to low
+        size_t newSize = utf8tolower(
+            string8.c_str(), string8.size(),
+            space, size,
+            &errors);
 
-		// Check for errors
-		if (errors != UTF8_ERR_NONE)
-		{
-			free(space);
-			return false;
-		}
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            free(space);
+            return false;
+        }
 
-		// *** UTF8 -> UTF16 ***
-		check = convertUTF8ToUTF16(std::string(space, (size / sizeof(char))), rString);
+        // *** UTF8 -> UTF16 ***
+        check = convertUTF8ToUTF16(std::string(space, (size / sizeof(char))), rString);
 
-		return check;
-	}
+        return check;
+    }
 
-	bool toLower(char16_t& rCharacter)
-	{
-		return changeCase(rCharacter, utf8tolower);
-	}
+    bool toLower(char16_t& rCharacter)
+    {
+        return changeCase(rCharacter, utf8tolower);
+    }
 
-	bool firstCharacterToUpper(std::u16string& rString)
-	{
-		// Check whether there is a first character
-		if (rString.size() > 0)
-		{
-			return changeCase(rString[0], utf8toupper);
-		}
+    bool firstCharacterToUpper(std::u16string& rString)
+    {
+        // Check whether there is a first character
+        if (rString.size() > 0)
+        {
+            return changeCase(rString[0], utf8toupper);
+        }
 
-		// Return true, since nothing went wrong
-		return true;
-	}
+        // Return true, since nothing went wrong
+        return true;
+    }
 }
