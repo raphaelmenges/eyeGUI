@@ -46,8 +46,8 @@ namespace eyegui
         std::cout << "Start dictionary tests!" << std::endl;
 
         // Exact check for word
-        std::cout << "CheckForWord 1: " << checkForWord(u"u'\u00c4'rger") << std::endl; // Aerger
-        std::cout << "CheckForWord 2: " << checkForWord(u"u'\u00e4'rger") << std::endl; // aerger
+        std::cout << "CheckForWord 1: " << checkForWord(u"\u00c4rger") << std::endl; // Aerger
+        std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
         auto testA = similarWords(u"Wisenschafffft", 5);
