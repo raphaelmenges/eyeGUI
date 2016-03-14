@@ -39,6 +39,8 @@ namespace eyegui
 			}
 		}
 
+		// TODO: TESTING AREA
+
 		// Testing whether words can be found
 		std::cout << "Start dictionary tests!" << std::endl;
 
@@ -118,13 +120,11 @@ namespace eyegui
 		std::vector<std::u16string> results;
 
 		// Search for given word, ignore identical letters in one row
-		if (fuzzyWordSearch(lowerWord, wordState == WordState::UPPER_START, maxCount, results))
-		{
-			return results;
-		}
+		fuzzyWordSearch(lowerWord, wordState == WordState::UPPER_START, results);
 
-		// TODO: makes it sense to add here more stuff? could be possible that identical words are added twice
-		// Problem: one types "Hausfrau" and gets back "Haus, Haushund..." but not "Hausfrau" as best choice
+		// TODO: 
+		// - check whether already enough words
+		// - Maybe do not use max count in fuzzy search for termination. Do full run and then decide which words to take using classificator
 
 		// Return what you have (could be nothing)
 		return results;
@@ -173,6 +173,7 @@ namespace eyegui
 			// Already saved with other case
 			pNode->wordState = WordState::BOTH_STARTS;
 		}
+		// else: tried to add already existing word
 	}
 
 	Dictionary::WordState Dictionary::convertToLower(std::u16string& rWord) const
@@ -189,13 +190,13 @@ namespace eyegui
 		return wordState;
 	}
 
-	bool Dictionary::fuzzyWordSearch(const std::u16string& rLowerWord, bool originalWordStartsUpperCase, uint maxCount, std::vector<std::u16string>& rFoundWords) const
+	void Dictionary::fuzzyWordSearch(const std::u16string& rLowerWord, bool originalWordStartsUpperCase, std::vector<std::u16string>& rFoundWords) const
 	{
 		// Just pipe it (start the recursion)
-		return fuzzyWordSearch(rLowerWord, 0, originalWordStartsUpperCase, u"", NULL, maxCount, rFoundWords);
+		fuzzyWordSearch(rLowerWord, 0, originalWordStartsUpperCase, u"", NULL, rFoundWords);
 	}
 
-	bool Dictionary::fuzzyWordSearch(const std::u16string& rLowerWord, uint wordStartIndex, bool originalWordStartsUpperCase, std::u16string collectedWord, Node const * pNode, uint maxCount, std::vector<std::u16string>& rFoundWords) const
+	void Dictionary::fuzzyWordSearch(const std::u16string& rLowerWord, uint wordStartIndex, bool originalWordStartsUpperCase, std::u16string collectedWord, Node const * pNode, std::vector<std::u16string>& rFoundWords) const
 	{
 		// Pointer to root map
 		NodeMap const * pMap = &mRootMap;
@@ -220,11 +221,7 @@ namespace eyegui
 				// "Aal" -> should be found typing "Aaal" (too many letters)
 				if (c == rLowerWord[i-1])
 				{
-					if (fuzzyWordSearch(rLowerWord, i + 1, originalWordStartsUpperCase, collectedWord, pNode, maxCount, rFoundWords))
-					{
-						// Enough words found
-						return true;
-					}
+					fuzzyWordSearch(rLowerWord, i + 1, originalWordStartsUpperCase, collectedWord, pNode, rFoundWords);
 				}
 			}
 
@@ -233,7 +230,7 @@ namespace eyegui
 			if (it == pMap->end())
 			{
 				// No word found and nothing added
-				return ((uint)rFoundWords.size() >= maxCount);
+				return;
 			}
 			else
 			{
@@ -244,21 +241,13 @@ namespace eyegui
 				collectedWord += c;
 
 				// "Aal" -> should be found typing "Al" (not enough letters, repeating ones missing)
-				if (fuzzyWordSearch(rLowerWord, i, originalWordStartsUpperCase, collectedWord, pNode, maxCount, rFoundWords))
-				{
-					// Enough words found
-					return true;
-				}
+				fuzzyWordSearch(rLowerWord, i, originalWordStartsUpperCase, collectedWord, pNode, rFoundWords);
 				
 				// Only add word when no letters in input are left
 				if (i + 1  == count)
 				{
 					// Adds word to found words
-					if (addFuzzyWord(collectedWord, pNode->wordState, originalWordStartsUpperCase, maxCount, rFoundWords))
-					{
-						// Enough words found
-						return true;
-					}
+					addFuzzyWord(collectedWord, pNode->wordState, originalWordStartsUpperCase, rFoundWords);
 				}
 				else if (!(pMap->empty()))
 				{
@@ -271,12 +260,9 @@ namespace eyegui
 				}
 			}
 		}
-
-		// Check whether found enough words (should be never bigger, though)
-		return ((uint)rFoundWords.size() >= maxCount);
 	}
 
-	bool Dictionary::addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, bool originalWordStartsUpperCase, uint maxCount, std::vector<std::u16string>& rFoundWords) const
+	void Dictionary::addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, bool originalWordStartsUpperCase, std::vector<std::u16string>& rFoundWords) const
 	{
 		// Decide how to add word
 		if (collectedState == WordState::BOTH_STARTS)
@@ -285,31 +271,18 @@ namespace eyegui
 			std::u16string collectedWordUpper = rCollectedWord;
 			firstCharacterToUpper(collectedWordUpper);
 
-			// Check, whether second may be added
-			bool mayAddSecondWord = false;
-			if (rFoundWords.size() >= maxCount - 2)
-			{
-				mayAddSecondWord = true;
-			}
-
 			// Add both cases
 			if (originalWordStartsUpperCase)
 			{
 				// First upper case, then lower
 				rFoundWords.push_back(collectedWordUpper);
-				if (mayAddSecondWord)
-				{
-					rFoundWords.push_back(rCollectedWord);
-				}
+				rFoundWords.push_back(rCollectedWord);
 			}
 			else
 			{
 				// First lower case, than upper
 				rFoundWords.push_back(rCollectedWord);
-				if (mayAddSecondWord)
-				{
-					rFoundWords.push_back(collectedWordUpper);
-				}
+				rFoundWords.push_back(collectedWordUpper);
 			}
 		}
 		else
@@ -327,8 +300,5 @@ namespace eyegui
 				rFoundWords.push_back(rCollectedWord);
 			}
 		}
-
-		// Check whether found enough words (should be never bigger, though)
-		return ((uint)rFoundWords.size() >= maxCount);
 	}
 }

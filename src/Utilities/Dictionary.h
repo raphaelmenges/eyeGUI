@@ -14,10 +14,6 @@
 #include <string>
 #include <vector>
 
-// Notes:
-// - Words are saved in lower case! but some enum is used to rescue information about case
-// - Maybe do not use max count in fuzzy search for termination. Do full run and then decide which words to take using classificator.
-
 // TODO:
 // - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
 // - "Wissenschaft" returns two times "Wissenschaft"
@@ -60,14 +56,12 @@ namespace eyegui
 		// Convert to lower case. Returns word state
 		WordState convertToLower(std::u16string& rWord) const;
 
-		// DOES NOT CHECK WHETHER GIVEN VECTOR HAS ALREADY ENOUGH WORDS
-		// Fuzzy search for words. Takes lower case word as input. Returns true when max count reached
-		bool fuzzyWordSearch(const std::u16string& rLowerWord, bool originalWordStartsUpperCase, uint maxCount, std::vector<std::u16string>& rFoundWords) const;
-		bool fuzzyWordSearch(const std::u16string& rLowerWord, uint wordStartIndex, bool originalWordStartsUpperCase, std::u16string collectedWord, Node const * pNode, uint maxCount, std::vector<std::u16string>& rFoundWords) const;
+		// Fuzzy search for words. Takes lower case word as input
+		void fuzzyWordSearch(const std::u16string& rLowerWord, bool originalWordStartsUpperCase, std::vector<std::u16string>& rFoundWords) const;
+		void fuzzyWordSearch(const std::u16string& rLowerWord, uint wordStartIndex, bool originalWordStartsUpperCase, std::u16string collectedWord, Node const * pNode, std::vector<std::u16string>& rFoundWords) const;
 
-		// DOES NOT CHECK WHETHER GIVEN VECTOR HAS ALREADY ENOUGH WORDS
-		// Add fuzzy word to found words in fuzzy search. Returns true when enough words found
-		bool addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, bool originalWordStartsUpperCase, uint maxCount, std::vector<std::u16string>& rFoundWords) const;
+		// Add fuzzy word to found words in fuzzy search
+		void addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, bool originalWordStartsUpperCase, std::vector<std::u16string>& rFoundWords) const;
 		
 		// Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
 		class Node
