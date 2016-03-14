@@ -7,8 +7,7 @@
 
 #include "Dictionary.h"
 
-#include "externals/utfcpp/source/utf8.h"
-#include "externals/utf8rewind/include/utf8rewind/utf8rewind.h"
+#include "Helper.h"
 
 #include <fstream>
 
@@ -19,30 +18,6 @@ namespace eyegui
 {
 	Dictionary::Dictionary()
 	{
-		// Test utf8rewind
-		const char* input =
-			"\xE1\xBC\x88\xCF\x81\xCE\xB9\xCF\x83\xCF\x84\xCE\xBF\xCF\x84"
-			"\xCE\xAD\xCE\xBB\xCE\xB7\xCF\x82";
-
-		static const size_t output_size = 255;
-		char output[output_size + 1];
-		wchar_t output_wide[output_size + 1];
-		size_t converted_size;
-		int32_t errors;
-
-		memset(output, 0, sizeof(output));
-		memset(output_wide, 0, sizeof(output_wide));
-		converted_size = utf8toupper(input, strlen(input), output, output_size, &errors);
-		if (converted_size == 0 ||
-			errors != UTF8_ERR_NONE)
-		{
-			std::cout << "error" << std::endl;
-		}
-		else
-		{
-			std::cout << "seems to be ok" << std::endl;
-		}
-
 		/*
 		std::cout << "Start filling dictionary!" << std::endl;
 
@@ -98,7 +73,7 @@ namespace eyegui
 		Node const * pLastNode = NULL;
 
 		// Go over nodes
-		uint count = lowerWord.size();
+		uint count = (uint)lowerWord.size();
 		for (uint i = 0; i < count; i++)
 		{
 			// Try to find letter in current map
@@ -159,7 +134,7 @@ namespace eyegui
 		Node* pLastNode = NULL;
 
 		// Go over characters in word
-		uint count = lowerWord.size();
+		uint count = (uint)lowerWord.size();
 		NodeMap::iterator it;
 		for (uint i = 0; i < count; i++)
 		{

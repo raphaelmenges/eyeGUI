@@ -4,7 +4,7 @@
   - Get rid of utfcpp library
   - Think about other dictionary structure (guess it would be better to preserve lower and upper case from dictionary)
   - check whether i have used .size() somewhere for a string. Not good. Use length?
-
+- Rewrite Element rendering (more layers, not so big shaders)
 - Keyboard: Better german and english layout
 -"Guesser" (tries to guess what you want to write)
   - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
@@ -30,6 +30,7 @@
 	- global "help" mode or just per element?
 - uniform absolute include pathes
 - Think about: how to automatically fit text into box or fit box around text
+- set scale of text via interface (and determine whether text fits via interface?)
 	
 ### VERSION 1.0
 - Code review!

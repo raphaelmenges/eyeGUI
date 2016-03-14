@@ -11,6 +11,122 @@
 
 namespace eyegui
 {
+	// ### HELPER HELPERS ###
+
+	bool changeCase(char16_t& rCharacter, size_t(*caseFunction) (const char* input, size_t inputSize, char* target, size_t targetSize, int32_t* errors))
+	{
+		// Variables which will be filled
+		int32_t errors;
+
+		// *** UTF16 -> UTF8 ***
+
+		// First, determine needed size for chars
+		size_t originalSize = utf16toutf8(
+			(utf16_t const *)(&rCharacter), sizeof(char16_t),
+			NULL, 0,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			return false;
+		}
+
+		// Reserve space for original chars
+		char* originalSpace = (char*)malloc(originalSize);
+
+		// Convert from UTF-16 to UTF-8
+		utf16toutf8(
+			(utf16_t const *)(&rCharacter), sizeof(char16_t),
+			originalSpace, originalSize,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			free(originalSpace);
+			return false;
+		}
+
+		// *** LOWER CASE ***
+
+		// Determine necessary space for new chars
+		size_t newSize = caseFunction(
+			originalSpace, originalSize,
+			NULL, 0,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			free(originalSpace);
+			return false;
+		}
+
+		// Reserve space for chars
+		char* newSpace = (char*)malloc(newSize);
+
+		// Convert to other case
+		newSize = caseFunction(
+			originalSpace, originalSize,
+			newSpace, newSize,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			free(originalSpace);
+			free(newSpace);
+			return false;
+		}
+
+		// *** UTF8 -> UTF16 ***
+
+		// Determine space necessary for conversion to UTF-16
+		size_t newSize16 = utf8toutf16(
+			newSpace, newSize,
+			NULL, 0,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			free(originalSpace);
+			free(newSpace);
+			return false;
+		}
+
+		uint16_t* newSpace16 = (uint16_t*)malloc(newSize16);
+
+		// Convert from UTF-8 to UTF-16
+		utf8toutf16(
+			newSpace, newSize,
+			newSpace16, newSize16,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			free(originalSpace);
+			free(newSpace);
+			free(newSpace16);
+			return false;
+		}
+
+		// Save in given char16_t
+		rCharacter = *(char16_t*)newSpace16;
+
+		// Free malloc
+		free(originalSpace);
+		free(newSpace);
+		free(newSpace16);
+
+		return true;
+	}
+
+
+	// ### IMPLEMENTATION ###
+
     float clamp(float value, float lowerBound, float upperBound)
     {
         return value < lowerBound ? lowerBound : (value > upperBound ? upperBound : value);
@@ -154,11 +270,73 @@ namespace eyegui
 		return (errors == UTF8_ERR_NONE);
 	}
 
-	bool setLower(char16_t& rCharacter)
+	bool toLower(std::u16string& rString)
 	{
-		// To char
-		//utf8toupper()
-		// To char16_t
-		return false;
+		// Variables which will be filled
+		int32_t errors;
+
+		// *** UTF16 -> UTF8 ***
+
+		// Change to UTF-8
+		std::string string8;
+		bool check = convertUTF16ToUTF8(rString, string8);
+
+		// Check for errors
+		if (!check)
+		{
+			return false;
+		}
+
+		// *** LOWER CASE ***
+
+		// Determine necessary space for lower chars
+		size_t size = utf8tolower(
+			string8.c_str(), string8.size(),
+			NULL, 0,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			return false;
+		}
+
+		// Reserve space for chars
+		char* space = (char*)malloc(size);
+
+		// Convert to low
+		size_t newSize = utf8tolower(
+			string8.c_str(), string8.size(),
+			space, size,
+			&errors);
+
+		// Check for errors
+		if (errors != UTF8_ERR_NONE)
+		{
+			free(space);
+			return false;
+		}
+
+		// *** UTF8 -> UTF16 ***
+		check = convertUTF8ToUTF16(std::string(space, (size / sizeof(char))), rString);
+
+		return check;
+	}
+
+	bool toLower(char16_t& rCharacter)
+	{
+		return changeCase(rCharacter, utf8tolower);
+	}
+
+	bool firstCharacterToUpper(std::u16string& rString)
+	{
+		// Check whether there is a first character
+		if (rString.size() > 0)
+		{
+			return changeCase(rString[0], utf8toupper);
+		}
+
+		// Return true, since nothing went wrong
+		return true;
 	}
 }
