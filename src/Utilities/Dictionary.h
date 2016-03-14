@@ -19,10 +19,9 @@
 // -
 
 // TODO:
-// - should be able to match goofy and gofy (that is were it gets difficult)
-//  - Idea: duplicate all words with the same letters in one row, delete double
-//    / tripple letters and give a pointer from them to the "real word"
-// - Multiple dictionaries (URLs, Language....)
+// - should be able to match goofy and gofy
+//   - Fuzzy similar words (ignore case, consume same letters in row, add letters at random positions)
+// - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
 
 namespace eyegui
 {
