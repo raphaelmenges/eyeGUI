@@ -11,7 +11,6 @@
 #include "src/Utilities/Helper.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/PathBuilder.h"
-#include "externals/utfcpp/source/utf8.h"
 
 #include <string>
 #include <fstream>
@@ -42,31 +41,25 @@ namespace eyegui
             }
 
             // Some values for iteration
-            unsigned int line_count = 1;
+            uint lineCount = 1;
             std::string line;
 
             // TODO: Does not work for CR, use same approach as for other file parsers ;)
             // Iterate through lines
             while (getline(in, line))
             {
-                // Check for invalid utf-8
-                std::string::iterator end_pos = utf8::find_invalid(line.begin(), line.end());
-                if (end_pos != line.end()) {
-                    throwError(OperationNotifier::Operation::PARSING, "Invalid UTF-8 encoding detected at line " + line_count, filepath);
-                }
-
                 // Extract key and value from line
-                parseLine(*(upMap.get()), line, filepath);
+                parseLine(*(upMap.get()), line, lineCount, filepath);
 
                 // Next line
-                line_count++;
+				lineCount++;
             }
 
             // Return map for localization
             return std::move(upMap);
         }
 
-        void parseLine(LocalizationMap& rLocalizationMap, std::string line, std::string filepath)
+        void parseLine(LocalizationMap& rLocalizationMap, std::string line, uint lineCount, std::string filepath)
         {
             // Split left and right side
             std::string delimiter = "=";
@@ -94,10 +87,16 @@ namespace eyegui
 
             // Convert right side to utf-16
             std::u16string utf16right;
-            utf8::utf8to16(right.begin(), right.end(), back_inserter(utf16right));
+			if (!convertUTF8ToUTF16(right, utf16right))
+			{
+				throwError(OperationNotifier::Operation::PARSING, "Invalid UTF-8 encoding detected at line " + lineCount, filepath);
+			}
 
             // Fill in map
             rLocalizationMap[left] = utf16right;
         }
     }
 }
+
+
+// throwError(OperationNotifier::Operation::PARSING, "Invalid UTF-8 encoding detected at line " + line_count, filepath);

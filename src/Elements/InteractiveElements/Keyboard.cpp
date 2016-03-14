@@ -9,7 +9,6 @@
 
 #include "NotificationQueue.h"
 #include "src/Utilities/OperationNotifier.h"
-#include "externals/utfcpp/source/utf8.h"
 #include "Layout.h"
 
 namespace eyegui

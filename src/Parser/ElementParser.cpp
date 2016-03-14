@@ -10,7 +10,6 @@
 #include "Defines.h"
 #include "Layout.h"
 #include "src/Utilities/OperationNotifier.h"
-#include "externals/utfcpp/source/utf8.h"
 
 namespace eyegui
 {

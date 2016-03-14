@@ -12,7 +12,6 @@
 #include "Elements/ElementCasting.h"
 #include "Defines.h"
 #include "src/Utilities/OperationNotifier.h"
-#include "externals/utfcpp/source/utf8.h"
 
 #include <algorithm>
 
@@ -505,13 +504,10 @@ namespace eyegui
 
     void Layout::setContentOfTextBlock(std::string id, std::string content)
     {
-        // Check for valid UTF-8
-        if(utf8::is_valid(content.begin(), content.end()))
+        // Cast to UTF-16
+		std::u16string content16;
+        if(convertUTF8ToUTF16(content, content16))
         {
-            // Convert to 16 bit string
-            std::u16string content16;
-            utf8::utf8to16(content.begin(), content.end(), back_inserter(content16));
-
             // Pipe it to method for 16 bit strings
             setContentOfTextBlock(id, content16);
         }
