@@ -18,11 +18,10 @@ namespace eyegui
 {
 	Dictionary::Dictionary()
 	{
-		/*
 		std::cout << "Start filling dictionary!" << std::endl;
 
 		// Read file with instream
-		std::ifstream in("/home/raphael/Downloads/german.dic");
+		std::ifstream in("C:/Users/Raphael/Desktop/ger.txt");
 
 		// Build up dictionary (TODO: CR / LF stuff)
 		if(in)
@@ -32,21 +31,21 @@ namespace eyegui
 			{
 				// Convert to utf-16 string
 				std::u16string line16;
-				utf8::utf8to16(line.begin(), line.end(), back_inserter(line16));
-
-				// Add word to dictionary
-				addWord(line16);
+				if (!(line.empty()) && convertUTF8ToUTF16(line, line16))
+				{
+					// Add word to dictionary
+					addWord(line16);
+				}
 			}
 		}
 
 		// Testing whether words can be found
 		std::cout << "Start dictionary tests!" << std::endl;
 
-		std::cout << checkForWord(u"Haus") << std::endl;
-		std::cout << checkForWord(u"haus") << std::endl;
+		std::cout << checkForWord(u"Ärger") << std::endl;
+		std::cout << checkForWord(u"ärger") << std::endl;
 
 		std::cout << "Dictionary finished!" << std::endl;
-		*/
 	}
 
 	Dictionary::~Dictionary()
@@ -56,15 +55,9 @@ namespace eyegui
 
 	bool Dictionary::checkForWord(const std::u16string& rWord) const
 	{
-		// TODO: just a rough test (cases!)
-
 		// Convert to lower case and remember it
-		WordCase wordCase = WordCase::LOWER;
-		std::u16string lowerWord = toLower(rWord);
-		if (lowerWord != rWord)
-		{
-			wordCase = WordCase::UPPER;
-		}
+		std::u16string lowerWord = rWord;
+		WordState wordState = convertToLower(lowerWord);
 
 		// Pointer to root map
 		NodeMap const * pMap = &mRootMap;
@@ -96,7 +89,7 @@ namespace eyegui
 		// Can it happen?
 		if (pLastNode != NULL)
 		{
-			if (pLastNode->wordCase == wordCase || pLastNode->wordCase == WordCase::BOTH)
+			if (pLastNode->wordState == wordState || pLastNode->wordState == WordState::BOTH_STARTS)
 			{
 				return true;
 			}
@@ -120,12 +113,8 @@ namespace eyegui
 	void Dictionary::addWord(const std::u16string& rWord)
 	{
 		// Convert to lower case and remember it
-		WordCase wordCase = WordCase::LOWER;
-		std::u16string lowerWord = toLower(rWord);
-		if (lowerWord != rWord)
-		{
-			wordCase = WordCase::UPPER;
-		}
+		std::u16string lowerWord = rWord;
+		WordState wordState = convertToLower(lowerWord);
 
 		// Pointer to root map
 		NodeMap* pMap = &mRootMap;
@@ -154,24 +143,27 @@ namespace eyegui
 
 		// Set word case in last letter
 		// NONE is initial value
-		if (pLastNode->wordCase == WordCase::NONE)
+		if (pLastNode->wordState == WordState::NONE)
 		{
-			pLastNode->wordCase = wordCase;
+			pLastNode->wordState = wordState;
 		}
-		else if (pLastNode->wordCase != wordCase)
+		else if (pLastNode->wordState != wordState)
 		{
-			pLastNode->wordCase = WordCase::BOTH;
+			pLastNode->wordState = WordState::BOTH_STARTS;
 		}
 	}
 
-	std::u16string Dictionary::toLower(const std::u16string& rWord) const
+	Dictionary::WordState Dictionary::convertToLower(std::u16string& rWord) const
 	{
-		// Convert to lower case and remember (DOES NOT WORK BECAUSE UNICODE SUPPORT SUCKS)
-		std::u16string lowerWord(rWord);
-		/*std::locale::global(std::locale(std::locale(), new std::ctype<char16_t>()));
-		std::use_facet<std::ctype<char16_t> >(std::locale()).tolower(&lowerWord[0], &lowerWord[0] + lowerWord.size()); */
-
-		// Return lower word
-		return lowerWord;
+		WordState wordState = WordState::LOWER_START;
+		std::u16string lowerWord = rWord;
+		toLower(lowerWord); // One could use return value for error checking
+		if (lowerWord[0] != rWord[0])
+		{
+			// Something has changed
+			wordState = WordState::UPPER_START;
+		}
+		rWord = lowerWord;
+		return wordState;
 	}
 }

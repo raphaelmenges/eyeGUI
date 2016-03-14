@@ -48,15 +48,14 @@ namespace eyegui
 		class Node;
 		typedef std::map<char16_t, Node> NodeMap;
 
+		// Possible states for word, using 1 byte char as structure. None is used for "here is no word"
+		enum class WordState : char { NONE, LOWER_START, UPPER_START, BOTH_STARTS };
+
 		// Add single word to dictionary
 		void addWord(const std::u16string& rWord);
 
-		// To lower case
-		std::u16string toLower(const std::u16string& rWord) const;
-
-		// TODO: word case == case of FIRST letter (more like word state or so)
-		// Possible cases for word, using 1 byte char as structure. None is used for "here is no word"
-		enum class WordCase : char { NONE, LOWER, UPPER, BOTH };
+		// Convert to lower case. Returns word state
+		WordState convertToLower(std::u16string& rWord) const;
 
 		// Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
 		class Node
@@ -64,11 +63,11 @@ namespace eyegui
 		public:
 
 			// Constructor
-			Node(char16_t letter) : letter(letter), wordCase(WordCase::NONE) {}
+			Node(char16_t letter) : letter(letter), wordState(WordState::NONE) {}
 
 			// Members
 			char16_t letter; // Letter in node
-			WordCase wordCase; // Case of word formed by letters in nodes from root to here
+			WordState wordState; // State of word formed by letters in nodes from root to here
 			NodeMap children; // Further possible letters to form other words
 		};
 
