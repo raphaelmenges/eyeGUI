@@ -17,10 +17,10 @@
 
 // TODO:
 // - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
-// - Do more more fuzzy search (optional!)
-//  - pause input for one letter and do recursion on all letters in map (only one time)
-//  - ignore letter of input (only one time)
+//   - Ignore patterns (www, https..)
 // - Collect const defines and decide how to handle them
+// - LowerWord->Input renaming
+// - bool to tell similar words: i want all words to begin with upper letter (for beginning of sentence)
 
 namespace eyegui
 {
@@ -59,13 +59,17 @@ namespace eyegui
         void fuzzyWordSearch(
             const std::u16string& rLowerWord,
             uint recursionDepth,
+            uint inputPauseDepth,
+            uint inputIgnoreDepth,
             std::set<std::u16string>& rFoundWords) const;
         void fuzzyWordSearch(
             const std::u16string& rLowerWord,
             uint wordStartIndex,
             std::u16string collectedWord,
             Node const * pNode,
-            int remainingRecursions,
+            int remainingRecursions, // Recursion depth of fuzzy word search ("Al" -> "Aal" or "Aaal" -> "Aal")
+            int remainingInputPauses, // How many letters in a word could be missing ("Hus" -> "Haus") // NOT YET IMPLEMENTED, MAY BE TOO EXPENSIVE
+            int reaminingInputIgnores, // How many letters in a word are possible wrong ("Huus" -> "Haus") // NOT YET IMPLEMENTED, MAY BE TOO EXPENSIVE
             std::set<std::u16string>& rFoundWords) const;
 
         // Add longer words which use collected word as prefix. One word can be lower and upper case, counted as one. Returns how many further words may be added

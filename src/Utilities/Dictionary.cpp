@@ -131,9 +131,16 @@ namespace eyegui
 
         // Depth of recursion for similar words
         const uint RECURSION_DEPTH = 3;
+        const uint INPUT_PAUSE_DEPTH = 1;
+        const uint INPUT_IGNORE_DEPTH = 1;
 
         // Search for given word, ignore identical letters in one row
-        fuzzyWordSearch(lowerWord, RECURSION_DEPTH, resultSet);
+        fuzzyWordSearch(
+            lowerWord,
+            RECURSION_DEPTH,
+            INPUT_PAUSE_DEPTH,
+            INPUT_IGNORE_DEPTH,
+            resultSet);
 
         // Copy results from set to vector
         std::vector<std::u16string> resultVector;
@@ -207,20 +214,32 @@ namespace eyegui
     }
 
     void Dictionary::fuzzyWordSearch(
-        const std::u16string& rLowerWord,
+        const std::u16string& rInput,
         uint recursionDepth,
+        uint inputPauseDepth,
+        uint inputIgnoreDepth,
         std::set<std::u16string>& rFoundWords) const
     {
         // Just pipe it (start the recursion)
-        fuzzyWordSearch(rLowerWord, 0, u"", NULL, (int)recursionDepth, rFoundWords);
+        fuzzyWordSearch(
+            rInput,
+            0,
+            u"",
+            NULL,
+            (int)recursionDepth,
+            (int)inputPauseDepth,
+            (int)inputIgnoreDepth,
+            rFoundWords);
     }
 
     void Dictionary::fuzzyWordSearch(
-        const std::u16string& rLowerWord,
-        uint wordStartIndex,
+        const std::u16string& rInput,
+        uint inputStartIndex,
         std::u16string collectedWord,
         Node const * pNode,
         int remainingRecursions,
+        int remainingInputPauses,
+        int reaminingInputIgnores,
         std::set<std::u16string>& rFoundWords) const
     {
         // Check whether recursion depth is reached
@@ -245,24 +264,48 @@ namespace eyegui
             pMap = &(pNode->children);
         }
 
-        // Consume letters from start index
-        uint count = (uint)rLowerWord.size();
-        for (uint i = wordStartIndex; i < count; i++)
+        // Consume letters from start index of input word
+        uint count = (uint)rInput.size();
+        for (uint i = inputStartIndex; i < count; i++)
         {
-            // Current letter
-            const char16_t& c = rLowerWord[i];
+            // INPUT PAUSES could be implemented here
+            // One has to follow all possible entries in map and start there a fuzzy word search
+            // and continue with this one. Remind decrementing the remainingInputPauses. Start
+            // index for recursion is i-1
 
-            // "Aal" -> should be found typing "Aaal" (too many letters)
-            if (i > 0 && c == rLowerWord[i-1])
+            // INPUT IGNORES could be implemented here
+            // Just ignore the current letter and go over all map entries and follow them.
+            // Difference to pauses is, that start index is i
+
+            // Current letter
+            const char16_t& c = rInput[i];
+
+            // "Aaal" -> "Aal" should be found (too many letters)
+            if (i > 0 && c == rInput[i-1])
             {
-                fuzzyWordSearch(rLowerWord, i + 1, collectedWord, pNode, remainingRecursions, rFoundWords);
+                fuzzyWordSearch(
+                    rInput,
+                    i + 1,
+                    collectedWord,
+                    pNode,
+                    remainingRecursions,
+                    remainingInputPauses,
+                    reaminingInputIgnores,
+                    rFoundWords);
             }
+
 
             // Try to find letter in current map
             NodeMap::const_iterator it = pMap->find(c);
             if (it == pMap->end())
             {
-                // No word found and nothing added
+                // Next character was not found. Only add to found words if
+                // remaining input pauses are enough to compensate extra letters
+                if(count - (i+1) < remainingInputPauses)
+                {
+                    // Decision whether here is a node is done in add method
+                    addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
+                }
                 return;
             }
             else
@@ -273,8 +316,16 @@ namespace eyegui
                 // Add letter to collected word
                 collectedWord += c;
 
-                // "Aal" -> should be found typing "Al" (not enough letters, repeating ones missing)
-                fuzzyWordSearch(rLowerWord, i, collectedWord, pNode, remainingRecursions, rFoundWords);
+                // "Al" -> "Aal" should be found  (not enough letters, repeating ones missing)
+                fuzzyWordSearch(
+                    rInput,
+                    i,
+                    collectedWord,
+                    pNode,
+                    remainingRecursions,
+                    remainingInputPauses,
+                    reaminingInputIgnores,
+                    rFoundWords);
 
                 // Only add word when no letters in input are left
                 if (i + 1 == count)
