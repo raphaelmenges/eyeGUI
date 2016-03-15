@@ -62,7 +62,7 @@ namespace eyegui
         std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
-        std::u16string testString = u"denk";
+        std::u16string testString = u"Uni";
         auto testA = similarWords(testString);
         std::cout << "Count of similar words: " << testA.size() << std::endl;
         for (const auto& word : testA)
@@ -129,6 +129,7 @@ namespace eyegui
         // Convert to lower case
         std::u16string lowerWord = rWord;
         convertToLower(lowerWord); // state is not necessary to remember
+        uint wordLength = (uint)rWord.size();
 
         // Create set to collect results
         std::set<std::u16string> resultSet;
@@ -159,8 +160,13 @@ namespace eyegui
             sortedResults.reserve(sizeOfResultSet);
             for(const std::u16string& rFoundWord : resultSet)
             {
+                // Determine common size of both words to not discriminate appended letters
+                uint commonLength = std::min(wordLength, (uint)rFoundWord.size());
+
                 // Use unchanged input word to make use of case
-                distance = (int)levenshteinSSE::levenshtein(rWord, rFoundWord);
+                distance = (int)levenshteinSSE::levenshtein(
+                    rWord.begin(), rWord.begin() + commonLength,
+                    rFoundWord.begin(), rFoundWord.begin() + commonLength);
 
                 // Build up structure with found word and distance to searched one
                 sortedResults.push_back(std::make_pair(rFoundWord, distance));
@@ -266,6 +272,7 @@ namespace eyegui
             (int)recursionDepth,
             (int)inputPauseDepth,
             (int)inputIgnoreDepth,
+            true,
             rFoundWords);
     }
 
@@ -277,6 +284,7 @@ namespace eyegui
         int remainingRecursions,
         int remainingInputPauses,
         int reaminingInputIgnores,
+        bool mayAddLongerWords,
         std::set<std::u16string>& rFoundWords) const
     {
         // Check whether recursion depth is reached
@@ -305,14 +313,42 @@ namespace eyegui
         uint count = (uint)rInput.size();
         for (uint i = inputStartIndex; i < count; i++)
         {
-            // INPUT PAUSES could be implemented here
-            // One has to follow all possible entries in map and start there a fuzzy word search
-            // and continue with this one. Remind decrementing the remainingInputPauses. Start
-            // index for recursion is i-1
+            // Suspect input to be incomplete
+            if(i > 0 && remainingInputPauses > 0)
+            {
+                for(const auto& rNode : *pMap)
+                {
+                    fuzzyWordSearch(
+                        rInput,
+                        i - 1,
+                        collectedWord,
+                        &(rNode.second),
+                        remainingRecursions,
+                        remainingInputPauses - 1,
+                        reaminingInputIgnores,
+                        false,
+                        rFoundWords);
+                }
+            }
 
-            // INPUT IGNORES could be implemented here
-            // Just ignore the current letter and go over all map entries and follow them.
-            // Difference to pauses is, that start index is i
+            // Ignore some input
+            if(reaminingInputIgnores > 0)
+            {
+                // Just ignore given letter from inputadd letter from map and go on
+                for(const auto& rNode : *pMap)
+                {
+                    fuzzyWordSearch(
+                        rInput,
+                        i+1,
+                        collectedWord + rNode.first,
+                        &(rNode.second),
+                        0,
+                        remainingInputPauses,
+                        reaminingInputIgnores - 1,
+                        false,
+                        rFoundWords);
+                }
+            }
 
             // Current letter
             const char16_t& c = rInput[i];
@@ -328,6 +364,7 @@ namespace eyegui
                     remainingRecursions,
                     remainingInputPauses,
                     reaminingInputIgnores,
+                    mayAddLongerWords,
                     rFoundWords);
             }
 
@@ -361,6 +398,7 @@ namespace eyegui
                     remainingRecursions,
                     remainingInputPauses,
                     reaminingInputIgnores,
+                    mayAddLongerWords,
                     rFoundWords);
 
                 // Only add word when no letters in input are left
@@ -382,7 +420,7 @@ namespace eyegui
         }
 
         // Input word is empty. Now add words which have the collected word as prefix
-        if(pNode != NULL)
+        if(mayAddLongerWords && pNode != NULL)
         {
             // Maximal count of following words for each fully collected
             const uint MAX_FOLLOWING_WORDS = 4;

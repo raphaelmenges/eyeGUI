@@ -68,7 +68,8 @@ namespace eyegui
             Node const * pNode,
             int remainingRecursions, // Recursion depth of fuzzy word search ("Al" -> "Aal" or "Aaal" -> "Aal")
             int remainingInputPauses, // How many letters in a word could be missing ("Hus" -> "Haus") // NOT YET IMPLEMENTED, MAY BE TOO EXPENSIVE
-            int reaminingInputIgnores, // How many letters in a word are possible wrong ("Huus" -> "Haus") // NOT YET IMPLEMENTED, MAY BE TOO EXPENSIVE
+            int reaminingInputIgnores, // How many letters in a word are possible wrong ("Huus" -> "Haus")
+            bool mayAddLongerWords, // Whether longer words, using collected as prefix, should be included
             std::set<std::u16string>& rFoundWords) const;
 
         // Add longer words which use collected word as prefix. One word can be lower and upper case, counted as one. Returns how many further words may be added
