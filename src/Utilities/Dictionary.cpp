@@ -9,6 +9,7 @@
 
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/Helper.h"
+#include "externals/levenshtein-sse/levenshtein-sse.hpp"
 
 #include <fstream>
 
@@ -67,6 +68,12 @@ namespace eyegui
             convertUTF16ToUTF8(word, out);
             std::cout << out << std::endl;
         }
+
+        // Levenshtein distance
+        std::u16string a = u"bla";
+        std::u16string b = u"b\u00e4";
+        int dist = (int)levenshteinSSE::levenshtein(a, b);
+        std::cout << "Distance: " << dist << std::endl;
 
         std::cout << "Dictionary finished!" << std::endl;
     }

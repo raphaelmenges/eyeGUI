@@ -57,14 +57,14 @@ namespace eyegui
 
         // Fuzzy search for words. Takes lower case word as input
         void fuzzyWordSearch(
-            const std::u16string& rLowerWord,
+            const std::u16string& rInput,
             uint recursionDepth,
             uint inputPauseDepth,
             uint inputIgnoreDepth,
             std::set<std::u16string>& rFoundWords) const;
         void fuzzyWordSearch(
-            const std::u16string& rLowerWord,
-            uint wordStartIndex,
+            const std::u16string& rInputWord,
+            uint inputStartIndex,
             std::u16string collectedWord,
             Node const * pNode,
             int remainingRecursions, // Recursion depth of fuzzy word search ("Al" -> "Aal" or "Aaal" -> "Aal")
