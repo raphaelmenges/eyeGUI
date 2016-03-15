@@ -50,7 +50,7 @@ namespace eyegui
         std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
-        auto testA = similarWords(u"Wisenschaffft", 5);
+        auto testA = similarWords(u"Wissen", 5);
         std::cout << "Count of similar words 1: " << testA.size() << std::endl;
         for (const auto& word : testA)
         {
@@ -117,26 +117,25 @@ namespace eyegui
         std::u16string lowerWord = rWord;
         WordState wordState = convertToLower(lowerWord);
 
-        // Create vector to collect results
-        std::vector<std::u16string> results;
+        // Create set to collect results
+        std::set<std::u16string> resultSet;
 
         // Depth of recursion
         const uint RECURSION_DEPTH = 3;
 
         // Search for given word, ignore identical letters in one row
-        fuzzyWordSearch(lowerWord, RECURSION_DEPTH, results);
+        fuzzyWordSearch(lowerWord, RECURSION_DEPTH, resultSet);
+
+        // Copy results from set to vector
+        std::vector<std::u16string> resultVector;
+        std::copy(resultSet.begin(), resultSet.end(), std::back_inserter(resultVector));
 
         // TODO:
-        // - Delete double words
-            /*
-            sort( vec.begin(), vec.end() );
-            vec.erase( unique( vec.begin(), vec.end() ), vec.end() );
-            */
         // - Sort words after similiarity to given word (remind case)
         // - Give back max count of words (see parameters)
 
         // Return what you have (could be nothing)
-        return results;
+        return resultVector;
     }
 
     void Dictionary::addWord(const std::u16string& rWord)
@@ -202,7 +201,7 @@ namespace eyegui
     void Dictionary::fuzzyWordSearch(
         const std::u16string& rLowerWord,
         uint recursionDepth,
-        std::vector<std::u16string>& rFoundWords) const
+        std::set<std::u16string>& rFoundWords) const
     {
         // Just pipe it (start the recursion)
         fuzzyWordSearch(rLowerWord, 0, u"", NULL, (int)recursionDepth, rFoundWords);
@@ -214,7 +213,7 @@ namespace eyegui
         std::u16string collectedWord,
         Node const * pNode,
         int remainingRecursions,
-        std::vector<std::u16string>& rFoundWords) const
+        std::set<std::u16string>& rFoundWords) const
     {
         // Check whether recursion depth is reached
         if(remainingRecursions < 0)
@@ -271,6 +270,7 @@ namespace eyegui
                 collectedWord += c;
 
                 // "Aal" -> should be found typing "Al" (not enough letters, repeating ones missing)
+
                 fuzzyWordSearch(rLowerWord, i, collectedWord, pNode, remainingRecursions, rFoundWords);
 
                 // Only add word when no letters in input are left
@@ -290,9 +290,15 @@ namespace eyegui
                 }
             }
         }
+
+        // Input word is empty. Now one could add words which have this word as prefix
+        if(pNode != NULL)
+        {
+            // TODO: Collect further words
+        }
     }
 
-    void Dictionary::addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, std::vector<std::u16string>& rFoundWords) const
+    void Dictionary::addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const
     {
         // Decide how to add word
         if (collectedState == WordState::BOTH_STARTS)
@@ -302,20 +308,20 @@ namespace eyegui
             firstCharacterToUpper(collectedWordUpper);
 
             // Add both cases
-            rFoundWords.push_back(collectedWordUpper);
-            rFoundWords.push_back(rCollectedWord);
+            rFoundWords.insert(collectedWordUpper);
+            rFoundWords.insert(rCollectedWord);
         }
         else if (collectedState == WordState::UPPER_START)
         {
             // Add upper case word
             std::u16string collectedWordUpper = rCollectedWord;
             firstCharacterToUpper(collectedWordUpper);
-            rFoundWords.push_back(collectedWordUpper);
+            rFoundWords.insert(collectedWordUpper);
         }
         else
         {
             // Could also have state NONE, but should not
-            rFoundWords.push_back(rCollectedWord);
+            rFoundWords.insert(rCollectedWord);
         }
     }
 }

@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 // TODO:
 // - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
@@ -54,17 +55,17 @@ namespace eyegui
         void fuzzyWordSearch(
             const std::u16string& rLowerWord,
             uint recursionDepth,
-            std::vector<std::u16string>& rFoundWords) const;
+            std::set<std::u16string>& rFoundWords) const;
         void fuzzyWordSearch(
             const std::u16string& rLowerWord,
             uint wordStartIndex,
             std::u16string collectedWord,
             Node const * pNode,
             int remainingRecursions,
-            std::vector<std::u16string>& rFoundWords) const;
+            std::set<std::u16string>& rFoundWords) const;
 
         // Add fuzzy word to found words in fuzzy search
-        void addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, std::vector<std::u16string>& rFoundWords) const;
+        void addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const;
 
         // Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
         class Node
