@@ -61,6 +61,7 @@ In order to use eyeGUI, please follow these steps:
 * stb_image: https://github.com/nothings/stb
 * FreeType 2.6.1: http://www.freetype.org/ (FreeType license chosen)
 * utf8rewind: https://bitbucket.org/knight666/utf8rewind
+* levenshtein-sse: https://github.com/addaleax/levenshtein-sse
 
 All dependencies are already included inside the folder _externals_ and should be found by CMake. Keep the licenses in mind when you use this library in your project. The source code of this project itself in the folder _src_ and the header _eyeGUI.h_ from _include_ is licensed under the MIT license. From my point, it seems you only have to advertize the FreeType Library by mentioning it in your documentation or program when using the compiled library. Errors and omissions excepted ;)
 
