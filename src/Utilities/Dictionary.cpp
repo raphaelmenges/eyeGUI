@@ -153,7 +153,6 @@ namespace eyegui
         std::vector<std::u16string> resultVector;
         if(sizeOfResultSet > 0)
         {
-
             // Rate results by word distance
             int distance;
             std::vector<std::pair<std::u16string, int> > sortedResults;
