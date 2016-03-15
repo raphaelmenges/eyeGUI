@@ -17,6 +17,7 @@
 
 // TODO:
 // - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
+// - do i need letter in node AND in map? could i not use letter from map???
 
 namespace eyegui
 {
@@ -64,8 +65,13 @@ namespace eyegui
             int remainingRecursions,
             std::set<std::u16string>& rFoundWords) const;
 
-        // Add fuzzy word to found words in fuzzy search
-        void addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const;
+        // Add longer words which use collected word as prefix (just take a node and add all longer words). One word can be lower and upper case, counted as one
+        // Searches in children of given node!
+        // Returns how many further words can be added
+        int addLongerWords(const std::u16string& rCollectedWord, const Node& rNode, int remainingWords, std::set<std::u16string>& rFoundWords) const;
+
+        // Add fuzzy word to found words in fuzzy search. Returns whether successful
+        bool addFuzzyWord(const std::u16string& rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const;
 
         // Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
         class Node

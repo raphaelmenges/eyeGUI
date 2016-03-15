@@ -50,7 +50,7 @@ namespace eyegui
         std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
-        auto testA = similarWords(u"Wissen", 5);
+        auto testA = similarWords(u"\u00c4rger", 5);
         std::cout << "Count of similar words 1: " << testA.size() << std::endl;
         for (const auto& word : testA)
         {
@@ -294,14 +294,46 @@ namespace eyegui
         // Input word is empty. Now one could add words which have this word as prefix
         if(pNode != NULL)
         {
-            // TODO: Collect further words
+            // Max count of following words for each finished input word
+            const uint MAX_FOLLOWING_WORDS = 4;
+            addLongerWords(collectedWord, *pNode, MAX_FOLLOWING_WORDS, rFoundWords);
         }
     }
 
-    void Dictionary::addFuzzyWord(const std::u16string rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const
+    int Dictionary::addLongerWords(const std::u16string& rCollectedWord, const Node& rNode, int remainingWords, std::set<std::u16string>& rFoundWords) const
+    {
+        // Go over children of node and add all words until max count reached
+        for(const auto& rNodeMapEntry : rNode.children)
+        {
+            // Break out of for loop when no more words should be added
+            if(remainingWords <= 0)
+            {
+                break;
+            }
+
+            // Collect word
+            std::u16string collectedWord = rCollectedWord + rNodeMapEntry.second.letter;
+
+            // Word is only added if here is one (checked by addFuzzyWord method)
+            if(addFuzzyWord(collectedWord, rNodeMapEntry.second.wordState, rFoundWords))
+            {
+                remainingWords--;
+            }
+
+            // Do some recursion
+            remainingWords = addLongerWords(collectedWord, rNodeMapEntry.second, remainingWords, rFoundWords);
+
+        }
+
+        return remainingWords;
+    }
+
+    bool Dictionary::addFuzzyWord(const std::u16string& rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const
     {
         // Decide how to add word
-        if (collectedState == WordState::BOTH_STARTS)
+        switch (collectedState)
+        {
+        case WordState::BOTH_STARTS:
         {
             // Make version with upper case
             std::u16string collectedWordUpper = rCollectedWord;
@@ -310,18 +342,23 @@ namespace eyegui
             // Add both cases
             rFoundWords.insert(collectedWordUpper);
             rFoundWords.insert(rCollectedWord);
+            return true;
         }
-        else if (collectedState == WordState::UPPER_START)
+        case WordState::UPPER_START:
         {
             // Add upper case word
             std::u16string collectedWordUpper = rCollectedWord;
             firstCharacterToUpper(collectedWordUpper);
             rFoundWords.insert(collectedWordUpper);
+            return true;
         }
-        else
+        case WordState::LOWER_START:
         {
-            // Could also have state NONE, but should not
             rFoundWords.insert(rCollectedWord);
+            return true;
+        }
+        default:
+            return false;
         }
     }
 }
