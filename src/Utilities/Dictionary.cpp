@@ -120,7 +120,7 @@ namespace eyegui
         // Create set to collect results
         std::set<std::u16string> resultSet;
 
-        // Depth of recursion
+        // Depth of recursion for similar words
         const uint RECURSION_DEPTH = 3;
 
         // Search for given word, ignore identical letters in one row
@@ -294,7 +294,7 @@ namespace eyegui
         // Input word is empty. Now one could add words which have this word as prefix
         if(pNode != NULL)
         {
-            // Max count of following words for each finished input word
+            // Maximal count of following words for each finished input word
             const uint MAX_FOLLOWING_WORDS = 4;
             addLongerWords(collectedWord, *pNode, MAX_FOLLOWING_WORDS, rFoundWords);
         }
@@ -322,7 +322,6 @@ namespace eyegui
 
             // Do some recursion
             remainingWords = addLongerWords(collectedWord, rNodeMapEntry.second, remainingWords, rFoundWords);
-
         }
 
         return remainingWords;
@@ -330,7 +329,6 @@ namespace eyegui
 
     bool Dictionary::addFuzzyWord(const std::u16string& rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const
     {
-        // Decide how to add word
         switch (collectedState)
         {
         case WordState::BOTH_STARTS:
@@ -354,10 +352,12 @@ namespace eyegui
         }
         case WordState::LOWER_START:
         {
+            // Add lower case word
             rFoundWords.insert(rCollectedWord);
             return true;
         }
         default:
+            // No word added
             return false;
         }
     }
