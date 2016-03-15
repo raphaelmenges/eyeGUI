@@ -20,6 +20,7 @@
 // - Do more more fuzzy search (optional!)
 //  - pause input for one letter and do recursion on all letters in map (only one time)
 //  - ignore letter of input (only one time)
+// - Collect const defines and decide how to handle them
 
 namespace eyegui
 {
@@ -67,9 +68,7 @@ namespace eyegui
             int remainingRecursions,
             std::set<std::u16string>& rFoundWords) const;
 
-        // Add longer words which use collected word as prefix (just take a node and add all longer words). One word can be lower and upper case, counted as one
-        // Searches in children of given node!
-        // Returns how many further words can be added
+        // Add longer words which use collected word as prefix. One word can be lower and upper case, counted as one. Returns how many further words may be added
         int addLongerWords(const std::u16string& rCollectedWord, const Node& rNode, int remainingWords, std::set<std::u16string>& rFoundWords) const;
 
         // Add fuzzy word to found words in fuzzy search. Returns whether successful

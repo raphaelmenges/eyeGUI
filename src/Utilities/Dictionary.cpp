@@ -7,7 +7,8 @@
 
 #include "Dictionary.h"
 
-#include "Helper.h"
+#include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 
 #include <fstream>
 
@@ -20,10 +21,10 @@ namespace eyegui
     {
         std::cout << "Start filling dictionary!" << std::endl;
 
+        std::string filepath = "/home/raphael/Desktop/ger.txt"; // Testing
+
         // Read file with instream
-        // std::ifstream in("C:/Users/Raphael/Desktop/ger.txt");
-        // std::ifstream in("/home/raphael/Desktop/ger.txt");
-        std::ifstream in("/home/raphael/Temp/german.dic");
+        std::ifstream in(filepath);
 
         // Build up dictionary (TODO: CR / LF stuff)
         if(in)
@@ -32,11 +33,18 @@ namespace eyegui
             while (getline(in, line))
             {
                 // Convert to utf-16 string
-                std::u16string line16;
-                if (!(line.empty()) && convertUTF8ToUTF16(line, line16))
+                if (!(line.empty()))
                 {
-                    // Add word to dictionary
-                    addWord(line16);
+                    std::u16string line16;
+                    if(convertUTF8ToUTF16(line, line16))
+                    {
+                        // Add word to dictionary
+                        addWord(line16);
+                    }
+                    else
+                    {
+                        throwError(OperationNotifier::Operation::DICTIONARY, "Following line could not be parsed: " + line, filepath);
+                    }
                 }
             }
         }
@@ -51,8 +59,8 @@ namespace eyegui
         std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
-        auto testA = similarWords(u"kamer", 5);
-        std::cout << "Count of similar words 1: " << testA.size() << std::endl;
+        auto testA = similarWords(u"denk", 5);
+        std::cout << "Count of similar words: " << testA.size() << std::endl;
         for (const auto& word : testA)
         {
             std::string out;
@@ -74,11 +82,11 @@ namespace eyegui
         std::u16string lowerWord = rWord;
         WordState wordState = convertToLower(lowerWord);
 
-        // Pointer to map
-        NodeMap const * pMap = &mRootMap;
-
-        // Pointer to node
+        // Pointer to current node
         Node const * pNode = NULL;
+
+        // Pointer to current map
+        NodeMap const * pMap = &mRootMap;
 
         // Go over nodes
         uint count = (uint)lowerWord.size();
@@ -96,7 +104,7 @@ namespace eyegui
                 if (!(pMap->empty()))
                 {
                     pNode = &(it->second);
-                    pMap = &(pNode->children);
+                    pMap = &(pNode->children); // Map of current pointer
                 }
             }
         }
@@ -145,11 +153,11 @@ namespace eyegui
         std::u16string lowerWord = rWord;
         WordState wordState = convertToLower(lowerWord);
 
-        // Pointer to map
-        NodeMap* pMap = &mRootMap;
-
         // Pointer to node
         Node* pNode = NULL;
+
+        // Pointer to map
+        NodeMap* pMap = &mRootMap;
 
         // Go over characters in word
         uint count = (uint)lowerWord.size();
@@ -170,7 +178,7 @@ namespace eyegui
             pMap = &(pNode->children);
         }
 
-        // Set word case in last letter
+        // Set word state in last letter of word, seen from root
         // NONE is initial value
         if (pNode->wordState == WordState::NONE)
         {
@@ -179,10 +187,9 @@ namespace eyegui
         }
         else if (pNode->wordState != wordState)
         {
-            // Already saved with other case
+            // Already saved with other case or already added as upper and lower case
             pNode->wordState = WordState::BOTH_STARTS;
         }
-        // else: tried to add already existing word
     }
 
     Dictionary::WordState Dictionary::convertToLower(std::u16string& rWord) const
@@ -245,14 +252,10 @@ namespace eyegui
             // Current letter
             const char16_t& c = rLowerWord[i];
 
-            // Check for similar words with one repeating letter less
-            if (i > 0)
+            // "Aal" -> should be found typing "Aaal" (too many letters)
+            if (i > 0 && c == rLowerWord[i-1])
             {
-                // "Aal" -> should be found typing "Aaal" (too many letters)
-                if (c == rLowerWord[i-1])
-                {
-                    fuzzyWordSearch(rLowerWord, i + 1, collectedWord, pNode, remainingRecursions, rFoundWords);
-                }
+                fuzzyWordSearch(rLowerWord, i + 1, collectedWord, pNode, remainingRecursions, rFoundWords);
             }
 
             // Try to find letter in current map
@@ -271,11 +274,10 @@ namespace eyegui
                 collectedWord += c;
 
                 // "Aal" -> should be found typing "Al" (not enough letters, repeating ones missing)
-
                 fuzzyWordSearch(rLowerWord, i, collectedWord, pNode, remainingRecursions, rFoundWords);
 
                 // Only add word when no letters in input are left
-                if (i + 1  == count)
+                if (i + 1 == count)
                 {
                     // Adds word to found words
                     addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
@@ -292,39 +294,47 @@ namespace eyegui
             }
         }
 
-        // Input word is empty. Now one could add words which have this word as prefix
+        // Input word is empty. Now add words which have the collected word as prefix
         if(pNode != NULL)
         {
-            // Maximal count of following words for each finished input word
+            // Maximal count of following words for each fully collected
             const uint MAX_FOLLOWING_WORDS = 4;
             addLongerWords(collectedWord, *pNode, MAX_FOLLOWING_WORDS, rFoundWords);
         }
     }
 
-    int Dictionary::addLongerWords(const std::u16string& rCollectedWord, const Node& rNode, int remainingWords, std::set<std::u16string>& rFoundWords) const
+    int Dictionary::addLongerWords(
+        const std::u16string& rCollectedWord,
+        const Node& rNode,
+        int remainingWords,
+        std::set<std::u16string>& rFoundWords) const
     {
-        // Go over children of node and add all words until max count reached
-        for(const auto& rNodeMapEntry : rNode.children)
+        if(remainingWords > 0) // should be not necessary
         {
-            // Break out of for loop when no more words should be added
-            if(remainingWords <= 0)
+            // Go over children of node and add all words until "remainingWords" counter is too low
+            for(const auto& rNodeMapEntry : rNode.children)
             {
-                break;
+                // Collected word
+                std::u16string collectedWord = rCollectedWord + rNodeMapEntry.first;
+
+                // Word is only added if here is one (checked by addFuzzyWord method)
+                if(addFuzzyWord(collectedWord, rNodeMapEntry.second.wordState, rFoundWords))
+                {
+                    remainingWords--;
+                }
+
+                // Break out of for loop when no more words should be added
+                if(remainingWords <= 0) { break; }
+
+                // Do some recursion
+                remainingWords = addLongerWords(collectedWord, rNodeMapEntry.second, remainingWords, rFoundWords);
+
+                // Break out of for loop when no more words should be added
+                if(remainingWords <= 0) { break; }
             }
-
-            // Collect word
-            std::u16string collectedWord = rCollectedWord + rNodeMapEntry.first;
-
-            // Word is only added if here is one (checked by addFuzzyWord method)
-            if(addFuzzyWord(collectedWord, rNodeMapEntry.second.wordState, rFoundWords))
-            {
-                remainingWords--;
-            }
-
-            // Do some recursion
-            remainingWords = addLongerWords(collectedWord, rNodeMapEntry.second, remainingWords, rFoundWords);
         }
 
+        // Return how many words may be added further
         return remainingWords;
     }
 
@@ -358,8 +368,10 @@ namespace eyegui
             return true;
         }
         default:
+        {
             // No word added
             return false;
+        }
         }
     }
 }

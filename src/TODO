@@ -1,4 +1,7 @@
 ### VERSION 0.9
+- Wiki
+  - Dictionary
+    - UTF-8 + LF?
 - Dictionary
   - Create helper class for unicode which uses utf8rewind
   - Get rid of utfcpp library
