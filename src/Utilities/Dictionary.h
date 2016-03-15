@@ -4,7 +4,10 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Dictionary class storing given words of an arbitrary language in a prefix
+// tree structure. Some fuzzy word search with recursion is used to find
+// similar words to input. Found words are ordered by levenshtein distance
+// to original input word.
 
 #ifndef DICTIONARY_H_
 #define DICTIONARY_H_
@@ -18,7 +21,6 @@
 // TODO:
 // - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
 //   - Ignore patterns (www, https..)
-// - Collect const defines and decide how to handle them
 // - bool to tell similar words: i want all words to begin with upper letter (for beginning of sentence)
 
 namespace eyegui
@@ -68,7 +70,7 @@ namespace eyegui
             std::u16string collectedWord,
             Node const * pNode,
             int remainingInputRepeatIgnores, // How many repeating letters of input can be ("Aaal" -> "Aal")
-            int remainingInputRepeatPauses, // How many repeating letters can be added by algorithm ("Al" -> "Aal" or "Aaal" -> "Aal")
+            int remainingInputRepeatPauses, // How many repeating letters can be added by algorithm ("Al" -> "Aal")
             int remainingInputPauses, // How many letters in a word could be missing ("Hus" -> "Haus")
             int reaminingInputIgnores, // How many letters in a word are possible wrong ("Huus" -> "Haus")
             bool mayAddLongerWords, // Whether longer words, using collected as prefix, should be included
