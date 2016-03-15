@@ -3,21 +3,19 @@
   - Dictionary
     - UTF-8 + LF?
 - Dictionary
-  - Think about other dictionary structure (guess it would be better to preserve lower and upper case from dictionary)
   - check whether i have used .size() somewhere for a string. Not good. Use length?
   - write email to utf8rewind author because of windows fix
+  - get rid of SSSE warning
 - Rewrite Element rendering (more layers, not so big shaders)
 - Keyboard: Better german and english layout
--"Guesser" (tries to guess what you want to write)
-  - Different databases (words, websites... -> how to access these databases without copying? weakpointer to std::structure? Something more efficient?)
 - TextEdit element for easy text editing (zoom, cursor etc)
+- Suggestions element
 
 ### VERSION 0.10
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
-
 - Font has sometimes little rendering issues
 	- Caused by oversized letters. More intelligent packing algorithm needed!
 - IDEA: disable opengl storing stuff by function (to save computation time)

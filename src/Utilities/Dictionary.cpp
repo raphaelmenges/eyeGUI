@@ -23,8 +23,8 @@ namespace eyegui
     {
         std::cout << "Start filling dictionary!" << std::endl;
 
-        std::string filepath = "/home/raphael/Desktop/ger.txt"; // Testing
-        // std::string filepath = "/home/raphael/Temp/german.dic"; // Testing
+        // std::string filepath = "/home/raphael/Desktop/ger.txt"; // Testing
+        std::string filepath = "/home/raphael/Temp/german.dic"; // Testing
 
         // Read file with instream
         std::ifstream in(filepath);
@@ -62,7 +62,7 @@ namespace eyegui
         std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
-        std::u16string testString = u"Uni";
+        std::u16string testString = u"A";
         auto testA = similarWords(testString);
         std::cout << "Count of similar words: " << testA.size() << std::endl;
         for (const auto& word : testA)
@@ -134,17 +134,13 @@ namespace eyegui
         // Create set to collect results
         std::set<std::u16string> resultSet;
 
-        // Depth of recursion for similar words
-        const uint RECURSION_DEPTH = 3;
-        const uint INPUT_PAUSE_DEPTH = 1;
-        const uint INPUT_IGNORE_DEPTH = 1;
-
         // Search for given word, ignore identical letters in one row
         fuzzyWordSearch(
             lowerWord,
-            RECURSION_DEPTH,
-            INPUT_PAUSE_DEPTH,
-            INPUT_IGNORE_DEPTH,
+            DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH,
+            DICTIONARY_INPUT_REPEAT_PAUSE_DEPTH,
+            DICTIONARY_INPUT_PAUSE_DEPTH,
+            DICTIONARY_INPUT_IGNORE_DEPTH,
             resultSet);
 
         // Save size of result set
@@ -258,7 +254,8 @@ namespace eyegui
 
     void Dictionary::fuzzyWordSearch(
         const std::u16string& rInput,
-        uint recursionDepth,
+        uint inputRepeatIgnoreDepth,
+        uint inputRepeatPauseDepth,
         uint inputPauseDepth,
         uint inputIgnoreDepth,
         std::set<std::u16string>& rFoundWords) const
@@ -269,7 +266,8 @@ namespace eyegui
             0,
             u"",
             NULL,
-            (int)recursionDepth,
+            (int)inputRepeatIgnoreDepth,
+            (int)inputRepeatPauseDepth,
             (int)inputPauseDepth,
             (int)inputIgnoreDepth,
             true,
@@ -281,24 +279,13 @@ namespace eyegui
         uint inputStartIndex,
         std::u16string collectedWord,
         Node const * pNode,
-        int remainingRecursions,
+        int remainingInputRepeatIgnores,
+        int remainingInputRepeatPauses,
         int remainingInputPauses,
         int reaminingInputIgnores,
         bool mayAddLongerWords,
         std::set<std::u16string>& rFoundWords) const
     {
-        // Check whether recursion depth is reached
-        if(remainingRecursions < 0)
-        {
-            // Yes, skip this call
-            return;
-        }
-        else
-        {
-            // No, decrement remaining recursions
-            remainingRecursions--;
-        }
-
         // Pointer to root map
         NodeMap const * pMap = &mRootMap;
 
@@ -313,17 +300,18 @@ namespace eyegui
         uint count = (uint)rInput.size();
         for (uint i = inputStartIndex; i < count; i++)
         {
-            // Suspect input to be incomplete
-            if(i > 0 && remainingInputPauses > 0)
+            // Suspect input to be incomplete ("Hus" -> "Haus")
+            if(remainingInputPauses > 0)
             {
                 for(const auto& rNode : *pMap)
                 {
                     fuzzyWordSearch(
                         rInput,
-                        i - 1,
-                        collectedWord,
+                        i,
+                        collectedWord + rNode.first,
                         &(rNode.second),
-                        remainingRecursions,
+                        0,
+                        0,
                         remainingInputPauses - 1,
                         reaminingInputIgnores,
                         false,
@@ -331,7 +319,7 @@ namespace eyegui
                 }
             }
 
-            // Ignore some input
+            // Ignore some input ("Huus" -> "Haus")
             if(reaminingInputIgnores > 0)
             {
                 // Just ignore given letter from inputadd letter from map and go on
@@ -342,6 +330,7 @@ namespace eyegui
                         i+1,
                         collectedWord + rNode.first,
                         &(rNode.second),
+                        0,
                         0,
                         remainingInputPauses,
                         reaminingInputIgnores - 1,
@@ -354,14 +343,15 @@ namespace eyegui
             const char16_t& c = rInput[i];
 
             // "Aaal" -> "Aal" should be found (too many letters)
-            if (i > 0 && c == rInput[i-1])
+            if (i > 0 && remainingInputRepeatIgnores > 0 && c == rInput[i-1])
             {
                 fuzzyWordSearch(
                     rInput,
                     i + 1,
                     collectedWord,
                     pNode,
-                    remainingRecursions,
+                    remainingInputRepeatIgnores -1,
+                    remainingInputRepeatPauses,
                     remainingInputPauses,
                     reaminingInputIgnores,
                     mayAddLongerWords,
@@ -390,25 +380,31 @@ namespace eyegui
                 collectedWord += c;
 
                 // "Al" -> "Aal" should be found  (not enough letters, repeating ones missing)
-                fuzzyWordSearch(
-                    rInput,
-                    i,
-                    collectedWord,
-                    pNode,
-                    remainingRecursions,
-                    remainingInputPauses,
-                    reaminingInputIgnores,
-                    mayAddLongerWords,
-                    rFoundWords);
+                if(remainingInputRepeatPauses > 0)
+                {
+                    fuzzyWordSearch(
+                        rInput,
+                        i,
+                        collectedWord,
+                        pNode,
+                        remainingInputRepeatIgnores,
+                        remainingInputRepeatPauses - 1,
+                        remainingInputPauses,
+                        reaminingInputIgnores,
+                        mayAddLongerWords,
+                        rFoundWords);
+                }
 
-                // Only add word when no letters in input are left
+                // Add word when no letters in input are left
                 if (i + 1 == count)
                 {
                     // Adds word to found words
                     addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
+                    break; // Not necessary because loop should end since i is high enough
                 }
                 else if (!(pMap->empty()))
                 {
+                    // Go on for next iteration
                     pMap = &(pNode->children);
                 }
                 else
@@ -422,9 +418,7 @@ namespace eyegui
         // Input word is empty. Now add words which have the collected word as prefix
         if(mayAddLongerWords && pNode != NULL)
         {
-            // Maximal count of following words for each fully collected
-            const uint MAX_FOLLOWING_WORDS = 4;
-            addLongerWords(collectedWord, *pNode, MAX_FOLLOWING_WORDS, rFoundWords);
+            addLongerWords(collectedWord, *pNode, DICTIONARY_MAX_FOLLOWING_WORDS, rFoundWords);
         }
     }
 

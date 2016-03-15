@@ -48,6 +48,11 @@ namespace eyegui
     static const float KEY_MIN_SCALE = 0.5f;
     static const char16_t FONT_FALLBACK_CHARACTER = u' ';
     static const float FONT_KEYBOARD_SIZE = 0.1f; // Percentage of screen height
+    static const uint DICTIONARY_MAX_FOLLOWING_WORDS = 4; // Maximal count of words for each fully collected one serving as prefix
+    static const uint DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH = 1; // "Aaal" -> "Aal"
+    static const uint DICTIONARY_INPUT_REPEAT_PAUSE_DEPTH = 3; // "Al" -> "Aal"
+    static const uint DICTIONARY_INPUT_PAUSE_DEPTH = 0; // "Hus" -> "Haus"
+    static const uint DICTIONARY_INPUT_IGNORE_DEPTH = 1; // "Huus" -> "Haus"
 }
 
 #endif // DEFINES_H_
