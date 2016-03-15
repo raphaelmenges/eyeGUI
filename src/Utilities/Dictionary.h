@@ -17,7 +17,9 @@
 
 // TODO:
 // - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
-// - do i need letter in node AND in map? could i not use letter from map???
+// - Do more more fuzzy search (optional!)
+//  - pause input for one letter and do recursion on all letters in map (only one time)
+//  - ignore letter of input (only one time)
 
 namespace eyegui
 {
