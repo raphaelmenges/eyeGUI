@@ -40,7 +40,7 @@ namespace eyegui
     private:
 
         // Some typedef for the map
-        class Node;
+        struct Node;
         typedef std::map<char16_t, Node> NodeMap;
 
         // Possible states for word, using 1 byte char as structure. None is used for "here is no word"
@@ -73,18 +73,14 @@ namespace eyegui
         // Add fuzzy word to found words in fuzzy search. Returns whether successful
         bool addFuzzyWord(const std::u16string& rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const;
 
-        // Inner class for node. One node per letter in each word. Buildung up a tree by reusing existing nodes
-        class Node
+        // Inner struct for node. Represented letter is implicit coded in map entry which stores node. Buildung up a tree by reusing existing nodes
+        struct Node
         {
         public:
 
-            // Constructor
-            Node(char16_t letter) : letter(letter), wordState(WordState::NONE) {}
-
             // Members
-            char16_t letter; // Letter in node
-            WordState wordState; // State of word formed by letters in nodes from root to here
             NodeMap children; // Further possible letters to form other words
+            WordState wordState = WordState::NONE; // State of word formed by letters in nodes from root to here
         };
 
         // Members

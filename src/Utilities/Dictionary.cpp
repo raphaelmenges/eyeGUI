@@ -21,8 +21,9 @@ namespace eyegui
         std::cout << "Start filling dictionary!" << std::endl;
 
         // Read file with instream
-        //std::ifstream in("C:/Users/Raphael/Desktop/ger.txt");
-        std::ifstream in("/home/raphael/Desktop/ger.txt");
+        // std::ifstream in("C:/Users/Raphael/Desktop/ger.txt");
+        // std::ifstream in("/home/raphael/Desktop/ger.txt");
+        std::ifstream in("/home/raphael/Temp/german.dic");
 
         // Build up dictionary (TODO: CR / LF stuff)
         if(in)
@@ -50,7 +51,7 @@ namespace eyegui
         std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
-        auto testA = similarWords(u"\u00c4rger", 5);
+        auto testA = similarWords(u"kamer", 5);
         std::cout << "Count of similar words 1: " << testA.size() << std::endl;
         for (const auto& word : testA)
         {
@@ -161,7 +162,7 @@ namespace eyegui
             if (it == pMap->end())
             {
                 // Add it to map and go on
-                pMap->insert(std::make_pair(c, Node(c)));
+                pMap->insert(std::make_pair(c, Node()));
             }
 
             // Remember current node and new map
@@ -312,7 +313,7 @@ namespace eyegui
             }
 
             // Collect word
-            std::u16string collectedWord = rCollectedWord + rNodeMapEntry.second.letter;
+            std::u16string collectedWord = rCollectedWord + rNodeMapEntry.first;
 
             // Word is only added if here is one (checked by addFuzzyWord method)
             if(addFuzzyWord(collectedWord, rNodeMapEntry.second.wordState, rFoundWords))
