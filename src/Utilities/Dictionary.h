@@ -80,9 +80,6 @@ namespace eyegui
         // Inner struct for node. Represented letter is implicit coded in map entry which stores node. Buildung up a tree by reusing existing nodes
         struct Node
         {
-        public:
-
-            // Members
             NodeMap children; // Further possible letters to form other words
             WordState wordState = WordState::NONE; // State of word formed by letters in nodes from root to here
         };
