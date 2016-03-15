@@ -19,7 +19,6 @@
 // - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
 //   - Ignore patterns (www, https..)
 // - Collect const defines and decide how to handle them
-// - LowerWord->Input renaming
 // - bool to tell similar words: i want all words to begin with upper letter (for beginning of sentence)
 
 namespace eyegui
@@ -38,7 +37,7 @@ namespace eyegui
         bool checkForWord(const std::u16string& rWord) const;
 
         // Give similar words. May return empty vector or similar words, ordered by probability (more or less)
-        std::vector<std::u16string> similarWords(const std::u16string& rWord, uint maxCount) const;
+        std::vector<std::u16string> similarWords(const std::u16string& rWord) const;
 
     private:
 

@@ -12,6 +12,7 @@
 #include "externals/levenshtein-sse/levenshtein-sse.hpp"
 
 #include <fstream>
+#include <algorithm>
 
 // TODO: Delete
 #include <iostream>
@@ -23,6 +24,7 @@ namespace eyegui
         std::cout << "Start filling dictionary!" << std::endl;
 
         std::string filepath = "/home/raphael/Desktop/ger.txt"; // Testing
+        // std::string filepath = "/home/raphael/Temp/german.dic"; // Testing
 
         // Read file with instream
         std::ifstream in(filepath);
@@ -60,7 +62,8 @@ namespace eyegui
         std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
 
         // Fuzzy word search
-        auto testA = similarWords(u"denk", 5);
+        std::u16string testString = u"denk";
+        auto testA = similarWords(testString);
         std::cout << "Count of similar words: " << testA.size() << std::endl;
         for (const auto& word : testA)
         {
@@ -68,12 +71,6 @@ namespace eyegui
             convertUTF16ToUTF8(word, out);
             std::cout << out << std::endl;
         }
-
-        // Levenshtein distance
-        std::u16string a = u"bla";
-        std::u16string b = u"b\u00e4";
-        int dist = (int)levenshteinSSE::levenshtein(a, b);
-        std::cout << "Distance: " << dist << std::endl;
 
         std::cout << "Dictionary finished!" << std::endl;
     }
@@ -127,11 +124,11 @@ namespace eyegui
         }
     }
 
-    std::vector<std::u16string> Dictionary::similarWords(const std::u16string& rWord, uint maxCount) const
+    std::vector<std::u16string> Dictionary::similarWords(const std::u16string& rWord) const
     {
         // Convert to lower case
         std::u16string lowerWord = rWord;
-        WordState wordState = convertToLower(lowerWord);
+        convertToLower(lowerWord); // state is not necessary to remember
 
         // Create set to collect results
         std::set<std::u16string> resultSet;
@@ -149,15 +146,49 @@ namespace eyegui
             INPUT_IGNORE_DEPTH,
             resultSet);
 
-        // Copy results from set to vector
+        // Save size of result set
+        int sizeOfResultSet = resultSet.size();
+
+        // Only continue when necessary
         std::vector<std::u16string> resultVector;
-        std::copy(resultSet.begin(), resultSet.end(), std::back_inserter(resultVector));
+        if(sizeOfResultSet > 0)
+        {
 
-        // TODO:
-        // - Sort words after similiarity to given word (remind case)
-        // - Give back max count of words (see parameters)
+            // Rate results by word distance
+            int distance;
+            std::vector<std::pair<std::u16string, int> > sortedResults;
+            sortedResults.reserve(sizeOfResultSet);
+            for(const std::u16string& rFoundWord : resultSet)
+            {
+                // Use unchanged input word to make use of case
+                distance = (int)levenshteinSSE::levenshtein(rWord, rFoundWord);
 
-        // Return what you have (could be nothing)
+                // Build up structure with found word and distance to searched one
+                sortedResults.push_back(std::make_pair(rFoundWord, distance));
+            }
+
+            // Sort the built structure
+            std::sort(
+                sortedResults.begin(),
+                sortedResults.end(),
+                [](const std::pair<std::u16string, int>& left, const std::pair<std::u16string, int>& right)
+                {
+                    return left.second < right.second;
+                });
+
+            // Copy results to final vector
+            resultVector.reserve(sizeOfResultSet);
+            std::transform(
+                sortedResults.begin(),
+                sortedResults.end(),
+                std::back_inserter(resultVector),
+                [](const std::pair<std::u16string, int>& item)
+                {
+                    return item.first;
+                });
+        }
+
+        // Return what you have
         return resultVector;
     }
 
@@ -300,7 +331,6 @@ namespace eyegui
                     reaminingInputIgnores,
                     rFoundWords);
             }
-
 
             // Try to find letter in current map
             NodeMap::const_iterator it = pMap->find(c);
