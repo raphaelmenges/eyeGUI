@@ -18,11 +18,6 @@
 #include <vector>
 #include <set>
 
-// TODO:
-// - Multiple dictionaries (URLs, Language....) -> vector of dicts in GUI
-//   - Ignore patterns (www, https..)
-// - bool to tell similar words: i want all words to begin with upper letter (for beginning of sentence)
-
 namespace eyegui
 {
     class Dictionary
@@ -30,7 +25,7 @@ namespace eyegui
     public:
 
         // Constructor
-        Dictionary();
+        Dictionary(std::string filepath = "/home/raphael/Desktop/ger.txt");
 
         // Destructor
         virtual ~Dictionary();
@@ -38,8 +33,9 @@ namespace eyegui
         // Check for exact word
         bool checkForWord(const std::u16string& rWord) const;
 
-        // Give similar words. May return empty vector or similar words, ordered by probability (more or less)
-        std::vector<std::u16string> similarWords(const std::u16string& rWord) const;
+        // Give similar words sorted by probability.
+        // First letter can be made upper case for example for beginning of sentences
+        std::vector<std::u16string> similarWords(const std::u16string& rWord, bool makeFirstLetterUpperCase) const;
 
     private:
 
@@ -86,7 +82,7 @@ namespace eyegui
         struct Node
         {
             NodeMap children; // Further possible letters to form other words
-            WordState wordState = WordState::NONE; // State of word formed by letters in nodes from root to here
+            WordState wordState = WordState::NONE; // State of word formed by letters from root to here
         };
 
         // Members

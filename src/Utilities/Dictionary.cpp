@@ -13,29 +13,40 @@
 
 #include <fstream>
 #include <algorithm>
-
-// TODO: Delete
-#include <iostream>
+#include <sstream>
 
 namespace eyegui
 {
-    Dictionary::Dictionary()
+    Dictionary::Dictionary(std::string filepath)
     {
-        std::cout << "Start filling dictionary!" << std::endl;
-
-        // std::string filepath = "/home/raphael/Desktop/ger.txt"; // Testing
-        std::string filepath = "/home/raphael/Temp/german.dic"; // Testing
-
         // Read file with instream
         std::ifstream in(filepath);
 
-        // Build up dictionary (TODO: CR / LF stuff)
+        // Build up dictionary
         if(in)
         {
+            // Convert input file to string
+            std::stringstream strStream;
+            strStream << in.rdbuf();
+            std::string content = strStream.str();
+
+            // Close file
+            in.close();
+
+            // Streamline line endings
+            streamlineLineEnding(content);
+
+            // Add words to dictionary
+            std::string delimiter = "\n";
+            size_t pos = 0;
             std::string line;
-            while (getline(in, line))
+            while ((pos = content.find(delimiter)) != std::string::npos)
             {
-                // Convert to utf-16 string
+                // Extract line
+                line = content.substr(0, pos);
+                content.erase(0, pos + delimiter.length());
+
+                // Convert line to utf-16 string
                 if (!(line.empty()))
                 {
                     std::u16string line16;
@@ -51,28 +62,10 @@ namespace eyegui
                 }
             }
         }
-
-        // TODO: TESTING AREA
-
-        // Testing whether words can be found
-        std::cout << "Start dictionary tests!" << std::endl;
-
-        // Exact check for word
-        std::cout << "CheckForWord 1: " << checkForWord(u"\u00c4rger") << std::endl; // Aerger
-        std::cout << "CheckForWord 2: " << checkForWord(u"\u00e4rger") << std::endl; // aerger
-
-        // Fuzzy word search
-        std::u16string testString = u"A";
-        auto testA = similarWords(testString);
-        std::cout << "Count of similar words: " << testA.size() << std::endl;
-        for (const auto& word : testA)
+        else
         {
-            std::string out;
-            convertUTF16ToUTF8(word, out);
-            std::cout << out << std::endl;
+            throwError(OperationNotifier::Operation::DICTIONARY, "Dictionary file not found", filepath);
         }
-
-        std::cout << "Dictionary finished!" << std::endl;
     }
 
     Dictionary::~Dictionary()
@@ -124,7 +117,7 @@ namespace eyegui
         }
     }
 
-    std::vector<std::u16string> Dictionary::similarWords(const std::u16string& rWord) const
+    std::vector<std::u16string> Dictionary::similarWords(const std::u16string& rWord, bool makeFirstLetterUpperCase) const
     {
         // Convert to lower case
         std::u16string lowerWord = rWord;
@@ -187,6 +180,12 @@ namespace eyegui
                 {
                     return item.first;
                 });
+
+            // Make first letter upper case if wished
+            if(makeFirstLetterUpperCase)
+            {
+                std::for_each(resultVector.begin(), resultVector.end(), firstCharacterToUpper);
+            }
         }
 
         // Return what you have

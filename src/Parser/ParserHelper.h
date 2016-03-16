@@ -30,21 +30,6 @@ namespace eyegui
 
         return glm::vec4(red, green, blue, alpha);
     }
-
-    // Safe string (streamline LF, CR and CR+LF endings)
-    static void streamlineLineEnding(std::string& rInput)
-    {
-        // CR+LF -> LF
-        std::string::size_type pos = 0;
-        while (( pos = rInput.find ("\r\n",pos) ) != std::string::npos)
-        {
-            // Only remove \r
-            rInput.erase(pos, 1);
-        }
-
-        // CR -> LF
-        std::replace(rInput.begin(), rInput.end(), '\r', '\n');
-    }
 }
 
 #endif // PARSER_HELPER_H_

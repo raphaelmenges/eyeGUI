@@ -26,20 +26,23 @@ namespace eyegui
     // Convert pixel space to drawing space (origin top left)
     glm::mat4 calculateDrawMatrix(int layoutWidth, int layoutHeight, int x, int y, int width, int height);
 
-	// Returns whether conversion was successful
-	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput);
+    // Returns whether conversion was successful
+    bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput);
 
-	// Returns whether conversion was successful
-	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
-	
-	// Returns whether change in case was successful
-	bool toLower(std::u16string& rString);
+    // Returns whether conversion was successful
+    bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
 
-	// Returns whether change in case was successful
-	bool toLower(char16_t& rCharacter);
+    // Returns whether change in case was successful
+    bool toLower(std::u16string& rString);
 
-	// Returns whether change in case of first character was successful
-	bool firstCharacterToUpper(std::u16string& rString);
+    // Returns whether change in case was successful
+    bool toLower(char16_t& rCharacter);
+
+    // Returns whether change in case of first character was successful
+    bool firstCharacterToUpper(std::u16string& rString);
+
+    // Safe string (streamline LF, CR and CR+LF endings)
+    void streamlineLineEnding(std::string& rInput);
 }
 
 #endif // HELPER_H_
