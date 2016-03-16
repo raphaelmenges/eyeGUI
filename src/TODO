@@ -1,7 +1,7 @@
 ### VERSION 0.9
 - Wiki
   - Dictionary
-    - UTF-8 (otherwise umlaute etc are wrong interpreted)
+    - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
 - Dictionary
   - write email to utf8rewind author because of windows fix
 - Rewrite Element rendering (more layers, not so big shaders)
@@ -9,7 +9,6 @@
 - TextEdit element for easy text editing (zoom, cursor etc)
 - Suggestions element
 - Replace freetype2 by stb and use their packing algorithm!
-- std::string: check whether i have used .size() somewhere for a string. Not good. Use length?
 
 ### VERSION 0.10
 - Audio (PortAudio library?)
