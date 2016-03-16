@@ -229,6 +229,13 @@ namespace eyegui
         mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
     }
 
+    uint GUI::addDictionary(std::string filepath)
+    {
+        // Do it immediately
+        std::unique_ptr<Dictionary> upDictionary = std::unique_ptr<Dictionary>(new Dictionary(filepath));
+        mDictionaries.push_back(std::move(upDictionary));
+    }
+
     int GUI::getWindowWidth() const
     {
         return mWidth;
@@ -297,6 +304,18 @@ namespace eyegui
         default:
             return 0;
             break;
+        }
+    }
+
+    Dictionary const * GUI::getDictionary(uint dictionaryIndex) const
+    {
+        if(dictionaryIndex < mDictionaries.size())
+        {
+            return mDictionaries[dictionaryIndex].get();
+        }
+        else
+        {
+            throwError(OperationNotifier::Operation::RUNTIME, "Cannot find dictionary with index: " + dictionaryIndex);
         }
     }
 

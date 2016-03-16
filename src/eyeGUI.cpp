@@ -89,6 +89,11 @@ namespace eyegui
         pGUI->prefetchImage(filepath);
     }
 
+    unsigned int addDictionary(GUI* pGUI, std::string filepath)
+    {
+        return pGUI->addDictionary(filepath);
+    }
+
     void setValueOfConfigAttribute(
         GUI* pGUI,
         std::string attribute,

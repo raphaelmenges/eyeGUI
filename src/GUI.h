@@ -86,6 +86,9 @@ namespace eyegui
         // Set value of config attribute
         void setValueOfConfigAttribute(std::string attribute, std::string value);
 
+        // Add dictionary. Returns index as handle
+        uint addDictionary(std::string filepath);
+
         // *** Methods accessed by other classes ***
 
         // Getter for window size
@@ -112,6 +115,9 @@ namespace eyegui
 
         // Get size for font
         float getSizeOfFont(FontSize fontSize) const;
+
+        // Get pointer to dictionary
+        Dictionary const * getDictionary(uint dictionaryIndex) const;
 
     private:
 
@@ -228,9 +234,7 @@ namespace eyegui
         float mFontTallSize;
         float mFontMediumSize;
         float mFontSmallSize;
-
-        // TODO: Test
-        Dictionary mDictionary;
+        std::vector<std::unique_ptr<Dictionary> > mDictionaries;
     };
 }
 

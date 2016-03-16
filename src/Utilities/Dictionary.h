@@ -25,7 +25,7 @@ namespace eyegui
     public:
 
         // Constructor
-        Dictionary(std::string filepath = "/home/raphael/Desktop/ger.txt");
+        Dictionary(std::string filepath);
 
         // Destructor
         virtual ~Dictionary();

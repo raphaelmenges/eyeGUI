@@ -133,9 +133,9 @@ namespace eyegui
 
         //! Callback for pressing keys of keyboard.
         /*!
-        \param pLayout pointer to layout from which callback is coming.
-        \param id is the unique id of the keyboard which causes the callback.
-        \param value is the string given by pressed key.
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the keyboard which causes the callback.
+          \param value is the string given by pressed key.
         */
         void virtual keyPressed(Layout* pLayout, std::string id, std::string value) = 0;
     };
@@ -211,7 +211,7 @@ namespace eyegui
 
     //! Draw whole GUI.
     /*!
-    \param pGUI pointer to GUI.
+      \param pGUI pointer to GUI.
     */
     void drawGUI(GUI const * pGUI);
 
@@ -256,11 +256,19 @@ namespace eyegui
     */
     void prefetchImage(GUI* pGUI, std::string filepath);
 
+    //! Add dictionary which can be used for text suggestions.
+    /*!
+      \param pGUI pointer to GUI.
+      \param filepath is path to dictionary file with words to add.
+      \return Handle to access dictionary via interface.
+    */
+    unsigned int addDictionary(GUI* pGUI, std::string filepath);
+
     //! Sets value of config attribute. Is executed at update call.
     /*!
-    \param pLayout pointer to layout.
-    \param attribute is name of attribute which shall be changed.
-    \param value is new value of attribute.
+      \param pLayout pointer to layout.
+      \param attribute is name of attribute which shall be changed.
+      \param value is new value of attribute.
     */
     void setValueOfConfigAttribute(
         GUI* pGUI,
@@ -303,9 +311,9 @@ namespace eyegui
 
     //! Getter for relative position and size of element. Values are relative in respect to layout.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return relative position and size of element. Filled with initial values if element not found.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return relative position and size of element. Filled with initial values if element not found.
     */
     RelativePositionAndSize getRelativePositionAndSizeOfElement(
         Layout* pLayout,
@@ -313,9 +321,9 @@ namespace eyegui
 
     //! Getter for absolute pixel position and size of element. Values are in pixel space of GUI.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return absolute position and size of element. Filled with initial values if element not found.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return absolute position and size of element. Filled with initial values if element not found.
     */
     AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
         Layout* pLayout,
@@ -355,9 +363,9 @@ namespace eyegui
 
     //! Set whether element is dimming.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param dimming is the new choice.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param dimming is the new choice.
     */
     void setElementDimming(
         Layout* pLayout,
@@ -366,10 +374,10 @@ namespace eyegui
 
     //! Set whether element is marking.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param marking is the new choice.
-    \param depth of children of this element, which are marked (or unmarked) too. Negative depth indicates, that all children are affected.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param marking is the new choice.
+      \param depth of children of this element, which are marked (or unmarked) too. Negative depth indicates, that all children are affected.
     */
     void setElementMarking(
         Layout* pLayout,
@@ -379,9 +387,9 @@ namespace eyegui
 
     //! Set style of element.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param stlye is name of style in stylesheet of layout.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param stlye is name of style in stylesheet of layout.
     */
     void setStyleOfElement(
         Layout* pLayout,
@@ -390,25 +398,25 @@ namespace eyegui
 
     //! Get whether element is dimming.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return true if element with given id is dimming and false else.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return true if element with given id is dimming and false else.
     */
     bool isElementDimming(Layout const * pLayout, std::string id);
 
     //! Get whether element is marking.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return true if element with given id is marking and false else.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return true if element with given id is marking and false else.
     */
     bool isElementMarking(Layout const * pLayout, std::string id);
 
     //! Set hiding of element.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param hidden should be true to hide element and false to unhide it.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param hidden should be true to hide element and false to unhide it.
     */
     void setElementHiding(Layout* pLayout, std::string id, bool hidden);
 
@@ -549,57 +557,57 @@ namespace eyegui
 
     //! Set content of text block. Works only if no key is used for localization.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param content is new content for text block as 16 bit string.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param content is new content for text block as 16 bit string.
     */
     void setContentOfTextBlock(Layout* pLayout, std::string id, std::u16string content);
 
     //! Set content of text block. Works only if no key is used for localization.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param content is new content for text block as 8 bit string.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param content is new content for text block as 8 bit string.
     */
     void setContentOfTextBlock(Layout* pLayout, std::string id, std::string content);
 
     //! Set key of text block. Works only if used localization file includes key.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param key is new key for text block.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param key is new key for text block.
     */
     void setKeyOfTextBlock(Layout* pLayout, std::string id, std::string key);
 
     //! Set fast typing for keyboard.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param useFastTyping indicates, whether fast typing should be used or not.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param useFastTyping indicates, whether fast typing should be used or not.
     */
     void setFastTypingOfKeyboard(Layout* pLayout, std::string id, bool useFastTyping);
 
     //! Set case of letters in keyboard.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param case indicates case of displayed letters.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param case indicates case of displayed letters.
     */
     void setCaseOfKeyboard(Layout* pLayout, std::string id, KeyboardCase keyboardCase);
 
     //! Get count of available keymaps in keyboard.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return count of keymaps
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return count of keymaps
     */
     unsigned int getCountOfKeymapsInKeyboard(Layout const * pLayout, std::string id);
 
     //! Set keymap of keyboard by index.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param keymapIndex is index of keymap.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param keymapIndex is index of keymap.
     */
     void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
 
@@ -770,11 +778,11 @@ namespace eyegui
 
     //! Replace element with brick.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \param filepath is path to brick xml file.
-    \param idMapper changes ids inside brick to ones in map.
-    \param fade indicates, whether replaced element should fade.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param filepath is path to brick xml file.
+      \param idMapper changes ids inside brick to ones in map.
+      \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithBrick(
         Layout* pLayout,
@@ -807,16 +815,16 @@ namespace eyegui
 
     //! Creates floating frame with brick inside
     /*!
-    \param pLayout pointer to layout.
-    \param filepath is path to brick xml file.
-    \param relativePositionX initial relative x position.
-    \param relativePositionY initial relative y position.
-    \param relativeSizeX initial relative x size.
-    \param relativeSizeY initial relative y size.
-    \param idMapper changes ids inside brick to ones in map.
-    \param visible indicates, whether frame should be visible or not.
-    \param fade indicates, whether frame should fade in.
-    \return index of created floating frame.
+      \param pLayout pointer to layout.
+      \param filepath is path to brick xml file.
+      \param relativePositionX initial relative x position.
+      \param relativePositionY initial relative y position.
+      \param relativeSizeX initial relative x size.
+      \param relativeSizeY initial relative y size.
+      \param idMapper changes ids inside brick to ones in map.
+      \param visible indicates, whether frame should be visible or not.
+      \param fade indicates, whether frame should fade in.
+      \return index of created floating frame.
     */
     unsigned int addFloatingFrameWithBrick(
         Layout* pLayout,
@@ -846,9 +854,9 @@ namespace eyegui
 
     //! Removes floating frame from layout.
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
-    \param fade indicates, whether floating frame should fade out.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \param fade indicates, whether floating frame should fade out.
     */
     void removeFloatingFrame(
         Layout* pLayout,
@@ -857,10 +865,10 @@ namespace eyegui
 
     //! Translates floating frame
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
-    \param translateX amount of translation in x direction.
-    \param translateY amount of translation in y direction.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \param translateX amount of translation in x direction.
+      \param translateY amount of translation in y direction.
     */
     void translateFloatingFrame(
         Layout* pLayout,
@@ -870,10 +878,10 @@ namespace eyegui
 
     //! Scales floating frame
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
-    \param scaleX scaling in x direction.
-    \param scaleY scaling in y direction.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \param scaleX scaling in x direction.
+      \param scaleY scaling in y direction.
     */
     void scaleFloatingFrame(
         Layout* pLayout,
@@ -883,10 +891,10 @@ namespace eyegui
 
     //! Set relative position of floating frame
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
-    \param relativePositionX relative x position.
-    \param relativePositionY relative y position.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \param relativePositionX relative x position.
+      \param relativePositionY relative y position.
     */
     void setPositionOfFloatingFrame(
         Layout* pLayout,
@@ -896,10 +904,10 @@ namespace eyegui
 
     //! Set relative size of floating frame
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
-    \param relativeSizeX relative x size.
-    \param relativeSizeY relative y size.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \param relativeSizeX relative x size.
+      \param relativeSizeY relative y size.
     */
     void setSizeOfFloatingFrame(
         Layout* pLayout,
@@ -909,23 +917,23 @@ namespace eyegui
 
     //! Move frame to front.
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
     */
     void moveFloatingFrameToFront(Layout* pLayout, unsigned int frameIndex);
 
     //! Move frame to back.
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
     */
     void moveFloatingFrameToBack(Layout* pLayout, unsigned int frameIndex);
 
     //! Getter for relative position and size of floating frame. Values are relative in respect to layout.
     /*!
-    \param pLayout pointer to layout.
-    \param frameIndex index of frame in layout.
-    \return relative position and size of floating frame. Filled with initial values if not found.
+      \param pLayout pointer to layout.
+      \param frameIndex index of frame in layout.
+      \return relative position and size of floating frame. Filled with initial values if not found.
     */
     RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(
         Layout* pLayout,
@@ -933,9 +941,9 @@ namespace eyegui
 
     //! Getter for absolute pixel position and size of floating frame. Values are in pixel space of GUI.
     /*!
-    \param pLayout pointer to layout.
-    \param id is the unique id of an element.
-    \return absolute position and size of floating frame. Filled with initial values if not found.
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \return absolute position and size of floating frame. Filled with initial values if not found.
     */
     AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(
         Layout* pLayout,
