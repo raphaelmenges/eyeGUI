@@ -24,75 +24,27 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         float scale,
-        std::u16string content)
+        std::u16string content) : Text(
+            pGUI,
+            pAssetManager,
+            pFont,
+            fontSize,
+            scale,
+            content)
     {
         // Fill members
-        mpGUI = pGUI;
-        mpAssetManager = pAssetManager;
-        mpFont = pFont;
-        mFontSize = fontSize;
         mAlignment = alignment;
         mVerticalAlignment = verticalAlignment;
-        mScale = scale;
-        mContent = content;
         mFlowHeight = 0;
 
-        // Fetch shader
-        mpShader = mpAssetManager->fetchShader(shaders::Type::TEXT_FLOW);
-
-        // TransformAndSize has to be called before usage
-        mX = 0;
-        mY = 0;
+        // TransformAndSize has to be called before usage (no calculate flow mesh is called here)
         mWidth = 0;
         mHeight = 0;
-        mVertexCount = 0;
-
-        // Save currently set buffer and vertex array object
-        GLint oldBuffer = -1;
-        GLint oldVAO = -1;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
-        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
-
-        // Initialize mesh buffers and vertex array object
-        glGenBuffers(1, &mVertexBuffer);
-        glGenBuffers(1, &mTextureCoordinateBuffer);
-        glGenVertexArrays(1, &mVertexArrayObject);
-
-        // Bind stuff to vertex array object
-        glBindVertexArray(mVertexArrayObject);
-
-        // Vertices
-        GLuint vertexAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "posAttribute");
-        glEnableVertexAttribArray(vertexAttrib);
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glVertexAttribPointer(vertexAttrib, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        // Texture coordinates
-        GLuint uvAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "uvAttribute");
-        glEnableVertexAttribArray(uvAttrib);
-        glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
-        glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        // Restore old settings
-        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
-        glBindVertexArray(oldVAO);
     }
 
     TextFlow::~TextFlow()
     {
-        // Delete vertex array object
-        glDeleteVertexArrays(1, &mVertexArrayObject);
-
-        // Delete buffers
-        glDeleteBuffers(1, &mVertexBuffer);
-        glDeleteBuffers(1, &mTextureCoordinateBuffer);
-    }
-
-    // Set content
-    void TextFlow::setContent(std::u16string content)
-    {
-        mContent = content;
-        calculateMesh();
+        // Nothing to do here
     }
 
     // Transform and size
@@ -110,13 +62,13 @@ namespace eyegui
     }
 
     void TextFlow::draw(
-           glm::vec4 color,
-           float alpha,
-           float activity,
-           glm::vec4 dimColor,
-           float dim,
-           glm::vec4 markColor,
-           float mark) const
+        glm::vec4 color,
+        float alpha,
+        float activity,
+        glm::vec4 dimColor,
+        float dim,
+        glm::vec4 markColor,
+        float mark) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
@@ -165,11 +117,12 @@ namespace eyegui
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
 
-    void TextFlow::calculateMesh()
+    void TextFlow::specialCalculateMesh(
+            std::u16string streamlinedContent,
+            float lineHeight, std::vector<glm::vec3>& rVertices,
+            std::vector<glm::vec2>& rTextureCoordinates)
     {
-        // Save currently set buffer
-        GLint oldBuffer = -1;
-        glGetIntegerv(GL_ARRAY_BUFFER, &oldBuffer);
+        // OpenGL setup done in calling method
 
         // Get size of space character
         float pixelOfSpace = 0;
@@ -179,7 +132,7 @@ namespace eyegui
         {
             throwWarning(
                 OperationNotifier::Operation::RUNTIME,
-                "TextFlow does not find space sign in font");
+                "TextFlow creation does not find space sign in font");
         }
         else
         {
@@ -189,29 +142,20 @@ namespace eyegui
         // Create mark for overflow
         Word overflowMark = calculateWord(TEXT_FLOW_OVERFLOW_MARK, mScale);
 
-        // Get height of line
-        float lineHeight = mScale * mpFont->getLineHeight(mFontSize);
-
-        // Go over words in content
-        std::u16string copyContent = mContent;
-        size_t pos = 0;
-        std::u16string token;
-
         // Get pararaphs separated by \n
         std::vector<std::u16string> paragraphs;
         std::u16string paragraphDelimiter = u"\n";
 
-        while ((pos = copyContent.find(paragraphDelimiter)) != std::u16string::npos)
+        // Seperate into paragraphs
+        size_t pos = 0;
+        std::u16string token;
+        while ((pos = streamlinedContent.find(paragraphDelimiter)) != std::u16string::npos)
         {
-            token = copyContent.substr(0, pos);
+            token = streamlinedContent.substr(0, pos);
             paragraphs.push_back(token);
-            copyContent.erase(0, pos + paragraphDelimiter.length());
+            streamlinedContent.erase(0, pos + paragraphDelimiter.length());
         }
-        paragraphs.push_back(copyContent); // Last paragraph (paragraphs never empty)
-
-        // Build flow together from words in paragraphs
-        std::vector<glm::vec3> vertices;
-        std::vector<glm::vec2> textureCoordinates;
+        paragraphs.push_back(streamlinedContent); // Last paragraph (paragraphs never empty)
 
         // Do not generate text flow mesh when there is a failure
         bool failure = false;
@@ -227,11 +171,11 @@ namespace eyegui
             {
                 token = rPargraph.substr(0, pos);
                 rPargraph.erase(0, pos + wordDelimiter.length());
-                failure |= !insertWord(words, token, mWidth, mScale);
+                failure |= !insertFitWord(words, token, mWidth, mScale);
             }
 
             // Add last token from paragraph as well
-            failure |= !insertWord(words, rPargraph, mWidth, mScale);
+            failure |= !insertFitWord(words, rPargraph, mWidth, mScale);
 
             // Failure appeared, forget it
             if (!failure)
@@ -314,9 +258,9 @@ namespace eyegui
                         for (uint j = 0; j < line[i]->spVertices->size(); j++)
                         {
                             const glm::vec3& rVertex = line[i]->spVertices->at(j);
-                            vertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
+                            rVertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
                             const glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
-                            textureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+                            rTextureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
                         }
 
                         // Advance xPen
@@ -333,86 +277,15 @@ namespace eyegui
         if (failure)
         {
             // Vertex count will become zero
-            vertices.clear();
-            textureCoordinates.clear();
+            rVertices.clear();
+            rTextureCoordinates.clear();
         }
 
         // Get height of all lines (yPixelPen is one line to low now)
         mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
-
-        // Vertex count
-        mVertexCount = (GLuint)vertices.size();
-
-        // Fill into buffer
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
-
-        glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
-
-        // Restore old setting
-        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    TextFlow::Word TextFlow::calculateWord(std::u16string content, float scale) const
-    {
-        // Empty word
-        Word word;
-        word.spVertices = std::shared_ptr<std::vector<glm::vec3> >(new std::vector<glm::vec3>);
-        word.spTextureCoordinates = std::shared_ptr<std::vector<glm::vec2> >(new std::vector<glm::vec2>);
-
-        // Fill word with data
-        float xPixelPen = 0;
-        for (uint i = 0; i < content.size(); i++)
-        {
-            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, content[i]);
-            if (pGlyph == NULL)
-            {
-                throwWarning(
-                    OperationNotifier::Operation::RUNTIME,
-                    "TextFlow has character in content not covered by character set");
-                continue;
-            }
-
-            float yPixelPen = 0 - (scale * (float)(pGlyph->size.y - pGlyph->bearing.y));
-
-            // Vertices for this quad
-            glm::vec3 vertexA = glm::vec3(xPixelPen, yPixelPen, 0);
-            glm::vec3 vertexB = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen, 0);
-            glm::vec3 vertexC = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen + (scale * pGlyph->size.y), 0);
-            glm::vec3 vertexD = glm::vec3(xPixelPen, yPixelPen + (scale * pGlyph->size.y), 0);
-
-            // Texture coordinates for this quad
-            glm::vec2 textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
-            glm::vec2 textureCoordinateB = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.y);
-            glm::vec2 textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
-            glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
-
-            xPixelPen += scale * pGlyph->advance.x;
-
-            // Fill into data blocks
-            word.spVertices->push_back(vertexA);
-            word.spVertices->push_back(vertexB);
-            word.spVertices->push_back(vertexC);
-            word.spVertices->push_back(vertexC);
-            word.spVertices->push_back(vertexD);
-            word.spVertices->push_back(vertexA);
-
-            word.spTextureCoordinates->push_back(textureCoordinateA);
-            word.spTextureCoordinates->push_back(textureCoordinateB);
-            word.spTextureCoordinates->push_back(textureCoordinateC);
-            word.spTextureCoordinates->push_back(textureCoordinateC);
-            word.spTextureCoordinates->push_back(textureCoordinateD);
-            word.spTextureCoordinates->push_back(textureCoordinateA);
-        }
-
-        // Set width of whole word
-        word.pixelWidth = xPixelPen;
-
-        return word;
-    }
-
-    std::vector<TextFlow::Word> TextFlow::calculateWord(std::u16string content, int maxPixelWidth, float scale) const
+    std::vector<TextFlow::Word> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
     {
         // Calculate word from content
         Word word = calculateWord(content, scale);
@@ -436,8 +309,8 @@ namespace eyegui
             int right = length - left;
 
             // Combine results from recursive call
-            std::vector<Word> leftWord = calculateWord(content.substr(0, left), maxPixelWidth, scale);
-            std::vector<Word> rightWord = calculateWord(content.substr(left+1, right), maxPixelWidth, scale);
+            std::vector<Word> leftWord = calculateFitWord(content.substr(0, left), maxPixelWidth, scale);
+            std::vector<Word> rightWord = calculateFitWord(content.substr(left+1, right), maxPixelWidth, scale);
 
             // If one or more of both are empty, forget it
             if (leftWord.empty() || rightWord.empty())
@@ -453,7 +326,7 @@ namespace eyegui
         }
     }
 
-    bool TextFlow::insertWord(std::vector<TextFlow::Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const
+    bool TextFlow::insertFitWord(std::vector<TextFlow::Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const
     {
         // Do nothing if input is empty
         if (rContent.empty())
@@ -461,7 +334,7 @@ namespace eyegui
             return true;
         }
 
-        std::vector<Word> newWords = calculateWord(rContent, maxPixelWidth, scale);
+        std::vector<Word> newWords = calculateFitWord(rContent, maxPixelWidth, scale);
 
         // Check, whether call was successful
         if (newWords.empty())

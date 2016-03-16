@@ -41,8 +41,9 @@ namespace eyegui
     // Returns whether change in case of first character was successful
     bool firstCharacterToUpper(std::u16string& rString);
 
-    // Safe string (streamline LF, CR and CR+LF endings)
+    // Streamline LF, CR and CR+LF endings to LF
     void streamlineLineEnding(std::string& rInput);
+    void streamlineLineEnding(std::u16string& rInput);
 }
 
 #endif // HELPER_H_

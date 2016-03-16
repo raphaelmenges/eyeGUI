@@ -12,19 +12,11 @@
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
 
-#include "src/Rendering/Font/Font.h"
-#include "src/Rendering/Shader.h"
-#include "externals/OpenGLLoader/gl_core_3_3.h"
-
-#include <vector>
+#include "src/Rendering/Assets/Text/Text.h"
 
 namespace eyegui
 {
-    // Forward declaration
-    class GUI;
-    class AssetManager;
-
-    class TextFlow
+    class TextFlow : public Text
     {
     public:
 
@@ -42,9 +34,6 @@ namespace eyegui
         // Destructor
         virtual ~TextFlow();
 
-        // Set content
-        void setContent(std::u16string content);
-
         // Transform and size (has to be called before first usage)
         void transformAndSize(
             int x,
@@ -52,7 +41,7 @@ namespace eyegui
             int width,
             int height);
 
-        // Draw (uses orthoprojection to scale to screen)
+        // Draw (uses orthoprojection to scale to screen) (TODO: move to superclass when all those parameters are gone)
         void draw(
            glm::vec4 color,
            float alpha,
@@ -62,49 +51,26 @@ namespace eyegui
            glm::vec4 markColor,
            float mark) const;
 
-    private:
-
-        // Some struct for easier alignment
-        struct Word
-        {
-            std::shared_ptr<std::vector<glm::vec3> > spVertices;
-            std::shared_ptr<std::vector<glm::vec2> > spTextureCoordinates;
-            float pixelWidth;
-        };
+    protected:
 
         // Calculate mesh (in pixel coordinates)
-        void calculateMesh();
-
-        // Calculate word
-        Word calculateWord(std::u16string content, float scale) const;
+        virtual void specialCalculateMesh(
+            std::u16string streamlinedContent,
+            float lineHeight, std::vector<glm::vec3>& rVertices,
+            std::vector<glm::vec2>& rTextureCoordinates);
 
         // Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
-        std::vector<Word> calculateWord(std::u16string content, int maxPixelWidth, float scale) const;
+        std::vector<Word> calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const;
 
         // Inserts word into vector, returns true at success
-        bool insertWord(std::vector<Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
+        bool insertFitWord(std::vector<Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
 
         // Members
-        GUI const * mpGUI;
-        AssetManager* mpAssetManager;
-        Font const * mpFont;
-        FontSize mFontSize;
         TextFlowAlignment mAlignment;
         TextFlowVerticalAlignment mVerticalAlignment;
-        float mScale;
-        int mX;
-        int mY;
         int mWidth;
         int mHeight;
-        glm::vec4 mColor;
-        std::u16string mContent;
         int mFlowHeight;
-
-        Shader const * mpShader;
-        GLuint mVertexCount;
-        GLuint mVertexBuffer;
-        GLuint mTextureCoordinateBuffer;
-        GLuint mVertexArrayObject;
     };
 }
 

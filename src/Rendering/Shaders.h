@@ -84,7 +84,7 @@ namespace eyegui
         // float activity
         // float dim
         // float mark
-        static const char* pTextFlowFragmentShader =
+        static const char* pTextFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"

@@ -353,4 +353,18 @@ namespace eyegui
         // CR -> LF
         std::replace(rInput.begin(), rInput.end(), '\r', '\n');
     }
+
+    void streamlineLineEnding(std::u16string& rInput)
+    {
+        // CR+LF -> LF
+        std::string::size_type pos = 0;
+        while (( pos = rInput.find (u"\r\n",pos) ) != std::string::npos)
+        {
+            // Only remove \r
+            rInput.erase(pos, 1);
+        }
+
+        // CR -> LF
+        std::replace(rInput.begin(), rInput.end(), u'\r', u'\n');
+    }
 }

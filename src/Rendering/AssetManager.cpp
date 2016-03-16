@@ -201,8 +201,8 @@ namespace eyegui
             case shaders::Type::SENSOR:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSensorFragmentShader));
                 break;
-            case shaders::Type::TEXT_FLOW:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pTextFlowFragmentShader));
+            case shaders::Type::TEXT:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pTextFragmentShader));
                 break;
             case shaders::Type::KEY:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
