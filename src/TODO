@@ -2,13 +2,16 @@
 - Wiki
   - Dictionary
     - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
+  - WordSuggest
 - Dictionary
   - write email to utf8rewind author because of windows fix
+- WordSuggest
+  - Create new Asset for simple word (textflow cannot be used for purpose)
 - Rewrite Element rendering (more layers, not so big shaders)
 - Keyboard: Better german and english layout
 - TextEdit element for easy text editing (zoom, cursor etc)
-- Suggestions element
 - Replace freetype2 by stb and use their packing algorithm!
+- Do background rendering in some helper class. to much copy code (in assets?)
 
 ### VERSION 0.10
 - Audio (PortAudio library?)

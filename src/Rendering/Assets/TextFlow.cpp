@@ -453,7 +453,6 @@ namespace eyegui
         }
     }
 
-
     bool TextFlow::insertWord(std::vector<TextFlow::Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const
     {
         // Do nothing if input is empty
