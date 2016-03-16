@@ -51,6 +51,16 @@ namespace eyegui
         // Nothing to do
     }
 
+    void WordSuggest::suggest(std::u16string input, Dictionary const * pDictionary)
+    {
+        // TODO: second parameter of similar words
+        std::vector<std::u16string> suggestions = pDictionary->similarWords(input, false);
+        if(!suggestions.empty())
+        {
+            mupSuggestion->setContent(suggestions[0]);
+        }
+    }
+
     float WordSuggest::specialUpdate(float tpf, Input* pInput)
     {
         // TODO
@@ -59,7 +69,7 @@ namespace eyegui
     void WordSuggest::specialDraw() const
     {
         // Draw suggestions
-        mupSuggestion->draw(glm::vec4(1,1,1,1));
+        mupSuggestion->draw(glm::vec4(0,0,0,1));
     }
 
     void WordSuggest::specialTransformAndSize()

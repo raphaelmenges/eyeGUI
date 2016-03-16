@@ -559,7 +559,7 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param content is new content for text block as 16 bit string.
+      \param content is new content for text block as UTF-16 string.
     */
     void setContentOfTextBlock(Layout* pLayout, std::string id, std::u16string content);
 
@@ -567,7 +567,7 @@ namespace eyegui
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
-      \param content is new content for text block as 8 bit string.
+      \param content is new content for text block as UTF-8 string.
     */
     void setContentOfTextBlock(Layout* pLayout, std::string id, std::string content);
 
@@ -610,6 +610,24 @@ namespace eyegui
       \param keymapIndex is index of keymap.
     */
     void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
+
+    //! Give input to word suggest element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param input is input for suggestions as UTF-16 string.
+      \param dictionaryIndex is index of used dictionary.
+    */
+    void suggestWords(Layout* pLayout, std::string id, std::u16string input, uint dictionaryIndex);
+
+    //! Give input to word suggest element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param input is input for suggestions as UTF-8 string.
+      \param dictionaryIndex is index of used dictionary.
+    */
+    void suggestWords(Layout* pLayout, std::string id, std::string input, uint dictionaryIndex);
 
     //! Register listener to button.
     /*!

@@ -319,6 +319,16 @@ namespace eyegui
         pLayout->setKeymapOfKeyboard(id, keymapIndex);
     }
 
+    void suggestWords(Layout* pLayout, std::string id, std::u16string input, uint dictionaryIndex)
+    {
+        pLayout->suggestWords(id, input, dictionaryIndex);
+    }
+
+    void suggestWords(Layout* pLayout, std::string id, std::string input, uint dictionaryIndex)
+    {
+        pLayout->suggestWords(id, input, dictionaryIndex);
+    }
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);

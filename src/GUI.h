@@ -116,7 +116,7 @@ namespace eyegui
         // Get size for font
         float getSizeOfFont(FontSize fontSize) const;
 
-        // Get pointer to dictionary
+        // Get pointer to dictionary, may be NULL
         Dictionary const * getDictionary(uint dictionaryIndex) const;
 
     private:

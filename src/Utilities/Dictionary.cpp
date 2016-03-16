@@ -9,6 +9,7 @@
 
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/Helper.h"
+#include "src/Utilities/PathBuilder.h"
 #include "externals/levenshtein-sse/levenshtein-sse.hpp"
 
 #include <fstream>
@@ -20,7 +21,7 @@ namespace eyegui
     Dictionary::Dictionary(std::string filepath)
     {
         // Read file with instream
-        std::ifstream in(filepath);
+        std::ifstream in(buildPath(filepath).c_str());
 
         // Build up dictionary
         if(in)

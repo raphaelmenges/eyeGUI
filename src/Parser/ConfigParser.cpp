@@ -34,7 +34,7 @@ namespace eyegui
             config.filepath = filepath;
 
             // Read file
-            std::ifstream in(buildPath(filepath).c_str(), std::ios::in);
+            std::ifstream in(buildPath(filepath).c_str());
 
             // Check whether file was found
             if (!in)

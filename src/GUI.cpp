@@ -232,8 +232,10 @@ namespace eyegui
     uint GUI::addDictionary(std::string filepath)
     {
         // Do it immediately
+        uint index = (uint)mDictionaries.size();
         std::unique_ptr<Dictionary> upDictionary = std::unique_ptr<Dictionary>(new Dictionary(filepath));
         mDictionaries.push_back(std::move(upDictionary));
+        return index;
     }
 
     int GUI::getWindowWidth() const
@@ -309,13 +311,13 @@ namespace eyegui
 
     Dictionary const * GUI::getDictionary(uint dictionaryIndex) const
     {
-        if(dictionaryIndex < mDictionaries.size())
+        if((int)dictionaryIndex < (int)mDictionaries.size())
         {
             return mDictionaries[dictionaryIndex].get();
         }
         else
         {
-            throwError(OperationNotifier::Operation::RUNTIME, "Cannot find dictionary with index: " + dictionaryIndex);
+            return NULL;
         }
     }
 

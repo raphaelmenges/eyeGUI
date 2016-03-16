@@ -17,6 +17,12 @@ namespace eyegui
     IconInteractiveElement* toIconInteractiveElement(Element* pElement);
 
     // Tries to cast pointer, returns NULL if fails
+    Keyboard* toKeyboard(Element* pElement);
+
+    // Tries to cast pointer, returns NULL if fails
+    WordSuggest* toWordSuggest(Element* pElement);
+
+    // Tries to cast pointer, returns NULL if fails
     InteractiveElement* toInteractiveElement(Element* pElement);
 
     // Tries to cast pointer, returns NULL if fails
@@ -30,9 +36,6 @@ namespace eyegui
 
     // Tries to cast pointer, returns NULL if fails
     TextBlock* toTextBlock(Element* pElement);
-
-    // Tries to cast pointer, returns NULL if fails
-    Keyboard* toKeyboard(Element* pElement);
 }
 
 #endif // ELEMENT_CASTING_H_

@@ -505,7 +505,7 @@ namespace eyegui
     void Layout::setContentOfTextBlock(std::string id, std::string content)
     {
         // Cast to UTF-16
-		std::u16string content16;
+        std::u16string content16;
         if(convertUTF8ToUTF16(content, content16))
         {
             // Pipe it to method for 16 bit strings
@@ -582,6 +582,34 @@ namespace eyegui
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
         }
+    }
+
+    void Layout::suggestWords(std::string id, std::u16string input, uint dictionaryIndex)
+    {
+        WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
+        if (pWordSuggest != NULL)
+        {
+            Dictionary const * pDictionary = mpGUI->getDictionary(dictionaryIndex);
+            if(pDictionary != NULL)
+            {
+                pWordSuggest->suggest(input, pDictionary);
+            }
+            else
+            {
+                throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find dictionary with index: " + dictionaryIndex);
+            }
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find word suggest with id: " + id);
+        }
+    }
+
+    void Layout::suggestWords(std::string id, std::string input, uint dictionaryIndex)
+    {
+        std::u16string input16;
+        convertUTF8ToUTF16(input, input16);
+        suggestWords(id, input16, dictionaryIndex);
     }
 
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)

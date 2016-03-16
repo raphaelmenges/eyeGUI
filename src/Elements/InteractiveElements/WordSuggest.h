@@ -11,6 +11,8 @@
 
 #include "src/Elements/InteractiveElements/InteractiveElement.h"
 
+#include "src/Utilities/Dictionary.h"
+
 namespace eyegui
 {
     class WordSuggest : public InteractiveElement
@@ -34,6 +36,9 @@ namespace eyegui
 
         // Destructor
         virtual ~WordSuggest();
+
+        // Suggest
+        void suggest(std::u16string input, Dictionary const * pDictionary);
 
         // TODO
         // - Background

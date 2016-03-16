@@ -147,10 +147,8 @@ namespace eyegui
         // Penetrate sensor
         void penetrateSensor(std::string id, float amount);
 
-        // Set content of text block with 16 bit string
+        // Set content of text block
         void setContentOfTextBlock(std::string id, std::u16string content);
-
-        // Set content of text block with 8 bit string
         void setContentOfTextBlock(std::string id, std::string content);
 
         // Set key of text block
@@ -167,6 +165,10 @@ namespace eyegui
 
         // Set keymap of keyboard by index
         void setKeymapOfKeyboard(std::string id, uint keymapIndex);
+
+        // Suggest words
+        void suggestWords(std::string id, std::u16string input, uint dictionaryIndex);
+        void suggestWords(std::string id, std::string input, uint dictionaryIndex);
 
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
