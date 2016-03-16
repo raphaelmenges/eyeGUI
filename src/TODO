@@ -3,21 +3,20 @@
   - Dictionary
     - UTF-8 + LF?
 - Dictionary
-  - check whether i have used .size() somewhere for a string. Not good. Use length?
   - write email to utf8rewind author because of windows fix
   - get rid of SSSE warning
 - Rewrite Element rendering (more layers, not so big shaders)
 - Keyboard: Better german and english layout
 - TextEdit element for easy text editing (zoom, cursor etc)
 - Suggestions element
+- Replace freetype2 by stb and use their packing algorithm!
+- std::string: check whether i have used .size() somewhere for a string. Not good. Use length?
 
 ### VERSION 0.10
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
-- Font has sometimes little rendering issues
-	- Caused by oversized letters. More intelligent packing algorithm needed!
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Right to left text (hebrew)
@@ -36,7 +35,6 @@
 - Code review!
   - valgrind
 	- Check all fin whether utf-8 compatible
-- Getting rid of freetype2
 - Some members of element could be private but getters necessary..
 
 Notes:
