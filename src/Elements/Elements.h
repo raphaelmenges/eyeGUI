@@ -24,5 +24,6 @@
 #include "Elements/InteractiveElements/Buttons/DropButton.h"
 #include "Elements/InteractiveElements/Sensor.h"
 #include "Elements/InteractiveElements/Keyboard.h"
+#include "Elements/InteractiveElements/WordSuggest.h"
 
 #endif // ELEMENTS_H_

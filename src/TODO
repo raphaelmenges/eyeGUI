@@ -1,18 +1,20 @@
 ### VERSION 0.9
 - Do background rendering in some helper class. to much copy code (in assets?)
-- Rewrite TextFlow to support "evaluateSize"
-  - calculateMesh has to be able to do a dry run without writing to members
 - WordSuggest
-  - ElementParser stuff
-  - Use TextFlow as representation structure
+  - Interface function with word + dictionary index
+  - Display suggestions
+  ...
 
 - Wiki
   - Dictionary
     - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
   - WordSuggest
+  
 - Dictionary
   - write email to utf8rewind author because of windows fix
+  
 - Rewrite Element rendering (more layers, not so big shaders)
+  - TextFlow / Simple must be refactored after that
 - Keyboard: Better german and english layout
 - TextEdit element for easy text editing (zoom, cursor etc)
 - Replace freetype2 by stb and use their packing algorithm!

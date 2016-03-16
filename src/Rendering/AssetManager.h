@@ -17,6 +17,7 @@
 #include "RenderItem.h"
 #include "Font/Font.h"
 #include "Assets/Text/TextFlow.h"
+#include "Assets/Text/TextSimple.h"
 #include "Assets/Key.h"
 #include "Assets/CharacterKey.h"
 #include "Assets/Image.h"
@@ -73,6 +74,12 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
+            float scale,
+            std::u16string content);
+
+        // Create text simple and return it as unique pointer
+        std::unique_ptr<TextSimple> createTextSimple(
+            FontSize fontSize,
             float scale,
             std::u16string content);
 

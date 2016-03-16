@@ -113,6 +113,10 @@ namespace eyegui
             {
                 upElement = std::move(parseKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
+            else if (value == "wordsuggest")
+            {
+                upElement = std::move(parseWordSuggest(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown element found: " + std::string(xmlElement->Value()), filepath);
@@ -446,24 +450,8 @@ namespace eyegui
             blockHelper(xmlTextBlock, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Get font size
-            std::string fontSizeValue = parseStringAttribute("fontsize", xmlTextBlock);
             FontSize fontSize;
-            if (fontSizeValue == EMPTY_STRING_ATTRIBUTE || fontSizeValue == "medium")
-            {
-                fontSize = FontSize::MEDIUM;
-            }
-            else if (fontSizeValue == "tall")
-            {
-                fontSize = FontSize::TALL;
-            }
-            else if (fontSizeValue == "small")
-            {
-                fontSize = FontSize::SMALL;
-            }
-            else
-            {
-                throwError(OperationNotifier::Operation::PARSING, "Unknown font size used in text block: " + fontSizeValue, filepath);
-            }
+            fontSizeHelper(xmlTextBlock, fontSize, filepath);
 
             // Get alignment
             std::string alignmentValue = parseStringAttribute("alignment", xmlTextBlock);
@@ -520,7 +508,7 @@ namespace eyegui
 
             // Convert to utf-16 string
             std::u16string content;
-			convertUTF8ToUTF16(contentValue, content);
+            convertUTF8ToUTF16(contentValue, content);
 
             // Get key for localization
             std::string key = parseStringAttribute("key", xmlTextBlock);
@@ -637,6 +625,17 @@ namespace eyegui
             return (std::move(upKeyboard));
         }
 
+        std::unique_ptr<WordSuggest> parseWordSuggest(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlWordSuggest, Element* pParent, std::string filepath)
+        {
+            // Get font size
+            FontSize fontSize;
+            fontSizeHelper(xmlWordSuggest, fontSize, filepath);
+
+            // Create and return word suggest
+            std::unique_ptr<WordSuggest> upWordSuggest = std::unique_ptr<WordSuggest>(new WordSuggest(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, fontSize));
+            return (std::move(upWordSuggest));
+        }
+
         void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder)
         {
             rConsumeInput = parseBoolAttribute("consumeinput", xmlBlock);
@@ -671,6 +670,27 @@ namespace eyegui
             }
 
             rInnerBorder = parsePercentAttribute("innerborder", xmlBlock);
+        }
+
+        void fontSizeHelper(tinyxml2::XMLElement const * xmlElement, FontSize& rFontSize, std::string filepath)
+        {
+            std::string fontSizeValue = parseStringAttribute("fontsize", xmlElement);
+            if (fontSizeValue == EMPTY_STRING_ATTRIBUTE || fontSizeValue == "medium")
+            {
+                rFontSize = FontSize::MEDIUM;
+            }
+            else if (fontSizeValue == "tall")
+            {
+                rFontSize = FontSize::TALL;
+            }
+            else if (fontSizeValue == "small")
+            {
+                rFontSize = FontSize::SMALL;
+            }
+            else
+            {
+                throwError(OperationNotifier::Operation::PARSING, "Unknown font size used in element: " + fontSizeValue, filepath);
+            }
         }
 
         bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& rExpectedValue)

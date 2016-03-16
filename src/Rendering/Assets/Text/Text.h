@@ -15,6 +15,9 @@
 
 #include <vector>
 
+// TODO
+// - Common draw method (after rewrite of rendering)
+
 namespace eyegui
 {
     // Forward declaration
@@ -42,7 +45,7 @@ namespace eyegui
 
     protected:
 
-        // Some struct for easier alignment
+        // Struct for word
         struct Word
         {
             std::shared_ptr<std::vector<glm::vec3> > spVertices;
@@ -50,7 +53,7 @@ namespace eyegui
             float pixelWidth;
         };
 
-        // Calculate mesh (in pixel coordinates)
+        // Calculate mesh (in pixel coordinates). Calls specialized method of subclasses
         void calculateMesh();
 
         // Special calculate mesh implemented by specialized classes
@@ -59,7 +62,7 @@ namespace eyegui
             float lineHeight, std::vector<glm::vec3>& rVertices,
             std::vector<glm::vec2>& rTextureCoordinates) = 0;
 
-        // Calculate single word
+        // Calculate single word and returns it
         Word calculateWord(std::u16string content, float scale) const;
 
         // Members

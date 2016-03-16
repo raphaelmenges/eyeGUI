@@ -27,6 +27,32 @@ namespace eyegui
         return NULL;
     }
 
+    Keyboard* toKeyboard(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            Element::Type type = pElement->getType();
+            if (type == Element::Type::KEYBOARD)
+            {
+                return static_cast<Keyboard*>(pElement);
+            }
+        }
+        return NULL;
+    }
+
+    WordSuggest* toWordSuggest(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            Element::Type type = pElement->getType();
+            if (type == Element::Type::WORD_SUGGEST)
+            {
+                return static_cast<WordSuggest*>(pElement);
+            }
+        }
+        return NULL;
+    }
+
     InteractiveElement* toInteractiveElement(Element* pElement)
     {
         if (pElement != NULL)
@@ -44,6 +70,7 @@ namespace eyegui
                 // Test for other cases
                 Element::Type type = pElement->getType();
                 if (type == Element::Type::INTERACTIVE_ELEMENT
+                    || type == Element::Type::WORD_SUGGEST
                     || type == Element::Type::KEYBOARD)
                 {
                     return static_cast<InteractiveElement*>(pElement);
@@ -115,19 +142,6 @@ namespace eyegui
             if (type == Element::Type::TEXT_BLOCK)
             {
                 return static_cast<TextBlock*>(pElement);
-            }
-        }
-        return NULL;
-    }
-
-    Keyboard* toKeyboard(Element* pElement)
-    {
-        if (pElement != NULL)
-        {
-            Element::Type type = pElement->getType();
-            if (type == Element::Type::KEYBOARD)
-            {
-                return static_cast<Keyboard*>(pElement);
             }
         }
         return NULL;

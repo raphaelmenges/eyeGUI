@@ -28,18 +28,14 @@ namespace eyegui
             scale,
             content)
     {
-       // After construction, one can already construct the text
+       // After construction, one can already construct the text.
+       // Not like in text flow, which has to wait for a transform and resize
        calculateMesh();
     }
 
     TextSimple::~TextSimple()
     {
-        // Delete vertex array object
-        glDeleteVertexArrays(1, &mVertexArrayObject);
-
-        // Delete buffers
-        glDeleteBuffers(1, &mVertexBuffer);
-        glDeleteBuffers(1, &mTextureCoordinateBuffer);
+        // Nothing to do
     }
 
     void TextSimple::evaluateSize(
@@ -60,7 +56,6 @@ namespace eyegui
 
     void TextSimple::draw(glm::vec4 color) const
     {
-        // TODO: maybe merge somehow with TextFlow's draw?
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
 
@@ -83,7 +78,7 @@ namespace eyegui
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("color", color);
         mpShader->fillValue("alpha", 1);
-        mpShader->fillValue("activity", 0);
+        mpShader->fillValue("activity", 1);
         mpShader->fillValue("dimColor", glm::vec4(1,1,1,1));
         mpShader->fillValue("dim", 0);
         mpShader->fillValue("markColor", glm::vec4(1,1,1,1));
@@ -100,18 +95,23 @@ namespace eyegui
     {
         // OpenGL setup done in calling method
 
-        // Go over lines
+        // Go over lines and collect them
         std::u16string delimiter = u"\n";
         size_t pos = 0;
-        std::u16string line;
+        std::vector<std::u16string> collectedLines;
+        while ((pos = streamlinedContent.find(delimiter)) != std::u16string::npos)
+        {
+            collectedLines.push_back(streamlinedContent.substr(0, pos));
+            streamlinedContent.erase(0, pos + delimiter.length());
+        }
+        collectedLines.push_back(streamlinedContent);
+
+        // Go over collected lines
         float yPixelPen = -lineHeight; // First line should be also inside element
         float maxPixelWidth = 0;
         float pixelHeight = 0;
-        while ((pos = streamlinedContent.find(delimiter)) != std::u16string::npos)
+        for(const std::u16string line : collectedLines)
         {
-            line = streamlinedContent.substr(0, pos);
-            streamlinedContent.erase(0, pos + delimiter.length());
-
             // Just do whole line as one big word
             Word word = calculateWord(line, mScale);
 

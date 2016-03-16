@@ -37,7 +37,7 @@ namespace eyegui
         mVerticalAlignment = verticalAlignment;
         mFlowHeight = 0;
 
-        // TransformAndSize has to be called before usage (no calculate flow mesh is called here)
+        // TransformAndSize has to be called before usage (no calculate mesh is called here)
         mWidth = 0;
         mHeight = 0;
     }

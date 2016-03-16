@@ -12,10 +12,6 @@
 #include "src/Rendering/Assets/Text/Text.h"
 namespace eyegui
 {
-    // Forward declaration
-    class GUI;
-    class AssetManager;
-
     class TextSimple : public Text
     {
     public:
@@ -37,10 +33,10 @@ namespace eyegui
             int& rWidth,
             int& rHeight) const;
 
-        // Set render position (upper left corner)
+        // Set draw position (upper left corner)
         void transform(int x, int y);
 
-        // Draw text to position
+        // Draw (TODO: do it in superclass somehow)
         void draw(glm::vec4 color) const;
 
     protected:

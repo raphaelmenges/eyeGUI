@@ -6,7 +6,7 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Creates geometry for given font and text content. Is delegated by elements
 // for font rendering in general. All values in this class are in pixel space,
-// even floats. Internal the origin is at lower left but all methods
+// even floats. Internally the origin is at lower left but all methods
 // expect values in a coordinate system with an origin at the upper left.
 
 #ifndef TEXT_FLOW_H_
@@ -41,7 +41,7 @@ namespace eyegui
             int width,
             int height);
 
-        // Draw (uses orthoprojection to scale to screen) (TODO: move to superclass when all those parameters are gone)
+        // Draw
         void draw(
            glm::vec4 color,
            float alpha,

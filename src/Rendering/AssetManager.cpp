@@ -339,6 +339,22 @@ namespace eyegui
                     content)));
     }
 
+    std::unique_ptr<TextSimple> AssetManager::createTextSimple(
+        FontSize fontSize,
+        float scale,
+        std::u16string content)
+    {
+        return std::move(
+            std::unique_ptr<TextSimple>(
+                new TextSimple(
+                    mpGUI,
+                    this,
+                    mpGUI->getDefaultFont(),
+                    fontSize,
+                    scale,
+                    content)));
+    }
+
     std::unique_ptr<Key> AssetManager::createKey(Layout const * pLayout, char16_t character)
     {
         return std::move(
