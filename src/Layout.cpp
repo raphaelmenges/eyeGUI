@@ -596,7 +596,7 @@ namespace eyegui
             }
             else
             {
-                throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find dictionary with index: " + dictionaryIndex);
+                throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find dictionary with index: " + std::to_string(dictionaryIndex));
             }
         }
         else

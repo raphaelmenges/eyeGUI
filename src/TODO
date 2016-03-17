@@ -3,8 +3,9 @@
 - WordSuggest
   - Interface function with word + dictionary index
   - Display suggestions
-  - Logger does strange stuff when dictionary does not exist and suggest is called
   ...
+- Dictionary
+  - HALLO suggests halle (word distance on lower case maybe? then one has to compare upper case in input
 
 - Wiki
   - Dictionary
