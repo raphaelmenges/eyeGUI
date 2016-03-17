@@ -42,9 +42,6 @@ namespace eyegui
         // Fill members
         mFontSize = fontSize;
 
-        // Get a text simple from asset manager
-        mupSuggestion = std::move(mpAssetManager->createTextSimple(mFontSize, 1.0, u"Suggestion"));
-
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
             shaders::Type::BLOCK,
@@ -60,9 +57,10 @@ namespace eyegui
     {
         // TODO: second parameter of similar words
         std::vector<std::u16string> suggestions = pDictionary->similarWords(input, false);
-        if(!suggestions.empty())
+        mSuggestions.clear();
+        for(const std::u16string& rSuggestion : suggestions)
         {
-            mupSuggestion->setContent(suggestions[0]);
+            mSuggestions.push_back(std::move(mpAssetManager->createTextSimple(mFontSize, 1, rSuggestion)));
         }
     }
 
@@ -90,13 +88,23 @@ namespace eyegui
         }
 
         // Draw suggestions
-        mupSuggestion->draw(glm::vec4(1,1,1,1));
+        for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
+        {
+            rSuggestion->draw(glm::vec4(1,1,1,1));
+        }
     }
 
     void WordSuggest::specialTransformAndSize()
     {
         // Transform suggestions
-        mupSuggestion->transform(mX, mY);
+        int xOffset = 0;
+        for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
+        {
+            int width, height;
+            rSuggestion->evaluateSize(width, height);
+            rSuggestion->transform(mX + xOffset, mY);
+            xOffset += width;
+        }
     }
 
     void WordSuggest::specialReset()
