@@ -44,6 +44,11 @@ namespace eyegui
 
         // Get a text simple from asset manager
         mupSuggestion = std::move(mpAssetManager->createTextSimple(mFontSize, 1.0, u"Suggestion"));
+
+        // Fetch render item for background
+        mpBackground = mpAssetManager->fetchRenderItem(
+            shaders::Type::BLOCK,
+            meshes::Type::QUAD);
     }
 
     WordSuggest::~WordSuggest()
@@ -68,8 +73,24 @@ namespace eyegui
 
     void WordSuggest::specialDraw() const
     {
+        // *** BACKGROUND ***
+        if (getStyle()->backgroundColor.a > 0)
+        {
+            // Bind, fill and draw background
+            mpBackground->bind();
+            mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
+            mpBackground->getShader()->fillValue("backgroundColor", getStyle()->backgroundColor);
+            mpBackground->getShader()->fillValue("alpha", mAlpha);
+            mpBackground->getShader()->fillValue("activity", mActivity.getValue());
+            mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
+            mpBackground->getShader()->fillValue("dim", mDim.getValue());
+            mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
+            mpBackground->getShader()->fillValue("mark", mMark.getValue());
+            mpBackground->draw();
+        }
+
         // Draw suggestions
-        mupSuggestion->draw(glm::vec4(0,0,0,1));
+        mupSuggestion->draw(glm::vec4(1,1,1,1));
     }
 
     void WordSuggest::specialTransformAndSize()

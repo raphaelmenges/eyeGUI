@@ -69,6 +69,7 @@ namespace eyegui
     private:
 
         // Members
+        RenderItem const * mpBackground;
         FontSize mFontSize;
         std::unique_ptr<TextSimple> mupSuggestion;
 
