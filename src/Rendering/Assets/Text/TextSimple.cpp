@@ -38,20 +38,14 @@ namespace eyegui
         // Nothing to do
     }
 
-    void TextSimple::evaluateSize(
-        int& rWidth,
-        int& rHeight) const
-    {
-        // Just use the values given by calculating mesh
-        rWidth = mUsedWidth;
-        rHeight = mUsedHeight;
-    }
-
     void TextSimple::transform(int x, int y)
     {
         // Remind it a drawing
         mX = x;
         mY = y;
+
+        // Calculate mesh since window size could have been changed
+        calculateMesh();
     }
 
     void TextSimple::draw(glm::vec4 color) const
@@ -86,6 +80,11 @@ namespace eyegui
 
         // Draw flow
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
+    }
+
+    int TextSimple::getWidth() const
+    {
+        return mWidth;
     }
 
     void TextSimple::specialCalculateMesh(
@@ -133,7 +132,7 @@ namespace eyegui
         }
 
         // Save used width and height
-        mUsedWidth = (int)maxPixelWidth;
-        mUsedHeight = (int)pixelHeight;
+        mWidth = (int)maxPixelWidth;
+        mHeight = (int)pixelHeight;
     }
 }

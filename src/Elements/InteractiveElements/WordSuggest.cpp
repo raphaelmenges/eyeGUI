@@ -100,8 +100,7 @@ namespace eyegui
         int xOffset = 0;
         for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
         {
-            int width, height;
-            rSuggestion->evaluateSize(width, height);
+            int width = rSuggestion->getWidth();
             rSuggestion->transform(mX + xOffset, mY);
             xOffset += width;
         }

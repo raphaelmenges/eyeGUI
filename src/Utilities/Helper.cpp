@@ -340,7 +340,7 @@ namespace eyegui
         return true;
     }
 
-    void streamlineLineEnding(std::string& rInput)
+    void streamlineLineEnding(std::string& rInput, bool addNewLineAtEnd)
     {
         // CR+LF -> LF
         std::string::size_type pos = 0;
@@ -352,9 +352,15 @@ namespace eyegui
 
         // CR -> LF
         std::replace(rInput.begin(), rInput.end(), '\r', '\n');
+
+        // Add new lline at end
+        if(addNewLineAtEnd)
+        {
+            rInput += "\n";
+        }
     }
 
-    void streamlineLineEnding(std::u16string& rInput)
+    void streamlineLineEnding(std::u16string& rInput, bool addNewLineAtEnd)
     {
         // CR+LF -> LF
         std::string::size_type pos = 0;
@@ -366,5 +372,11 @@ namespace eyegui
 
         // CR -> LF
         std::replace(rInput.begin(), rInput.end(), u'\r', u'\n');
+
+                // Add new lline at end
+        if(addNewLineAtEnd)
+        {
+            rInput += u"\n";
+        }
     }
 }

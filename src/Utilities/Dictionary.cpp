@@ -35,7 +35,7 @@ namespace eyegui
             in.close();
 
             // Streamline line endings
-            streamlineLineEnding(content);
+            streamlineLineEnding(content, true);
 
             // Add words to dictionary
             std::string delimiter = "\n";
@@ -148,14 +148,17 @@ namespace eyegui
             int distance;
             std::vector<std::pair<std::u16string, int> > sortedResults;
             sortedResults.reserve(sizeOfResultSet);
+            std::u16string comparsionWord = lowerWord;
+            firstCharacterToUpper(comparsionWord);
             for(const std::u16string& rFoundWord : resultSet)
             {
                 // Determine common size of both words to not discriminate appended letters
                 uint commonLength = std::min(wordLength, (uint)rFoundWord.size());
 
-                // Use unchanged input word to make use of case
+                // Use input with possible first upper letter as comparsion
+                // Since in the structure is only the case of the first letter saved
                 distance = (int)levenshteinSSE::levenshtein(
-                    rWord.begin(), rWord.begin() + commonLength,
+                    comparsionWord.begin(), comparsionWord.begin() + commonLength,
                     rFoundWord.begin(), rFoundWord.begin() + commonLength);
 
                 // Build up structure with found word and distance to searched one
@@ -298,18 +301,19 @@ namespace eyegui
 
         // Consume letters from start index of input word
         uint count = (uint)rInput.size();
-        for (uint i = inputStartIndex; i < count; i++)
+        uint i =inputStartIndex; // Must be visible outside of loop
+        for (; i < count; i++)
         {
             // Suspect input to be incomplete ("Hus" -> "Haus")
             if(remainingInputPauses > 0)
             {
-                for(const auto& rNode : *pMap)
+                for(const auto& rCharNode : *pMap)
                 {
                     fuzzyWordSearch(
                         rInput,
                         i,
-                        collectedWord + rNode.first,
-                        &(rNode.second),
+                        collectedWord + rCharNode.first,
+                        &(rCharNode.second),
                         0,
                         0,
                         remainingInputPauses - 1,
@@ -322,14 +326,14 @@ namespace eyegui
             // Ignore some input ("Huus" -> "Haus")
             if(reaminingInputIgnores > 0)
             {
-                // Just ignore given letter from inputadd letter from map and go on
-                for(const auto& rNode : *pMap)
+                // Just ignore given letter from input, add letter from map and go on
+                for(const auto& rCharNode : *pMap)
                 {
                     fuzzyWordSearch(
                         rInput,
-                        i+1,
-                        collectedWord + rNode.first,
-                        &(rNode.second),
+                        i + 1,
+                        collectedWord + rCharNode.first,
+                        &(rCharNode.second),
                         0,
                         0,
                         remainingInputPauses,
@@ -395,14 +399,7 @@ namespace eyegui
                         rFoundWords);
                 }
 
-                // Add word when no letters in input are left
-                if (i + 1 == count)
-                {
-                    // Adds word to found words
-                    addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
-                    break; // Not necessary because loop should end since i is high enough
-                }
-                else if (!(pMap->empty()))
+                if (!(pMap->empty()))
                 {
                     // Go on for next iteration
                     pMap = &(pNode->children);
@@ -413,6 +410,16 @@ namespace eyegui
                     break;
                 }
             }
+        }
+
+        // Add word when no letters in input are left
+        if (i >= count)
+        {
+            // Adds word to found words
+            addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
+
+            // This constraint means, that no words shorter than input can be added
+            // (but words like "Aaal" because of DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH)
         }
 
         // Input word is empty. Now add words which have the collected word as prefix

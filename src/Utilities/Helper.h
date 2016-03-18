@@ -42,8 +42,8 @@ namespace eyegui
     bool firstCharacterToUpper(std::u16string& rString);
 
     // Streamline LF, CR and CR+LF endings to LF
-    void streamlineLineEnding(std::string& rInput);
-    void streamlineLineEnding(std::u16string& rInput);
+    void streamlineLineEnding(std::string& rInput, bool addNewLineAtEnd = false);
+    void streamlineLineEnding(std::u16string& rInput, bool addNewLineAtEnd = false);
 }
 
 #endif // HELPER_H_

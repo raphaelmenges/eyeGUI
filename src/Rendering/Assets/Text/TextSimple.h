@@ -28,16 +28,14 @@ namespace eyegui
         // Destructor
         virtual ~TextSimple();
 
-        // Evaluate size with given content
-        void evaluateSize(
-            int& rWidth,
-            int& rHeight) const;
-
         // Set draw position (upper left corner)
         void transform(int x, int y);
 
         // Draw (TODO: do it in superclass somehow)
         void draw(glm::vec4 color) const;
+
+        // Get width in pixels
+        int getWidth() const;
 
     protected:
 
@@ -48,8 +46,8 @@ namespace eyegui
             std::vector<glm::vec2>& rTextureCoordinates);
 
         // Members
-        int mUsedWidth;
-        int mUsedHeight;
+        int mWidth;
+        int mHeight;
     };
 
 }
