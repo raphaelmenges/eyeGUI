@@ -1,11 +1,10 @@
 ### VERSION 0.9
 - Do background rendering in some helper class. to much copy code (in assets?)
 - WordSuggest
-  - Interface function with word + dictionary index
   - Display suggestions
+    - Interaction
+    - Stencil to not write outside of element
   ...
-- Dictionary
-  - HALLO suggests halle (word distance on lower case maybe? then one has to compare upper case in input
 
 - Wiki
   - Dictionary

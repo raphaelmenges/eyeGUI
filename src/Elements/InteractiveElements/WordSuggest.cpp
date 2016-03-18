@@ -7,6 +7,8 @@
 
 #include "WordSuggest.h"
 
+#include "src/Layout.h"
+
 // TODO: testing
 #include <iostream>
 
@@ -98,11 +100,12 @@ namespace eyegui
     {
         // Transform suggestions
         int xOffset = 0;
+        const int xDelta = (int)((float)mpLayout->getLayoutWidth() * 0.005f);
         for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
         {
             int width = rSuggestion->getWidth();
             rSuggestion->transform(mX + xOffset, mY);
-            xOffset += width;
+            xOffset += width + xDelta;
         }
     }
 
