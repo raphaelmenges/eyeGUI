@@ -28,7 +28,7 @@ namespace eyegui
         glm::vec4 dimColor = glm::vec4(0.1f, 0.1f, 0.1f, 0.75f);
         glm::vec4 markColor = glm::vec4(0.0f, 0.5f, 1.0f, 0.2f);
         glm::vec4 pickColor = glm::vec4(0.2f, 1, 0, 0.5f);
-        glm::vec4 thresholdColor = glm::vec4(0.2f, 0.8f, 1.0f, 0.8f);
+        glm::vec4 thresholdColor = glm::vec4(0.2f, 0.8f, 1.0f, 0.5f);
     };
 }
 

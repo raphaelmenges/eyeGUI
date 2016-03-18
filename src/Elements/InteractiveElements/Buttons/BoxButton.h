@@ -40,6 +40,11 @@ namespace eyegui
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;
+
+    private:
+
+        // Members
+        RenderItem const * mpBoxButtonItem;
     };
 }
 

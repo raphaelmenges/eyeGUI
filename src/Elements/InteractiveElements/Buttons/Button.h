@@ -71,6 +71,9 @@ namespace eyegui
         // Filled by subclass and called by layout after updating and before drawing
         virtual void specialPipeNotification(NotificationType notification, Layout* pLayout);
 
+        // Getter
+        float getPressing() const;
+
     private:
 
         // Members

@@ -109,6 +109,7 @@ namespace eyegui
             mpSelectionItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
             mpSelectionItem->getShader()->fillValue("selection", mSelection.getValue());
             mpSelectionItem->getShader()->fillValue("alpha", mAlpha);
+            mpSelectionItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
             mpSelectionItem->draw();
         }
     }

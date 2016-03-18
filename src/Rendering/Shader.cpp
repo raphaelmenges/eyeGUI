@@ -72,6 +72,11 @@ namespace eyegui
         glUseProgram(mShaderProgram);
     }
 
+        void Shader::fillValue(std::string location, const int rValue) const
+    {
+        glUniform1i(mUniformLocationCache.at(location), rValue);
+    }
+
     void Shader::fillValue(std::string location, const float rValue) const
     {
         glUniform1fv(mUniformLocationCache.at(location), 1, &rValue);

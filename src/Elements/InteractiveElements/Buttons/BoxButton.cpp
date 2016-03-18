@@ -41,8 +41,8 @@ namespace eyegui
     {
         mType = Type::BOX_BUTTON;
 
-        // Fetch stuff for rendering
-        mpIconRenderItem = mpAssetManager->fetchRenderItem(
+        // Render item
+        mpBoxButtonItem = mpAssetManager->fetchRenderItem(
             shaders::Type::BOX_BUTTON,
             meshes::Type::QUAD);
     }
@@ -56,6 +56,18 @@ namespace eyegui
     {
         // Scale of icon
         //mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
+
+        mpIcon->bind(1);
+        mpBoxButtonItem->bind();
+        mpBoxButtonItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+        mpBoxButtonItem->getShader()->fillValue("color", getStyle()->color);
+        mpBoxButtonItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
+        mpBoxButtonItem->getShader()->fillValue("pressing", getPressing());
+        mpBoxButtonItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
+        mpBoxButtonItem->getShader()->fillValue("alpha", mAlpha);
+        mpBoxButtonItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+        mpBoxButtonItem->getShader()->fillValue("icon", 1);
+        mpBoxButtonItem->draw();
 
         // Super call (draw highlight etc. on top)
         Button::specialDraw();

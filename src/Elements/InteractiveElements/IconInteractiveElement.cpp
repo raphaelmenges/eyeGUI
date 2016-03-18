@@ -42,7 +42,6 @@ namespace eyegui
 
         // Filling members
         setIcon(iconFilepath);
-        mpIconRenderItem = NULL;
     }
 
     IconInteractiveElement::~IconInteractiveElement()
@@ -64,25 +63,6 @@ namespace eyegui
 
     void IconInteractiveElement::specialDraw() const
     {
-        // Fill shader
-        /*mpIconRenderItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpIconRenderItem->getShader()->fillValue("highlight", mHighlight.getValue());
-        mpIconRenderItem->getShader()->fillValue("alpha", mAlpha);
-        mpIconRenderItem->getShader()->fillValue("activity", 1);
-        mpIconRenderItem->getShader()->fillValue("selection", mSelection.getValue());
-        mpIconRenderItem->getShader()->fillValue("color", getStyle()->color);
-        mpIconRenderItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
-        mpIconRenderItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
-        mpIconRenderItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
-        mpIconRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
-        mpIconRenderItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
-        mpIconRenderItem->getShader()->fillValue("dim", 0);
-        mpIconRenderItem->getShader()->fillValue("markColor", getStyle()->markColor);
-        mpIconRenderItem->getShader()->fillValue("mark", 0); */
-
-        // Bind icon texture
-        //mpIcon->bind(0);
-
         // Draw stuff like highlighting
         InteractiveElement::specialDraw();
     }

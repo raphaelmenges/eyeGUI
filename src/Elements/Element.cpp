@@ -544,6 +544,7 @@ namespace eyegui
                 mpMarkItem->getShader()->fillValue("markColor", getStyle()->markColor);
                 mpMarkItem->getShader()->fillValue("mark", mMark.getValue());
                 mpMarkItem->getShader()->fillValue("alpha", mAlpha);
+                mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
                 mpMarkItem->draw();
             }
 
@@ -554,6 +555,7 @@ namespace eyegui
                 mpActivityItem->getShader()->fillValue("matrix", mFullDrawMatrix);
                 mpActivityItem->getShader()->fillValue("activity", mActivity.getValue());
                 mpActivityItem->getShader()->fillValue("alpha", mAlpha);
+                mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
                 mpActivityItem->draw();
             }
 
@@ -565,6 +567,7 @@ namespace eyegui
                 mpDimItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
                 mpDimItem->getShader()->fillValue("dim", mDim.getValue());
                 mpDimItem->getShader()->fillValue("alpha", mAlpha);
+                mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
                 mpDimItem->draw();
             }
 

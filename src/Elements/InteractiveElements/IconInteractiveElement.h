@@ -48,11 +48,6 @@ namespace eyegui
         glm::vec2 iconAspectRatioCorrection() const;
 
         // Members
-        RenderItem const * mpIconRenderItem; // has to be initialized by subclasses
-
-    private:
-
-        // Members
         Texture const * mpIcon;
     };
 }

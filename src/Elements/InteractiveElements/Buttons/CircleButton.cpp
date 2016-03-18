@@ -42,7 +42,7 @@ namespace eyegui
         mType = Type::CIRCLE_BUTTON;
 
         // Fetch stuff for rendering
-        mpIconRenderItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_BUTTON, meshes::Type::QUAD);
+        //mpIconRenderItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_BUTTON, meshes::Type::QUAD);
     }
 
     CircleButton::~CircleButton()

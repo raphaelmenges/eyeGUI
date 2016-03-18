@@ -13,8 +13,6 @@ namespace eyegui
 {
     namespace shaders
     {
-        // Uniforms:
-        // mat4 matrix
         static const char* pStaticVertexShader =
             "#version 330 core\n"
             "in vec3 posAttribute;\n"
@@ -26,9 +24,6 @@ namespace eyegui
             "   gl_Position = matrix * vec4(posAttribute, 1);\n"
             "}\n";
 
-        // Uniforms:
-        // vec4 color
-        // float alpha
         static const char* pColorFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -38,9 +33,6 @@ namespace eyegui
             "   fragColor = vec4(color.rgb, color.a * alpha);\n"
             "}\n";
 
-        // Uniforms:
-        // vec4 color
-        // float alpha
         static const char* pCircleFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -53,16 +45,6 @@ namespace eyegui
             "   fragColor = vec4(color.rgb, color.a * alpha * min(circle, 1.0));\n"
             "}\n";
 
-
-        // TODO
-        // - circle button (color + icon)
-        // - box button (color + icon)
-        // - sensor (color + icon)
-
-        // Uniforms:
-        // vec4 dimColor
-        // float dim
-        // float alpha
         static const char* pDimFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -70,27 +52,22 @@ namespace eyegui
             "uniform vec4 dimColor = vec4(1,0,0,0.5);\n"
             "uniform float dim = 1;\n"
             "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
             "void main() {\n"
-            "   fragColor = vec4(1,1,1,alpha) * dimColor * dim;\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * alpha) * dimColor * dim;\n"
             "}\n";
 
-        // Uniforms:
-        // float activity
-        // float alpha
         static const char* pActivityFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform float activity;\n"
             "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
             "void main() {\n"
-            "   fragColor = vec4(0.3, 0.3, 0.3, 0.3 * alpha) * (1.0 - activity);\n"
+            "   fragColor = vec4(0.3, 0.3, 0.3, texture(mask, uv).r * 0.5 * alpha) * (1.0 - activity);\n"
             "}\n";
 
-        // Uniforms:
-        // vec4 markColor
-        // float mark
-        // float alpha
         static const char* pMarkFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -98,14 +75,11 @@ namespace eyegui
             "uniform vec4 markColor = vec4(1,0,0,0.5);\n"
             "uniform float mark = 1;\n"
             "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
             "void main() {\n"
-            "   fragColor = vec4(1.0, 1.0, 1.0, alpha) * markColor * mark;\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * alpha) * markColor * mark;\n"
             "}\n";
 
-        // Uniforms:
-        // vec4 thresholdColor
-        // float threshold
-        // float alpha
         static const char* pCircleThresholdFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -113,18 +87,14 @@ namespace eyegui
             "uniform vec4 thresholdColor = vec4(1,0,0,0.5);\n"
             "uniform float threshold = 1;\n"
             "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
             "void main() {\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
             "   float thresholdMask = clamp(100 * clamp((length(2*uv-1)) - (1.025 * threshold - 0.025), 0, 1), 0 ,1);\n" // Inverted threshold
-            "   fragColor = vec4(1.0, 1.0, 1.0, (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
             "}\n";
 
-        // Uniforms:
-        // vec4 thresholdColor
-        // float threshold
-        // float orientation
-        // float alpha
         static const char* pBoxThresholdFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -133,17 +103,13 @@ namespace eyegui
             "uniform float threshold = 1;\n"
             "uniform float alpha = 1;\n"
             "uniform float orientation;\n"
+            "uniform sampler2D mask;\n"
             "void main() {\n"
             "   float thresholdMask = mix(uv.r, uv.g, orientation);\n"
             "   thresholdMask =  clamp(100 * clamp(1.9 * abs(thresholdMask - 0.5)  - (0.975 * threshold - 0.025), 0, 1), 0, 1);\n" // Inverted threshold
-            "   fragColor = vec4(1.0, 1.0, 1.0, (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
             "}\n";
 
-        // Uniforms:
-        // vec4 highlightColor
-        // float highlight
-        // float alpha
-        // sampler2D mask
         static const char* pHighlightFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -157,10 +123,6 @@ namespace eyegui
             "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * alpha * 0.5 * (1 + sin(3 * time))) * highlightColor * highlight;\n"
             "}\n";
 
-        // Uniforms:
-        // vec4 selectionColor
-        // float selection
-        // float alpha
         static const char* pSelectionFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -168,9 +130,32 @@ namespace eyegui
             "uniform vec4 selectionColor = vec4(1,0,0,0.5);\n"
             "uniform float selection = 1;\n"
             "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
             "void main() {\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
-            "	fragColor = vec4(1.0, 1.0, 1.0, alpha * pow(gradient,2) * selection) * selectionColor;\n"
+            "	fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * alpha * pow(gradient,2) * selection) * selectionColor;\n"
+            "}\n";
+
+
+        static const char* pBoxButtonFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 color = vec4(1,0,0,0.5);\n"
+            "uniform vec4 iconColor = vec4(1,1,0,0.5);\n"
+            "uniform float pressing;\n"
+            "uniform vec2 iconUVScale;\n"
+            "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
+            "uniform sampler2D icon;\n"
+            "void main() {\n"
+            "   float powPressing = pressing * pressing;\n"
+            "   vec2 pressUV = ((1 + (0.5 * powPressing)) * (uv - 0.5)) + 0.5;\n"
+            "   vec3 col = mix(color.rgb / 3, color.rgb, float(all(equal(ivec2(1,1), ivec2(pressUV+1)))));\n"
+            "   vec2 iconUV = ((1 + (0.5 * powPressing)) * iconUVScale * (uv - 0.5)) + 0.5;\n"
+            "   vec4 iconValue = iconColor * texture(icon, iconUV).rgba;\n"
+            "   col = mix(col, iconValue.rgb, iconValue.a);\n"
+            "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
             "}\n";
 
 
@@ -372,7 +357,7 @@ namespace eyegui
         // float selection
         // vec2 iconUVScale
         // float orientation
-        static const char* pBoxButtonFragmentShader =
+        static const char* pBoxButtonFragmentShaderOld =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"

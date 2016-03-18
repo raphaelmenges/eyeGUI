@@ -43,9 +43,9 @@ namespace eyegui
     {
         // Fill members
         mType = Type::SENSOR;
-        mpIconRenderItem = mpAssetManager->fetchRenderItem(
-            shaders::Type::SENSOR,
-            meshes::Type::QUAD);
+        //mpIconRenderItem = mpAssetManager->fetchRenderItem(
+//            shaders::Type::SENSOR,
+           // meshes::Type::QUAD);
         mPenetration.setValue(0);
     }
 

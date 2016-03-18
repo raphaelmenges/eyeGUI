@@ -209,6 +209,9 @@ namespace eyegui
             case shaders::Type::SELECTION:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSelectionFragmentShader));
                 break;
+            case shaders::Type::BOX_BUTTON:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBoxButtonFragmentShader));
+                break;
 
             // TODO: to be deleted from here
             case shaders::Type::SEPARATOR:
@@ -223,9 +226,7 @@ namespace eyegui
             case shaders::Type::CIRCLE_BUTTON:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleButtonFragmentShader));
                 break;
-            case shaders::Type::BOX_BUTTON:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBoxButtonFragmentShader));
-                break;
+
             case shaders::Type::SENSOR:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSensorFragmentShader));
                 break;

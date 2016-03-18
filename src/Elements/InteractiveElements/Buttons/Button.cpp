@@ -197,24 +197,28 @@ namespace eyegui
 
         //mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
 
-        mpThresholdItem->bind();
-        mpThresholdItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpThresholdItem->getShader()->fillValue("thresholdColor", getStyle()->thresholdColor);
-        mpThresholdItem->getShader()->fillValue("threshold", mThreshold.getValue());
-        mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
-        if(!mUseCircleThreshold)
+        if(mThreshold.getValue() > 0)
         {
-            float orientation = 0;
-            if (getParent() != NULL)
+            mpThresholdItem->bind();
+            mpThresholdItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+            mpThresholdItem->getShader()->fillValue("thresholdColor", getStyle()->thresholdColor);
+            mpThresholdItem->getShader()->fillValue("threshold", mThreshold.getValue());
+            mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
+            if(!mUseCircleThreshold)
             {
-                if (getParent()->getOrientation() == Element::Orientation::VERTICAL)
+                float orientation = 0;
+                if (getParent() != NULL)
                 {
-                    orientation = 1;
+                    if (getParent()->getOrientation() == Element::Orientation::VERTICAL)
+                    {
+                        orientation = 1;
+                    }
                 }
+                mpThresholdItem->getShader()->fillValue("orientation", orientation);
             }
-            mpThresholdItem->getShader()->fillValue("orientation", orientation);
+            mpThresholdItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+            mpThresholdItem->draw();
         }
-        mpThresholdItem->draw();
     }
 
     void Button::specialTransformAndSize()
@@ -260,5 +264,10 @@ namespace eyegui
                 "Button got notification which is not thought for it.");
             break;
         }
+    }
+
+    float Button::getPressing() const
+    {
+        return mPressing.getValue();
     }
 }
