@@ -82,13 +82,7 @@ namespace eyegui
         // Draw background image if available
         if(mupImage != NULL)
         {
-            mupImage->draw(
-                mAlpha,
-                1,
-                getStyle()->dimColor,
-                0,
-                getStyle()->markColor,
-                0);
+            mupImage->draw(mAlpha);
         }
     }
 

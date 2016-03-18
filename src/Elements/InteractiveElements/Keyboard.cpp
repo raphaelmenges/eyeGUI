@@ -439,13 +439,6 @@ namespace eyegui
                     getStyle()->color,
                     getStyle()->pickColor,
                     getStyle()->iconColor,
-                    1,
-                    getStyle()->dimColor,
-                    0,
-                    getStyle()->markColor,
-                    0,
-                    getStyle()->highlightColor,
-                    mHighlight.getValue(),
                     mAlpha);
             }
         }
@@ -461,13 +454,6 @@ namespace eyegui
                 getStyle()->color,
                 getStyle()->pickColor,
                 getStyle()->iconColor,
-                1,
-                getStyle()->dimColor,
-                0,
-                getStyle()->markColor,
-                0,
-                getStyle()->highlightColor,
-                mHighlight.getValue(),
                 mAlpha * rPressedKey.first);
         }
 

@@ -71,13 +71,7 @@ namespace eyegui
     void Picture::specialDraw() const
     {
         // Draw image owned by this
-        mupImage->draw(
-            mAlpha,
-            1,
-            getStyle()->dimColor,
-            0,
-            getStyle()->markColor,
-            0);
+        mupImage->draw(mAlpha);
     }
 
     void Picture::specialTransformAndSize()

@@ -53,13 +53,6 @@ namespace eyegui
             glm::vec4 color,
             glm::vec4 pickColor,
             glm::vec4 iconColor,
-            float activity,
-            glm::vec4 dimColor,
-            float dim,
-            glm::vec4 markColor,
-            float mark,
-            glm::vec4 highlightColor,
-            float highlight,
             float alpha) const = 0;
 
         // Reset
@@ -99,13 +92,6 @@ namespace eyegui
             int oglStencilHeight,
             glm::vec4 color,
             glm::vec4 pickColor,
-            float activity,
-            glm::vec4 dimColor,
-            float dim,
-            glm::vec4 markColor,
-            float mark,
-            glm::vec4 highlightColor,
-            float highlight,
             float alpha) const;
 
         // Members

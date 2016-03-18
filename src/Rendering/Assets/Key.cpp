@@ -132,13 +132,6 @@ namespace eyegui
             int oglStencilHeight,
             glm::vec4 color,
             glm::vec4 pickColor,
-            float activity,
-            glm::vec4 dimColor,
-            float dim,
-            glm::vec4 markColor,
-            float mark,
-            glm::vec4 highlightColor,
-            float highlight,
             float alpha) const
     {
         // Bind and fill render item
@@ -150,18 +143,10 @@ namespace eyegui
         mpCircleRenderItem->getShader()->fillValue("color", circleColor);
 
         // Fill other uniforms
-        mpCircleRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
         mpCircleRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
         mpCircleRenderItem->getShader()->fillValue("pickColor", pickColor);
         mpCircleRenderItem->getShader()->fillValue("pick", mPick.getValue());
         mpCircleRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
-        mpCircleRenderItem->getShader()->fillValue("activity", activity);
-        mpCircleRenderItem->getShader()->fillValue("dimColor", dimColor);
-        mpCircleRenderItem->getShader()->fillValue("dim", dim);
-        mpCircleRenderItem->getShader()->fillValue("markColor", markColor);
-        mpCircleRenderItem->getShader()->fillValue("mark", mark);
-        mpCircleRenderItem->getShader()->fillValue("highlightColor", highlightColor);
-        mpCircleRenderItem->getShader()->fillValue("highlight", highlight);
 
         // Drawing
         mpCircleRenderItem->draw();

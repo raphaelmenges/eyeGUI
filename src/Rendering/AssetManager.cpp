@@ -221,11 +221,12 @@ namespace eyegui
             case shaders::Type::TEXT:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pTextFragmentShader));
                 break;
-
-            // TODO
             case shaders::Type::IMAGE:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pImageFragmentShader));
                 break;
+
+            // TODO
+
 
             case shaders::Type::KEY:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));

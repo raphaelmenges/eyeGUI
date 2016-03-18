@@ -1,6 +1,5 @@
 ### VERSION 0.9
 - Rewrite Element rendering (more layers, not so big shaders)
-  - TextFlow / Simple must be refactored after that
   - Extra dim alpha!
   - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - why are not all children updated in element class but in subclasses?
@@ -22,8 +21,6 @@
 - Dictionary
   - write email to utf8rewind author because of windows fix
   - Maybe treat first and last character as special (HALO -> Hallo and not Halle...)
-  
-
   
 - Keyboard
   - Better german and english layout

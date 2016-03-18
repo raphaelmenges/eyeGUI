@@ -115,13 +115,6 @@ namespace eyegui
             glm::vec4 color,
             glm::vec4 pickColor,
             glm::vec4 iconColor,
-            float activity,
-            glm::vec4 dimColor,
-            float dim,
-            glm::vec4 markColor,
-            float mark,
-            glm::vec4 highlightColor,
-            float highlight,
             float alpha) const
     {
         // Convert stencil values to OpenGL coordinate system
@@ -138,13 +131,6 @@ namespace eyegui
             oglStencilHeight,
             color,
             pickColor,
-            activity,
-            dimColor,
-            dim,
-            markColor,
-            mark,
-            highlightColor,
-            highlight,
             alpha);
 
         // Render character
@@ -152,7 +138,7 @@ namespace eyegui
         glBindVertexArray(mQuadVertexArrayObject);
 
         // Bind atlas texture
-        mpFont->bindAtlasTexture(FontSize::KEYBOARD, 0, true);
+        mpFont->bindAtlasTexture(FontSize::KEYBOARD, 1, true);
 
         // Fill color
         glm::vec4 characterColor = iconColor;
@@ -160,16 +146,9 @@ namespace eyegui
         mpQuadShader->fillValue("color", characterColor);
 
         // Fill other uniforms
-        mpQuadShader->fillValue("time", mpLayout->getAccPeriodicTime());
         mpQuadShader->fillValue("matrix", mQuadMatrix); // Matrix is updated in transform and size
         mpQuadShader->fillValue("stencil", glm::vec4(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight));
-        mpQuadShader->fillValue("activity", activity);
-        mpQuadShader->fillValue("dimColor", dimColor);
-        mpQuadShader->fillValue("dim", dim);
-        mpQuadShader->fillValue("markColor", markColor);
-        mpQuadShader->fillValue("mark", mark);
-        mpQuadShader->fillValue("highlightColor", highlightColor);
-        mpQuadShader->fillValue("highlight", highlight);
+        mpQuadShader->fillValue("atlas", 1);
 
         // Draw character quad (vertex count must be 6)
         glDrawArrays(GL_TRIANGLES, 0, 6);

@@ -61,16 +61,17 @@ namespace eyegui
         // Bind atlas texture
         if (mScale == 1.0f)
         {
-            mpFont->bindAtlasTexture(mFontSize, 0, false);
+            mpFont->bindAtlasTexture(mFontSize, 1, false);
         }
         else
         {
-            mpFont->bindAtlasTexture(mFontSize, 0, true);
+            mpFont->bindAtlasTexture(mFontSize, 1, true);
         }
 
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("color", color);
         mpShader->fillValue("alpha", alpha);
+        mpShader->fillValue("atlas", 1);
 
         // Draw flow
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);

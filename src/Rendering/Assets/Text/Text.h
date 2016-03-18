@@ -40,6 +40,9 @@ namespace eyegui
         // Destructor
         virtual ~Text() = 0;
 
+        // Draw
+        virtual void draw(glm::vec4 color, float alpha) const = 0;
+
         // Set content and calls "calculateMesh"
         void setContent(std::u16string content);
 

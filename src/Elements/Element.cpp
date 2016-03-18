@@ -522,7 +522,8 @@ namespace eyegui
         // Only draw if visible
         if (mAlpha > 0 && !mHidden)
         {
-            // Bind mask for that element in first slot (TODO)
+            // Bind mask for that element in first slot
+            // DO NOT BIND ANYTHING ELSE WHILE DRAWING TO SLOT 0 !!!
             switch (mRenderingMask)
             {
             case RenderingMask::BOX:
