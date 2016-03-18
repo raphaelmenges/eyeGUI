@@ -143,6 +143,7 @@ namespace eyegui
         // vec4 highlightColor
         // float highlight
         // float alpha
+        // sampler2D mask
         static const char* pHighlightFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
@@ -151,8 +152,9 @@ namespace eyegui
             "uniform float highlight = 1;\n"
             "uniform float time;\n"
             "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
             "void main() {\n"
-            "   fragColor = vec4(1.0, 1.0, 1.0, alpha * 0.5 * (1 + sin(3 * time))) * highlightColor * highlight;\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * alpha * 0.5 * (1 + sin(3 * time))) * highlightColor * highlight;\n"
             "}\n";
 
         // Uniforms:

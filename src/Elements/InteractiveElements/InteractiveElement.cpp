@@ -20,6 +20,7 @@ namespace eyegui
         Frame* pFrame,
         AssetManager* pAssetManager,
         NotificationQueue* pNotificationQueue,
+        RenderingMask renderingMask,
         float relativeScale,
         float border,
         bool dimming,
@@ -31,6 +32,7 @@ namespace eyegui
             pFrame,
             pAssetManager,
             pNotificationQueue,
+            renderingMask,
             relativeScale,
             border,
             dimming,
@@ -87,21 +89,28 @@ namespace eyegui
         // Should be called by subclasses after personal drawing
 
         // Draw highlight
-        mpHighlightItem->bind();
-        mpHighlightItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpHighlightItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
-        mpHighlightItem->getShader()->fillValue("highlight", mHighlight.getValue());
-        mpHighlightItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
-        mpHighlightItem->getShader()->fillValue("alpha", mAlpha);
-        mpHighlightItem->draw();
+        if(mHighlight.getValue() > 0)
+        {
+            mpHighlightItem->bind();
+            mpHighlightItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+            mpHighlightItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
+            mpHighlightItem->getShader()->fillValue("highlight", mHighlight.getValue());
+            mpHighlightItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
+            mpHighlightItem->getShader()->fillValue("alpha", mAlpha);
+            mpHighlightItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+            mpHighlightItem->draw();
+        }
 
         // Draw selection
-        mpSelectionItem->bind();
-        mpSelectionItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpSelectionItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
-        mpSelectionItem->getShader()->fillValue("selection", mSelection.getValue());
-        mpSelectionItem->getShader()->fillValue("alpha", mAlpha);
-        mpSelectionItem->draw();
+        if(mSelection.getValue() > 0)
+        {
+            mpSelectionItem->bind();
+            mpSelectionItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+            mpSelectionItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
+            mpSelectionItem->getShader()->fillValue("selection", mSelection.getValue());
+            mpSelectionItem->getShader()->fillValue("alpha", mAlpha);
+            mpSelectionItem->draw();
+        }
     }
 
     float InteractiveElement::specialUpdate(float tpf, Input* pInput)

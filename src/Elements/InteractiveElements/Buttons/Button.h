@@ -27,13 +27,15 @@ namespace eyegui
             Frame* pFrame,
             AssetManager* pAssetManager,
             NotificationQueue* pNotificationQueue,
+            RenderingMask renderingMask,
+            bool useCircleThreshold,
             float relativeScale,
             float border,
             bool dimming,
             bool adaptiveScaling,
             std::string iconFilepath,
-            bool isSwitch,
-            bool useCircleThreshold);
+            bool isSwitch
+            );
 
         // Destructor
         virtual ~Button() = 0;

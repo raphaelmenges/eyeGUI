@@ -156,9 +156,14 @@ namespace eyegui
             case graphics::Type::CIRCLE:
                 rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::circleGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 break;
+            case graphics::Type::BOX:
+                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::boxGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
+                break;
             case graphics::Type::NOT_FOUND:
                 rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 break;
+            default:
+                throwError(OperationNotifier::Operation::BUG, "Graphics does not exist");
             }
             pTexture = rupTexture.get();
             mGraphics[graphic] = std::move(rupTexture);
@@ -259,6 +264,8 @@ namespace eyegui
             case meshes::Type::LINE:
                 rupMesh = std::unique_ptr<Mesh>(new Mesh(&meshes::lineVertices, &meshes::lineTextureCoordinates));
                 break;
+            default:
+                throwError(OperationNotifier::Operation::BUG, "Mesh does not exist");
             }
             pMesh = rupMesh.get();
             mMeshes[mesh] = std::move(rupMesh);

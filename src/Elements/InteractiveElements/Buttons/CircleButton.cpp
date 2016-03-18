@@ -30,13 +30,14 @@ namespace eyegui
             pFrame,
             pAssetManager,
             pNotificationQueue,
+            RenderingMask::CIRCLE,
+            true,
             relativeScale,
             border,
             dimming,
             adaptiveScaling,
             iconFilepath,
-            isSwitch,
-            true)
+            isSwitch)
     {
         mType = Type::CIRCLE_BUTTON;
 

@@ -1,4 +1,14 @@
 ### VERSION 0.9
+- Rewrite Element rendering (more layers, not so big shaders)
+  - TextFlow / Simple must be refactored after that
+  - Extra dim alpha!
+  - setDimming / Marking: give element and offset from it in tree so only that is dimmed
+  - why are not all children updated in element class but in subclasses?
+    - Because of DropButton (get it of children there, just name it drop or so)
+  - render background in button as background or as part of button shader? -> extra
+  - Not worth to list what is on the TODO here :D is like every element...
+  - ALL shaders must know about the mask!!!!
+
 - Do background rendering in some helper class. to much copy code (in assets?)
 - WordSuggest
   - Display suggestions
@@ -16,14 +26,7 @@
   - write email to utf8rewind author because of windows fix
   - Maybe treat first and last character as special (HALO -> Hallo and not Halle...)
   
-- Rewrite Element rendering (more layers, not so big shaders)
-  - TextFlow / Simple must be refactored after that
-  - Extra dimalpha!
-  - Circlebuttons have non circle shaders
-    - use mask in ALL shaders and bind to uniform (so that icon can be bound too)
-  - setDimming / Marking: give element and offset from it in tree so only that is dimmed
-  - why are not all children updated in element class but in subclasses?
-  - render background in button as background or as part of button shader? -> extra
+
   
 - Keyboard
   - Better german and english layout

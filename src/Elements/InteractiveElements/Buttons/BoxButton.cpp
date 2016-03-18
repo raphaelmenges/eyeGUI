@@ -30,13 +30,14 @@ namespace eyegui
             pFrame,
             pAssetManager,
             pNotificationQueue,
+            RenderingMask::BOX,
+            false,
             relativeScale,
             border,
             dimming,
             adaptiveScaling,
             iconFilepath,
-            isSwitch,
-            false)
+            isSwitch)
     {
         mType = Type::BOX_BUTTON;
 

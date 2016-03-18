@@ -37,7 +37,7 @@ namespace eyegui
     SEPARATOR, BLOCK, IMAGE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, TEXT, KEY, CHARACTER_KEY}; } // TODO: To be deleted
 
     namespace meshes { enum class Type { QUAD, LINE }; }
-    namespace graphics { enum class Type { CIRCLE, NOT_FOUND }; }
+    namespace graphics { enum class Type { CIRCLE, BOX, NOT_FOUND }; }
 
     // Forward declaration
     class GUI;

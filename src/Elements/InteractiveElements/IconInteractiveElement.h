@@ -13,47 +13,48 @@
 
 namespace eyegui
 {
-	class IconInteractiveElement : public InteractiveElement
-	{
-	public:
+    class IconInteractiveElement : public InteractiveElement
+    {
+    public:
 
-		// Constructors
-		IconInteractiveElement(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout const * pLayout,
-			Frame* pFrame,
-			AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
-			float relativeScale,
-			float border,
-			bool dimming,
-			bool adaptiveScaling,
-			std::string iconFilepath);
+        // Constructors
+        IconInteractiveElement(
+            std::string id,
+            std::string styleName,
+            Element* pParent,
+            Layout const * pLayout,
+            Frame* pFrame,
+            AssetManager* pAssetManager,
+            NotificationQueue* pNotificationQueue,
+            RenderingMask renderingMask,
+            float relativeScale,
+            float border,
+            bool dimming,
+            bool adaptiveScaling,
+            std::string iconFilepath);
 
-		// Destructor
-		virtual ~IconInteractiveElement() = 0;
+        // Destructor
+        virtual ~IconInteractiveElement() = 0;
 
-		// Set icon
-		void setIcon(std::string filepath);
+        // Set icon
+        void setIcon(std::string filepath);
 
-	protected:
+    protected:
 
-		// Drawing filled by subclasses
-		virtual void specialDraw() const;
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
 
-		// Calculate aspect ratio correction for icon on gizmo
-		glm::vec2 iconAspectRatioCorrection() const;
+        // Calculate aspect ratio correction for icon on gizmo
+        glm::vec2 iconAspectRatioCorrection() const;
 
-		// Members
-		RenderItem const * mpIconRenderItem; // has to be initialized by subclasses
+        // Members
+        RenderItem const * mpIconRenderItem; // has to be initialized by subclasses
 
-	private:
+    private:
 
-		// Members
-		Texture const * mpIcon;
-	};
+        // Members
+        Texture const * mpIcon;
+    };
 }
 
 #endif // ICON_INTERACTIVE_ELEMENT_H_

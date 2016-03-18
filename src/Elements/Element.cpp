@@ -24,6 +24,7 @@ namespace eyegui
         Frame* pFrame,
         AssetManager* pAssetManager,
         NotificationQueue* pNotificationQueue,
+        RenderingMask renderingMask,
         float relativeScale,
         float border,
         bool dimming,
@@ -57,6 +58,7 @@ namespace eyegui
         mHidden = false;
         mMarking = false;
         mMark.setValue(0);
+        mRenderingMask = renderingMask;
 
         // Fetch style from layout
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
@@ -520,31 +522,51 @@ namespace eyegui
         // Only draw if visible
         if (mAlpha > 0 && !mHidden)
         {
+            // Bind mask for that element in first slot (TODO)
+            switch (mRenderingMask)
+            {
+            case RenderingMask::BOX:
+                mpAssetManager->fetchTexture(graphics::Type::BOX)->bind(0);
+                break;
+            case RenderingMask::CIRCLE:
+                mpAssetManager->fetchTexture(graphics::Type::CIRCLE)->bind(0);
+                break;
+            }
+
             // Draw content of element
             specialDraw();
 
             // Draw marking
-            mpMarkItem->bind();
-            mpMarkItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpMarkItem->getShader()->fillValue("markColor", getStyle()->markColor);
-            mpMarkItem->getShader()->fillValue("mark", mMark.getValue());
-            mpMarkItem->getShader()->fillValue("alpha", mAlpha);
-            mpMarkItem->draw();
+            if(mMark.getValue() > 0)
+            {
+                mpMarkItem->bind();
+                mpMarkItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+                mpMarkItem->getShader()->fillValue("markColor", getStyle()->markColor);
+                mpMarkItem->getShader()->fillValue("mark", mMark.getValue());
+                mpMarkItem->getShader()->fillValue("alpha", mAlpha);
+                mpMarkItem->draw();
+            }
 
-            // Draw activity
-            mpActivityItem->bind();
-            mpActivityItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpActivityItem->getShader()->fillValue("activity", mActivity.getValue());
-            mpActivityItem->getShader()->fillValue("alpha", mAlpha);
-            mpActivityItem->draw();
+            // Draw activity (or unactivity)
+            if(mActivity.getValue() < 1)
+            {
+                mpActivityItem->bind();
+                mpActivityItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+                mpActivityItem->getShader()->fillValue("activity", mActivity.getValue());
+                mpActivityItem->getShader()->fillValue("alpha", mAlpha);
+                mpActivityItem->draw();
+            }
 
             // Draw dimming
-            mpDimItem->bind();
-            mpDimItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpDimItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpDimItem->getShader()->fillValue("dim", mDim.getValue());
-            mpDimItem->getShader()->fillValue("alpha", mAlpha);
-            mpDimItem->draw();
+            if(mDim.getValue() < 1)
+            {
+                mpDimItem->bind();
+                mpDimItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+                mpDimItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
+                mpDimItem->getShader()->fillValue("dim", mDim.getValue());
+                mpDimItem->getShader()->fillValue("alpha", mAlpha);
+                mpDimItem->draw();
+            }
 
             // Draw children
             for (const std::unique_ptr<Element>& rElement : mChildren)

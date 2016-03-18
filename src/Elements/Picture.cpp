@@ -30,6 +30,7 @@ namespace eyegui
             pFrame,
             pAssetManager,
             pNotificationQueue,
+            RenderingMask::BOX,
             relativeScale,
             border,
             dimming,

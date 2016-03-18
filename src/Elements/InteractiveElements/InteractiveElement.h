@@ -28,6 +28,7 @@ namespace eyegui
             Frame* pFrame,
             AssetManager* pAssetManager,
             NotificationQueue* pNotificationQueue,
+            RenderingMask renderingMask,
             float relativeScale,
             float border,
             bool dimming,

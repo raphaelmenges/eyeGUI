@@ -64,6 +64,11 @@ namespace eyegui
             WORD_SUGGEST
         };
 
+        // Enumeration of rendering masks
+        enum class RenderingMask {
+            BOX, CIRCLE
+        };
+
         // Orientation of element
         enum class Orientation { HORIZONTAL, VERTICAL };
 
@@ -76,6 +81,7 @@ namespace eyegui
             Frame* pFrame,
             AssetManager* pAssetManager,
             NotificationQueue* pNotificationQueue,
+            RenderingMask renderingMask,
             float relativeScale,
             float border,
             bool dimming,
@@ -262,6 +268,7 @@ namespace eyegui
         Style const * mpStyle;
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
+        RenderingMask mRenderingMask;
         RenderItem const * mpActivityItem;
         RenderItem const * mpDimItem;
         RenderItem const * mpMarkItem;
