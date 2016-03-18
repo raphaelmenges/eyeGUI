@@ -863,7 +863,7 @@ namespace eyegui
       \param reset indicates whether all elements in layout should be reset.
       \param fade indicates, whether frame should fade.
     */
-    void setVisibilityOFloatingfFrame(
+    void setVisibilityOFloatingFrame(
         Layout* pLayout,
         unsigned int frameIndex,
         bool visible,

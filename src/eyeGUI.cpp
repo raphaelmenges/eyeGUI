@@ -458,7 +458,7 @@ namespace eyegui
         return pLayout->addFloatingFrameWithBrick(filepath, relativePositionX, relativePositionY, relativeSizeX, relativeSizeY, idMapper, visible, fade);
     }
 
-    void setVisibilityOFloatingfFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool fade)
+    void setVisibilityOFloatingFrame(Layout* pLayout, unsigned int frameIndex, bool visible, bool reset, bool fade)
     {
         pLayout->setVisibiltyOfFloatingFrame(frameIndex, visible, fade);
 
