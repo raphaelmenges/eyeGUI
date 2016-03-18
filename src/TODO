@@ -1,11 +1,12 @@
 ### VERSION 0.9
-- Rewrite Element rendering (more layers, not so big shaders)
+- Rewrite Element rendering (more layers, not so big shaders)y
   - Extra dim alpha!
   - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - why are not all children updated in element class but in subclasses?
     - Because of DropButton (get it of children there, just name it drop or so)
-  
-- Do background rendering in some helper class. to much copy code (in assets?)
+  - Test dimming / marking
+  - why is demo black in the beginning?
+
 - WordSuggest
   - Display suggestions
     - Interaction

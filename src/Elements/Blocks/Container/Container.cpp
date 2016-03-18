@@ -43,7 +43,7 @@ namespace eyegui
             innerBorder)
     {
         // Fill members
-        // mDraw = showBackground; //TODO: how to handle it?
+        mShowBackground = showBackground;
     }
 
     Container::~Container()
@@ -67,5 +67,14 @@ namespace eyegui
 
         // Return adaptive scale
         return std::max(adaptiveScale, maxAdaptiveScaleOfChildren);
+    }
+
+    void Container::specialDraw() const
+    {
+        // Only draw block in background if allowed
+        if(mShowBackground)
+        {
+            Block::specialDraw();
+        }
     }
 }

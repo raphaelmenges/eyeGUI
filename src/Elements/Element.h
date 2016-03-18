@@ -249,7 +249,6 @@ namespace eyegui
         glm::mat4 mFullDrawMatrix;
         bool mAdaptiveScaling;
         LerpValue mAdaptiveScale; // [0..1]
-        bool mDraw; // Should element itself be drawn (children are drawn anyway?
 
         // This vector is the owner of all children. May be empty!
         std::vector<std::unique_ptr<Element> > mChildren;

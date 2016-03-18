@@ -148,13 +148,12 @@ namespace eyegui
             "uniform sampler2D icon;\n"
             "void main() {\n"
             "   float powPressing = pressing * pressing;\n"
-            "   vec2 pressUV = ((1 + (0.5 * powPressing)) * (uv - 0.5)) + 0.5;\n"
+            "   vec2 pressUV = ((0.975 + (0.5 * powPressing)) * (uv - 0.5)) + 0.5;\n"
             "   vec3 col = mix(color.rgb / 3, color.rgb, texture(mask, pressUV).r);\n"
             "   vec4 iconValue = iconColor * texture(icon, pressUV).rgba;\n"
-            "   col = mix(col, iconValue.rgb, iconValue.a);\n"
-            "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
+            "   vec4 final = mix(vec4(col, color.a), iconValue, iconValue.a);\n"
+            "	fragColor = vec4(final.rgb, final.a * texture(mask, uv).r * alpha);\n"
             "}\n";
-
 
         static const char* pBoxButtonFragmentShader =
             "#version 330 core\n"
@@ -173,8 +172,8 @@ namespace eyegui
             "   vec3 col = mix(color.rgb / 3, color.rgb, float(all(equal(ivec2(1,1), ivec2(pressUV+1)))));\n"
             "   vec2 iconUV = ((1 + (0.5 * powPressing)) * iconUVScale * (uv - 0.5)) + 0.5;\n"
             "   vec4 iconValue = iconColor * texture(icon, iconUV).rgba;\n"
-            "   col = mix(col, iconValue.rgb, iconValue.a);\n"
-            "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
+            "   vec4 final = mix(vec4(col, color.a), iconValue, iconValue.a);\n"
+            "	fragColor = vec4(final.rgb, final.a * texture(mask, uv).r * alpha);\n"
             "}\n";
 
     static const char* pSensorFragmentShader =
@@ -193,8 +192,8 @@ namespace eyegui
             "   vec3 col = mix(color.rgb / 3, color.rgb, float(all(equal(ivec2(1,1), ivec2(penetrationUV+1)))));\n"
             "   vec2 iconUV = ((1 + (0.5 * penetration)) * iconUVScale * (uv - 0.5)) + 0.5;\n"
             "   vec4 iconValue = iconColor * texture(icon, iconUV).rgba;\n"
-            "   col = mix(col, iconValue.rgb, iconValue.a);\n"
-            "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
+            "   vec4 final = mix(vec4(col, color.a), iconValue, iconValue.a);\n"
+            "	fragColor = vec4(final.rgb, final.a * texture(mask, uv).r * alpha);\n"
             "}\n";
 
         static const char* pTextFragmentShader =
