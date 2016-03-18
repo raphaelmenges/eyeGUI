@@ -42,14 +42,7 @@ namespace eyegui
             int height);
 
         // Draw
-        void draw(
-           glm::vec4 color,
-           float alpha,
-           float activity,
-           glm::vec4 dimColor,
-           float dim,
-           glm::vec4 markColor,
-           float mark) const;
+        void draw(glm::vec4 color, float alpha) const;
 
     protected:
 

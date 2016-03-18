@@ -197,49 +197,25 @@ namespace eyegui
             "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
             "}\n";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // Uniforms:
-        // sampler2D atlas
-        // vec4 color
-        // vec4 dimColor
-        // vec4 markColor
-        // float alpha
-        // float activity
-        // float dim
-        // float mark
         static const char* pTextFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
             "uniform sampler2D atlas;\n"
             "uniform vec4 color;\n"
-            "uniform vec4 dimColor;\n"
-            "uniform vec4 markColor;\n"
             "uniform float alpha;\n"
-            "uniform float activity;\n"
-            "uniform float dim;\n"
-            "uniform float mark;\n"
             "void main() {\n"
             "   float character = texture(atlas, uv).r;\n"
             "   vec4 col = color;\n"
-            "   col.rgb = mix(vec3(0.3,0.3,0.3), col.rgb, max(0.2, activity));\n" // Activity
-            "	col.rgb = (1.0 - (mark * markColor.a)) * col.rgb + (mark * markColor.a * markColor.rgb);\n" // Marking
-            "	col.rgba *= (1.0 - dim) + (dim * dimColor);\n" // Dimming
             "   fragColor = vec4(col.rgb, col.a * alpha * character);\n"
             "}\n";
+
+
+
+
+
+
+
 
         // Uniforms:
         // sampler2D icon

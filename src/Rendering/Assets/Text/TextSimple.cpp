@@ -48,7 +48,7 @@ namespace eyegui
         calculateMesh();
     }
 
-    void TextSimple::draw(glm::vec4 color) const
+    void TextSimple::draw(glm::vec4 color, float alpha) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
@@ -68,15 +68,9 @@ namespace eyegui
             mpFont->bindAtlasTexture(mFontSize, 0, true);
         }
 
-        // Fill uniforms (TODO: get rid of this madness)
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("color", color);
-        mpShader->fillValue("alpha", 1);
-        mpShader->fillValue("activity", 1);
-        mpShader->fillValue("dimColor", glm::vec4(1,1,1,1));
-        mpShader->fillValue("dim", 0);
-        mpShader->fillValue("markColor", glm::vec4(1,1,1,1));
-        mpShader->fillValue("mark", 0);
+        mpShader->fillValue("alpha", alpha);
 
         // Draw flow
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);

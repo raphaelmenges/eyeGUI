@@ -32,7 +32,7 @@ namespace eyegui
         void transform(int x, int y);
 
         // Draw (TODO: do it in superclass somehow)
-        void draw(glm::vec4 color) const;
+        void draw(glm::vec4 color, float alpha) const;
 
         // Get width in pixels
         int getWidth() const;

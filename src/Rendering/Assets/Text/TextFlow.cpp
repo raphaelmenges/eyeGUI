@@ -63,12 +63,7 @@ namespace eyegui
 
     void TextFlow::draw(
         glm::vec4 color,
-        float alpha,
-        float activity,
-        glm::vec4 dimColor,
-        float dim,
-        glm::vec4 markColor,
-        float mark) const
+        float alpha) const
     {
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
@@ -107,11 +102,6 @@ namespace eyegui
         mpShader->fillValue("matrix", matrix);
         mpShader->fillValue("color", color);
         mpShader->fillValue("alpha", alpha);
-        mpShader->fillValue("activity", activity);
-        mpShader->fillValue("dimColor", dimColor);
-        mpShader->fillValue("dim", dim);
-        mpShader->fillValue("markColor", markColor);
-        mpShader->fillValue("mark", mark);
 
         // Draw flow
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);

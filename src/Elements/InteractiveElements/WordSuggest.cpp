@@ -88,7 +88,7 @@ namespace eyegui
         // Draw suggestions
         for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
         {
-            rSuggestion->draw(glm::vec4(1,1,1,1));
+            rSuggestion->draw(getStyle()->fontColor, mAlpha);
         }
     }
 
