@@ -560,7 +560,7 @@ namespace eyegui
             }
 
             // Draw dimming
-            if(mDim.getValue() < 1)
+            if(mDim.getValue() > 0)
             {
                 mpDimItem->bind();
                 mpDimItem->getShader()->fillValue("matrix", mFullDrawMatrix);

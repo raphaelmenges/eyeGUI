@@ -47,8 +47,8 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize();
 
         // Reset filld by subclasses
         virtual void specialReset();
@@ -63,6 +63,7 @@ namespace eyegui
 
         // Members
         LerpValue mPenetration; // [0..1]
+        RenderItem const * mpSensorItem;
     };
 }
 

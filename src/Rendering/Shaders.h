@@ -177,6 +177,26 @@ namespace eyegui
             "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
             "}\n";
 
+    static const char* pSensorFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 color = vec4(1,0,0,0.5);\n"
+            "uniform vec4 iconColor = vec4(1,1,0,0.5);\n"
+            "uniform float penetration;\n"
+            "uniform vec2 iconUVScale;\n"
+            "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
+            "uniform sampler2D icon;\n"
+            "void main() {\n"
+            "   vec2 penetrationUV = ((1 + (0.5 * penetration)) * (uv - 0.5)) + 0.5;\n"
+            "   vec3 col = mix(color.rgb / 3, color.rgb, float(all(equal(ivec2(1,1), ivec2(penetrationUV+1)))));\n"
+            "   vec2 iconUV = ((1 + (0.5 * penetration)) * iconUVScale * (uv - 0.5)) + 0.5;\n"
+            "   vec4 iconValue = iconColor * texture(icon, iconUV).rgba;\n"
+            "   col = mix(col, iconValue.rgb, iconValue.a);\n"
+            "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
+            "}\n";
+
 
 
 
@@ -442,7 +462,7 @@ namespace eyegui
         // float mark
         // float selection
         // vec2 iconUVScale
-        static const char* pSensorFragmentShader =
+        static const char* pSensorFragmentShader2 =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"

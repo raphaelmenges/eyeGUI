@@ -43,10 +43,15 @@ namespace eyegui
     {
         // Fill members
         mType = Type::SENSOR;
-        //mpIconRenderItem = mpAssetManager->fetchRenderItem(
-//            shaders::Type::SENSOR,
-           // meshes::Type::QUAD);
+
+        // Initialize members
         mPenetration.setValue(0);
+
+        // Render item
+        mpSensorItem = mpAssetManager->fetchRenderItem(
+            shaders::Type::SENSOR,
+            meshes::Type::QUAD);
+
     }
 
     Sensor::~Sensor()
@@ -95,18 +100,20 @@ namespace eyegui
 
     void Sensor::specialDraw() const
     {
-
+        mpIcon->bind(1);
+        mpSensorItem->bind();
+        mpSensorItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+        mpSensorItem->getShader()->fillValue("color", getStyle()->color);
+        mpSensorItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
+        mpSensorItem->getShader()->fillValue("penetration", mPenetration.getValue());
+        mpSensorItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
+        mpSensorItem->getShader()->fillValue("alpha", mAlpha);
+        mpSensorItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+        mpSensorItem->getShader()->fillValue("icon", 1);
+        mpSensorItem->draw();
 
         // Super call
         IconInteractiveElement::specialDraw();
-
-        /*
-        // Fill other values
-        mpIconRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
-
-        // Scale of icon
-        mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
-        */
     }
 
     void Sensor::specialTransformAndSize()
