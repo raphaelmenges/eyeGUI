@@ -86,15 +86,15 @@ namespace eyegui
             mpBackground->getShader()->fillValue("alpha", mAlpha);
 
             // Fill activity
-            mpBackground->getShader()->fillValue("activity", mActivity.getValue());
+            mpBackground->getShader()->fillValue("activity",1);
 
             // Fill dimming
             mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpBackground->getShader()->fillValue("dim", mDim.getValue());
+            mpBackground->getShader()->fillValue("dim", 0);
 
             // Fill marking
             mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
-            mpBackground->getShader()->fillValue("mark", mMark.getValue());
+            mpBackground->getShader()->fillValue("mark", 0);
 
             // Draw render item
             mpBackground->draw();
@@ -105,11 +105,11 @@ namespace eyegui
         {
             mupImage->draw(
                 mAlpha,
-                mActivity.getValue(),
+                1,
                 getStyle()->dimColor,
-                mDim.getValue(),
+                0,
                 getStyle()->markColor,
-                mMark.getValue());
+                0);
         }
     }
 

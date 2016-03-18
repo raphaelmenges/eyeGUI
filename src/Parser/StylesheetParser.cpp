@@ -275,6 +275,10 @@ namespace eyegui
             {
                 rStyle.pickColor = value;
             }
+            else if (attribute == "threshold-color")
+            {
+                rStyle.thresholdColor = value;
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, rStyle.filepath);

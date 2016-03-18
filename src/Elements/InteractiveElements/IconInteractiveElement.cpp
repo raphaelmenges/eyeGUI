@@ -11,94 +11,97 @@
 
 namespace eyegui
 {
-	IconInteractiveElement::IconInteractiveElement(
-		std::string id,
-		std::string styleName,
-		Element* pParent,
-		Layout const * pLayout,
-		Frame* pFrame,
-		AssetManager* pAssetManager,
-		NotificationQueue* pNotificationQueue,
-		float relativeScale,
-		float border,
-		bool dimming,
-		bool adaptiveScaling,
-		std::string iconFilepath) : InteractiveElement(
-			id,
-			styleName,
-			pParent,
-			pLayout,
-			pFrame,
-			pAssetManager,
-			pNotificationQueue,
-			relativeScale,
-			border,
-			dimming,
-			adaptiveScaling)
-	{
-		mType = Type::ICON_INTERACTIVE_ELEMENT;
+    IconInteractiveElement::IconInteractiveElement(
+        std::string id,
+        std::string styleName,
+        Element* pParent,
+        Layout const * pLayout,
+        Frame* pFrame,
+        AssetManager* pAssetManager,
+        NotificationQueue* pNotificationQueue,
+        float relativeScale,
+        float border,
+        bool dimming,
+        bool adaptiveScaling,
+        std::string iconFilepath) : InteractiveElement(
+            id,
+            styleName,
+            pParent,
+            pLayout,
+            pFrame,
+            pAssetManager,
+            pNotificationQueue,
+            relativeScale,
+            border,
+            dimming,
+            adaptiveScaling)
+    {
+        mType = Type::ICON_INTERACTIVE_ELEMENT;
 
-		// Filling members
-		setIcon(iconFilepath);
-		mpIconRenderItem = NULL;
-	}
+        // Filling members
+        setIcon(iconFilepath);
+        mpIconRenderItem = NULL;
+    }
 
-	IconInteractiveElement::~IconInteractiveElement()
-	{
-		// Nothing to do here
-	}
+    IconInteractiveElement::~IconInteractiveElement()
+    {
+        // Nothing to do here
+    }
 
-	void IconInteractiveElement::setIcon(std::string filepath)
-	{
-		if (filepath != EMPTY_STRING_ATTRIBUTE)
-		{
-			mpIcon = mpAssetManager->fetchTexture(filepath);
-		}
-		else
-		{
-			mpIcon = mpAssetManager->fetchTexture(graphics::Type::NOT_FOUND);
-		}
-	}
+    void IconInteractiveElement::setIcon(std::string filepath)
+    {
+        if (filepath != EMPTY_STRING_ATTRIBUTE)
+        {
+            mpIcon = mpAssetManager->fetchTexture(filepath);
+        }
+        else
+        {
+            mpIcon = mpAssetManager->fetchTexture(graphics::Type::NOT_FOUND);
+        }
+    }
 
-	void IconInteractiveElement::specialDraw() const
-	{
-		// Fill shader
-		mpIconRenderItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-		mpIconRenderItem->getShader()->fillValue("highlight", mHighlight.getValue());
-		mpIconRenderItem->getShader()->fillValue("alpha", mAlpha);
-		mpIconRenderItem->getShader()->fillValue("activity", mActivity.getValue());
-		mpIconRenderItem->getShader()->fillValue("selection", mSelection.getValue());
-		mpIconRenderItem->getShader()->fillValue("color", getStyle()->color);
-		mpIconRenderItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
-		mpIconRenderItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
-		mpIconRenderItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
-		mpIconRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
-		mpIconRenderItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
-		mpIconRenderItem->getShader()->fillValue("dim", mDim.getValue());
-		mpIconRenderItem->getShader()->fillValue("markColor", getStyle()->markColor);
-		mpIconRenderItem->getShader()->fillValue("mark", mMark.getValue());
+    void IconInteractiveElement::specialDraw() const
+    {
+        // Fill shader
+        /*mpIconRenderItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+        mpIconRenderItem->getShader()->fillValue("highlight", mHighlight.getValue());
+        mpIconRenderItem->getShader()->fillValue("alpha", mAlpha);
+        mpIconRenderItem->getShader()->fillValue("activity", 1);
+        mpIconRenderItem->getShader()->fillValue("selection", mSelection.getValue());
+        mpIconRenderItem->getShader()->fillValue("color", getStyle()->color);
+        mpIconRenderItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
+        mpIconRenderItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
+        mpIconRenderItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
+        mpIconRenderItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
+        mpIconRenderItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
+        mpIconRenderItem->getShader()->fillValue("dim", 0);
+        mpIconRenderItem->getShader()->fillValue("markColor", getStyle()->markColor);
+        mpIconRenderItem->getShader()->fillValue("mark", 0); */
 
-		// Bind icon texture
-		mpIcon->bind(0);
-	}
+        // Bind icon texture
+        //mpIcon->bind(0);
 
-	glm::vec2 IconInteractiveElement::iconAspectRatioCorrection() const
-	{
-		float aspectRatio = (float)mWidth / (float)mHeight;
-		float iconAspectRatio = mpIcon->getAspectRatio();
-		float relation = aspectRatio / iconAspectRatio;
-		glm::vec2 iconUVScale;
-		if (relation >= 1)
-		{
-			// Render item wider than icon
-			iconUVScale = glm::vec2(relation, 1.0f);
-		}
-		else
-		{
-			// Icon wider than render item
-			iconUVScale = glm::vec2(1.0f, 1.0f / relation);
-		}
+        // Draw stuff like highlighting
+        InteractiveElement::specialDraw();
+    }
 
-		return iconUVScale;
-	}
+    glm::vec2 IconInteractiveElement::iconAspectRatioCorrection() const
+    {
+        float aspectRatio = (float)mWidth / (float)mHeight;
+        float iconAspectRatio = mpIcon->getAspectRatio();
+        float relation = aspectRatio / iconAspectRatio;
+        glm::vec2 iconUVScale;
+        if (relation >= 1)
+        {
+            // Render item wider than icon
+            iconUVScale = glm::vec2(relation, 1.0f);
+        }
+        else
+        {
+            // Icon wider than render item
+            iconUVScale = glm::vec2(1.0f, 1.0f / relation);
+        }
+
+        return iconUVScale;
+    }
 }

@@ -72,11 +72,11 @@ namespace eyegui
         // Draw image owned by this
         mupImage->draw(
             mAlpha,
-            mActivity.getValue(),
+            1,
             getStyle()->dimColor,
-            mDim.getValue(),
+            0,
             getStyle()->markColor,
-            mMark.getValue());
+            0);
     }
 
     void Picture::specialTransformAndSize()

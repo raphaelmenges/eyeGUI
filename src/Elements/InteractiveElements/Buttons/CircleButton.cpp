@@ -35,7 +35,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             iconFilepath,
-            isSwitch)
+            isSwitch,
+            true)
     {
         mType = Type::CIRCLE_BUTTON;
 
@@ -50,14 +51,8 @@ namespace eyegui
 
     void CircleButton::specialDraw() const
     {
-        // Bind render item before setting values and drawing
-		mpIconRenderItem->bind();
-
         // Super call
         Button::specialDraw();
-
-        // Draw render item
-		mpIconRenderItem->draw();
     }
 
     void CircleButton::evaluateSize(
@@ -79,24 +74,24 @@ namespace eyegui
         }
     }
 
-	bool CircleButton::penetratedByInput(Input const * pInput) const
-	{
-		// Check whether gaze is upon circle button
-		if (pInput != NULL && !pInput->gazeUsed)
-		{
-			// Length of vector from center to gaze point
-			float radius = mWidth / 2.0f;
-			float length = glm::length(
-							glm::vec2(
-								pInput->gazeX - (mX + radius),
-								pInput->gazeY - (mY + radius)));
-			
-			// Gaze inside circle?
-			if(length <= radius)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    bool CircleButton::penetratedByInput(Input const * pInput) const
+    {
+        // Check whether gaze is upon circle button
+        if (pInput != NULL && !pInput->gazeUsed)
+        {
+            // Length of vector from center to gaze point
+            float radius = mWidth / 2.0f;
+            float length = glm::length(
+                            glm::vec2(
+                                pInput->gazeX - (mX + radius),
+                                pInput->gazeY - (mY + radius)));
+
+            // Gaze inside circle?
+            if(length <= radius)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

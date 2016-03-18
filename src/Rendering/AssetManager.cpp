@@ -183,6 +183,29 @@ namespace eyegui
             case shaders::Type::CIRCLE:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleFragmentShader));
                 break;
+            case shaders::Type::DIM:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pDimFragmentShader));
+                break;
+            case shaders::Type::ACTIVITY:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pActivityFragmentShader));
+                break;
+            case shaders::Type::MARK:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pMarkFragmentShader));
+                break;
+            case shaders::Type::CIRCLE_THRESHOLD:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleThresholdFragmentShader));
+                break;
+            case shaders::Type::BOX_THRESHOLD:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBoxThresholdFragmentShader));
+                break;
+            case shaders::Type::HIGHLIGHT:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pHighlightFragmentShader));
+                break;
+            case shaders::Type::SELECTION:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSelectionFragmentShader));
+                break;
+
+            // TODO: to be deleted from here
             case shaders::Type::SEPARATOR:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSeparatorFragmentShader));
                 break;
@@ -210,6 +233,8 @@ namespace eyegui
             case shaders::Type::CHARACTER_KEY:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCharacterKeyFragmentShader));
                 break;
+            default:
+                throwError(OperationNotifier::Operation::BUG, "Shader does not exist");
             }
             pShader = rupShader.get();
             mShaders[shader] = std::move(rupShader);

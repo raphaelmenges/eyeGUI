@@ -43,12 +43,6 @@ namespace eyegui
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
-
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
-
-        // Members
-        bool mShowBackground;
     };
 }
 

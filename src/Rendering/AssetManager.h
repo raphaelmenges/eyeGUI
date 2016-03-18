@@ -31,7 +31,11 @@
 namespace eyegui
 {
     // Available assets
-    namespace shaders { enum class Type { COLOR, CIRCLE, SEPARATOR, BLOCK, IMAGE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, TEXT, KEY, CHARACTER_KEY}; }
+
+    namespace shaders { enum class Type {
+    COLOR, CIRCLE, DIM, ACTIVITY, MARK, CIRCLE_THRESHOLD, BOX_THRESHOLD, HIGHLIGHT, SELECTION,
+    SEPARATOR, BLOCK, IMAGE, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, TEXT, KEY, CHARACTER_KEY}; } // TODO: To be deleted
+
     namespace meshes { enum class Type { QUAD, LINE }; }
     namespace graphics { enum class Type { CIRCLE, NOT_FOUND }; }
 

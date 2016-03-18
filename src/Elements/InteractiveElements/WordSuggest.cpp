@@ -81,11 +81,11 @@ namespace eyegui
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
             mpBackground->getShader()->fillValue("backgroundColor", getStyle()->backgroundColor);
             mpBackground->getShader()->fillValue("alpha", mAlpha);
-            mpBackground->getShader()->fillValue("activity", mActivity.getValue());
+            mpBackground->getShader()->fillValue("activity", 1);
             mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpBackground->getShader()->fillValue("dim", mDim.getValue());
+            mpBackground->getShader()->fillValue("dim", 0);
             mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
-            mpBackground->getShader()->fillValue("mark", mMark.getValue());
+            mpBackground->getShader()->fillValue("mark", 0);
             mpBackground->draw();
         }
 

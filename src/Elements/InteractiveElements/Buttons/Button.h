@@ -32,7 +32,8 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             std::string iconFilepath,
-            bool isSwitch);
+            bool isSwitch,
+            bool useCircleThreshold);
 
         // Destructor
         virtual ~Button() = 0;
@@ -56,8 +57,8 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize();
 
         // Reset filld by subclasses
         virtual void specialReset();
@@ -71,10 +72,12 @@ namespace eyegui
     private:
 
         // Members
+        bool mUseCircleThreshold;
         bool mIsDown;
         bool mIsSwitch;
         LerpValue mThreshold; // [0..1]
         LerpValue mPressing; // [0..1]
+        RenderItem const * mpThresholdItem;
     };
 }
 

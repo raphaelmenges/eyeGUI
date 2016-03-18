@@ -137,11 +137,11 @@ namespace eyegui
         mupTextFlow->draw(
             getStyle()->fontColor,
             mAlpha,
-            mActivity.getValue(),
+            0,
             getStyle()->dimColor,
-            mDim.getValue(),
+            0,
             getStyle()->markColor,
-            mMark.getValue());
+            0);
     }
 
     void TextBlock::specialTransformAndSize()

@@ -43,7 +43,7 @@ namespace eyegui
             innerBorder)
     {
         // Fill members
-        mShowBackground = showBackground;
+        // mDraw = showBackground; //TODO: how to handle it?
     }
 
     Container::~Container()
@@ -58,7 +58,7 @@ namespace eyegui
         // Update the elements
         for (std::unique_ptr<Element>& element : mChildren)
         {
-            float childAdaptiveScale = element->update(tpf, mAlpha, pInput, mDim.getValue());
+            float childAdaptiveScale = element->update(tpf, mAlpha, pInput, getDim());
             maxAdaptiveScaleOfChildren = std::max(maxAdaptiveScaleOfChildren, childAdaptiveScale);
         }
 
@@ -67,20 +67,5 @@ namespace eyegui
 
         // Return adaptive scale
         return std::max(adaptiveScale, maxAdaptiveScaleOfChildren);
-    }
-
-    void Container::specialDraw() const
-    {
-        // Background is rendered by block superclass
-        if(mShowBackground)
-        {
-            Block::specialDraw();
-        }
-
-        // Draw the elements
-        for (const std::unique_ptr<Element>& element : mChildren)
-        {
-            element->draw();
-        }
     }
 }

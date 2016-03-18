@@ -27,7 +27,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string iconFilepath,
-        bool isSwitch) : IconInteractiveElement(
+        bool isSwitch,
+        bool useCircleThreshold) : IconInteractiveElement(
             id,
             styleName,
             pParent,
@@ -45,11 +46,22 @@ namespace eyegui
 
         // Fill members
         mIsSwitch = isSwitch;
+        mUseCircleThreshold = useCircleThreshold;
 
         // Calling virtual reset method in constructor is not good
         mIsDown = false;
         mThreshold.setValue(0);
         mPressing.setValue(0);
+
+        // Render items
+        if(mUseCircleThreshold)
+        {
+            mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
+        }
+        else
+        {
+            mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::BOX_THRESHOLD, meshes::Type::QUAD);
+        }
     }
 
     Button::~Button()
@@ -59,7 +71,7 @@ namespace eyegui
 
     void Button::hit(bool immediately)
     {
-        if (mActive)
+        if (isActive())
         {
             // Inform listener after updating
             mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_HIT);
@@ -78,7 +90,7 @@ namespace eyegui
 
     void Button::down(bool immediately)
     {
-        if (!mIsDown && mActive)
+        if (!mIsDown && isActive())
         {
             // Remove highlight
             highlight(false);
@@ -99,7 +111,7 @@ namespace eyegui
 
     void Button::up(bool immediately)
     {
-        if (mIsDown && mActive)
+        if (mIsDown && isActive())
         {
             // Remove highlight
             highlight(false);
@@ -181,8 +193,26 @@ namespace eyegui
         // Super call
         IconInteractiveElement::specialDraw();
 
-        mpIconRenderItem->getShader()->fillValue("threshold", mThreshold.getValue());
-        mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
+        //mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
+
+        mpThresholdItem->bind();
+        mpThresholdItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+        mpThresholdItem->getShader()->fillValue("thresholdColor", getStyle()->thresholdColor);
+        mpThresholdItem->getShader()->fillValue("threshold", mThreshold.getValue());
+        mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
+        if(!mUseCircleThreshold)
+        {
+            float orientation = 0;
+            if (getParent() != NULL)
+            {
+                if (getParent()->getOrientation() == Element::Orientation::VERTICAL)
+                {
+                    orientation = 1;
+                }
+            }
+            mpThresholdItem->getShader()->fillValue("orientation", orientation);
+        }
+        mpThresholdItem->draw();
     }
 
     void Button::specialTransformAndSize()

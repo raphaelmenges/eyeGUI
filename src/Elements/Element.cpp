@@ -68,6 +68,11 @@ namespace eyegui
             // Ok, try to rescue by getting default style. Should be NEVER necessary
             mpStyle = mpLayout->getStyleFromStylesheet(DEFAULT_STYLE_NAME);
         }
+
+        // Render items
+        mpActivityItem = mpAssetManager->fetchRenderItem(shaders::Type::ACTIVITY, meshes::Type::QUAD);
+        mpDimItem = mpAssetManager->fetchRenderItem(shaders::Type::DIM, meshes::Type::QUAD);
+        mpMarkItem = mpAssetManager->fetchRenderItem(shaders::Type::MARK, meshes::Type::QUAD);
     }
 
     Element::~Element()
@@ -244,9 +249,9 @@ namespace eyegui
             }
 
             // Tell children about it
-            for (const std::unique_ptr<Element>& element : mChildren)
+            for (const std::unique_ptr<Element>& rElement : mChildren)
             {
-                element->setMarking(marking, depth);
+                rElement->setMarking(marking, depth);
             }
         }
     }
@@ -404,7 +409,7 @@ namespace eyegui
     {
         // *** OWN UPDATING ***
 
-        // Activity animationa
+        // Activity animation
         mActivity.update(tpf / mpLayout->getConfig()->animationDuration, !mActive);
 
         // Save current alpha (already animated by layout or other element)
@@ -434,7 +439,7 @@ namespace eyegui
         }
         else
         {
-            // Use dimming value of parent
+            // Use value from parent
             mDim.setValue(dim);
         }
 
@@ -515,14 +520,44 @@ namespace eyegui
         // Only draw if visible
         if (mAlpha > 0 && !mHidden)
         {
-            // Draw the element
+            // Draw content of element
             specialDraw();
 
-            // Draw fading replaced elements if available (always mutliplied with own alpha)
-            if (mupReplacedElement.get() != NULL)
+            // Draw marking
+            mpMarkItem->bind();
+            mpMarkItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+            mpMarkItem->getShader()->fillValue("markColor", getStyle()->markColor);
+            mpMarkItem->getShader()->fillValue("mark", mMark.getValue());
+            mpMarkItem->getShader()->fillValue("alpha", mAlpha);
+            mpMarkItem->draw();
+
+            // Draw activity
+            mpActivityItem->bind();
+            mpActivityItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+            mpActivityItem->getShader()->fillValue("activity", mActivity.getValue());
+            mpActivityItem->getShader()->fillValue("alpha", mAlpha);
+            mpActivityItem->draw();
+
+            // Draw dimming
+            mpDimItem->bind();
+            mpDimItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+            mpDimItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
+            mpDimItem->getShader()->fillValue("dim", mDim.getValue());
+            mpDimItem->getShader()->fillValue("alpha", mAlpha);
+            mpDimItem->draw();
+
+            // Draw children
+            for (const std::unique_ptr<Element>& rElement : mChildren)
             {
-                mupReplacedElement->draw();
+                rElement->draw();
             }
+
+        }
+
+        // Draw fading replaced elements if available (always mutliplied with own alpha)
+        if (mupReplacedElement.get() != NULL)
+        {
+            mupReplacedElement->draw();
         }
     }
 
@@ -644,5 +679,10 @@ namespace eyegui
             }
         }
         return false;
+    }
+
+    float Element::getDim() const
+    {
+        return mDim.getValue();
     }
 }

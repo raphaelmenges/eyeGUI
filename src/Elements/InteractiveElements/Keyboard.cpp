@@ -409,11 +409,11 @@ namespace eyegui
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
             mpBackground->getShader()->fillValue("backgroundColor", getStyle()->backgroundColor);
             mpBackground->getShader()->fillValue("alpha", mAlpha);
-            mpBackground->getShader()->fillValue("activity", mActivity.getValue());
+            mpBackground->getShader()->fillValue("activity", 1);
             mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpBackground->getShader()->fillValue("dim", mDim.getValue());
+            mpBackground->getShader()->fillValue("dim", 0);
             mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
-            mpBackground->getShader()->fillValue("mark", mMark.getValue());
+            mpBackground->getShader()->fillValue("mark", 0);
             mpBackground->draw();
         }
 
@@ -443,11 +443,11 @@ namespace eyegui
                     getStyle()->color,
                     getStyle()->pickColor,
                     getStyle()->iconColor,
-                    mActivity.getValue(),
+                    1,
                     getStyle()->dimColor,
-                    mDim.getValue(),
+                    0,
                     getStyle()->markColor,
-                    mMark.getValue(),
+                    0,
                     getStyle()->highlightColor,
                     mHighlight.getValue(),
                     mAlpha);
@@ -465,11 +465,11 @@ namespace eyegui
                 getStyle()->color,
                 getStyle()->pickColor,
                 getStyle()->iconColor,
-                mActivity.getValue(),
+                1,
                 getStyle()->dimColor,
-                mDim.getValue(),
+                0,
                 getStyle()->markColor,
-                mMark.getValue(),
+                0,
                 getStyle()->highlightColor,
                 mHighlight.getValue(),
                 mAlpha * rPressedKey.first);
@@ -569,18 +569,18 @@ namespace eyegui
         switch (notification)
         {
         case NotificationType::KEYBOARD_KEY_PRESSED:
-		{
-			// Notify listener method with UTF-16 string
-			notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), mLastPressedKeyValue);
+        {
+            // Notify listener method with UTF-16 string
+            notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), mLastPressedKeyValue);
 
-			// Convert last pressed value to UTF-8 string
-			std::string lastPressedKeyValue8;
-			convertUTF16ToUTF8(mLastPressedKeyValue, lastPressedKeyValue8);
+            // Convert last pressed value to UTF-8 string
+            std::string lastPressedKeyValue8;
+            convertUTF16ToUTF8(mLastPressedKeyValue, lastPressedKeyValue8);
 
-			// Notify listener method with UTF-8 string
-			notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), lastPressedKeyValue8);
-			break;
-		}
+            // Notify listener method with UTF-8 string
+            notifyListener(&KeyboardListener::keyPressed, pLayout, getId(), lastPressedKeyValue8);
+            break;
+        }
         default:
             throwWarning(
                 OperationNotifier::Operation::BUG,

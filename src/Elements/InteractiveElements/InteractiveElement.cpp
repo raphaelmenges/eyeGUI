@@ -43,6 +43,10 @@ namespace eyegui
         mIsHighlighted = false;
         mSelection.setValue(0);
         mIsSelected = false;
+
+        // Render items
+        mpHighlightItem = mpAssetManager->fetchRenderItem(shaders::Type::HIGHLIGHT, meshes::Type::QUAD);
+        mpSelectionItem = mpAssetManager->fetchRenderItem(shaders::Type::SELECTION, meshes::Type::QUAD);
     }
 
     InteractiveElement::~InteractiveElement()
@@ -76,6 +80,28 @@ namespace eyegui
     InteractiveElement* InteractiveElement::internalNextInteractiveElement(Element const * pCaller)
     {
         return this;
+    }
+
+    void InteractiveElement::specialDraw() const
+    {
+        // Should be called by subclasses after personal drawing
+
+        // Draw highlight
+        mpHighlightItem->bind();
+        mpHighlightItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+        mpHighlightItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
+        mpHighlightItem->getShader()->fillValue("highlight", mHighlight.getValue());
+        mpHighlightItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
+        mpHighlightItem->getShader()->fillValue("alpha", mAlpha);
+        mpHighlightItem->draw();
+
+        // Draw selection
+        mpSelectionItem->bind();
+        mpSelectionItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+        mpSelectionItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
+        mpSelectionItem->getShader()->fillValue("selection", mSelection.getValue());
+        mpSelectionItem->getShader()->fillValue("alpha", mAlpha);
+        mpSelectionItem->draw();
     }
 
     float InteractiveElement::specialUpdate(float tpf, Input* pInput)

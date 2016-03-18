@@ -53,6 +53,139 @@ namespace eyegui
             "   fragColor = vec4(color.rgb, color.a * alpha * min(circle, 1.0));\n"
             "}\n";
 
+
+        // TODO
+        // - circle button (color + icon)
+        // - box button (color + icon)
+        // - sensor (color + icon)
+
+        // Uniforms:
+        // vec4 dimColor
+        // float dim
+        // float alpha
+        static const char* pDimFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 dimColor = vec4(1,0,0,0.5);\n"
+            "uniform float dim = 1;\n"
+            "uniform float alpha = 1;\n"
+            "void main() {\n"
+            "   fragColor = vec4(1,1,1,alpha) * dimColor * dim;\n"
+            "}\n";
+
+        // Uniforms:
+        // float activity
+        // float alpha
+        static const char* pActivityFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform float activity;\n"
+            "uniform float alpha = 1;\n"
+            "void main() {\n"
+            "   fragColor = vec4(0.3, 0.3, 0.3, 0.3 * alpha) * (1.0 - activity);\n"
+            "}\n";
+
+        // Uniforms:
+        // vec4 markColor
+        // float mark
+        // float alpha
+        static const char* pMarkFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 markColor = vec4(1,0,0,0.5);\n"
+            "uniform float mark = 1;\n"
+            "uniform float alpha = 1;\n"
+            "void main() {\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, alpha) * markColor * mark;\n"
+            "}\n";
+
+        // Uniforms:
+        // vec4 thresholdColor
+        // float threshold
+        // float alpha
+        static const char* pCircleThresholdFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 thresholdColor = vec4(1,0,0,0.5);\n"
+            "uniform float threshold = 1;\n"
+            "uniform float alpha = 1;\n"
+            "void main() {\n"
+            "   float gradient = length(2*uv-1);\n" // Simple gradient as base
+            "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
+            "   float thresholdMask = clamp(100 * clamp((length(2*uv-1)) - (1.025 * threshold - 0.025), 0, 1), 0 ,1);\n" // Inverted threshold
+            "   fragColor = vec4(1.0, 1.0, 1.0, (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
+            "}\n";
+
+        // Uniforms:
+        // vec4 thresholdColor
+        // float threshold
+        // float orientation
+        // float alpha
+        static const char* pBoxThresholdFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 thresholdColor = vec4(1,0,0,0.5);\n"
+            "uniform float threshold = 1;\n"
+            "uniform float alpha = 1;\n"
+            "uniform float orientation;\n"
+            "void main() {\n"
+            "   float thresholdMask = mix(uv.r, uv.g, orientation);\n"
+            "   thresholdMask =  clamp(100 * clamp(1.9 * abs(thresholdMask - 0.5)  - (0.975 * threshold - 0.025), 0, 1), 0, 1);\n" // Inverted threshold
+            "   fragColor = vec4(1.0, 1.0, 1.0, (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
+            "}\n";
+
+        // Uniforms:
+        // vec4 highlightColor
+        // float highlight
+        // float alpha
+        static const char* pHighlightFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 highlightColor = vec4(1,0,0,0.5);\n"
+            "uniform float highlight = 1;\n"
+            "uniform float time;\n"
+            "uniform float alpha = 1;\n"
+            "void main() {\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, alpha * 0.5 * (1 + sin(3 * time))) * highlightColor * highlight;\n"
+            "}\n";
+
+        // Uniforms:
+        // vec4 selectionColor
+        // float selection
+        // float alpha
+        static const char* pSelectionFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 selectionColor = vec4(1,0,0,0.5);\n"
+            "uniform float selection = 1;\n"
+            "uniform float alpha = 1;\n"
+            "void main() {\n"
+            "   float gradient = length(2*uv-1);\n" // Simple gradient as base
+            "	fragColor = vec4(1.0, 1.0, 1.0, alpha * pow(gradient,2) * selection) * selectionColor;\n"
+            "}\n";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Uniforms:
         // vec4 separatorColor
         // vec4 dimColor

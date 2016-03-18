@@ -56,6 +56,9 @@ namespace eyegui
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
 
+        // Drawing filled by subclasses
+        virtual void specialDraw() const;
+
         // Reset filld by subclasses
         virtual void specialReset();
 
@@ -70,6 +73,8 @@ namespace eyegui
         bool mIsHighlighted;
         LerpValue mSelection;
         bool mIsSelected;
+        RenderItem const * mpHighlightItem;
+        RenderItem const * mpSelectionItem;
     };
 }
 

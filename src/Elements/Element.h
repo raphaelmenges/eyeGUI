@@ -227,6 +227,9 @@ namespace eyegui
         // Checks, whether element is penetrated by input
         virtual bool penetratedByInput(Input const * pInput) const;
 
+        // Getter
+        float getDim() const;
+
         // Members
         int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
         Type mType;
@@ -238,19 +241,15 @@ namespace eyegui
         float mAlpha; // [0..1]
         float mBorderAspectRatio;
         glm::mat4 mFullDrawMatrix;
-        LerpValue mActivity; // [0..1]
-        bool mDimming;
-        LerpValue mDim; // [0..1] One means full dimming
-        bool mForceUndim; // At the moment only used by drop button
-                          // to be undimmed while showing inner elements
-        bool mActive;
         bool mAdaptiveScaling;
         LerpValue mAdaptiveScale; // [0..1]
-        bool mMarking;
-        LerpValue mMark;
+        bool mDraw; // Should element itself be drawn (children are drawn anyway?
 
         // This vector is the owner of all children. May be empty!
         std::vector<std::unique_ptr<Element> > mChildren;
+
+        bool mForceUndim; // At the moment only used by drop button
+                          // to be undimmed while showing inner elements
 
     private:
 
@@ -263,6 +262,19 @@ namespace eyegui
         Style const * mpStyle;
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
+        RenderItem const * mpActivityItem;
+        RenderItem const * mpDimItem;
+        RenderItem const * mpMarkItem;
+
+        bool mActive;
+        LerpValue mActivity; // [0..1]
+
+        bool mDimming;
+        LerpValue mDim; // [0..1]
+
+        bool mMarking;
+        LerpValue mMark; // [0..1]
+
     };
 }
 

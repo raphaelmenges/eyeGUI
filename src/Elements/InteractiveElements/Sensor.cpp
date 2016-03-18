@@ -94,20 +94,18 @@ namespace eyegui
 
     void Sensor::specialDraw() const
     {
-        // Bind render item before setting values and drawing
-        mpIconRenderItem->bind();
+
 
         // Super call
         IconInteractiveElement::specialDraw();
 
+        /*
         // Fill other values
         mpIconRenderItem->getShader()->fillValue("penetration", mPenetration.getValue());
 
         // Scale of icon
         mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
-
-        // Draw render item
-        mpIconRenderItem->draw();
+        */
     }
 
     void Sensor::specialTransformAndSize()
