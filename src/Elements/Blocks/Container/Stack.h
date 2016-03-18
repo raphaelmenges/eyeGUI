@@ -78,7 +78,7 @@ namespace eyegui
         Alignment mAlignment;
         float mPadding; // [0..1]
         float mSeparator; // [0..1]
-        RenderItem const * mpSeparator;
+        RenderItem const * mpSeparatorItem;
         std::vector<glm::mat4> mSeparatorDrawMatrices;
     };
 }

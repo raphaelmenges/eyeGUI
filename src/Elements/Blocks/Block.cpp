@@ -46,7 +46,7 @@ namespace eyegui
 
         // Fetch render item
         mpBackground = mpAssetManager->fetchRenderItem(
-            shaders::Type::BLOCK,
+            shaders::Type::COLOR,
             meshes::Type::QUAD);
 
         // Fetch background image if one is wanted
@@ -72,32 +72,10 @@ namespace eyegui
         // Draw simple background color
         if (getStyle()->backgroundColor.a > 0)
         {
-            // Bind render item before setting values and drawing
             mpBackground->bind();
-
-            // Fill matrix in shader
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-
-            // Fill color to shader
-            mpBackground->getShader()->fillValue(
-                "backgroundColor",
-                getStyle()->backgroundColor);
-
-            // Fill alpha
+            mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
             mpBackground->getShader()->fillValue("alpha", mAlpha);
-
-            // Fill activity
-            mpBackground->getShader()->fillValue("activity",1);
-
-            // Fill dimming
-            mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpBackground->getShader()->fillValue("dim", 0);
-
-            // Fill marking
-            mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
-            mpBackground->getShader()->fillValue("mark", 0);
-
-            // Draw render item
             mpBackground->draw();
         }
 

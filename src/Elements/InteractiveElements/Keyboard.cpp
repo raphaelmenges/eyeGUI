@@ -56,7 +56,7 @@ namespace eyegui
 
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
-            shaders::Type::BLOCK,
+            shaders::Type::COLOR,
             meshes::Type::QUAD);
 
         // Create keymaps (mKeymaps)
@@ -408,13 +408,8 @@ namespace eyegui
             // Bind, fill and draw background
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("backgroundColor", getStyle()->backgroundColor);
+            mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
             mpBackground->getShader()->fillValue("alpha", mAlpha);
-            mpBackground->getShader()->fillValue("activity", 1);
-            mpBackground->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpBackground->getShader()->fillValue("dim", 0);
-            mpBackground->getShader()->fillValue("markColor", getStyle()->markColor);
-            mpBackground->getShader()->fillValue("mark", 0);
             mpBackground->draw();
         }
 
@@ -475,6 +470,9 @@ namespace eyegui
                 mHighlight.getValue(),
                 mAlpha * rPressedKey.first);
         }
+
+        // Render superclass
+        InteractiveElement::specialDraw();
     }
 
     void Keyboard::specialTransformAndSize()

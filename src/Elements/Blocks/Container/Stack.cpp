@@ -57,8 +57,8 @@ namespace eyegui
         mAlignment = alignment;
         mPadding = padding;
         mSeparator = separator;
-        mpSeparator = mpAssetManager->fetchRenderItem(
-            shaders::Type::SEPARATOR,
+        mpSeparatorItem = mpAssetManager->fetchRenderItem(
+            shaders::Type::COLOR,
             meshes::Type::QUAD);
     }
 
@@ -80,32 +80,14 @@ namespace eyegui
         // Draw separators
         if (mSeparatorDrawMatrices.size() > 0 && getStyle()->separatorColor.a > 0)
         {
-            // Bind render item before setting values and drawing
-            mpSeparator->bind();
-
-            // Fill color to shader
-            mpSeparator->getShader()->fillValue(
-                "separatorColor",
-                getStyle()->separatorColor);
-
-            // Fill alpha
-            mpSeparator->getShader()->fillValue("alpha", mAlpha);
-
-            // Fill dimming
-            mpSeparator->getShader()->fillValue("dimColor", getStyle()->dimColor);
-            mpSeparator->getShader()->fillValue("dim", 0);
-
-            // Fill marking
-            mpSeparator->getShader()->fillValue("markColor", getStyle()->markColor);
-            mpSeparator->getShader()->fillValue("mark", 0);
+            mpSeparatorItem->bind();
+            mpSeparatorItem->getShader()->fillValue("color", getStyle()->separatorColor);
+            mpSeparatorItem->getShader()->fillValue("alpha", mAlpha);
 
             for (uint i = 0; i < mSeparatorDrawMatrices.size(); i++)
             {
-                // Fill matrix in shader
-                mpSeparator->getShader()->fillValue("matrix", mSeparatorDrawMatrices[i]);
-
-                // Draw render item
-                mpSeparator->draw();
+                mpSeparatorItem->getShader()->fillValue("matrix", mSeparatorDrawMatrices[i]);
+                mpSeparatorItem->draw();
             }
         }
     }

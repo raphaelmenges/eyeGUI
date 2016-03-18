@@ -137,7 +137,7 @@ namespace eyegui
         mupTextFlow->draw(
             getStyle()->fontColor,
             mAlpha,
-            0,
+            1,
             getStyle()->dimColor,
             0,
             getStyle()->markColor,

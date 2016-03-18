@@ -5,10 +5,7 @@
   - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - why are not all children updated in element class but in subclasses?
     - Because of DropButton (get it of children there, just name it drop or so)
-  - render background in button as background or as part of button shader? -> extra
-  - Not worth to list what is on the TODO here :D is like every element...
-  - ALL shaders must know about the mask!!!!
-
+  
 - Do background rendering in some helper class. to much copy code (in assets?)
 - WordSuggest
   - Display suggestions
@@ -44,7 +41,7 @@
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
-- Adaptive scaling is not that smooth
+- Adaptive scaling is not that smooth -> could be problem of stack and unecessary pixel, which are given to last element
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
 - Desc(ription) for elements
 	- lookup in localization file
