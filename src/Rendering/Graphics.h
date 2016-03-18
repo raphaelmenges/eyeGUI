@@ -17,7 +17,7 @@ namespace eyegui
     {
         static const std::string circleGraphics =
             "<svg height=\"200\" width=\"200\">\n"
-            "   <circle cx=\"100\" cy=\"100\" r=\"98\" stroke-width=\"0\" fill=\"white\"/>\n"
+            "   <circle cx=\"100\" cy=\"100\" r=\"95\" stroke-width=\"0\" fill=\"white\"/>\n"
             "</svg>\n";
 
         static const std::string boxGraphics =

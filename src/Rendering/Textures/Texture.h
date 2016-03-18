@@ -30,7 +30,7 @@ namespace eyegui
 
         enum class Wrap
         {
-            CLAMP, MIRROR, REPEAT
+            CLAMP, BORDER, MIRROR, REPEAT
         };
 
         // Constructor for pixel based image

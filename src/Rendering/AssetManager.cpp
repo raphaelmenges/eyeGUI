@@ -154,13 +154,13 @@ namespace eyegui
             switch (graphic)
             {
             case graphics::Type::CIRCLE:
-                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::circleGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
+                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::circleGraphics, Texture::Filtering::LINEAR, Texture::Wrap::BORDER, mpGUI->getVectorGraphicsDPI()));
                 break;
             case graphics::Type::BOX:
                 rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::boxGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
                 break;
             case graphics::Type::NOT_FOUND:
-                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, mpGUI->getVectorGraphicsDPI()));
+                rupTexture = std::unique_ptr<Texture>(new VectorTexture(&graphics::notFoundGraphics, Texture::Filtering::LINEAR, Texture::Wrap::BORDER, mpGUI->getVectorGraphicsDPI()));
                 break;
             default:
                 throwError(OperationNotifier::Operation::BUG, "Graphics does not exist");
@@ -209,6 +209,9 @@ namespace eyegui
             case shaders::Type::SELECTION:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSelectionFragmentShader));
                 break;
+            case shaders::Type::CIRCLE_BUTTON:
+                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleButtonFragmentShader));
+                break;
             case shaders::Type::BOX_BUTTON:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pBoxButtonFragmentShader));
                 break;
@@ -223,9 +226,7 @@ namespace eyegui
             case shaders::Type::IMAGE:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pImageFragmentShader));
                 break;
-            case shaders::Type::CIRCLE_BUTTON:
-                rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCircleButtonFragmentShader));
-                break;
+
 
             case shaders::Type::SENSOR:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pSensorFragmentShader));

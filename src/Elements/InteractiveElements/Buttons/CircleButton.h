@@ -48,8 +48,13 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
-		// Checks, whether circle button is penetrated by input
-		virtual bool penetratedByInput(Input const * pInput) const;
+        // Checks, whether circle button is penetrated by input
+        virtual bool penetratedByInput(Input const * pInput) const;
+
+    private:
+
+        // Members
+        RenderItem const * mpCircleButtonItem;
     };
 }
 

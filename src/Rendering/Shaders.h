@@ -136,6 +136,25 @@ namespace eyegui
             "	fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * alpha * pow(gradient,2) * selection) * selectionColor;\n"
             "}\n";
 
+        static const char* pCircleButtonFragmentShader =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 uv;\n"
+            "uniform vec4 color = vec4(1,0,0,0.5);\n"
+            "uniform vec4 iconColor = vec4(1,1,0,0.5);\n"
+            "uniform float pressing;\n"
+            "uniform float alpha = 1;\n"
+            "uniform sampler2D mask;\n"
+            "uniform sampler2D icon;\n"
+            "void main() {\n"
+            "   float powPressing = pressing * pressing;\n"
+            "   vec2 pressUV = ((1 + (0.5 * powPressing)) * (uv - 0.5)) + 0.5;\n"
+            "   vec3 col = mix(color.rgb / 3, color.rgb, texture(mask, pressUV).r);\n"
+            "   vec4 iconValue = iconColor * texture(icon, pressUV).rgba;\n"
+            "   col = mix(col, iconValue.rgb, iconValue.a);\n"
+            "	fragColor = iconValue + vec4(col, color.a * texture(mask, uv).r * alpha);\n"
+            "}\n";
+
 
         static const char* pBoxButtonFragmentShader =
             "#version 330 core\n"
@@ -297,7 +316,7 @@ namespace eyegui
         // float dim
         // float mark
         // float selection
-        static const char* pCircleButtonFragmentShader =
+        static const char* pCircleButtonFragmentShader2 =
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"

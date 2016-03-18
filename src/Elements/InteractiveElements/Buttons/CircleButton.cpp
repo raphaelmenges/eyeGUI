@@ -42,7 +42,7 @@ namespace eyegui
         mType = Type::CIRCLE_BUTTON;
 
         // Fetch stuff for rendering
-        //mpIconRenderItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_BUTTON, meshes::Type::QUAD);
+        mpCircleButtonItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_BUTTON, meshes::Type::QUAD);
     }
 
     CircleButton::~CircleButton()
@@ -52,6 +52,18 @@ namespace eyegui
 
     void CircleButton::specialDraw() const
     {
+        mpIcon->bind(1);
+        mpCircleButtonItem->bind();
+        mpCircleButtonItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+        mpCircleButtonItem->getShader()->fillValue("color", getStyle()->color);
+        mpCircleButtonItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
+        mpCircleButtonItem->getShader()->fillValue("pressing", getPressing());
+        mpCircleButtonItem->getShader()->fillValue("alpha", mAlpha);
+        mpCircleButtonItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+        mpCircleButtonItem->getShader()->fillValue("icon", 1);
+        mpCircleButtonItem->draw();
+
+
         // Super call
         Button::specialDraw();
     }

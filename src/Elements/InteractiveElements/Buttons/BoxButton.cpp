@@ -54,9 +54,6 @@ namespace eyegui
 
     void BoxButton::specialDraw() const
     {
-        // Scale of icon
-        //mpIconRenderItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
-
         mpIcon->bind(1);
         mpBoxButtonItem->bind();
         mpBoxButtonItem->getShader()->fillValue("matrix", mFullDrawMatrix);
