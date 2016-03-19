@@ -27,8 +27,12 @@
 - Keyboard
   - Better german and english layout
   - Jumps a little bit at resizing
+	
 - TextEdit element for easy text editing (zoom, cursor etc)
+
 - Replace freetype2 by stb and use their packing algorithm!
+
+- Element description (text which is shown at penetration)
 
 ### VERSION 0.10
 - Audio (PortAudio library?)
