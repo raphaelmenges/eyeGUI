@@ -319,12 +319,12 @@ namespace eyegui
         pLayout->setKeymapOfKeyboard(id, keymapIndex);
     }
 
-    void suggestWords(Layout* pLayout, std::string id, std::u16string input, uint dictionaryIndex)
+    void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex)
     {
         pLayout->suggestWords(id, input, dictionaryIndex);
     }
 
-    void suggestWords(Layout* pLayout, std::string id, std::string input, uint dictionaryIndex)
+    void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex)
     {
         pLayout->suggestWords(id, input, dictionaryIndex);
     }

@@ -138,7 +138,7 @@ namespace eyegui
             resultSet);
 
         // Save size of result set
-        int sizeOfResultSet = resultSet.size();
+        int sizeOfResultSet = (int)resultSet.size();
 
         // Only continue when necessary
         std::vector<std::u16string> resultVector;
@@ -368,7 +368,7 @@ namespace eyegui
             {
                 // Next character was not found. Only add to found words if
                 // remaining input pauses are enough to compensate extra letters
-                if(count - (i+1) < remainingInputPauses)
+                if((int)count - (i+1) < remainingInputPauses)
                 {
                     // Decision whether here is a node is done in add method
                     addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);

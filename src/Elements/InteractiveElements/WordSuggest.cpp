@@ -65,11 +65,13 @@ namespace eyegui
         {
             mSuggestions.push_back(std::move(mpAssetManager->createTextSimple(mFontSize, 1, rSuggestion)));
         }
+		transformSuggestions();
     }
 
     float WordSuggest::specialUpdate(float tpf, Input* pInput)
     {
         // TODO
+		return 0;
     }
 
     void WordSuggest::specialDraw() const
@@ -94,15 +96,7 @@ namespace eyegui
 
     void WordSuggest::specialTransformAndSize()
     {
-        // Transform suggestions
-        int xOffset = 0;
-        const int xDelta = (int)((float)mpLayout->getLayoutWidth() * 0.005f);
-        for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
-        {
-            int width = rSuggestion->getWidth();
-            rSuggestion->transform(mX + xOffset, mY);
-            xOffset += width + xDelta;
-        }
+		transformSuggestions();
     }
 
     void WordSuggest::specialReset()
@@ -120,4 +114,15 @@ namespace eyegui
         // TODO
     }
 
+	void WordSuggest::transformSuggestions()
+	{
+		int xOffset = 0;
+		int xDelta = (int)((float)(mpLayout->getLayoutWidth()) * 0.005f);
+		for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
+		{
+			int width = rSuggestion->getWidth();
+			rSuggestion->transform(mX + xOffset, mY);
+			xOffset += width + xDelta;
+		}
+	}
 }

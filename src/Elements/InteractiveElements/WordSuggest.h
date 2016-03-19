@@ -68,6 +68,9 @@ namespace eyegui
 
     private:
 
+		// Transform the suggestions
+		void transformSuggestions();
+
         // Members
         RenderItem const * mpBackground;
         FontSize mFontSize;

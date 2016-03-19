@@ -618,7 +618,7 @@ namespace eyegui
       \param input is input for suggestions as UTF-16 string.
       \param dictionaryIndex is index of used dictionary.
     */
-    void suggestWords(Layout* pLayout, std::string id, std::u16string input, uint dictionaryIndex);
+    void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex);
 
     //! Give input to word suggest element.
     /*!
@@ -627,7 +627,7 @@ namespace eyegui
       \param input is input for suggestions as UTF-8 string.
       \param dictionaryIndex is index of used dictionary.
     */
-    void suggestWords(Layout* pLayout, std::string id, std::string input, uint dictionaryIndex);
+    void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex);
 
     //! Register listener to button.
     /*!
