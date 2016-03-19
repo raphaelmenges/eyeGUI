@@ -173,8 +173,8 @@ namespace eyegui
     public:
 
         GUI* construct() const; //!< returns pointer to built GUI
-        int width; //!< width of GUI as integer
-        int height; //!< height of GUI as integer
+        int width = 1280; //!< width of GUI as integer
+        int height = 720; //!< height of GUI as integer
         std::string fontFilepath = ""; //!< fontFilepath is path to a .ttf font file
         CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< characterSet used to initialize font rendering
         std::string localizationFilepath = ""; //!< localizationFilepath is path to a .leyegui file
@@ -467,13 +467,13 @@ namespace eyegui
         std::string attribute,
         std::string value);
 
-    //! Set icon of icon interactive element.
+    //! Set icon of icon element.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
     */
-    void setIconOfIconInteractiveElement(
+    void setIconOfIconElement(
         Layout* pLayout,
         std::string id,
         std::string iconFilepath);

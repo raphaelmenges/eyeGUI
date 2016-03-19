@@ -6,19 +6,19 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Interactive element with single icon.
 
-#ifndef ICON_INTERACTIVE_ELEMENT_H_
-#define ICON_INTERACTIVE_ELEMENT_H_
+#ifndef ICON_ELEMENT_H_
+#define ICON_ELEMENT_H_
 
 #include "Elements/InteractiveElements/InteractiveElement.h"
 
 namespace eyegui
 {
-    class IconInteractiveElement : public InteractiveElement
+    class IconElement : public InteractiveElement
     {
     public:
 
         // Constructors
-        IconInteractiveElement(
+        IconElement(
             std::string id,
             std::string styleName,
             Element* pParent,
@@ -34,7 +34,7 @@ namespace eyegui
             std::string iconFilepath);
 
         // Destructor
-        virtual ~IconInteractiveElement() = 0;
+        virtual ~IconElement() = 0;
 
         // Set icon
         void setIcon(std::string filepath);
@@ -52,4 +52,4 @@ namespace eyegui
     };
 }
 
-#endif // ICON_INTERACTIVE_ELEMENT_H_
+#endif // ICON_ELEMENT_H_

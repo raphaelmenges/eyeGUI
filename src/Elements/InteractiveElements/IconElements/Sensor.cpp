@@ -26,7 +26,7 @@ namespace eyegui
         float border,
         bool dimming,
         bool adaptiveScaling,
-        std::string iconFilepath) : IconInteractiveElement(
+        std::string iconFilepath) : IconElement(
             id,
             styleName,
             pParent,
@@ -71,7 +71,7 @@ namespace eyegui
     float Sensor::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
-        IconInteractiveElement::specialUpdate(tpf, pInput);
+        IconElement::specialUpdate(tpf, pInput);
 
         // Penetration by input
         bool penetrated = penetratedByInput(pInput);
@@ -113,7 +113,7 @@ namespace eyegui
         mpSensorItem->draw();
 
         // Super call
-        IconInteractiveElement::specialDraw();
+        IconElement::specialDraw();
     }
 
     void Sensor::specialTransformAndSize()
@@ -123,7 +123,7 @@ namespace eyegui
 
     void Sensor::specialReset()
     {
-        IconInteractiveElement::specialReset();
+        IconElement::specialReset();
 
         // Reset some values
         mPenetration.setValue(0);

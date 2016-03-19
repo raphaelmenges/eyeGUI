@@ -5,13 +5,13 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 
-#include "IconInteractiveElement.h"
+#include "IconElement.h"
 
 #include "Layout.h"
 
 namespace eyegui
 {
-    IconInteractiveElement::IconInteractiveElement(
+    IconElement::IconElement(
         std::string id,
         std::string styleName,
         Element* pParent,
@@ -38,18 +38,18 @@ namespace eyegui
             dimming,
             adaptiveScaling)
     {
-        mType = Type::ICON_INTERACTIVE_ELEMENT;
+        mType = Type::ICON_ELEMENT;
 
         // Filling members
         setIcon(iconFilepath);
     }
 
-    IconInteractiveElement::~IconInteractiveElement()
+    IconElement::~IconElement()
     {
         // Nothing to do here
     }
 
-    void IconInteractiveElement::setIcon(std::string filepath)
+    void IconElement::setIcon(std::string filepath)
     {
         if (filepath != EMPTY_STRING_ATTRIBUTE)
         {
@@ -61,13 +61,13 @@ namespace eyegui
         }
     }
 
-    void IconInteractiveElement::specialDraw() const
+    void IconElement::specialDraw() const
     {
         // Draw stuff like highlighting
         InteractiveElement::specialDraw();
     }
 
-    glm::vec2 IconInteractiveElement::iconAspectRatioCorrection() const
+    glm::vec2 IconElement::iconAspectRatioCorrection() const
     {
         float aspectRatio = (float)mWidth / (float)mHeight;
         float iconAspectRatio = mpIcon->getAspectRatio();

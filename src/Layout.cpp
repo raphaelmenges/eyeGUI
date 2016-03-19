@@ -397,16 +397,16 @@ namespace eyegui
         }
     }
 
-    void Layout::setIconOfIconInteractiveElement(std::string id, std::string iconFilepath)
+    void Layout::setIconOfIconElement(std::string id, std::string iconFilepath)
     {
-        IconInteractiveElement* pIconInteractiveElement = toIconInteractiveElement(fetchElement(id));
-        if (pIconInteractiveElement != NULL)
+        IconElement* pIconElement = toIconElement(fetchElement(id));
+        if (pIconElement != NULL)
         {
-            pIconInteractiveElement->setIcon(iconFilepath);
+            pIconElement->setIcon(iconFilepath);
         }
         else
         {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find interactive element with id: " + id);
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find icon element with id: " + id);
         }
     }
 

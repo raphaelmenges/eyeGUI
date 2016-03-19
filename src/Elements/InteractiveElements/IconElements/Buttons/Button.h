@@ -10,11 +10,11 @@
 #ifndef BUTTON_H_
 #define BUTTON_H_
 
-#include "Elements/InteractiveElements//IconInteractiveElement.h"
+#include "Elements/InteractiveElements/IconElements/IconElement.h"
 
 namespace eyegui
 {
-    class Button : public IconInteractiveElement, public NotifierTemplate<ButtonListener>
+    class Button : public IconElement, public NotifierTemplate<ButtonListener>
     {
     public:
 

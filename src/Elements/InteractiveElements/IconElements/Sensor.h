@@ -10,11 +10,11 @@
 #ifndef SENSOR_H_
 #define SENSOR_H_
 
-#include "Elements/InteractiveElements//IconInteractiveElement.h"
+#include "Elements/InteractiveElements/IconElements/IconElement.h"
 
 namespace eyegui
 {
-    class Sensor : public IconInteractiveElement, public NotifierTemplate<SensorListener>
+    class Sensor : public IconElement, public NotifierTemplate<SensorListener>
     {
     public:
 

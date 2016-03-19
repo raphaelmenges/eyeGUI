@@ -14,7 +14,7 @@
 namespace eyegui
 {
     // Tries to cast pointer, returns NULL if fails
-    IconInteractiveElement* toIconInteractiveElement(Element* pElement);
+    IconElement* toIconElement(Element* pElement);
 
     // Tries to cast pointer, returns NULL if fails
     Keyboard* toKeyboard(Element* pElement);

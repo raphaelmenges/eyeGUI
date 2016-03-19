@@ -29,7 +29,7 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string iconFilepath,
-        bool isSwitch) : IconInteractiveElement(
+        bool isSwitch) : IconElement(
             id,
             styleName,
             pParent,
@@ -145,7 +145,7 @@ namespace eyegui
     float Button::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
-        float adaptiveScale = IconInteractiveElement::specialUpdate(tpf, pInput);
+        float adaptiveScale = IconElement::specialUpdate(tpf, pInput);
 
         // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
@@ -193,7 +193,7 @@ namespace eyegui
     void Button::specialDraw() const
     {
         // Super call
-        IconInteractiveElement::specialDraw();
+        IconElement::specialDraw();
 
         //mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
 
@@ -228,7 +228,7 @@ namespace eyegui
 
     void Button::specialReset()
     {
-        IconInteractiveElement::specialReset();
+        IconElement::specialReset();
 
         mIsDown = false;
         mThreshold.setValue(0);

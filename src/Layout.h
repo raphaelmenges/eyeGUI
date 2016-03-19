@@ -126,8 +126,8 @@ namespace eyegui
         // Set interactive element as highlighted
         void highlightInteractiveElement(std::string id, bool doHighlight);
 
-        // Set icon of icon interactive element
-        void setIconOfIconInteractiveElement(std::string id, std::string iconFilepath);
+        // Set icon of icon element
+        void setIconOfIconElement(std::string id, std::string iconFilepath);
 
         // Interact with interactive element
         void interactWithInteractiveElement(std::string id);

@@ -9,19 +9,19 @@
 
 namespace eyegui
 {
-    IconInteractiveElement* toIconInteractiveElement(Element* pElement)
+    IconElement* toIconElement(Element* pElement)
     {
         if (pElement != NULL)
         {
             Element::Type type = pElement->getType();
-            if (type == Element::Type::ICON_INTERACTIVE_ELEMENT
+            if (type == Element::Type::ICON_ELEMENT
                 || type == Element::Type::BUTTON
                 || type == Element::Type::CIRCLE_BUTTON
                 || type == Element::Type::BOX_BUTTON
                 || type == Element::Type::DROP_BUTTON
                 || type == Element::Type::SENSOR)
             {
-                return static_cast<IconInteractiveElement*>(pElement);
+                return static_cast<IconElement*>(pElement);
             }
         }
         return NULL;
@@ -57,13 +57,13 @@ namespace eyegui
     {
         if (pElement != NULL)
         {
-            // Is it icon interactive element?
-            IconInteractiveElement* pIconInteractiveElement = toIconInteractiveElement(pElement);
+            // Is it icon element?
+            IconElement* pIconElement = toIconElement(pElement);
 
-            if (pIconInteractiveElement != NULL)
+            if (pIconElement != NULL)
             {
-                // Ok, cast icon interactive to interactive element pointer and return it
-                return static_cast<InteractiveElement*>(pIconInteractiveElement);
+                // Ok, cast icon to interactive element pointer and return it
+                return static_cast<InteractiveElement*>(pIconElement);
             }
             else
             {

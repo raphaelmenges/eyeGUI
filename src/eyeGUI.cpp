@@ -226,9 +226,9 @@ namespace eyegui
         pLayout->setValueOfStyleAttribute(styleName, attribute, value);
     }
 
-    void setIconOfIconInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)
+    void setIconOfIconElement(Layout* pLayout, std::string id, std::string iconFilepath)
     {
-        pLayout->setIconOfIconInteractiveElement(id, iconFilepath);
+        pLayout->setIconOfIconElement(id, iconFilepath);
     }
 
     void interactWithInteractiveElement(Layout* pLayout, std::string id)
