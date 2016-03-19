@@ -182,49 +182,29 @@ namespace eyegui
 
     void Element::setActivity(bool active, bool fade)
     {
-        if (active == mActive)
+        if (active)
         {
-            // Nothing to do
-            return;
-        }
-        else
-        {
-            if (active)
+            if (mpParent->isActive())
             {
-                if (mpParent->isActive())
-                {
-                    mActive = true;
+                mActive = true;
 
-                    // Do it immediatelly, maybe
-                    if (!fade)
-                    {
-                        mActivity.setValue(1);
-                    }
-
-                    // Do it for all children
-                    for (const std::unique_ptr<Element>& element : mChildren)
-                    {
-                        element->setActivity(true, fade);
-                    }
-                }
-            }
-            else
-            {
-                mActive = false;
-
-                // Do it immediately, maybe
+                // Do it immediatelly, maybe
                 if (!fade)
                 {
-                    mActivity.setValue(0);
-                }
-
-                // Do it for all children
-                for (const std::unique_ptr<Element>& element : mChildren)
-                {
-                    element->setActivity(false, fade);
-                }
+                    mActivity.setValue(1);
+                } 
             }
         }
+		else
+		{
+			mActive = false;
+
+			// Do it immediately, maybe
+			if (!fade)
+			{
+				mActivity.setValue(0);
+			}
+		}
     }
 
     void Element::setDimming(bool dimming)
@@ -240,22 +220,6 @@ namespace eyegui
     void Element::setMarking(bool marking, int depth)
     {
         mMarking = marking;
-
-        // Affect children
-        if (depth != 0)
-        {
-            // Only decrement positive values
-            if (depth > 0)
-            {
-                depth--;
-            }
-
-            // Tell children about it
-            for (const std::unique_ptr<Element>& rElement : mChildren)
-            {
-                rElement->setMarking(marking, depth);
-            }
-        }
     }
 
     bool Element::isMarking() const
@@ -290,39 +254,12 @@ namespace eyegui
 
     std::set<Element*> Element::getAllChildren() const
     {
-        std::set<Element*> elements;
-
-        // Go over children and collect pointers
-        for (const std::unique_ptr<Element>& rupChild : mChildren)
-        {
-            std::set<Element*> childrensElements = rupChild->getAllChildren();
-            elements.insert(childrensElements.begin(), childrensElements.end());
-            elements.insert(rupChild.get());
-        }
-
-        return elements;
+		return std::set<Element*>(); // implemented by Container
     }
 
     std::set<std::string> Element::getAllChildrensIds() const
     {
-        std::set<std::string> ids;
-
-        // Go over children and collect ids
-        for (const std::unique_ptr<Element>& rupChild : mChildren)
-        {
-            // Insert id of children of child
-            std::set<std::string> childrensIds = rupChild->getAllChildrensIds();
-            ids.insert(childrensIds.begin(), childrensIds.end());
-
-            // Only insert id of child if there is one
-            std::string id = rupChild->getId();
-            if (id != "")
-            {
-                ids.insert(rupChild->getId());
-            }
-        }
-
-        return ids;
+		return std::set<std::string>(); // implemented by Container
     }
 
     void Element::transformAndSize(int x, int y, int width, int height)
@@ -597,12 +534,6 @@ namespace eyegui
 
         // Do reset implemented by subclass
         specialReset();
-
-        // Go over chilren and reset
-        for (std::unique_ptr<Element>& element : mChildren)
-        {
-            element->reset();
-        }
     }
 
     void Element::evaluateSize(
@@ -647,30 +578,7 @@ namespace eyegui
     std::unique_ptr<Element> Element::replaceAttachedElement(Element* pTarget,
         std::unique_ptr<Element> upReplacement)
     {
-        // Search in children for element to replace
-        int index = -1;
-        int i = 0;
-        for (std::unique_ptr<Element>& rupElement : mChildren)
-        {
-            if (rupElement.get() == pTarget)
-            {
-                index = i;
-                break;
-            }
-            i++;
-        }
-
-        // Child found, so replace it
-        if (index > -1)
-        {
-            // Replace it
-            std::unique_ptr<Element> upTarget = std::move(mChildren[i]);
-            mChildren[i] = std::move(upReplacement);
-            return std::move(upTarget);
-        }
-
-        // Fallback if not found
-        return NULL;
+        return NULL; // implemented by container
     }
 
     void Element::commitReplacedElement(std::unique_ptr<Element> upElement, bool fade)

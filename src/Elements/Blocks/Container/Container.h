@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Virtual container that updates and draws its children.
+// Virtual container that contains, updates and draws its children.
 
 #ifndef CONTAINER_H_
 #define CONTAINER_H_
@@ -39,6 +39,23 @@ namespace eyegui
         // Destructor
         virtual ~Container() = 0;
 
+		// Activate or deactivate
+		virtual void setActivity(bool active, bool fade);
+
+		// Set marking
+		virtual void setMarking(bool marking, int depth);
+
+		// Get pointer to all children, recursively
+		virtual std::set<Element*> getAllChildren() const;
+
+		// Get ids of all children, recursively
+		virtual std::set<std::string> getAllChildrensIds() const;
+
+		// Replace an attached element, returns NULL if not found
+		virtual std::unique_ptr<Element> replaceAttachedElement(
+			Element* pTarget,
+			std::unique_ptr<Element> upReplacement);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
@@ -47,8 +64,14 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
+		// Reset filled by subclasses
+		virtual void specialReset();
+
 		// Draw on top of element (used for drawing children over effects like marking)
 		virtual void drawOnTop() const;
+
+		// Members
+		std::vector<std::unique_ptr<Element> > mChildren;
 
     private:
 

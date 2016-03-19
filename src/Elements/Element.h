@@ -140,7 +140,7 @@ namespace eyegui
         bool isDimming() const;
 
         // Set marking
-        void setMarking(bool marking, int depth);
+		virtual void setMarking(bool marking, int depth);
 
         // Getter for marking
         bool isMarking() const;
@@ -161,10 +161,10 @@ namespace eyegui
         float getBorder() const;
 
         // Get pointer to all children, recursively
-        std::set<Element*> getAllChildren() const;
+        virtual std::set<Element*> getAllChildren() const;
 
         // Get ids of all children, recursively
-        std::set<std::string> getAllChildrensIds() const;
+        virtual std::set<std::string> getAllChildrensIds() const;
 
         // Change transformation and size (pixel values)
         void transformAndSize(int x, int y, int width, int height);
@@ -251,10 +251,6 @@ namespace eyegui
         glm::mat4 mFullDrawMatrix;
         bool mAdaptiveScaling;
         LerpValue mAdaptiveScale; // [0..1]
-
-        // This vector is the owner of all children. May be empty!
-        std::vector<std::unique_ptr<Element> > mChildren;
-
         bool mForceUndim; // At the moment only used by drop button
                           // to be undimmed while showing inner elements
 
