@@ -7,8 +7,9 @@
 
 #include "DropButton.h"
 
-#include "Layout.h"
+#include "src/Layout.h"
 #include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
 
 namespace eyegui
 {
@@ -46,6 +47,7 @@ namespace eyegui
         mSpace = space;
 
         // Initial values
+		mupInnerElement = NULL; // One has to call attach inner element method
         mInnerAlpha.setValue(0);
         mInnerElementVisible = false;
     }
@@ -88,14 +90,18 @@ namespace eyegui
     void DropButton::attachInnerElement(std::unique_ptr<Element> upElement)
     {
         // Condition to allow only one inner child
-        if (mChildren.empty())
+        if (mupInnerElement == NULL)
         {
             // Should be the only one
-            mChildren.push_back(std::move(upElement));
+			mupInnerElement = std::move(upElement);
 
             // Register in frame for updating before everything else and drawing after everything else
-            mpFrame->registerFrontElementForUpdateAndDraw(getInnerElement(), isDown());
+            mpFrame->registerFrontElementForUpdateAndDraw(mupInnerElement.get(), isDown());
         }
+		else
+		{
+			throwError(OperationNotifier::Operation::BUG, "Tried to set inner element a second time in drop button with following id:" + getId());
+		}
     }
 
     std::unique_ptr<Element> DropButton::replaceAttachedElement(
@@ -115,7 +121,7 @@ namespace eyegui
             // element and all children was done in layout during replacement
 
             // Register new element
-            mpFrame->registerFrontElementForUpdateAndDraw(getInnerElement(), isDown());
+            mpFrame->registerFrontElementForUpdateAndDraw(mupInnerElement.get(), isDown());
         }
 
         return std::move(upElement);
@@ -126,7 +132,7 @@ namespace eyegui
         // Go into inner element if visible
         if (mInnerElementVisible)
         {
-            return mChildren[0].get()->internalNextInteractiveElement(NULL);
+            return mupInnerElement->internalNextInteractiveElement(NULL);
         }
 
         // Otherwise, do standard behaviour
@@ -152,8 +158,7 @@ namespace eyegui
 
         // Update alpha of inner element
         mInnerAlpha.update(tpf / mpLayout->getConfig()->animationDuration, !mInnerElementVisible);
-
-        mpFrame->setFrontElementAlpha(getInnerElement(), mInnerAlpha.getValue() * mAlpha);
+		mpFrame->setFrontElementAlpha(mupInnerElement.get(), mInnerAlpha.getValue() * mAlpha);
 
         return adaptiveScale;
     }
@@ -181,14 +186,14 @@ namespace eyegui
             {
                 // Use upper space!
                 elemHeight = (int)(upperSpace * mSpace);
-                getInnerElement()->evaluateSize(mWidth, elemHeight, usedWidth, usedHeight);
+				mupInnerElement->evaluateSize(mWidth, elemHeight, usedWidth, usedHeight);
                 usedY = mY - usedHeight;
             }
             else
             {
                 // Use lower space!
                 elemHeight = (int)(lowerSpace * mSpace);
-                getInnerElement()->evaluateSize(mWidth, elemHeight, usedWidth, usedHeight);
+				mupInnerElement->evaluateSize(mWidth, elemHeight, usedWidth, usedHeight);
                 usedY = mY + mHeight;
             }
 
@@ -204,14 +209,14 @@ namespace eyegui
             {
                 // Use left space!
                 elemWidth = (int)(leftSpace * mSpace);
-                getInnerElement()->evaluateSize(elemWidth, mHeight, usedWidth, usedHeight);
+				mupInnerElement->evaluateSize(elemWidth, mHeight, usedWidth, usedHeight);
                 usedX = mX - usedWidth;
             }
             else
             {
                 // Use right space!
                 elemWidth = (int)(rightSpace * mSpace);
-                getInnerElement()->evaluateSize(elemWidth, mHeight, usedWidth, usedHeight);
+				mupInnerElement->evaluateSize(elemWidth, mHeight, usedWidth, usedHeight);
                 usedX = mX + mWidth;
             }
 
@@ -220,7 +225,7 @@ namespace eyegui
         }
 
         // Tell inner element about it
-        getInnerElement()->transformAndSize(usedX, usedY, usedWidth, usedHeight);
+		mupInnerElement->transformAndSize(usedX, usedY, usedWidth, usedHeight);
     }
 
     void DropButton::specialReset()
@@ -230,11 +235,5 @@ namespace eyegui
 
         mInnerAlpha.setValue(0);
         mInnerElementVisible = false;
-    }
-
-    Element* DropButton::getInnerElement()
-    {
-        // Assumption is guaranteed by condition in attachInnerElement method
-        return mChildren[0].get();
     }
 }

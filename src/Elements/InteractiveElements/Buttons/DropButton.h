@@ -4,9 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Extending box button by taking a single child element. It is displayed when
-// the button is down. That there is only one child element is guaranteed by the
-// "attachInnerElement" method.
+// Extending box button by taking a single inner element. It is displayed when
+// the button is down. Inner element MUST BE added, otherwise there will be
+// null pointer exceptions.
 
 #ifndef DROP_BUTTON_H_
 #define DROP_BUTTON_H_
@@ -69,10 +69,8 @@ namespace eyegui
 
     private:
 
-        // Getter for inner element
-        Element* getInnerElement();
-
         // Member
+		std::unique_ptr<Element> mupInnerElement;
         float mSpace;
         LerpValue mInnerAlpha;
         bool mInnerElementVisible;

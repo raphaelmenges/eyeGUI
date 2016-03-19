@@ -204,7 +204,7 @@ namespace eyegui
         bool isInteractiveElementHighlighted(std::string id) const;
 
         // Change value of style attribute
-        void setValueOfStyleAttribute(std::string styleName, std::string attribute, glm::vec4 value);
+        void setValueOfStyleAttribute(std::string styleName, std::string attribute, std::string value);
 
         // Replace any element with block
         void replaceElementWithBlock(

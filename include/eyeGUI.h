@@ -459,19 +459,13 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param styleName is name of style in used stylesheet.
       \param attribute is name of attribute which shall be changed.
-      \param r is red color value.
-      \param g is green color value.
-      \param b is blue color value.
-      \param a is alpha color value.
+      \param value is string like used in stylesheet.
     */
     void setValueOfStyleAttribute(
         Layout* pLayout,
         std::string styleName,
         std::string attribute,
-        float r,
-        float g,
-        float b,
-        float a);
+        std::string value);
 
     //! Set icon of icon interactive element.
     /*!

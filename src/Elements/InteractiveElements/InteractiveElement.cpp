@@ -96,7 +96,7 @@ namespace eyegui
             mpHighlightItem->getShader()->fillValue("highlightColor", getStyle()->highlightColor);
             mpHighlightItem->getShader()->fillValue("highlight", mHighlight.getValue());
             mpHighlightItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
-            mpHighlightItem->getShader()->fillValue("alpha", mAlpha);
+            mpHighlightItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpHighlightItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
             mpHighlightItem->draw();
         }
@@ -108,7 +108,7 @@ namespace eyegui
             mpSelectionItem->getShader()->fillValue("matrix", mFullDrawMatrix);
             mpSelectionItem->getShader()->fillValue("selectionColor", getStyle()->selectionColor);
             mpSelectionItem->getShader()->fillValue("selection", mSelection.getValue());
-            mpSelectionItem->getShader()->fillValue("alpha", mAlpha);
+            mpSelectionItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpSelectionItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
             mpSelectionItem->draw();
         }

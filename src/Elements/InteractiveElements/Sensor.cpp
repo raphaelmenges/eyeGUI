@@ -107,7 +107,7 @@ namespace eyegui
         mpSensorItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
         mpSensorItem->getShader()->fillValue("penetration", mPenetration.getValue());
         mpSensorItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
-        mpSensorItem->getShader()->fillValue("alpha", mAlpha);
+        mpSensorItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
         mpSensorItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
         mpSensorItem->getShader()->fillValue("icon", 1);
         mpSensorItem->draw();

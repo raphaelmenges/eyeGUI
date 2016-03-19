@@ -822,7 +822,7 @@ namespace eyegui
         return false;
     }
 
-    void Layout::setValueOfStyleAttribute(std::string styleName, std::string attribute, glm::vec4 value)
+    void Layout::setValueOfStyleAttribute(std::string styleName, std::string attribute, std::string value)
     {
         // Check, whether style exists
         auto it = mupStyles->find(styleName);

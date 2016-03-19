@@ -409,7 +409,7 @@ namespace eyegui
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
             mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
-            mpBackground->getShader()->fillValue("alpha", mAlpha);
+            mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
 
@@ -439,7 +439,7 @@ namespace eyegui
                     getStyle()->color,
                     getStyle()->pickColor,
                     getStyle()->iconColor,
-                    mAlpha);
+					getMultipliedDimmedAlpha());
             }
         }
 
@@ -454,7 +454,7 @@ namespace eyegui
                 getStyle()->color,
                 getStyle()->pickColor,
                 getStyle()->iconColor,
-                mAlpha * rPressedKey.first);
+				getMultipliedDimmedAlpha() * rPressedKey.first);
         }
 
         // Render superclass

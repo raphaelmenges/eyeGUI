@@ -235,6 +235,7 @@ namespace eyegui
 
         // Getter
         float getDim() const;
+		float getMultipliedDimmedAlpha() const;
 
         // Members
         int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE

@@ -544,7 +544,7 @@ namespace eyegui
                 mpMarkItem->getShader()->fillValue("matrix", mFullDrawMatrix);
                 mpMarkItem->getShader()->fillValue("markColor", getStyle()->markColor);
                 mpMarkItem->getShader()->fillValue("mark", mMark.getValue());
-                mpMarkItem->getShader()->fillValue("alpha", mAlpha);
+                mpMarkItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
                 mpMarkItem->draw();
             }
@@ -555,7 +555,7 @@ namespace eyegui
                 mpActivityItem->bind();
                 mpActivityItem->getShader()->fillValue("matrix", mFullDrawMatrix);
                 mpActivityItem->getShader()->fillValue("activity", mActivity.getValue());
-                mpActivityItem->getShader()->fillValue("alpha", mAlpha);
+                mpActivityItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
                 mpActivityItem->draw();
             }
@@ -567,7 +567,7 @@ namespace eyegui
                 mpDimItem->getShader()->fillValue("matrix", mFullDrawMatrix);
                 mpDimItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
                 mpDimItem->getShader()->fillValue("dim", mDim.getValue());
-                mpDimItem->getShader()->fillValue("alpha", mAlpha);
+                mpDimItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
                 mpDimItem->draw();
             }
@@ -711,4 +711,9 @@ namespace eyegui
     {
         return mDim.getValue();
     }
+
+	float Element::getMultipliedDimmedAlpha() const
+	{
+		return mAlpha * glm::mix(1.0f , getStyle()->dimAlpha, mDim.getValue());
+	}
 }

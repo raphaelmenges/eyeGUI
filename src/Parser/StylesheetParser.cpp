@@ -225,59 +225,60 @@ namespace eyegui
             line.erase(0, pos + delimiter.length());
             std::string right = line;
 
-            // Get color out of right side
-            glm::vec4 color = parseColor(right);
-
             // Fill it into style
-            fillValue(rStyle, left, color);
+            fillValue(rStyle, left, right);
         }
 
-        void fillValue(Style& rStyle, std::string attribute, glm::vec4 value)
+        void fillValue(Style& rStyle, std::string attribute, std::string value)
         {
             // Assign value to correct field of struct
             if (attribute == "color")
             {
-                rStyle.color = value;
+                rStyle.color = parseColor(value);
             }
             else if (attribute == "background-color")
             {
-                rStyle.backgroundColor = value;
+                rStyle.backgroundColor = parseColor(value);
             }
             else if (attribute == "highlight-color")
             {
-                rStyle.highlightColor = value;
+                rStyle.highlightColor = parseColor(value);
             }
             else if (attribute == "separator-color")
             {
-                rStyle.separatorColor = value;
+                rStyle.separatorColor = parseColor(value);
             }
             else if (attribute == "selection-color")
             {
-                rStyle.selectionColor = value;
+                rStyle.selectionColor = parseColor(value);
             }
             else if (attribute == "icon-color")
             {
-                rStyle.iconColor = value;
+                rStyle.iconColor = parseColor(value);
             }
             else if (attribute == "font-color")
             {
-                rStyle.fontColor = value;
+                rStyle.fontColor = parseColor(value);
             }
             else if (attribute == "dim-color")
             {
-                rStyle.dimColor = value;
+                rStyle.dimColor = parseColor(value);
             }
+			else if (attribute == "dim-alpha")
+			{
+				rStyle.dimAlpha = std::stof(value);
+			}
             else if (attribute == "mark-color")
             {
-                rStyle.markColor = value;
+                rStyle.markColor = parseColor(value);
             }
             else if (attribute == "pick-color")
             {
-                rStyle.pickColor = value;
+                rStyle.pickColor = parseColor(value);
             }
             else if (attribute == "threshold-color")
             {
-                rStyle.thresholdColor = value;
+                rStyle.thresholdColor = parseColor(value);
             }
             else
             {

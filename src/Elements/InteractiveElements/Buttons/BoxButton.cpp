@@ -61,7 +61,7 @@ namespace eyegui
         mpBoxButtonItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
         mpBoxButtonItem->getShader()->fillValue("pressing", getPressing());
         mpBoxButtonItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
-        mpBoxButtonItem->getShader()->fillValue("alpha", mAlpha);
+        mpBoxButtonItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
         mpBoxButtonItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
         mpBoxButtonItem->getShader()->fillValue("icon", 1);
         mpBoxButtonItem->draw();

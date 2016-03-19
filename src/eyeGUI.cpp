@@ -221,12 +221,9 @@ namespace eyegui
         Layout* pLayout,
         std::string styleName,
         std::string attribute,
-        float r,
-        float g,
-        float b,
-        float a)
+		std::string value)
     {
-        pLayout->setValueOfStyleAttribute(styleName, attribute, glm::vec4(r, g, b, a));
+        pLayout->setValueOfStyleAttribute(styleName, attribute, value);
     }
 
     void setIconOfIconInteractiveElement(Layout* pLayout, std::string id, std::string iconFilepath)

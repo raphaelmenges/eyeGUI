@@ -1,13 +1,13 @@
 ### VERSION 0.9
 - Rewrite Element rendering (more layers, not so big shaders)y
-  - Extra dim alpha!
   - setDimming / Marking: give element and offset from it in tree so only that is dimmed
-  - why are not all children updated in element class but in subclasses?
-    - Because of DropButton (get it of children there, just name it drop or so)
   - Test dimming / marking
   - why is demo black in the beginning?
 	- children only in container, not in every element
+	  - update and draw must be done after specialDraw...
 	- "delete" iconinteractiveelement (remind renaming interface methods) and create threshold element (as superclass for all buttons)
+
+- check input of stylesheet parser and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
 
 - WordSuggest
   - Display suggestions
