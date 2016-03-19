@@ -77,4 +77,13 @@ namespace eyegui
             Block::specialDraw();
         }
     }
+
+	void Container::drawOnTop() const
+	{
+		// Draw children
+		for (const std::unique_ptr<Element>& rElement : mChildren)
+		{
+			rElement->draw();
+		}
+	}
 }

@@ -572,11 +572,7 @@ namespace eyegui
                 mpDimItem->draw();
             }
 
-            // Draw children
-            for (const std::unique_ptr<Element>& rElement : mChildren)
-            {
-                rElement->draw();
-            }
+			drawOnTop();
 
         }
 
@@ -706,6 +702,11 @@ namespace eyegui
         }
         return false;
     }
+
+	void Element::drawOnTop() const
+	{
+		// Standard is: do nothing
+	}
 
     float Element::getDim() const
     {

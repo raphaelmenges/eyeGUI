@@ -8,14 +8,12 @@
 // of pointers to specialized variants. Has vector holding unique pointer to
 // child elements but this construct is only used when necessary, for example
 // in stack, grid or drop button. Elements have an unique id inside the layout
-// they belong to. Style is saved as string and set do a default value by parser
+// they belong to. Style is saved as string and set to a default value by parser
 // when none is defined and the parent has no set style. Element can have only
 // one parent element which is set to null for the root element of the frame.
 // Transformation and size is calculated using a mechanism first asking the
 // children with "evaluateSize" how much of the available space they would use
-// and then telling all the children their size and transformation. Since drop
-// button has a child element which is updated and drawn by the frame, child
-// elements are not updated and drawn automatically by element class.
+// and then telling all the children their size and transformation.
 
 #ifndef ELEMENT_H_
 #define ELEMENT_H_
@@ -232,6 +230,9 @@ namespace eyegui
 
         // Checks, whether element is penetrated by input
         virtual bool penetratedByInput(Input const * pInput) const;
+
+		// Draw on top of element (used for drawing children in container over effects like marking)
+		virtual void drawOnTop() const;
 
         // Getter
         float getDim() const;

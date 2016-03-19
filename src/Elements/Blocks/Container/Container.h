@@ -47,6 +47,9 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
+		// Draw on top of element (used for drawing children over effects like marking)
+		virtual void drawOnTop() const;
+
     private:
 
         // Members
