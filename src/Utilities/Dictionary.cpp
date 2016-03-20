@@ -169,9 +169,43 @@ namespace eyegui
             std::sort(
                 sortedResults.begin(),
                 sortedResults.end(),
-                [](const std::pair<std::u16string, int>& left, const std::pair<std::u16string, int>& right)
+                [&comparsionWord](const std::pair<std::u16string, int>& left, const std::pair<std::u16string, int>& right)
                 {
-                    return left.second < right.second;
+					// Collect information
+					int distanceLeft = left.second;
+					int distanceRight = right.second;
+					bool leftFirstIdentical = false;
+					bool leftLastIdentical = false;
+					bool rightFirstIdentical = false;
+					bool rightLastIdentical = false;
+
+					if (!comparsionWord.empty())
+					{
+						if (!left.first.empty())
+						{
+							leftFirstIdentical = left.first.front() == comparsionWord.front();
+							leftLastIdentical = left.first.back() == comparsionWord.back();
+						}
+						if (!right.first.empty())
+						{
+							rightFirstIdentical = right.first.front() == comparsionWord.front();
+							rightLastIdentical = right.first.back() == comparsionWord.back();
+						}
+					}
+
+					// Decide which word is the better suggestion (just some random stuff which looks good)
+					if (leftFirstIdentical && leftLastIdentical)
+					{
+						// Integer division
+						distanceLeft /= 2;
+					}
+					if (rightFirstIdentical && rightLastIdentical)
+					{
+						// Integer division
+						distanceRight /= 2;
+					}
+					
+                    return distanceLeft < distanceRight;
                 });
 
             // Copy results to final vector
@@ -301,7 +335,7 @@ namespace eyegui
 
         // Consume letters from start index of input word
         uint count = (uint)rInput.size();
-        uint i =inputStartIndex; // Must be visible outside of loop
+        uint i = inputStartIndex; // Must be visible outside of loop
         for (; i < count; i++)
         {
             // Suspect input to be incomplete ("Hus" -> "Haus")
@@ -368,7 +402,7 @@ namespace eyegui
             {
                 // Next character was not found. Only add to found words if
                 // remaining input pauses are enough to compensate extra letters
-                if((int)count - (i+1) < remainingInputPauses)
+                if((int)count - (int)(i+1) < remainingInputPauses)
                 {
                     // Decision whether here is a node is done in add method
                     addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);

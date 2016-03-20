@@ -12,16 +12,9 @@
     - Interaction
 		- At resizing: width seems to be incorrect sometimes
 		- Listener for chosen suggestion
-		
-- Wiki
-  - Dictionary
-    - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
-  - WordSuggest
-  - ThresholdColor + DimAlpha
   
 - Dictionary
   - write email to utf8rewind author because of windows fix
-  - Maybe treat first and last character as special (HALO -> Hallo and not Halle...)
   
 - Keyboard
   - Better german and english layout
@@ -31,7 +24,13 @@
 
 - Replace freetype2 by stb and use their packing algorithm!
 
-- Element description (text which is shown at penetration)
+- Element description (text which is shown at penetration) for IconElement
+
+- Wiki
+  - Dictionary
+    - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
+  - WordSuggest
+  - ThresholdColor + DimAlpha
 
 ### VERSION 0.10
 - Audio (PortAudio library?)

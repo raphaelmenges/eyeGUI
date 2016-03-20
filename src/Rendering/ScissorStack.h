@@ -14,6 +14,7 @@
 #include "src/Utilities/OperationNotifier.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 #include "externals/GLM/glm/glm.hpp"
+
 #include <vector>
 
 // Defines for easier use
