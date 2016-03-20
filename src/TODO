@@ -10,8 +10,8 @@
 - WordSuggest
   - Display suggestions
     - Interaction
-    - Stencil to not write outside of element
 		- At resizing: width seems to be incorrect sometimes
+		- Listener for chosen suggestion
 		
 - Wiki
   - Dictionary

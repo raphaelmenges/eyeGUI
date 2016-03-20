@@ -16,9 +16,6 @@
 #include "externals/GLM/glm/glm.hpp"
 #include <vector>
 
-// TODO testing
-#include <iostream>
-
 // Defines for easier use
 #define pushScissor eyegui::ScissorStack::push
 #define popScissor eyegui::ScissorStack::pop

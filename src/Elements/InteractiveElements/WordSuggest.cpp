@@ -8,6 +8,7 @@
 #include "WordSuggest.h"
 
 #include "src/Layout.h"
+#include "src/Rendering/ScissorStack.h"
 
 // TODO: testing
 #include <iostream>
@@ -92,11 +93,16 @@ namespace eyegui
             mpBackground->draw();
         }
 
+		// Push scissor to prohibit text simple assets to draw outside of this element
+		pushScissor(mX, mY, mWidth, mHeight);
+
         // Draw suggestions
         for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
         {
             rSuggestion->draw(getStyle()->fontColor, mAlpha);
         }
+
+		popScissor();
     }
 
     void WordSuggest::specialTransformAndSize()
