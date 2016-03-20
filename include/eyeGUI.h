@@ -623,6 +623,13 @@ namespace eyegui
     */
     void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex);
 
+	//! Clears suggestions of word suggest element.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	*/
+	void clearSuggestions(Layout* pLayout, std::string id);
+
     //! Register listener to button.
     /*!
       \param pLayout pointer to layout.

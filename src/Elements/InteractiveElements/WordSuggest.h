@@ -40,6 +40,9 @@ namespace eyegui
         // Suggest
         void suggest(std::u16string input, Dictionary const * pDictionary);
 
+		// Clear
+		void clear();
+
         // TODO
         // - Background
         // - Set input word via interface

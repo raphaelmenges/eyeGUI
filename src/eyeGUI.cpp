@@ -326,6 +326,11 @@ namespace eyegui
         pLayout->suggestWords(id, input, dictionaryIndex);
     }
 
+	void clearSuggestions(Layout* pLayout, std::string id)
+	{
+		pLayout->clearSuggestions(id);
+	}
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);

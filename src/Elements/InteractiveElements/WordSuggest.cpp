@@ -59,14 +59,19 @@ namespace eyegui
     void WordSuggest::suggest(std::u16string input, Dictionary const * pDictionary)
     {
         // TODO: second parameter of similar words
+		mSuggestions.clear();
         std::vector<std::u16string> suggestions = pDictionary->similarWords(input, false);
-        mSuggestions.clear();
         for(const std::u16string& rSuggestion : suggestions)
         {
             mSuggestions.push_back(std::move(mpAssetManager->createTextSimple(mFontSize, 1, rSuggestion)));
         }
 		transformSuggestions();
     }
+
+	void WordSuggest::clear()
+	{
+		mSuggestions.clear();
+	}
 
     float WordSuggest::specialUpdate(float tpf, Input* pInput)
     {

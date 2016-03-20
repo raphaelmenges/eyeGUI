@@ -612,6 +612,19 @@ namespace eyegui
         suggestWords(id, input16, dictionaryIndex);
     }
 
+	void Layout::clearSuggestions(std::string id)
+	{
+		WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
+		if (pWordSuggest != NULL)
+		{
+			pWordSuggest->clear();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find word suggest with id: " + id);
+		}
+	}
+
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         Button* pButton = toButton(fetchElement(id));

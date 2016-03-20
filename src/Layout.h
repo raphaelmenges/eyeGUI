@@ -170,6 +170,9 @@ namespace eyegui
         void suggestWords(std::string id, std::u16string input, uint dictionaryIndex);
         void suggestWords(std::string id, std::string input, uint dictionaryIndex);
 
+		// Clear suggestions
+		void clearSuggestions(std::string id);
+
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
 
