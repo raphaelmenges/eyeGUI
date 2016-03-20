@@ -231,14 +231,9 @@ namespace eyegui
             "uniform float time;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
             "uniform vec4 pickColor = vec4(0,1,1,0.5);\n"
-            "uniform vec4 stencil;\n"
             "uniform float pick = 0;\n"
             "const int innerBorder = 10;\n"
             "void main() {\n"
-            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
-            "   {\n"
-            "       discard;\n"
-            "   }\n"
             "   float gradient = length(2*uv-1);\n" // Simple gradient as base
             "   float circle = (1.0-gradient) * 75;\n" // Extend gradient to unclamped circle
             "   float inner = clamp(circle - (pick * innerBorder), 0, 1);\n" // Inner circle for character
@@ -254,14 +249,9 @@ namespace eyegui
             "#version 330 core\n"
             "out vec4 fragColor;\n"
             "in vec2 uv;\n"
-            "uniform vec4 stencil;\n"
             "uniform vec4 color = vec4(1,0,0,1);\n"
             "uniform sampler2D atlas;\n"
             "void main() {\n"
-            "   if(gl_FragCoord.x < stencil.x || gl_FragCoord.y < stencil.y || gl_FragCoord.x >= stencil.x+stencil.z || gl_FragCoord.y >= stencil.y+stencil.w)\n"
-            "   {"
-            "       discard;\n"
-            "   }"
             "   float value = texture(atlas, uv).r;\n"
             "   fragColor = vec4(color.rgb, color.a * value);\n"
             "}\n";

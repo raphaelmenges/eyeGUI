@@ -126,10 +126,6 @@ namespace eyegui
     }
 
     void Key::drawCircle(
-            int oglStencilX,
-            int oglSencilY,
-            int oglStencilWidth,
-            int oglStencilHeight,
             glm::vec4 color,
             glm::vec4 pickColor,
             float alpha) const
@@ -146,7 +142,6 @@ namespace eyegui
         mpCircleRenderItem->getShader()->fillValue("matrix", mCircleMatrix); // Matrix is updated in transform and size
         mpCircleRenderItem->getShader()->fillValue("pickColor", pickColor);
         mpCircleRenderItem->getShader()->fillValue("pick", mPick.getValue());
-        mpCircleRenderItem->getShader()->fillValue("stencil", glm::vec4(oglStencilX, oglSencilY, oglStencilWidth, oglStencilHeight));
 
         // Drawing
         mpCircleRenderItem->draw();

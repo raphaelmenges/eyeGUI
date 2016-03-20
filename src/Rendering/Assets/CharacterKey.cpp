@@ -108,27 +108,13 @@ namespace eyegui
     }
 
     void CharacterKey::draw(
-            int stencilX,
-            int stencilY,
-            int stencilWidth,
-            int stencilHeight,
             glm::vec4 color,
             glm::vec4 pickColor,
             glm::vec4 iconColor,
             float alpha) const
     {
-        // Convert stencil values to OpenGL coordinate system
-        int oglStencilX = stencilX;
-        int oglStencilY = mpLayout->getLayoutHeight() - stencilY - stencilHeight;
-        int oglStencilWidth = stencilWidth;
-        int oglStencilHeight = stencilHeight;
-
         // Draw circle of key
         drawCircle(
-            oglStencilX,
-            oglStencilY,
-            oglStencilWidth,
-            oglStencilHeight,
             color,
             pickColor,
             alpha);
@@ -147,7 +133,6 @@ namespace eyegui
 
         // Fill other uniforms
         mpQuadShader->fillValue("matrix", mQuadMatrix); // Matrix is updated in transform and size
-        mpQuadShader->fillValue("stencil", glm::vec4(oglStencilX, oglStencilY, oglStencilWidth, oglStencilHeight));
         mpQuadShader->fillValue("atlas", 1);
 
         // Draw character quad (vertex count must be 6)

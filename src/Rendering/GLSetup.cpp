@@ -22,6 +22,8 @@ namespace eyegui
         glGetBooleanv(GL_CULL_FACE, &mCulling);
         glGetBooleanv(GL_COLOR_WRITEMASK, mColorWritemask);
         glGetBooleanv(GL_STENCIL_TEST, &mStencilTest);
+		glGetBooleanv(GL_SCISSOR_TEST, &mScissorTest);
+		glGetIntegerv(GL_SCISSOR_BOX, mScissorBox);
 
         // Setting
         glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
@@ -31,6 +33,7 @@ namespace eyegui
         glEnable(GL_CULL_FACE);
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glDisable(GL_STENCIL_TEST);
+		glEnable(GL_SCISSOR_TEST); // box is set by ScissorStack init in GUI each frame
 
         // Setup of stuff which cannot be stored
         glActiveTexture(GL_TEXTURE0);
@@ -48,6 +51,8 @@ namespace eyegui
         setCapability(GL_CULL_FACE, mCulling);
         glColorMask(mColorWritemask[0], mColorWritemask[1], mColorWritemask[2], mColorWritemask[3]);
         setCapability(GL_STENCIL_TEST, mStencilTest);
+		setCapability(GL_SCISSOR_TEST, mScissorTest);
+		glScissor(mScissorBox[0], mScissorBox[1], mScissorBox[2], mScissorBox[3]);
     }
 
     void GLSetup::setCapability(GLenum cap, GLboolean enable) const

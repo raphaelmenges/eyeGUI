@@ -9,8 +9,10 @@
 
 #include "Defines.h"
 #include "src/Utilities/OperationNotifier.h"
+#include "src/Rendering/ScissorStack.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
+
 
 #include <algorithm>
 
@@ -164,6 +166,9 @@ namespace eyegui
         // Setup OpenGL
         GLSetup glSetup;
         glSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
+
+		// Init scissor stack for this frame
+		initScissorStack(getWindowWidth(), getWindowHeight());
 
         // Draw all layouts
         for (uint i = 0; i < mLayouts.size(); i++)

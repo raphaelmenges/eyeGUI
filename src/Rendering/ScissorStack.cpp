@@ -5,9 +5,9 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 
-#include "ViewportStack.h"
+#include "ScissorStack.h"
 
 namespace eyegui
 {
-	ViewportStack* ViewportStack::pInstance = NULL;
+	ScissorStack* ScissorStack::pInstance = NULL;
 }

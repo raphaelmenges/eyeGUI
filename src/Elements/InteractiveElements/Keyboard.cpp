@@ -7,9 +7,11 @@
 
 #include "Keyboard.h"
 
-#include "NotificationQueue.h"
+#include "src/NotificationQueue.h"
 #include "src/Utilities/OperationNotifier.h"
-#include "Layout.h"
+#include "src/Layout.h"
+#include "src/Rendering/ScissorStack.h"
+
 
 namespace eyegui
 {
@@ -415,6 +417,9 @@ namespace eyegui
 
         // *** RENDER KEYS ***
 
+		// Push scissor to prohibit keys to draw outside of element
+		pushScissor(mX, mY, mWidth, mHeight);
+
         // Determine, which sub keymap to draw
         SubKeymap const * pSubKeymap = NULL;
         if (mBigCharactersActive)
@@ -432,10 +437,6 @@ namespace eyegui
             for(const auto& rupKey : rLine)
             {
                 rupKey->draw(
-                    mX,
-                    mY,
-                    mWidth,
-                    mHeight,
                     getStyle()->color,
                     getStyle()->pickColor,
                     getStyle()->iconColor,
@@ -447,15 +448,13 @@ namespace eyegui
         for (const auto& rPressedKey : mPressedKeys)
         {
             rPressedKey.second->draw(
-                mX,
-                mY,
-                mWidth,
-                mHeight,
                 getStyle()->color,
                 getStyle()->pickColor,
                 getStyle()->iconColor,
 				getMultipliedDimmedAlpha() * rPressedKey.first);
         }
+
+		popScissor();
 
         // Render superclass
         InteractiveElement::specialDraw();

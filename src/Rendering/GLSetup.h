@@ -45,6 +45,8 @@ namespace eyegui
         GLboolean mCulling;
         GLboolean mColorWritemask[4];
         GLboolean mStencilTest;
+		GLboolean mScissorTest;
+		GLint mScissorBox[4];
     };
 }
 

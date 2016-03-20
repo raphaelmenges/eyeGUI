@@ -44,12 +44,8 @@ namespace eyegui
         // Update
         virtual void update(float tpf);
 
-        // Draw (stencil values in eyeGUI coordinate system)
+        // Draw
         virtual void draw(
-            int stencilX,
-            int stencilY,
-            int stencilWidth,
-            int stencilHeight,
             glm::vec4 color,
             glm::vec4 pickColor,
             glm::vec4 iconColor,
@@ -84,12 +80,8 @@ namespace eyegui
 
     protected:
 
-        // Draw circle (stencil values already in OpenGL coordinates)
+        // Draw circle
         void drawCircle(
-            int oglStencilX,
-            int oglSencilY,
-            int oglStencilWidth,
-            int oglStencilHeight,
             glm::vec4 color,
             glm::vec4 pickColor,
             float alpha) const;

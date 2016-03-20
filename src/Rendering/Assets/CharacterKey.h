@@ -36,10 +36,6 @@ namespace eyegui
 
         // Draw (stencil values in eyeGUI coordinate system)
         virtual void draw(
-            int stencilX,
-            int stencilY,
-            int stencilWidth,
-            int stencilHeight,
             glm::vec4 color,
             glm::vec4 pickColor,
             glm::vec4 iconColor,
