@@ -42,6 +42,17 @@ namespace eyegui
 
         // Filling members
         setIcon(iconFilepath);
+		mDescriptionAlpha.setValue(0);
+
+		// Create description
+		// TODO: if empty, than do not use it
+		mupDescriptionFlow = std::move(
+				mpAssetManager->createTextFlow(
+					mpLayout->getDescriptionFontSize(),
+					TextFlowAlignment::CENTER,
+					TextFlowVerticalAlignment::CENTER,
+					1.f,
+					u"Desc"));
     }
 
     IconElement::~IconElement()
@@ -61,11 +72,55 @@ namespace eyegui
         }
     }
 
+	float IconElement::specialUpdate(float tpf, Input* pInput)
+	{
+		// Super call
+		float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
+
+		// Check for penetration by input
+		bool penetrated = penetratedByInput(pInput);
+
+		// Make description visible
+		if (mpLayout->getShowDescriptions() && penetrated)
+		{
+			mDescriptionAlpha.update(tpf / mpLayout->getConfig()->animationDuration);
+		}
+		else
+		{
+			mDescriptionAlpha.update(-tpf / mpLayout->getConfig()->animationDuration);
+		}
+
+		return adaptiveScale;
+	}
+
     void IconElement::specialDraw() const
     {
+		// Draw description
+		if (mupDescriptionFlow != NULL && mDescriptionAlpha.getValue() > 0)
+		{
+			// Drawing of text flow
+			mupDescriptionFlow->draw(getStyle()->fontColor, mDescriptionAlpha.getValue() * mAlpha);
+		}
+
         // Draw stuff like highlighting
         InteractiveElement::specialDraw();
     }
+
+	void IconElement::specialTransformAndSize()
+	{
+		// Tell description text flow about it
+		if (mupDescriptionFlow != NULL)
+		{
+			mupDescriptionFlow->transformAndSize(mX, mY, mWidth, mHeight);
+		}
+	}
+
+	void IconElement::specialReset()
+	{
+		InteractiveElement::specialReset();
+
+		mDescriptionAlpha.setValue(0);
+	}
 
     glm::vec2 IconElement::iconAspectRatioCorrection() const
     {

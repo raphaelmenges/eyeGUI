@@ -25,12 +25,15 @@
 - Replace freetype2 by stb and use their packing algorithm!
 
 - Element description (text which is shown at penetration) for IconElement
+	- XML part
+	- why no "..." when not enough space?
 
 - Wiki
   - Dictionary
     - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
   - WordSuggest
   - ThresholdColor + DimAlpha
+	- icon element descriptions
 
 ### VERSION 0.10
 - Audio (PortAudio library?)

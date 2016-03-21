@@ -192,11 +192,6 @@ namespace eyegui
 
     void Button::specialDraw() const
     {
-        // Super call
-        IconElement::specialDraw();
-
-        //mpIconRenderItem->getShader()->fillValue("pressing", mPressing.getValue());
-
         if(mThreshold.getValue() > 0)
         {
             mpThresholdItem->bind();
@@ -219,11 +214,9 @@ namespace eyegui
             mpThresholdItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
             mpThresholdItem->draw();
         }
-    }
 
-    void Button::specialTransformAndSize()
-    {
-        // Nothing to do, but must be implemented
+		// Super call
+		IconElement::specialDraw();
     }
 
     void Button::specialReset()

@@ -27,7 +27,8 @@ namespace eyegui
         float vectorGraphicsDPI,
         float fontTallSize,
         float fontMediumSize,
-        float fontSmallSize)
+        float fontSmallSize,
+		FontSize descriptionFontSize)
     {
         // Initialize OpenGL
         GLSetup::init();
@@ -49,6 +50,8 @@ namespace eyegui
         mFontTallSize = fontTallSize;
         mFontMediumSize = fontMediumSize;
         mFontSmallSize = fontSmallSize;
+		mDescriptionFontSize = descriptionFontSize;
+		mShowDescriptions = true;
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -243,6 +246,11 @@ namespace eyegui
         return index;
     }
 
+	void GUI::setShowDescriptions(bool showDescriptions)
+	{
+		mShowDescriptions = showDescriptions;
+	}
+
     int GUI::getWindowWidth() const
     {
         return mWidth;
@@ -325,6 +333,16 @@ namespace eyegui
             return NULL;
         }
     }
+
+	bool GUI::getShowDescriptions() const
+	{
+		return mShowDescriptions;
+	}
+
+	FontSize GUI::getDescriptionFontSize() const
+	{
+		return mDescriptionFontSize;
+	}
 
     int GUI::findLayout(Layout const * pLayout) const
     {

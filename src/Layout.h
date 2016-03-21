@@ -292,7 +292,13 @@ namespace eyegui
         RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
 
         // Get absolute position and size of floating frame
-        AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
+		AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
+
+		// Get whether buttons should show description
+		bool getShowDescriptions() const;
+
+		// Get font size for descriptions
+		FontSize getDescriptionFontSize() const;
 
     private:
 

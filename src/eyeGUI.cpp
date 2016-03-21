@@ -28,7 +28,8 @@ namespace eyegui
             vectorGraphicsDPI,
             fontTallSize,
             fontMediumSize,
-            fontSmallSize);
+            fontSmallSize,
+			descriptionFontSize);
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
@@ -83,6 +84,11 @@ namespace eyegui
     {
         pGUI->toggleGazeVisualizationDrawing();
     }
+
+	void setShowDescriptions(GUI* pGUI, bool showDescriptions)
+	{
+		pGUI->setShowDescriptions(showDescriptions);
+	}
 
     void prefetchImage(GUI* pGUI, std::string filepath)
     {

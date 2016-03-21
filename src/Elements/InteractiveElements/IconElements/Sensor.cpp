@@ -70,8 +70,8 @@ namespace eyegui
 
     float Sensor::specialUpdate(float tpf, Input* pInput)
     {
-        // Super call
-        IconElement::specialUpdate(tpf, pInput);
+		// Super call
+		float adaptiveScale = IconElement::specialUpdate(tpf, pInput);
 
         // Penetration by input
         bool penetrated = penetratedByInput(pInput);
@@ -95,7 +95,7 @@ namespace eyegui
             mpNotificationQueue->enqueue(getId(), NotificationType::SENSOR_PENETRATED);
         }
 
-        return 0;
+        return adaptiveScale;
     }
 
     void Sensor::specialDraw() const
@@ -114,11 +114,6 @@ namespace eyegui
 
         // Super call
         IconElement::specialDraw();
-    }
-
-    void Sensor::specialTransformAndSize()
-    {
-        // Nothing to do, but must be implemented
     }
 
     void Sensor::specialReset()

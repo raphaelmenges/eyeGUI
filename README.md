@@ -8,6 +8,9 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 ## Features
 
 #### Version 0.9
+* Descriptions for icon elements
+* Rewrote rendering of elements
+* Dictionary with search for similar words
 * Now using utf8rewind instead of UTF8-CPP for unicode handling
 
 #### Version 0.8

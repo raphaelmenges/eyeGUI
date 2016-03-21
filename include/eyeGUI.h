@@ -172,16 +172,17 @@ namespace eyegui
     {
     public:
 
-        GUI* construct() const; //!< returns pointer to built GUI
-        int width = 1280; //!< width of GUI as integer
-        int height = 720; //!< height of GUI as integer
-        std::string fontFilepath = ""; //!< fontFilepath is path to a .ttf font file
-        CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< characterSet used to initialize font rendering
-        std::string localizationFilepath = ""; //!< localizationFilepath is path to a .leyegui file
-        float vectorGraphicsDPI = 96.0f; //!< dpi which are used to rasterize vector graphics
+        GUI* construct() const; //!< Returns pointer to built GUI
+        int width = 1280; //!< Width of GUI as integer
+        int height = 720; //!< Height of GUI as integer
+        std::string fontFilepath = ""; //!< FontFilepath is path to a .ttf font file
+        CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< CharacterSet used to initialize font rendering
+        std::string localizationFilepath = ""; //!< LocalizationFilepath is path to a .leyegui file
+        float vectorGraphicsDPI = 96.0f; //!< Dpi which are used to rasterize vector graphics
         float fontTallSize = 0.1f; //!< Height of tall font in percentage of GUI height
         float fontMediumSize = 0.04f; //!< Height of medium font in percentage of GUI height
         float fontSmallSize = 0.0175f; //!< Height of small font in percentage of GUI height
+		FontSize descriptionFontSize = FontSize::SMALL; // Font size of icon element descriptions
     };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.
@@ -248,6 +249,13 @@ namespace eyegui
       \param pGUI pointer to GUI.
     */
     void toggleGazeVisualizationDrawing(GUI* pGUI);
+
+	//! Set whether descriptions of icon elements are displayed at penetration.
+	/*!
+	\param pGUI pointer to GUI.
+	\param showDescriptions indicates whether descriptions should be drawn.
+	*/
+	void setShowDescriptions(GUI* pGUI, bool showDescriptions);
 
     //! Prefetch image to avoid lags.
     /*!

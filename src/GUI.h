@@ -45,7 +45,8 @@ namespace eyegui
             float vectorGraphicsDPI,
             float fontTallSize,
             float fontMediumSize,
-            float fontSmallSize);
+            float fontSmallSize,
+			FontSize descriptionFontSize);
 
         // Destructor
         virtual ~GUI();
@@ -89,6 +90,9 @@ namespace eyegui
         // Add dictionary. Returns index as handle
         uint addDictionary(std::string filepath);
 
+		// Set whether descriptions are shown
+		void setShowDescriptions(bool showDescriptions);
+
         // *** Methods accessed by other classes ***
 
         // Getter for window size
@@ -118,6 +122,12 @@ namespace eyegui
 
         // Get pointer to dictionary, may be NULL
         Dictionary const * getDictionary(uint dictionaryIndex) const;
+
+		// Get whether buttons should show description
+		bool getShowDescriptions() const;
+
+		// Get font size for descriptions
+		FontSize getDescriptionFontSize() const;
 
     private:
 
@@ -235,6 +245,8 @@ namespace eyegui
         float mFontMediumSize;
         float mFontSmallSize;
         std::vector<std::unique_ptr<Dictionary> > mDictionaries;
+		bool mShowDescriptions;
+		FontSize mDescriptionFontSize;
     };
 }
 

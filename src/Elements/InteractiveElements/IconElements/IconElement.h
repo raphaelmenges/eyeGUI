@@ -9,7 +9,8 @@
 #ifndef ICON_ELEMENT_H_
 #define ICON_ELEMENT_H_
 
-#include "Elements/InteractiveElements/InteractiveElement.h"
+#include "src/Elements/InteractiveElements/InteractiveElement.h"
+#include "src/Rendering/Assets/Text/TextFlow.h"
 
 namespace eyegui
 {
@@ -41,14 +42,27 @@ namespace eyegui
 
     protected:
 
+		// Updating filled by subclasses, returns adaptive scale
+		virtual float specialUpdate(float tpf, Input* pInput);
+
         // Drawing filled by subclasses
         virtual void specialDraw() const;
+
+		// Transformation filled by subclasses
+		virtual void specialTransformAndSize();
+
+		// Reset filled by subclasses
+		virtual void specialReset();
 
         // Calculate aspect ratio correction for icon on gizmo
         glm::vec2 iconAspectRatioCorrection() const;
 
         // Members
         Texture const * mpIcon;
+		std::unique_ptr<TextFlow> mupDescriptionFlow; // May be NULL when no description given
+		LerpValue mDescriptionAlpha;
+
+
     };
 }
 

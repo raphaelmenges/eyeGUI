@@ -1381,6 +1381,16 @@ namespace eyegui
         return result;
     }
 
+	bool Layout::getShowDescriptions() const
+	{
+		return mpGUI->getShowDescriptions();
+	}
+
+	FontSize Layout::getDescriptionFontSize() const
+	{
+		return mpGUI->getDescriptionFontSize();
+	}
+
     void Layout::internalResizing()
     {
         if (mResizeNecessary && mAlpha.getValue() > 0)
