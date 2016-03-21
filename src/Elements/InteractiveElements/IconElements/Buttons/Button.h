@@ -34,6 +34,8 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             std::string iconFilepath,
+			std::u16string desc,
+			std::string descKey,
             bool isSwitch
             );
 

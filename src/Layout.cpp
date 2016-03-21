@@ -960,7 +960,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithCircleButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    void Layout::replaceElementWithCircleButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -979,6 +979,8 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
+				desc,
+				descKey,
                 isSwitch));
 
             Element* pCircleButton = upCircleButton.get();
@@ -995,7 +997,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    void Layout::replaceElementWithBoxButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -1014,6 +1016,8 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
+				desc,
+				descKey,
                 isSwitch));
 
             Element* pBoxButton = upBoxButton.get();
@@ -1030,7 +1034,7 @@ namespace eyegui
         }
     }
 
-    void Layout::replaceElementWithSensor(std::string id, std::string iconFilepath, bool fade)
+    void Layout::replaceElementWithSensor(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool fade)
     {
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
@@ -1048,7 +1052,9 @@ namespace eyegui
                 pElement->getBorder(),
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
-                iconFilepath));
+                iconFilepath,
+				desc,
+				descKey));
 
             Element* pSensor = upSensor.get();
 

@@ -25,7 +25,6 @@
 - Replace freetype2 by stb and use their packing algorithm!
 
 - Element description (text which is shown at penetration) for IconElement
-	- XML part
 	- why no "..." when not enough space?
 
 - Wiki
@@ -33,7 +32,7 @@
     - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
   - WordSuggest
   - ThresholdColor + DimAlpha
-	- icon element descriptions
+	- icon element descriptions (desc, descKey)
 
 ### VERSION 0.10
 - Audio (PortAudio library?)
@@ -47,9 +46,6 @@
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
 - Adaptive scaling is not that smooth -> could be problem of stack and unecessary pixel, which are given to last element
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
-- Desc(ription) for elements
-	- lookup in localization file
-	- global "help" mode or just per element?
 - uniform absolute include pathes
 - Think about: how to automatically fit text into box or fit box around text
 - set scale of text via interface (and determine whether text fits via interface?)

@@ -373,19 +373,40 @@ namespace eyegui
         pLayout->replaceElementWithBlank(id, fade);
     }
 
-    void replaceElementWithCircleButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    void replaceElementWithCircleButton(
+		Layout* pLayout,
+		std::string id,
+		std::string iconFilepath,
+		std::u16string desc,
+		std::string descKey,
+		bool isSwitch,
+		bool fade)
     {
-        pLayout->replaceElementWithCircleButton(id, iconFilepath, isSwitch, fade);
+        pLayout->replaceElementWithCircleButton(id, iconFilepath, desc, descKey, isSwitch, fade);
     }
 
-    void replaceElementWithBoxButton(Layout* pLayout, std::string id, std::string iconFilepath, bool isSwitch, bool fade)
+    void replaceElementWithBoxButton(
+		Layout* pLayout,
+		std::string id,
+		std::string
+		iconFilepath,
+		std::u16string desc,
+		std::string descKey,
+		bool isSwitch,
+		bool fade)
     {
-        pLayout->replaceElementWithBoxButton(id, iconFilepath, isSwitch, fade);
+        pLayout->replaceElementWithBoxButton(id, iconFilepath, desc, descKey, isSwitch, fade);
     }
 
-    void replaceElementWithSensor(Layout* pLayout, std::string id, std::string iconFilepath, bool fade)
+    void replaceElementWithSensor(
+		Layout* pLayout,
+		std::string id,
+		std::string iconFilepath,
+		std::u16string desc,
+		std::string descKey,
+		bool fade)
     {
-        pLayout->replaceElementWithSensor(id, iconFilepath, fade);
+        pLayout->replaceElementWithSensor(id, iconFilepath, desc, descKey, fade);
     }
 
     void replaceElementWithTextBlock(

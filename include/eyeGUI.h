@@ -720,6 +720,8 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
+	  \param desc is fallback for description.
+	  \param descKey is key for lookup in localization file for description.
       \param isSwitch indicates, whether button should be a switch.
       \param fade indicates, whether replaced element should fade.
     */
@@ -727,6 +729,8 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
+		std::u16string desc,
+		std::string descKey,
         bool isSwitch = false,
         bool fade = false);
 
@@ -735,6 +739,8 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
+	  \param desc is fallback for description.
+	  \param descKey is key for lookup in localization file for description.
       \param isSwitch indicates, whether button should be a switch.
       \param fade indicates, whether replaced element should fade.
     */
@@ -742,6 +748,8 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
+		std::u16string desc,
+		std::string descKey,
         bool isSwitch = false,
         bool fade = false);
 
@@ -750,12 +758,16 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
+	  \param desc is fallback for description.
+	  \param descKey is key for lookup in localization file for description.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithSensor(
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
+		std::u16string desc,
+		std::string descKey,
         bool fade = false);
 
     //! Replace element with text block.

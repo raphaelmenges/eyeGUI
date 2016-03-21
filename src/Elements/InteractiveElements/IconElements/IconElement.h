@@ -32,7 +32,9 @@ namespace eyegui
             float border,
             bool dimming,
             bool adaptiveScaling,
-            std::string iconFilepath);
+            std::string iconFilepath,
+			std::u16string desc,
+			std::string descKey);
 
         // Destructor
         virtual ~IconElement() = 0;
@@ -59,6 +61,7 @@ namespace eyegui
 
         // Members
         Texture const * mpIcon;
+		std::string mDescriptionKey;
 		std::unique_ptr<TextFlow> mupDescriptionFlow; // May be NULL when no description given
 		LerpValue mDescriptionAlpha;
 

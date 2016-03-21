@@ -224,13 +224,13 @@ namespace eyegui
         void replaceElementWithBlank(std::string id, bool fade);
 
         // Replace any element with circle button
-        void replaceElementWithCircleButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade);
+        void replaceElementWithCircleButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade);
 
         // Replace any element with box button
-        void replaceElementWithBoxButton(std::string id, std::string iconFilepath, bool isSwitch, bool fade);
+        void replaceElementWithBoxButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade);
 
         // Replace any element with sensor
-        void replaceElementWithSensor(std::string id, std::string iconFilepath, bool fade);
+        void replaceElementWithSensor(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool fade);
 
         // Replace any element with text block
         void replaceElementWithTextBlock(

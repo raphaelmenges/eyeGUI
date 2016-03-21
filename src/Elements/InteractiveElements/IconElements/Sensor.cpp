@@ -26,7 +26,9 @@ namespace eyegui
         float border,
         bool dimming,
         bool adaptiveScaling,
-        std::string iconFilepath) : IconElement(
+        std::string iconFilepath,
+		std::u16string desc,
+		std::string descKey) : IconElement(
             id,
             styleName,
             pParent,
@@ -39,7 +41,9 @@ namespace eyegui
             border,
             dimming,
             adaptiveScaling,
-            iconFilepath)
+            iconFilepath,
+			desc,
+			descKey)
     {
         // Fill members
         mType = Type::SENSOR;

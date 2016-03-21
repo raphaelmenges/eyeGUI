@@ -500,18 +500,10 @@ namespace eyegui
             // Get text scale
             float textScale = parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
 
-            // Get content
-            std::string contentValue = parseStringAttribute("content", xmlTextBlock);
-
-            // Xml parser replaces new lines with visible "\n"
-            replaceString(contentValue, "\\n", "\n");
-
-            // Convert to utf-16 string
-            std::u16string content;
-            convertUTF8ToUTF16(contentValue, content);
-
-            // Get key for localization
-            std::string key = parseStringAttribute("key", xmlTextBlock);
+			// Localization
+			std::u16string content;
+			std::string key;
+			localizationHelper(xmlTextBlock, "content", "key", content, key);
 
             // Create text block
             std::unique_ptr<TextBlock> upTextBlock =
@@ -548,11 +540,16 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlCircleButton);
 
+			// Description
+			std::u16string desc;
+			std::string descKey;
+			localizationHelper(xmlCircleButton, "desc", "descKey", desc, descKey);
+
             // Is button a switch?
             bool isSwitch = parseBoolAttribute("switch", xmlCircleButton);
 
             // Create circle button
-            std::unique_ptr<CircleButton> upCircleButton = std::unique_ptr<CircleButton>(new CircleButton(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, isSwitch));
+            std::unique_ptr<CircleButton> upCircleButton = std::unique_ptr<CircleButton>(new CircleButton(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, desc, descKey, isSwitch));
 
             // Return circle button
             return (std::move(upCircleButton));
@@ -563,11 +560,16 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlBoxButton);
 
+			// Description
+			std::u16string desc;
+			std::string descKey;
+			localizationHelper(xmlBoxButton, "desc", "descKey", desc, descKey);
+
             // Is button a switch?
             bool isSwitch = parseBoolAttribute("switch", xmlBoxButton);
 
             // Create box button
-            std::unique_ptr<BoxButton> upBoxButton = std::unique_ptr<BoxButton>(new BoxButton(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, isSwitch));
+            std::unique_ptr<BoxButton> upBoxButton = std::unique_ptr<BoxButton>(new BoxButton(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, desc, descKey, isSwitch));
 
             // Return box button
             return (std::move(upBoxButton));
@@ -578,8 +580,13 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlSensor);
 
+			// Description
+			std::u16string desc;
+			std::string descKey;
+			localizationHelper(xmlSensor, "desc", "descKey", desc, descKey);
+
             // Create sensor
-            std::unique_ptr<Sensor> upSensor = std::unique_ptr<Sensor>(new Sensor(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath));
+            std::unique_ptr<Sensor> upSensor = std::unique_ptr<Sensor>(new Sensor(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, desc, descKey));
 
             // Return sensor
             return (std::move(upSensor));
@@ -590,6 +597,11 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlDropButton);
 
+			// Description
+			std::u16string desc;
+			std::string descKey;
+			localizationHelper(xmlDropButton, "desc", "descKey", desc, descKey);
+
             // Get usage of available space
             float space = parsePercentAttribute("space", xmlDropButton);
             if (space < 0 || space > 1)
@@ -598,7 +610,7 @@ namespace eyegui
             }
 
             // Create drop button
-            std::unique_ptr<DropButton> upDropButton = std::unique_ptr<DropButton>(new DropButton(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, space));
+            std::unique_ptr<DropButton> upDropButton = std::unique_ptr<DropButton>(new DropButton(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, desc, descKey, space));
 
             // Attach inner element
             tinyxml2::XMLElement const * xmlElement = xmlDropButton->FirstChildElement();
@@ -692,6 +704,21 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Unknown font size used in element: " + fontSizeValue, filepath);
             }
         }
+
+		void localizationHelper(tinyxml2::XMLElement const * xmlElement, std::string contentAttribute, std::string keyAttribute, std::u16string& rContent, std::string& rKey)
+		{
+			// Get content
+			std::string contentValue = parseStringAttribute(contentAttribute, xmlElement);
+
+			// Xml parser replaces new lines with visible "\n"
+			replaceString(contentValue, "\\n", "\n");
+
+			// Convert to utf-16 string
+			convertUTF8ToUTF16(contentValue, rContent);
+
+			// Get key for localization
+			rKey = parseStringAttribute(keyAttribute, xmlElement);
+		}
 
         bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& rExpectedValue)
         {

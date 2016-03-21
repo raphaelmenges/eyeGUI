@@ -7,7 +7,8 @@
 
 #include "IconElement.h"
 
-#include "Layout.h"
+#include "src/Layout.h"
+#include "src/Utilities/OperationNotifier.h"
 
 namespace eyegui
 {
@@ -24,7 +25,9 @@ namespace eyegui
         float border,
         bool dimming,
         bool adaptiveScaling,
-        std::string iconFilepath) : InteractiveElement(
+        std::string iconFilepath,
+		std::u16string desc,
+		std::string descKey) : InteractiveElement(
             id,
             styleName,
             pParent,
@@ -40,19 +43,48 @@ namespace eyegui
     {
         mType = Type::ICON_ELEMENT;
 
-        // Filling members
+        // Fill members
         setIcon(iconFilepath);
+		mDescriptionKey = descKey;
 		mDescriptionAlpha.setValue(0);
 
-		// Create description
-		// TODO: if empty, than do not use it
-		mupDescriptionFlow = std::move(
+		// Create description (TODO: maybe merge somehow with text block init)
+		std::u16string descriptionContent;
+		if (mDescriptionKey != EMPTY_STRING_ATTRIBUTE)
+		{
+			std::u16string localization = mpLayout->getContentFromLocalization(mDescriptionKey);
+			if (localization == LOCALIZATION_NOT_FOUND)
+			{
+				throwWarning(
+					OperationNotifier::Operation::RUNTIME,
+					"No localization used or one found for following key: " + mDescriptionKey + ". Element has following id: " + getId());
+
+				descriptionContent = desc;
+			}
+			else
+			{
+				descriptionContent = localization;
+			}
+		}
+		else
+		{
+			descriptionContent = desc;
+
+		}
+
+		// Check for non empty content. Otherwise, description flow unique pointer is just NULL
+		if (!descriptionContent.empty())
+		{
+			mupDescriptionFlow = std::move(
 				mpAssetManager->createTextFlow(
 					mpLayout->getDescriptionFontSize(),
 					TextFlowAlignment::CENTER,
 					TextFlowVerticalAlignment::CENTER,
 					1.f,
-					u"Desc"));
+					descriptionContent));
+		}
+
+
     }
 
     IconElement::~IconElement()
