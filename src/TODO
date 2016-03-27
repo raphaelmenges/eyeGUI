@@ -43,7 +43,6 @@
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
-- Adaptive scaling is not that smooth -> could be problem of stack and unecessary pixel, which are given to last element
 - Input: Consumption is strange, because for example button used input and then element update method does not know, whether it was submethod or other element. Ok, it could guess because before call of specialUpdate it was not and after that it was.
 - uniform absolute include pathes
 - Think about: how to automatically fit text into box or fit box around text
@@ -64,8 +63,6 @@ Notes:
 - Maybe use sampler states for textures instead of per texture settings
 - Rasterization of SVGs are depending on DPI at the moment
 - Strange or hacky: Since OGL functions are loaded already by the library, what happens in the main program doing the same? Seems to work at least...
-- Stack
-  - Non used pixels should be better shared among all elements not only the head in stack -> very difficult stuff
 - Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
 - Use UTF8-CPP for config and stylesheet (what would be the advantage?)
 - Input

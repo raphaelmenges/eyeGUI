@@ -177,30 +177,46 @@ namespace eyegui
             int sumUsedHeight = 0;
             std::vector<int> elemWidths;
 
-            // Collect used size
+            // Collect available size
             std::vector<int> usedWidths, usedHeights;
             uint elementNumber = 1;
             for (const std::unique_ptr<Element>& element : mChildren)
             {
-                int usedWidth, usedHeight;
+                // Available element width
                 int localElemWidth;
-                int localElemHeight;
+                localElemWidth = (int)((float)mInnerWidth
+                    * (element->getDynamicScale() / completeScale));
+                sumElemWidth += localElemWidth;
+                elemWidths.push_back(localElemWidth);
 
-                // Element width
-                if (elementNumber == mChildren.size())
+                // Next looping
+                elementNumber++;
+            }
+
+            // Go over width and add remaining pixels to some elements
+            int remainingPixels = mInnerWidth - sumElemWidth;
+            float step = ((float)remainingPixels) / (float)mChildren.size();
+            float accStep = 0;
+            int i = 0;
+            for (const std::unique_ptr<Element>& element : mChildren)
+            {
+                // Share remaining pixels
+                accStep += step;
+                if(accStep > 1.f)
                 {
-                    // Fill stack with last element
-                    localElemWidth = mInnerWidth - sumElemWidth;
+                    int acc = (int)accStep;
+                    elemWidths[i] += acc;
+                    accStep -= (float)acc;
                 }
-                else
+
+                // For last element, decide to add pixel if something is left
+                if(i == mChildren.size()-1 && accStep > 0)
                 {
-                    // Use dynamic scale
-                    localElemWidth = (int)((float)mInnerWidth
-                        * (element->getDynamicScale() / completeScale));
-                    sumElemWidth += localElemWidth;
+                    elemWidths[i] += 1;
                 }
 
                 // Element height
+                int localElemHeight;
                 if (mRelativeScaling == RelativeScaling::BOTH_AXES)
                 {
                     localElemHeight = (int)((float)mInnerHeight
@@ -210,19 +226,21 @@ namespace eyegui
                 {
                     localElemHeight = mInnerHeight;
                 }
-                elemWidths.push_back(localElemWidth);
-                element->evaluateSize(localElemWidth, localElemHeight, usedWidth, usedHeight);
+
+                // Evaluate used space and remember it
+                int usedWidth, usedHeight;
+                element->evaluateSize(elemWidths[i], localElemHeight, usedWidth, usedHeight);
                 usedWidths.push_back(usedWidth);
                 usedHeights.push_back(usedHeight);
                 sumUsedWidth += usedWidth;
                 sumUsedHeight += usedHeight;
 
-                // Next looping
-                elementNumber++;
+                // Prepare for next run
+                i++;
             }
 
             // Alignment
-            int i = 0;
+            i = 0;
             int usedPadding = (int)((float)(mInnerWidth - sumUsedWidth) * mPadding);
             int usedElemPadding = usedPadding / (int)mChildren.size();
 
@@ -298,6 +316,7 @@ namespace eyegui
             int sumUsedHeight = 0;
             std::vector<int> elemHeights;
 
+            /*
             // Collect used size
             std::vector<int> usedWidths, usedHeights;
             uint elementNumber = 1;
@@ -306,6 +325,11 @@ namespace eyegui
                 int usedWidth, usedHeight;
                 int localElemWidth;
                 int localElemHeight;
+
+                // Available element height
+                localElemHeight = (int)((float)mInnerHeight
+                    * (element->getDynamicScale() / completeScale));
+                sumElemHeight += localElemHeight;
 
                 // Element width
                 if (mRelativeScaling == RelativeScaling::BOTH_AXES)
@@ -318,20 +342,6 @@ namespace eyegui
                     localElemWidth = mInnerWidth;
                 }
 
-                // Element height
-                if (elementNumber == mChildren.size())
-                {
-                    // Fill stack with last element
-                    localElemHeight = mInnerHeight - sumElemHeight;
-                }
-                else
-                {
-                    // Use dynamic scale
-                    localElemHeight = (int)((float)mInnerHeight
-                        * (element->getDynamicScale() / completeScale));
-                    sumElemHeight += localElemHeight;
-                }
-
                 elemHeights.push_back(localElemHeight);
                 element->evaluateSize(localElemWidth, localElemHeight, usedWidth, usedHeight);
                 usedWidths.push_back(usedWidth);
@@ -342,9 +352,72 @@ namespace eyegui
                 // Next looping
                 elementNumber++;
             }
+            */
+
+            // Collect available size
+            std::vector<int> usedWidths, usedHeights;
+            uint elementNumber = 1;
+            for (const std::unique_ptr<Element>& element : mChildren)
+            {
+                // Available element height
+                int localElemHeight;
+                localElemHeight = (int)((float)mInnerHeight
+                    * (element->getDynamicScale() / completeScale));
+                sumElemHeight += localElemHeight;
+                elemHeights.push_back(localElemHeight);
+
+                // Next looping
+                elementNumber++;
+            }
+
+            // Go over height and add remaining pixels to some elements
+            int remainingPixels = mInnerHeight - sumElemHeight;
+            float step = ((float)remainingPixels) / (float)mChildren.size();
+            float accStep = 0;
+            int i = 0;
+            for (const std::unique_ptr<Element>& element : mChildren)
+            {
+                // Share remaining pixels
+                accStep += step;
+                if(accStep > 1.f)
+                {
+                    int acc = (int)accStep;
+                    elemHeights[i] += acc;
+                    accStep -= (float)acc;
+                }
+
+                // For last element, decide to add pixel if something is left
+                if(i == mChildren.size()-1 && accStep > 0)
+                {
+                    elemHeights[i] += 1;
+                }
+
+                // Element width
+                int localElemWidth;
+                if (mRelativeScaling == RelativeScaling::BOTH_AXES)
+                {
+                    localElemWidth = (int)((float)mInnerWidth
+                        * (element->getDynamicScale() / maxDynamicScale));
+                }
+                else
+                {
+                    localElemWidth = mInnerWidth;
+                }
+
+                // Evaluate used space and remember it
+                int usedWidth, usedHeight;
+                element->evaluateSize(localElemWidth, elemHeights[i], usedWidth, usedHeight);
+                usedWidths.push_back(usedWidth);
+                usedHeights.push_back(usedHeight);
+                sumUsedWidth += usedWidth;
+                sumUsedHeight += usedHeight;
+
+                // Prepare for next run
+                i++;
+            }
 
             // Alignment
-            int i = 0;
+            i = 0;
             int usedPadding = (int)((float)(mInnerHeight - sumUsedHeight) * mPadding);
             int usedElemPadding = usedPadding / (int)mChildren.size();
 

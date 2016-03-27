@@ -17,7 +17,7 @@ namespace eyegui
     {
         // Initialize with fallback values
         std::string filepath;
-        float animationDuration = 0.2f;
+        float animationDuration = 0.1f;
         float sensorPenetrationIncreaseDuration = 3.0f;
         float sensorPenetrationDecreaseDuration = 1.5f;
         float buttonThresholdIncreaseDuration = 1.0f;
@@ -35,7 +35,7 @@ namespace eyegui
         float gazeVisualizationRejectThreshold = 0.125f;
         float gazeVisualizationMinSize = 0.02f;
         float gazeVisualizationMaxSize = 0.075f;
-		float keyboardSpeedMultiplier = 1.0f;
+        float keyboardSpeedMultiplier = 1.0f;
     };
 }
 
