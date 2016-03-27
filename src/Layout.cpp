@@ -664,6 +664,19 @@ namespace eyegui
         }
     }
 
+	void Layout::registerWordSuggestListener(std::string id, std::weak_ptr<WordSuggestListener> wpListener)
+	{
+		WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
+		if (pWordSuggest != NULL)
+		{
+			pWordSuggest->registerListener(wpListener);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find word suggest with id: " + id);
+		}
+	}
+
     void Layout::selectInteractiveElement(std::string id)
     {
         InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));

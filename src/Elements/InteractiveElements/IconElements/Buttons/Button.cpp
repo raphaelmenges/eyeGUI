@@ -174,9 +174,9 @@ namespace eyegui
 
         // Threshold
         if (
-            (mPressing.getValue() == 0 || mPressing.getValue() == 1) // Only when completey up or down
-            && penetrated // Penetration
-            && !(!mIsSwitch && mPressing.getValue() > 0)) // Avoids to add threshold for none switch when at down position
+            (mPressing.getValue() == 0 || mPressing.getValue() == 1) // only when completey up or down
+            && penetrated // penetration
+            && !(!mIsSwitch && mPressing.getValue() > 0)) // avoids to add threshold for none switch when at down position
         {
             mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration);
 
@@ -215,7 +215,7 @@ namespace eyegui
                 }
                 mpThresholdItem->getShader()->fillValue("orientation", orientation);
             }
-            mpThresholdItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+            mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
             mpThresholdItem->draw();
         }
 

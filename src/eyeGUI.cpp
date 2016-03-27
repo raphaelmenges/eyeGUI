@@ -352,6 +352,11 @@ namespace eyegui
         pLayout->registerKeyboardListener(id, wpListener);
     }
 
+	void registerWordSuggestListener(Layout* pLayout, std::string id, std::weak_ptr<WordSuggestListener> wpListener)
+	{
+		pLayout->registerWordSuggestListener(id, wpListener);
+	}
+
     void replaceElementWithBlock(
         Layout* pLayout,
         std::string id,

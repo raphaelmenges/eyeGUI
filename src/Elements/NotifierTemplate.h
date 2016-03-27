@@ -21,7 +21,7 @@
 namespace eyegui
 {
     // Ugly enumeration, but somehow layout must remember to call correct notification
-    enum class NotificationType { BUTTON_HIT, BUTTON_DOWN, BUTTON_UP, SENSOR_PENETRATED, KEYBOARD_KEY_PRESSED};
+    enum class NotificationType { BUTTON_HIT, BUTTON_DOWN, BUTTON_UP, SENSOR_PENETRATED, KEYBOARD_KEY_PRESSED, WORD_SUGGEST_CHOSEN };
 
     template <class T>
     class NotifierTemplate

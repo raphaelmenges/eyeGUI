@@ -38,8 +38,11 @@ namespace eyegui
         virtual void draw(glm::vec4 color, float alpha) const;
 
         // Getter
+		int getX() const;
+		int getY() const;
         int getWidth() const;
 		int getHeight() const;
+		std::u16string getContent() const;
 
     protected:
 

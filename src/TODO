@@ -8,9 +8,7 @@
 - check input of stylesheet parser and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
 
 - WordSuggest
-  - Display suggestions
-    - Interaction
-		- Listener for chosen suggestion
+  - TODOs in code
   
 - Dictionary
   - write email to utf8rewind author because of windows fix

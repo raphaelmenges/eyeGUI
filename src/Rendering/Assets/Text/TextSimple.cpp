@@ -80,6 +80,16 @@ namespace eyegui
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
 
+	int TextSimple::getX() const
+	{
+		return mX;
+	}
+
+	int TextSimple::getY() const
+	{
+		return mY;
+	}
+
     int TextSimple::getWidth() const
     {
         return mWidth;
@@ -88,6 +98,11 @@ namespace eyegui
 	int TextSimple::getHeight() const
 	{
 		return mHeight;
+	}
+
+	std::u16string TextSimple::getContent() const
+	{
+		return mContent;
 	}
 
     void TextSimple::specialCalculateMesh(

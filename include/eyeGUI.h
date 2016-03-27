@@ -140,6 +140,34 @@ namespace eyegui
         void virtual keyPressed(Layout* pLayout, std::string id, std::string value) = 0;
     };
 
+	//! Abstract listener class for word suggest.
+	class WordSuggestListener
+	{
+	public:
+
+		//! Constructor.
+		WordSuggestListener();
+
+		//! Destructor.
+		virtual ~WordSuggestListener() = 0;
+
+		//! Callback for choosing suggested word.
+		/*!
+		\param pLayout pointer to layout from which callback is coming.
+		\param id is the unique id of the word suggest which causes the callback.
+		\param value is the u16string of the suggestion.
+		*/
+		void virtual chosen(Layout* pLayout, std::string id, std::u16string value) = 0;
+
+		//! Callback for choosing suggested word.
+		/*!
+		\param pLayout pointer to layout from which callback is coming.
+		\param id is the unique id of the word suggest which causes the callback.
+		\param value is the string of the suggestion.
+		*/
+		void virtual chosen(Layout* pLayout, std::string id, std::string value) = 0;
+	};
+
     //! Struct for relative values of position and size
     struct RelativePositionAndSize
     {
@@ -670,6 +698,17 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::weak_ptr<KeyboardListener> wpListener);
+
+	//! Register listener to word suggest.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param wpListener is weak pointer to listener that should be registered.
+	*/
+	void registerWordSuggestListener(
+		Layout* pLayout,
+		std::string id,
+		std::weak_ptr<WordSuggestListener> wpListener);
 
     //! Replace element with block.
     /*!

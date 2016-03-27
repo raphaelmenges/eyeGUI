@@ -54,6 +54,7 @@ namespace eyegui
     static const uint DICTIONARY_INPUT_PAUSE_DEPTH = 0; // "Hus" -> "Haus"
     static const uint DICTIONARY_INPUT_IGNORE_DEPTH = 1; // "Huus" -> "Haus"
 	static const uint WORD_SUGGEST_MAX_SUGGESTIONS = 10;
+	static const float WORD_SUGGEST_SCROLL_DURATION = 1.f;
 }
 
 #endif // DEFINES_H_

@@ -15,7 +15,7 @@
 
 namespace eyegui
 {
-    class WordSuggest : public InteractiveElement
+    class WordSuggest : public InteractiveElement, public NotifierTemplate<WordSuggestListener>
     {
     public:
 
@@ -71,14 +71,23 @@ namespace eyegui
 
     private:
 
-		// Transform the suggestions
+		// Transform the suggestions, fills members needed in position below
 		void transformSuggestions();
+
+		// Position the suggestions
+		void positionSuggestions();
 
         // Members
         RenderItem const * mpBackground;
         FontSize mFontSize;
         std::vector<std::unique_ptr<TextSimple> > mSuggestions;
-
+		LerpValue mOffset; // offset given in percent of all suggestions
+		int mStartOffset;
+		int mDelta;
+		int mCompleteWidth;
+		std::vector<LerpValue> mThresholds;
+		RenderItem const * mpThresholdItem;
+		std::u16string mLastChosenSuggestion;
     };
 }
 

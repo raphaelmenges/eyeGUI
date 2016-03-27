@@ -575,8 +575,6 @@ namespace eyegui
 
     void Keyboard::initKeymaps(CharacterSet set)
     {
-
-
         switch (set)
         {
         case CharacterSet::US_ENGLISH:

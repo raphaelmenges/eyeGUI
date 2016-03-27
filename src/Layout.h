@@ -182,6 +182,9 @@ namespace eyegui
         // Register keyboard listener
         void registerKeyboardListener(std::string id, std::weak_ptr<KeyboardListener> wpListener);
 
+		// Register word suggest listener
+		void registerWordSuggestListener(std::string id, std::weak_ptr<WordSuggestListener> wpListener);
+
         // Select interactive element by id
         void selectInteractiveElement(std::string id);
 
