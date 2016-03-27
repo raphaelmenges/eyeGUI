@@ -38,15 +38,18 @@ namespace eyegui
         // Nothing to do
     }
 
-    void TextSimple::transform(int x, int y)
+    void TextSimple::transform()
     {
-        // Remind it a drawing
-        mX = x;
-        mY = y;
-
         // Calculate mesh since window size could have been changed
         calculateMesh();
     }
+
+	void TextSimple::setPosition(int x, int y)
+	{
+		// Remind it at drawing
+		mX = x;
+		mY = y;
+	}
 
     void TextSimple::draw(glm::vec4 color, float alpha) const
     {
@@ -81,6 +84,11 @@ namespace eyegui
     {
         return mWidth;
     }
+
+	int TextSimple::getHeight() const
+	{
+		return mHeight;
+	}
 
     void TextSimple::specialCalculateMesh(
             std::u16string streamlinedContent,

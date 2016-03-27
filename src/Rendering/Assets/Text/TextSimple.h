@@ -28,14 +28,18 @@ namespace eyegui
         // Destructor
         virtual ~TextSimple();
 
-        // Set draw position (upper left corner)
-        void transform(int x, int y);
+        // Called by transform and size method of owner
+        void transform();
+
+		// Set position for drawing
+		void setPosition(int x, int y);
 
         // Draw
         virtual void draw(glm::vec4 color, float alpha) const;
 
-        // Get width in pixels
+        // Getter
         int getWidth() const;
+		int getHeight() const;
 
     protected:
 

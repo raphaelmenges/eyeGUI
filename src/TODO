@@ -10,7 +10,6 @@
 - WordSuggest
   - Display suggestions
     - Interaction
-		- At resizing: width seems to be incorrect sometimes
 		- Listener for chosen suggestion
   
 - Dictionary

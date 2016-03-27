@@ -62,10 +62,19 @@ namespace eyegui
         // TODO: second parameter of similar words
 		mSuggestions.clear();
         std::vector<std::u16string> suggestions = pDictionary->similarWords(input, false);
+		uint i = 0;
         for(const std::u16string& rSuggestion : suggestions)
         {
             mSuggestions.push_back(std::move(mpAssetManager->createTextSimple(mFontSize, 1, rSuggestion)));
+
+			// Only add maximal allowed number of suggestions
+			if (++i >= WORD_SUGGEST_MAX_SUGGESTIONS)
+			{
+				break;
+			}
         }
+
+		// Transform the suggestions initially
 		transformSuggestions();
     }
 
@@ -107,6 +116,7 @@ namespace eyegui
 
     void WordSuggest::specialTransformAndSize()
     {
+		std::cout << "hallo" << std::endl;
 		transformSuggestions();
     }
 
@@ -127,12 +137,26 @@ namespace eyegui
 
 	void WordSuggest::transformSuggestions()
 	{
-		int xOffset = 0;
-		int xDelta = (int)((float)(mpLayout->getLayoutWidth()) * 0.005f);
+		// Fetch size of space in font (somehow strange way, but who cares)
+		auto spaceText = mpAssetManager->createTextSimple(mFontSize, 1, u" ");
+		int space = spaceText->getWidth();
+
+		// Go over suggestions and transform them
+		int xOffset = space;
+		int xDelta = 2 * space;
 		for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
 		{
+			// Transform suggestion to fit available space
+			rSuggestion->transform();
+
+			// Get values
 			int width = rSuggestion->getWidth();
-			rSuggestion->transform(mX + xOffset, mY);
+			int height = rSuggestion->getHeight();
+
+			// Set new position
+			rSuggestion->setPosition(mX + xOffset, mY + (mHeight - height) / 2);
+
+			// Remind offset
 			xOffset += width + xDelta;
 		}
 	}
