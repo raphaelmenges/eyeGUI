@@ -16,6 +16,9 @@
 #include <algorithm>
 #include <sstream>
 
+// TODO: testing
+#include <iostream>
+
 namespace eyegui
 {
     Dictionary::Dictionary(std::string filepath)
@@ -171,40 +174,40 @@ namespace eyegui
                 sortedResults.end(),
                 [&comparsionWord](const std::pair<std::u16string, int>& left, const std::pair<std::u16string, int>& right)
                 {
-					// Collect information
-					int distanceLeft = left.second;
-					int distanceRight = right.second;
-					bool leftFirstIdentical = false;
-					bool leftLastIdentical = false;
-					bool rightFirstIdentical = false;
-					bool rightLastIdentical = false;
+                    // Collect information
+                    int distanceLeft = left.second;
+                    int distanceRight = right.second;
+                    bool leftFirstIdentical = false;
+                    bool leftLastIdentical = false;
+                    bool rightFirstIdentical = false;
+                    bool rightLastIdentical = false;
 
-					if (!comparsionWord.empty())
-					{
-						if (!left.first.empty())
-						{
-							leftFirstIdentical = left.first.front() == comparsionWord.front();
-							leftLastIdentical = left.first.back() == comparsionWord.back();
-						}
-						if (!right.first.empty())
-						{
-							rightFirstIdentical = right.first.front() == comparsionWord.front();
-							rightLastIdentical = right.first.back() == comparsionWord.back();
-						}
-					}
+                    if (!comparsionWord.empty())
+                    {
+                        if (!left.first.empty())
+                        {
+                            leftFirstIdentical = left.first.front() == comparsionWord.front();
+                            leftLastIdentical = left.first.back() == comparsionWord.back();
+                        }
+                        if (!right.first.empty())
+                        {
+                            rightFirstIdentical = right.first.front() == comparsionWord.front();
+                            rightLastIdentical = right.first.back() == comparsionWord.back();
+                        }
+                    }
 
-					// Decide which word is the better suggestion (just some random stuff which looks good)
-					if (leftFirstIdentical && leftLastIdentical)
-					{
-						// Integer division
-						distanceLeft /= 2;
-					}
-					if (rightFirstIdentical && rightLastIdentical)
-					{
-						// Integer division
-						distanceRight /= 2;
-					}
-					
+                    // Decide which word is the better suggestion (just some random stuff which looks good)
+                    if (leftFirstIdentical && leftLastIdentical)
+                    {
+                        // Integer division
+                        distanceLeft /= 2;
+                    }
+                    if (rightFirstIdentical && rightLastIdentical)
+                    {
+                        // Integer division
+                        distanceRight /= 2;
+                    }
+
                     return distanceLeft < distanceRight;
                 });
 
@@ -263,19 +266,19 @@ namespace eyegui
 
         // Set word state in last letter of word, seen from root
         // NONE is initial value
-		if (pNode != NULL)
-		{
-			if (pNode->wordState == WordState::NONE)
-			{
-				// First occurence, use given case
-				pNode->wordState = wordState;
-			}
-			else if (pNode->wordState != wordState)
-			{
-				// Already saved with other case or already added as upper and lower case
-				pNode->wordState = WordState::BOTH_STARTS;
-			}
-		}
+        if (pNode != NULL)
+        {
+            if (pNode->wordState == WordState::NONE)
+            {
+                // First occurence, use given case
+                pNode->wordState = wordState;
+            }
+            else if (pNode->wordState != wordState)
+            {
+                // Already saved with other case or already added as upper and lower case
+                pNode->wordState = WordState::BOTH_STARTS;
+            }
+        }
     }
 
     Dictionary::WordState Dictionary::convertToLower(std::u16string& rWord) const
@@ -503,6 +506,10 @@ namespace eyegui
 
     bool Dictionary::addFuzzyWord(const std::u16string& rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const
     {
+        std::string output;
+        convertUTF16ToUTF8(rCollectedWord, output);
+        std::cout << output << std::endl;
+
         switch (collectedState)
         {
         case WordState::BOTH_STARTS:

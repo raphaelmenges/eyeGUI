@@ -1,36 +1,30 @@
 ### VERSION 0.9
-
 - Bug: keyboard freezes program when typing in characters like ß (nothing starts with ß, so nothing is found and everythink explodes?)
-
+  - Seems to ouput stuff which is not complete ("25-jähri" for example)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
-	- Test dimming / marking
-	
-- threshold element (as superclass for all buttons, also textbutton)
-
-- check input of stylesheet parser and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
-  
+  - Test dimming / marking
+- Textbutton
+  - Threshold element (as superclass for all buttons, also textbutton)
+- Check input of stylesheet parser and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
 - Dictionary
   - write email to utf8rewind author because of windows fix
-  
 - Keyboard
   - Better german and english layout
-  - Jumps a little bit at resizing
-	
-- TextEdit element for easy text editing (zoom, cursor etc)
-
-- Replace freetype2 by stb and use their packing algorithm!
-
+  - Jumps a little bit at resizing (no more seen)
 - Element description (text which is shown at penetration) for IconElement
-	- why no "..." when not enough space?
-
+  - why no "..." when not enough space?
 - Wiki
   - Dictionary
     - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
   - WordSuggest
   - ThresholdColor + DimAlpha
-	- icon element descriptions (desc, descKey)
+    - icon element descriptions (desc, descKey)
 
 ### VERSION 0.10
+- TextEdit element for easy text editing (zoom, cursor etc)
+- Replace freetype2 by stb and use their packing algorithm!
+
+### VERSION 0.11
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
@@ -48,7 +42,7 @@
 ### VERSION 1.0
 - Code review!
   - valgrind
-	- Check all fin whether utf-8 compatible
+    - Check all fin whether utf-8 compatible
 - Some members of element could be private but getters necessary..
 
 Notes:
@@ -58,7 +52,6 @@ Notes:
 - maybe switch to double to accumulate time. otherwise, every half hour there will be flickering
 - Precaching of textures (maybe write something to an text file)
 - Maybe use sampler states for textures instead of per texture settings
-- Rasterization of SVGs are depending on DPI at the moment
 - Strange or hacky: Since OGL functions are loaded already by the library, what happens in the main program doing the same? Seems to work at least...
 - Mapping of images / icons would be cool (easy exchange in whole application) (path without .png or .svg is interperted as mapping)
 - Use UTF8-CPP for config and stylesheet (what would be the advantage?)
