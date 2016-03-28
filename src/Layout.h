@@ -167,8 +167,8 @@ namespace eyegui
         void setKeymapOfKeyboard(std::string id, uint keymapIndex);
 
         // Suggest words
-        void suggestWords(std::string id, std::u16string input, uint dictionaryIndex);
-        void suggestWords(std::string id, std::string input, uint dictionaryIndex);
+        void suggestWords(std::string id, std::u16string input, uint dictionaryIndex, std::u16string& rBestSuggestion);
+        void suggestWords(std::string id, std::string input, uint dictionaryIndex, std::string& rBestSuggestion);
 
 		// Clear suggestions
 		void clearSuggestions(std::string id);

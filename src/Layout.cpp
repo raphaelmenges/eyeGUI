@@ -584,7 +584,7 @@ namespace eyegui
         }
     }
 
-    void Layout::suggestWords(std::string id, std::u16string input, uint dictionaryIndex)
+    void Layout::suggestWords(std::string id, std::u16string input, uint dictionaryIndex, std::u16string& rBestSuggestion)
     {
         WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
         if (pWordSuggest != NULL)
@@ -592,7 +592,7 @@ namespace eyegui
             Dictionary const * pDictionary = mpGUI->getDictionary(dictionaryIndex);
             if(pDictionary != NULL)
             {
-                pWordSuggest->suggest(input, pDictionary);
+                pWordSuggest->suggest(input, pDictionary, rBestSuggestion);
             }
             else
             {
@@ -605,11 +605,13 @@ namespace eyegui
         }
     }
 
-    void Layout::suggestWords(std::string id, std::string input, uint dictionaryIndex)
+    void Layout::suggestWords(std::string id, std::string input, uint dictionaryIndex, std::string& rBestSuggestion)
     {
         std::u16string input16;
         convertUTF8ToUTF16(input, input16);
-        suggestWords(id, input16, dictionaryIndex);
+		std::u16string bestSuggestion16;
+        suggestWords(id, input16, dictionaryIndex, bestSuggestion16);
+		convertUTF16ToUTF8(bestSuggestion16, rBestSuggestion);
     }
 
 	void Layout::clearSuggestions(std::string id)

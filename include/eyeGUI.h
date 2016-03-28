@@ -641,14 +641,33 @@ namespace eyegui
     */
     void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
 
+	//! Give input to word suggest element.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param input is input for suggestions as UTF-16 string.
+	\param dictionaryIndex is index of used dictionary.
+	*/
+	void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex);
+
+	//! Give input to word suggest element.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param input is input for suggestions as UTF-8 string.
+	\param dictionaryIndex is index of used dictionary.
+	*/
+	void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex);
+
     //! Give input to word suggest element.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param input is input for suggestions as UTF-16 string.
       \param dictionaryIndex is index of used dictionary.
+	  \param rBestSuggestion is reference to UTF-16 string into which best suggestion is written. May be empty.
     */
-    void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex);
+    void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex, std::u16string& rBestSuggestion);
 
     //! Give input to word suggest element.
     /*!
@@ -656,8 +675,9 @@ namespace eyegui
       \param id is the unique id of an element.
       \param input is input for suggestions as UTF-8 string.
       \param dictionaryIndex is index of used dictionary.
+	  \param rBestSuggestion is reference to UTF-8 string into which best suggestion is written. May be empty.
     */
-    void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex);
+    void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex, std::string& rBestSuggestion);
 
 	//! Clears suggestions of word suggest element.
 	/*!

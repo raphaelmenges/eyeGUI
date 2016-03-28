@@ -11,9 +11,6 @@
 #include "src/Rendering/ScissorStack.h"
 #include "src/Utilities/Helper.h"
 
-// TODO: testing
-#include <iostream>
-
 namespace eyegui
 {
     WordSuggest::WordSuggest(
@@ -65,20 +62,24 @@ namespace eyegui
         // Nothing to do
     }
 
-    void WordSuggest::suggest(std::u16string input, Dictionary const * pDictionary)
+    void WordSuggest::suggest(std::u16string input, Dictionary const * pDictionary, std::u16string& rBestSuggestion)
     {
 		// Clear up
 		mSuggestions.clear();
 		mThresholds.clear();
+
+		// Fallback for suggestion
+		rBestSuggestion = u"";
 
 		// Only do something when there is input
 		if (!input.empty())
 		{
 			// Decide whether word should start with big letter
 			bool startsWithUpperCase = false;
-			if (input[0] != toLower(input[0]))
+			char16_t lowerCaseLetter = input[0];
+			if (toLower(lowerCaseLetter))
 			{
-				startsWithUpperCase = true;
+				startsWithUpperCase = lowerCaseLetter != input[0];
 			}
 
 			// Ask for suggestions
@@ -95,6 +96,13 @@ namespace eyegui
 				}
 			}
 
+			// Save best suggestion
+			if (!suggestions.empty())
+			{
+				// First one is best
+				rBestSuggestion = suggestions[0];
+			}
+
 			// Prepare thresholds
 			mThresholds.resize(mSuggestions.size(), LerpValue(0));
 
@@ -107,6 +115,7 @@ namespace eyegui
 	void WordSuggest::clear()
 	{
 		mOffset.setValue(0.f);
+		mCompleteWidth = 0;
 		mSuggestions.clear();
 	}
 
@@ -120,55 +129,60 @@ namespace eyegui
 		int focusedWord = -1; // no word focused is indicated by -1
 		if (penetrated)
 		{
-			// Update offset
-			float gazeInElementHorizontal = ((float)(pInput->gazeX - mX)) / (float)mWidth;
-			gazeInElementHorizontal -= 0.5f;
-			gazeInElementHorizontal *= 2; // scale to [-1,1]
-			mOffset.update((tpf * gazeInElementHorizontal) / WORD_SUGGEST_SCROLL_DURATION);
-
-			// Tell it suggestions (no transform needed)
-			positionSuggestions();
-
-			// Decide whether word is focused (just linear search)
-			int i = 0;
-			for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
+			// Only update suggestions when there are some
+			if (!mSuggestions.empty() && mCompleteWidth != 0)
 			{
-				// Uses real position, offset is already in suggestion
-				int x = rSuggestion->getX();
-				int width = rSuggestion->getWidth();
-				if (pInput->gazeX >= x && pInput->gazeX < x + width)
+				// Update offset
+				float gazeInElementHorizontal = ((float)(pInput->gazeX - mX)) / (float)mWidth;
+				gazeInElementHorizontal -= 0.5f;
+				gazeInElementHorizontal *= 2; // scale to [-1,1]
+				float offsetSpeed = ((float)mWidth / (float)mCompleteWidth) *  WORD_SUGGEST_SCROLL_SPEED;
+				mOffset.update((tpf * gazeInElementHorizontal) * offsetSpeed);
+
+				// Tell it suggestions (no transform needed)
+				positionSuggestions();
+
+				// Decide whether word is focused (just linear search)
+				int i = 0;
+				for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
 				{
-					focusedWord = i;
-					break;
+					// Uses real position, offset is already in suggestion
+					int x = rSuggestion->getX();
+					int width = rSuggestion->getWidth();
+					if (pInput->gazeX >= x && pInput->gazeX < x + width)
+					{
+						focusedWord = i;
+						break;
+					}
+					i++;
 				}
-				i++;
 			}
 		}
 
-		// Update threshold (TODO: durations should be in config)
-		int i = 0;
-		for (LerpValue& rThreshold : mThresholds)
+		// Update threshold
+		float standardWidth = (float)(mpAssetManager->createTextSimple(mFontSize, 1, u"hallo")->getWidth()); // just some width to compare to
+		int count = (int)mSuggestions.size();
+		for (int i = 0; i < count; i++)
 		{
-			// Update threshold (TODO: Make it depending on length of word?)
-			rThreshold.update(tpf, i != focusedWord);
+			// Get width of suggestion to adapt threshold speed to length of suggestion
+			float width = float(mSuggestions[i]->getWidth());
+			float lengthCompensationMultiplicator = 0.75f + 0.25f * (standardWidth / width); // raw values would be too heavy
+
+			// Update threshold
+			mThresholds[i].update(tpf * WORD_SUGGEST_THRESHOLD_SPEED * lengthCompensationMultiplicator, i != focusedWord);
 
 			// Check for full threshold
-			if (rThreshold.getValue() >= 1)
+			if (mThresholds[i].getValue() >= 1)
 			{
-				// Remember chosen suggestion
+				// Remember chosen suggestion (only one, so multiple per frame are not supported)
 				mLastChosenSuggestion = mSuggestions[i]->getContent();
 
 				// Inform listener after updating
 				mpNotificationQueue->enqueue(getId(), NotificationType::WORD_SUGGEST_CHOSEN);
 
 				// Reset that threshold
-				rThreshold.setValue(0.f);
-
-				// Break
-				break;
+				mThresholds[i].setValue(0.f);
 			}
-
-			i++;
 		}
 
 		return adaptiveScale;
@@ -187,47 +201,51 @@ namespace eyegui
             mpBackground->draw();
         }
 
-		// Push scissor to prohibit text simple assets to draw outside of this element
-		pushScissor(mX, mY, mWidth, mHeight);
-
-        // Draw suggestions
-        for(const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
-        {
-            rSuggestion->draw(getStyle()->fontColor, mAlpha);
-        }
-
-		// Draw thresholds (should be same number as suggestions
-		int count = (int)mSuggestions.size();
-		for (int i = 0; i < count; i++)
+		// *** SUGGESTIONS ***
+		if (!mSuggestions.empty())
 		{
-			// Get threshold for that suggestion
-			float threshold = mThresholds[i].getValue();
+			// Push scissor to prohibit text simple assets to draw outside of this element
+			pushScissor(mX, mY, mWidth, mHeight);
 
-			// Only draw necessary stuff
-			if (threshold > 0)
+			// Draw suggestions
+			for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
 			{
-				// Calculate matrix
-				glm::mat4 matrix = calculateDrawMatrix(
-					mpLayout->getLayoutWidth(),
-					mpLayout->getLayoutHeight(),
-					mSuggestions[i]->getX() - (mDelta / 2),
-					mY,
-					mSuggestions[i]->getWidth() + mDelta,
-					mHeight);
-
-				// Draw threshold
-				mpThresholdItem->bind();
-				mpThresholdItem->getShader()->fillValue("matrix", matrix);
-				mpThresholdItem->getShader()->fillValue("thresholdColor", getStyle()->thresholdColor);
-				mpThresholdItem->getShader()->fillValue("threshold", threshold);
-				mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
-				mpThresholdItem->getShader()->fillValue("orientation", 1.f); // vertical threshold
-				mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
-				mpThresholdItem->draw();
+				rSuggestion->draw(getStyle()->fontColor, mAlpha);
 			}
-		}
 
-		popScissor();
+			// Draw thresholds (should be same number as suggestions
+			int count = (int)mSuggestions.size();
+			for (int i = 0; i < count; i++)
+			{
+				// Get threshold for that suggestion
+				float threshold = mThresholds[i].getValue();
+
+				// Only draw necessary stuff
+				if (threshold > 0)
+				{
+					// Calculate matrix
+					glm::mat4 matrix = calculateDrawMatrix(
+						mpLayout->getLayoutWidth(),
+						mpLayout->getLayoutHeight(),
+						mSuggestions[i]->getX() - (mDelta / 2),
+						mY,
+						mSuggestions[i]->getWidth() + mDelta,
+						mHeight);
+
+					// Draw threshold
+					mpThresholdItem->bind();
+					mpThresholdItem->getShader()->fillValue("matrix", matrix);
+					mpThresholdItem->getShader()->fillValue("thresholdColor", getStyle()->thresholdColor);
+					mpThresholdItem->getShader()->fillValue("threshold", threshold);
+					mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
+					mpThresholdItem->getShader()->fillValue("orientation", 1.f); // vertical threshold
+					mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
+					mpThresholdItem->draw();
+				}
+			}
+
+			popScissor();
+		}
     }
 
     void WordSuggest::specialTransformAndSize()
@@ -244,7 +262,15 @@ namespace eyegui
 
     void WordSuggest::specialInteract()
     {
-        // TODO
+        // Just use first suggestion
+		if (!mSuggestions.empty())
+		{
+			// Remember chosen suggestion (only one, so multiple per frame are not supported)
+			mLastChosenSuggestion = mSuggestions[0]->getContent();
+
+			// Inform listener after updating
+			mpNotificationQueue->enqueue(getId(), NotificationType::WORD_SUGGEST_CHOSEN);
+		}
     }
 
     void WordSuggest::specialPipeNotification(NotificationType notification, Layout* pLayout)

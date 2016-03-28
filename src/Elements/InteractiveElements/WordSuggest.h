@@ -4,7 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Element which takes one input word via interface and displays suggestions.
+// One can chose a suggestion by threshold and listen to it with a listener
+// structure. Works good in combination with keyboard element.
 
 #ifndef WORD_SUGGEST_H_
 #define WORD_SUGGEST_H_
@@ -37,17 +39,11 @@ namespace eyegui
         // Destructor
         virtual ~WordSuggest();
 
-        // Suggest
-        void suggest(std::u16string input, Dictionary const * pDictionary);
+        // Suggest. Best suggestion may be empty.
+        void suggest(std::u16string input, Dictionary const * pDictionary, std::u16string& rBestSuggestion);
 
 		// Clear
 		void clear();
-
-        // TODO
-        // - Background
-        // - Set input word via interface
-        // - Display suggestions (update / draw method necessary)
-        // - Notification when word is chosen
 
     protected:
 

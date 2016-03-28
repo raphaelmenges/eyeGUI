@@ -324,13 +324,25 @@ namespace eyegui
 
     void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex)
     {
-        pLayout->suggestWords(id, input, dictionaryIndex);
+		std::u16string bestSuggestion;
+        pLayout->suggestWords(id, input, dictionaryIndex, bestSuggestion);
     }
 
     void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex)
     {
-        pLayout->suggestWords(id, input, dictionaryIndex);
+		std::string bestSuggestion;
+		pLayout->suggestWords(id, input, dictionaryIndex, bestSuggestion);
     }
+
+	void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex, std::u16string& rBestSuggestion)
+	{
+		pLayout->suggestWords(id, input, dictionaryIndex, rBestSuggestion);
+	}
+
+	void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex, std::string& rBestSuggestion)
+	{
+		pLayout->suggestWords(id, input, dictionaryIndex, rBestSuggestion);
+	}
 
 	void clearSuggestions(Layout* pLayout, std::string id)
 	{
