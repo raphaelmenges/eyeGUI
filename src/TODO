@@ -1,5 +1,7 @@
 ### VERSION 0.9
 
+- Bug: keyboard freezes program when typing in characters like ß (nothing starts with ß, so nothing is found and everythink explodes?)
+
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
 	- Test dimming / marking
 	
