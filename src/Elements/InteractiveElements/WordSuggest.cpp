@@ -191,7 +191,7 @@ namespace eyegui
 			// Update alpha and position
 			mChosenSuggestions[i].first -= tpf / INTERACTION_FADING_DURATION;
 			TextSimple* pChosenSuggestion = mChosenSuggestions[i].second.get();
-			pChosenSuggestion->setPosition(pChosenSuggestion->getX(), pChosenSuggestion->getY() - (tpf * WORD_SUGGEST_CHOSEN_ANIMATION_SPEED));
+			pChosenSuggestion->setPosition(pChosenSuggestion->getX(), (int)((float)pChosenSuggestion->getY() - (tpf * WORD_SUGGEST_CHOSEN_ANIMATION_SPEED)));
 
 			// Check, whether still visible
 			if (mChosenSuggestions[i].first <= 0)
