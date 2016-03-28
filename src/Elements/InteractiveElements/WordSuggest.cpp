@@ -9,6 +9,7 @@
 
 #include "src/Layout.h"
 #include "src/Rendering/ScissorStack.h"
+#include "src/Utilities/Helper.h"
 
 // TODO: testing
 #include <iostream>
@@ -66,28 +67,41 @@ namespace eyegui
 
     void WordSuggest::suggest(std::u16string input, Dictionary const * pDictionary)
     {
-        // TODO: second parameter of similar words
+		// Clear up
 		mSuggestions.clear();
-        std::vector<std::u16string> suggestions = pDictionary->similarWords(input, false);
-		uint i = 0;
-        for(const std::u16string& rSuggestion : suggestions)
-        {
-            mSuggestions.push_back(std::move(mpAssetManager->createTextSimple(mFontSize, 1, rSuggestion)));
-
-			// Only add maximal allowed number of suggestions
-			if (++i >= WORD_SUGGEST_MAX_SUGGESTIONS)
-			{
-				break;
-			}
-        }
-
-		// Prepare thresholds
 		mThresholds.clear();
-		mThresholds.resize(mSuggestions.size(), LerpValue(0));
 
-		// Transform and position the suggestions initially
-		transformSuggestions();
-		positionSuggestions();
+		// Only do something when there is input
+		if (!input.empty())
+		{
+			// Decide whether word should start with big letter
+			bool startsWithUpperCase = false;
+			if (input[0] != toLower(input[0]))
+			{
+				startsWithUpperCase = true;
+			}
+
+			// Ask for suggestions
+			std::vector<std::u16string> suggestions = pDictionary->similarWords(input, startsWithUpperCase);
+			uint i = 0;
+			for (const std::u16string& rSuggestion : suggestions)
+			{
+				mSuggestions.push_back(std::move(mpAssetManager->createTextSimple(mFontSize, 1, rSuggestion)));
+
+				// Only add maximal allowed number of suggestions
+				if (++i >= WORD_SUGGEST_MAX_SUGGESTIONS)
+				{
+					break;
+				}
+			}
+
+			// Prepare thresholds
+			mThresholds.resize(mSuggestions.size(), LerpValue(0));
+
+			// Transform and position the suggestions initially
+			transformSuggestions();
+			positionSuggestions();
+		}
     }
 
 	void WordSuggest::clear()
