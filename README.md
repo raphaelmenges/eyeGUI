@@ -12,6 +12,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 * Rewrote rendering of elements
 * Dictionary with search for similar words
 * Now using utf8rewind instead of UTF8-CPP for unicode handling
+* Word suggest element
 
 #### Version 0.8
 * Keyboard

@@ -67,11 +67,17 @@ namespace eyegui
 
     private:
 
+		// Typedefs
+		typedef std::pair<float, std::unique_ptr<TextSimple> > ChosenSuggestion; // Alpha and copy of text simple
+
 		// Transform the suggestions, fills members needed in position below
 		void transformSuggestions();
 
 		// Position the suggestions
 		void positionSuggestions();
+
+		// Chose suggestion
+		void chooseSuggestion(int index);
 
         // Members
         RenderItem const * mpBackground;
@@ -84,6 +90,7 @@ namespace eyegui
 		std::vector<LerpValue> mThresholds;
 		RenderItem const * mpThresholdItem;
 		std::u16string mLastChosenSuggestion;
+		std::vector<ChosenSuggestion> mChosenSuggestions;
     };
 }
 

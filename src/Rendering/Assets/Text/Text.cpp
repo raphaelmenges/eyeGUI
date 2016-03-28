@@ -38,37 +38,26 @@ namespace eyegui
         mY = 0;
         mVertexCount = 0;
 
-        // Save currently set buffer and vertex array object
-        GLint oldBuffer = -1;
-        GLint oldVAO = -1;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
-        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
+		// Prepare OpenGL stuff for text
+		prepareText();
+	}
 
-        // Initialize mesh buffers and vertex array object
-        glGenBuffers(1, &mVertexBuffer);
-        glGenBuffers(1, &mTextureCoordinateBuffer);
-        glGenVertexArrays(1, &mVertexArrayObject);
+	Text::Text(const Text& rOtherText)
+	{
+		this->mpGUI = rOtherText.mpGUI;
+		this->mpAssetManager = rOtherText.mpAssetManager;
+		this->mpFont = rOtherText.mpFont;
+		this->mFontSize = rOtherText.mFontSize;
+		this->mScale = rOtherText.mScale;
+		this->mX = rOtherText.mX;
+		this->mY = rOtherText.mY;
+		this->mContent = rOtherText.mContent;
+		this->mpShader = rOtherText.mpShader;
+		this->mVertexCount = 0;
 
-        // Bind stuff to vertex array object
-        glBindVertexArray(mVertexArrayObject);
-
-        // Vertices
-        GLuint vertexAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "posAttribute");
-        glEnableVertexAttribArray(vertexAttrib);
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glVertexAttribPointer(vertexAttrib, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        // Texture coordinates
-        GLuint uvAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "uvAttribute");
-        glEnableVertexAttribArray(uvAttrib);
-        glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
-        glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        // Restore old settings
-        glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
-        glBindVertexArray(oldVAO);
-
-    }
+		// Create own text for the copy
+		prepareText();
+	}
 
     Text::~Text()
     {
@@ -179,4 +168,37 @@ namespace eyegui
 
         return word;
     }
+
+	void Text::prepareText()
+	{
+		// Save currently set buffer and vertex array object
+		GLint oldBuffer = -1;
+		GLint oldVAO = -1;
+		glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
+		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &oldVAO);
+
+		// Initialize mesh buffers and vertex array object
+		glGenBuffers(1, &mVertexBuffer);
+		glGenBuffers(1, &mTextureCoordinateBuffer);
+		glGenVertexArrays(1, &mVertexArrayObject);
+
+		// Bind stuff to vertex array object
+		glBindVertexArray(mVertexArrayObject);
+
+		// Vertices
+		GLuint vertexAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "posAttribute");
+		glEnableVertexAttribArray(vertexAttrib);
+		glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+		glVertexAttribPointer(vertexAttrib, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+		// Texture coordinates
+		GLuint uvAttrib = glGetAttribLocation(mpShader->getShaderProgram(), "uvAttribute");
+		glEnableVertexAttribArray(uvAttrib);
+		glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
+		glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+		// Restore old settings
+		glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
+		glBindVertexArray(oldVAO);
+	}
 }

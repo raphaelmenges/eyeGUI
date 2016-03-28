@@ -25,6 +25,9 @@ namespace eyegui
             float scale,
             std::u16string content);
 
+		// Copy constructor
+		TextSimple(const TextSimple& rOtherText);
+
         // Destructor
         virtual ~TextSimple();
 
@@ -55,8 +58,7 @@ namespace eyegui
         // Members
         int mWidth;
         int mHeight;
-    };
-
+	};
 }
 
 #endif // TEXT_SIMPLE_H_

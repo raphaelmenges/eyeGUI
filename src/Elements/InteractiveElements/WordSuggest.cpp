@@ -124,6 +124,8 @@ namespace eyegui
 		// Super call
 		float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
+		// *** UPDATE SCROLLING AND FOCUS ***
+
 		// Check for penetration
 		bool penetrated = penetratedByInput(pInput);
 		int focusedWord = -1; // no word focused is indicated by -1
@@ -159,7 +161,7 @@ namespace eyegui
 			}
 		}
 
-		// Update threshold
+		// *** UPDATE THRESHOLD ***
 		float standardWidth = (float)(mpAssetManager->createTextSimple(mFontSize, 1, u"hallo")->getWidth()); // just some width to compare to
 		int count = (int)mSuggestions.size();
 		for (int i = 0; i < count; i++)
@@ -174,15 +176,34 @@ namespace eyegui
 			// Check for full threshold
 			if (mThresholds[i].getValue() >= 1)
 			{
-				// Remember chosen suggestion (only one, so multiple per frame are not supported)
-				mLastChosenSuggestion = mSuggestions[i]->getContent();
-
-				// Inform listener after updating
-				mpNotificationQueue->enqueue(getId(), NotificationType::WORD_SUGGEST_CHOSEN);
+				// Inform listener
+				chooseSuggestion(i);
 
 				// Reset that threshold
 				mThresholds[i].setValue(0.f);
 			}
+		}
+
+		// *** UPDATE ANIMATED COSEN SUGGESTIONS ***
+		std::vector<int> dyingChosenSuggestions;
+		for (uint i = 0; i < mChosenSuggestions.size(); i++)
+		{
+			// Update alpha and position
+			mChosenSuggestions[i].first -= tpf / INTERACTION_FADING_DURATION;
+			TextSimple* pChosenSuggestion = mChosenSuggestions[i].second.get();
+			pChosenSuggestion->setPosition(pChosenSuggestion->getX(), pChosenSuggestion->getY() - (tpf * WORD_SUGGEST_CHOSEN_ANIMATION_SPEED));
+
+			// Check, whether still visible
+			if (mChosenSuggestions[i].first <= 0)
+			{
+				dyingChosenSuggestions.push_back(i);
+			}
+		}
+
+		// Delete dying chosen suggestions (go backwards through it)
+		for (int i = (int)dyingChosenSuggestions.size() - 1; i >= 0; i--)
+		{
+			mChosenSuggestions.erase(mChosenSuggestions.begin() + i);
 		}
 
 		return adaptiveScale;
@@ -244,8 +265,17 @@ namespace eyegui
 				}
 			}
 
+			// Draw chosen suggestions
+			for (const auto& rChosenSuggestion : mChosenSuggestions)
+			{
+				rChosenSuggestion.second->draw(getStyle()->fontColor, rChosenSuggestion.first);
+			}
+
 			popScissor();
 		}
+
+		// Draw stuff like highlighting
+		InteractiveElement::specialDraw();
     }
 
     void WordSuggest::specialTransformAndSize()
@@ -257,7 +287,10 @@ namespace eyegui
 
     void WordSuggest::specialReset()
     {
-		// Nothing so far that would make sense
+		// Call super
+		InteractiveElement::specialReset();
+
+		mChosenSuggestions.clear();
     }
 
     void WordSuggest::specialInteract()
@@ -265,11 +298,7 @@ namespace eyegui
         // Just use first suggestion
 		if (!mSuggestions.empty())
 		{
-			// Remember chosen suggestion (only one, so multiple per frame are not supported)
-			mLastChosenSuggestion = mSuggestions[0]->getContent();
-
-			// Inform listener after updating
-			mpNotificationQueue->enqueue(getId(), NotificationType::WORD_SUGGEST_CHOSEN);
+			chooseSuggestion(0);
 		}
     }
 
@@ -346,5 +375,18 @@ namespace eyegui
 				xOffset += width + mDelta;
 			}
 		}
+	}
+
+	void WordSuggest::chooseSuggestion(int index)
+	{
+		// Remember chosen suggestion (only one, so multiple per frame are not supported)
+		mLastChosenSuggestion = mSuggestions[index]->getContent();
+
+		// Inform listener after updating
+		mpNotificationQueue->enqueue(getId(), NotificationType::WORD_SUGGEST_CHOSEN);
+
+		// Add suggestions to chosen ones for animation
+		std::unique_ptr<TextSimple> upChosenSuggestion = std::unique_ptr<TextSimple>(new TextSimple(*(mSuggestions[index].get())));
+		mChosenSuggestions.push_back(ChosenSuggestion(1.f, std::move(upChosenSuggestion)));
 	}
 }

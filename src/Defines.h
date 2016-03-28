@@ -34,7 +34,7 @@ namespace eyegui
     static const std::string LOCALIZATION_EXTENSION = "leyegui";
     static const int NOTIFICATION_MAX_LOOP_COUNT = 10;
     static const float ACCUMULATED_TIME_PERIOD = 1800.0f;
-    static const float FONT_CHARACTER_PADDING = 0.07f; // Percentage of height
+    static const float FONT_CHARACTER_PADDING = 0.07f; // percentage of height
     static const int FONT_MINIMAL_CHARACTER_PADDING = 2;
     static const float RESIZE_WAIT_DURATION = 0.3f;
     static const glm::vec4 RESIZE_BLEND_COLOR = glm::vec4(0.75f, 0.75f, 0.75f, 0.75f);
@@ -47,8 +47,8 @@ namespace eyegui
     static const float KEY_SELECT_DURATION = 0.1f;
     static const float KEY_MIN_SCALE = 0.5f;
     static const char16_t FONT_FALLBACK_CHARACTER = u' ';
-    static const float FONT_KEYBOARD_SIZE = 0.1f; // Percentage of screen height
-    static const uint DICTIONARY_MAX_FOLLOWING_WORDS = 2; // Maximal count of words for each fully collected one serving as prefix
+    static const float FONT_KEYBOARD_SIZE = 0.1f; // percentage of screen height
+    static const uint DICTIONARY_MAX_FOLLOWING_WORDS = 2; // maximal count of words for each fully collected one serving as prefix
     static const uint DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH = 1; // "Aaal" -> "Aal"
     static const uint DICTIONARY_INPUT_REPEAT_PAUSE_DEPTH = 3; // "Al" -> "Aal". Important for fast typing because no repeating letters in input
     static const uint DICTIONARY_INPUT_PAUSE_DEPTH = 0; // "Hus" -> "Haus"
@@ -56,6 +56,8 @@ namespace eyegui
 	static const uint WORD_SUGGEST_MAX_SUGGESTIONS = 10;
 	static const float WORD_SUGGEST_SCROLL_SPEED = 2.5f;
 	static const float WORD_SUGGEST_THRESHOLD_SPEED = 0.75f;
+	static const float INTERACTION_FADING_DURATION = 0.5f; // used by pressed keys in keyboard and chosen suggestions in word suggest
+	static const float WORD_SUGGEST_CHOSEN_ANIMATION_SPEED = 0.5f;
 }
 
 #endif // DEFINES_H_

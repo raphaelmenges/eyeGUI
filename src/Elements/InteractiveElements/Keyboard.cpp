@@ -148,7 +148,6 @@ namespace eyegui
         // Not that important parameters
         float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
         float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
-        float PRESSED_KEY_FADING_DURATION = 0.5f; // Just animation duration of pressed key which is moving and fading towards user
         float PRESSED_KEY_SCALING_MULTIPLIER = 5.f; // Just animation scale of pressed key which is moving and fading towards user
         float THRESHOLD_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of threshold after pressing
         float THRESHOLD_DECREASE_DURATION = 1.f; // General decrease duration of threshold if no gaze is upon element
@@ -193,7 +192,7 @@ namespace eyegui
         for (uint i = 0; i < mPressedKeys.size(); i++)
         {
             // Update alpha and size
-            mPressedKeys[i].first -= tpf / PRESSED_KEY_FADING_DURATION;
+            mPressedKeys[i].first -= tpf / INTERACTION_FADING_DURATION;
             Key* pKey = mPressedKeys[i].second.get();
             pKey->transformAndSize((int)pKey->getPosition().x, (int)pKey->getPosition().y, (int)(pKey->getSize() + PRESSED_KEY_SCALING_MULTIPLIER * tpf * initialKeySize));
 
@@ -444,7 +443,7 @@ namespace eyegui
             }
         }
 
-        // Render animation of pressed keys
+        // Draw animation of pressed keys
         for (const auto& rPressedKey : mPressedKeys)
         {
             rPressedKey.second->draw(
@@ -544,7 +543,7 @@ namespace eyegui
 
     void Keyboard::specialInteract()
     {
-        // Not implemented for keyboard
+        // Not implemented for keyboard, yet
     }
 
     void Keyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)

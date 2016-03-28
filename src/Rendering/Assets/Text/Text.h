@@ -15,9 +15,6 @@
 
 #include <vector>
 
-// TODO
-// - Common draw method (after rewrite of rendering)
-
 namespace eyegui
 {
     // Forward declaration
@@ -36,6 +33,9 @@ namespace eyegui
             FontSize fontSize,
             float scale,
             std::u16string content);
+
+		// Copy constructor
+		Text(const Text& rOtherText);
 
         // Destructor
         virtual ~Text() = 0;
@@ -67,6 +67,9 @@ namespace eyegui
 
         // Calculate single word and returns it
         Word calculateWord(std::u16string content, float scale) const;
+
+		// Prepare text
+		void prepareText();
 
         // Members
         GUI const * mpGUI;

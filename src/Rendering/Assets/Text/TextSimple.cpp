@@ -33,6 +33,16 @@ namespace eyegui
        calculateMesh();
     }
 
+	TextSimple::TextSimple(const TextSimple& rOtherText) : Text(rOtherText)
+	{
+		// Copy members
+		this->mWidth = rOtherText.mWidth;
+		this->mHeight = rOtherText.mHeight;
+
+		// But create own mesh stuff!
+		calculateMesh();
+	}
+
     TextSimple::~TextSimple()
     {
         // Nothing to do
