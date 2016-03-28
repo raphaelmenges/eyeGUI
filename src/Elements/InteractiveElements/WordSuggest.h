@@ -67,8 +67,20 @@ namespace eyegui
 
     private:
 
-		// Typedefs
-		typedef std::pair<float, std::unique_ptr<TextSimple> > ChosenSuggestion; // Alpha and copy of text simple
+		// Structs
+		struct ChosenSuggestion
+		{
+			ChosenSuggestion(float alpha, float originalY, std::unique_ptr<TextSimple> upText)
+			{
+				this->alpha = alpha;
+				this->originalY = originalY;
+				this->upText = std::move(upText);
+			}
+
+			float alpha;
+			float originalY; // saved as float for animation!
+			std::unique_ptr<TextSimple> upText;
+		};
 
 		// Transform the suggestions, fills members needed in position below
 		void transformSuggestions();

@@ -189,12 +189,19 @@ namespace eyegui
 		for (uint i = 0; i < mChosenSuggestions.size(); i++)
 		{
 			// Update alpha and position
-			mChosenSuggestions[i].first -= tpf / INTERACTION_FADING_DURATION;
-			TextSimple* pChosenSuggestion = mChosenSuggestions[i].second.get();
-			pChosenSuggestion->setPosition(pChosenSuggestion->getX(), (int)((float)pChosenSuggestion->getY() - (tpf * WORD_SUGGEST_CHOSEN_ANIMATION_SPEED)));
+			mChosenSuggestions[i].alpha -= tpf / INTERACTION_FADING_DURATION;
+			TextSimple* pChosenSuggestion = mChosenSuggestions[i].upText.get();
+
+			// Move it up to offset
+			pChosenSuggestion->setPosition(
+				pChosenSuggestion->getX(),
+				(int)(mChosenSuggestions[i].originalY
+					- (1.0f - mChosenSuggestions[i].alpha) 
+						* (float)(mpLayout->getLayoutHeight())
+						* WORD_SUGGEST_CHOSEN_ANIMATION_OFFSET));
 
 			// Check, whether still visible
-			if (mChosenSuggestions[i].first <= 0)
+			if (mChosenSuggestions[i].alpha <= 0)
 			{
 				dyingChosenSuggestions.push_back(i);
 			}
@@ -268,7 +275,7 @@ namespace eyegui
 			// Draw chosen suggestions
 			for (const auto& rChosenSuggestion : mChosenSuggestions)
 			{
-				rChosenSuggestion.second->draw(getStyle()->fontColor, rChosenSuggestion.first);
+				rChosenSuggestion.upText->draw(getStyle()->fontColor, rChosenSuggestion.alpha);
 			}
 
 			popScissor();
@@ -387,6 +394,6 @@ namespace eyegui
 
 		// Add suggestions to chosen ones for animation
 		std::unique_ptr<TextSimple> upChosenSuggestion = std::unique_ptr<TextSimple>(new TextSimple(*(mSuggestions[index].get())));
-		mChosenSuggestions.push_back(ChosenSuggestion(1.f, std::move(upChosenSuggestion)));
+		mChosenSuggestions.push_back(ChosenSuggestion(1.f, (float)mSuggestions[index]->getY(), std::move(upChosenSuggestion)));
 	}
 }

@@ -108,7 +108,7 @@ namespace eyegui
         }
 
         // Check whether found word has correct case
-        if (pNode->wordState == wordState || pNode->wordState == WordState::BOTH_STARTS)
+        if (pNode != NULL && (pNode->wordState == wordState || pNode->wordState == WordState::BOTH_STARTS))
         {
             return true;
         }
@@ -263,16 +263,19 @@ namespace eyegui
 
         // Set word state in last letter of word, seen from root
         // NONE is initial value
-        if (pNode->wordState == WordState::NONE)
-        {
-            // First occurence, use given case
-            pNode->wordState = wordState;
-        }
-        else if (pNode->wordState != wordState)
-        {
-            // Already saved with other case or already added as upper and lower case
-            pNode->wordState = WordState::BOTH_STARTS;
-        }
+		if (pNode != NULL)
+		{
+			if (pNode->wordState == WordState::NONE)
+			{
+				// First occurence, use given case
+				pNode->wordState = wordState;
+			}
+			else if (pNode->wordState != wordState)
+			{
+				// Already saved with other case or already added as upper and lower case
+				pNode->wordState = WordState::BOTH_STARTS;
+			}
+		}
     }
 
     Dictionary::WordState Dictionary::convertToLower(std::u16string& rWord) const
@@ -398,7 +401,7 @@ namespace eyegui
 
             // Try to find letter in current map
             NodeMap::const_iterator it = pMap->find(c);
-            if (it == pMap->end())
+            if (pNode != NULL && it == pMap->end())
             {
                 // Next character was not found. Only add to found words if
                 // remaining input pauses are enough to compensate extra letters
@@ -447,7 +450,7 @@ namespace eyegui
         }
 
         // Add word when no letters in input are left
-        if (i >= count)
+        if (pNode != NULL && i >= count)
         {
             // Adds word to found words
             addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);

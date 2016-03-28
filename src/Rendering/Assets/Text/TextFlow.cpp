@@ -69,7 +69,7 @@ namespace eyegui
         glBindVertexArray(mVertexArrayObject);
 
         // Calculate y offset because of vertical alignment
-        int yOffset;
+        int yOffset = 0;
         switch (mVerticalAlignment)
         {
         case TextFlowVerticalAlignment::TOP:

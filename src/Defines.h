@@ -57,7 +57,7 @@ namespace eyegui
 	static const float WORD_SUGGEST_SCROLL_SPEED = 2.5f;
 	static const float WORD_SUGGEST_THRESHOLD_SPEED = 0.75f;
 	static const float INTERACTION_FADING_DURATION = 0.5f; // used by pressed keys in keyboard and chosen suggestions in word suggest
-	static const float WORD_SUGGEST_CHOSEN_ANIMATION_SPEED = 0.5f;
+	static const float WORD_SUGGEST_CHOSEN_ANIMATION_OFFSET = 0.03f; // in relation to height of layout
 }
 
 #endif // DEFINES_H_

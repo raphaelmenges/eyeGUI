@@ -312,7 +312,7 @@ namespace eyegui
 
             // Get alignment
             std::string alignmentValue = parseStringAttribute("alignment", xmlPicture);
-            ImageAlignment alignment;
+            ImageAlignment alignment = ImageAlignment::ORIGINAL;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "original")
             {
                 alignment = ImageAlignment::ORIGINAL;
@@ -349,7 +349,7 @@ namespace eyegui
 
             // Get mode of relative scaling
             std::string relativeScalingValue = parseStringAttribute("relativescaling", xmlStack);
-            Stack::RelativeScaling relativeScaling;
+            Stack::RelativeScaling relativeScaling = Stack::RelativeScaling::MAIN_AXIS;
             if (relativeScalingValue == EMPTY_STRING_ATTRIBUTE || relativeScalingValue == "mainaxis")
             {
                 relativeScaling = Stack::RelativeScaling::MAIN_AXIS;
@@ -365,7 +365,7 @@ namespace eyegui
 
             // Get alignment
             std::string alignmentValue = parseStringAttribute("alignment", xmlStack);
-            Stack::Alignment alignment;
+            Stack::Alignment alignment = Stack::Alignment::FILL;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "fill")
             {
                 alignment = Stack::Alignment::FILL;
@@ -455,7 +455,7 @@ namespace eyegui
 
             // Get alignment
             std::string alignmentValue = parseStringAttribute("alignment", xmlTextBlock);
-            TextFlowAlignment alignment;
+            TextFlowAlignment alignment = TextFlowAlignment::LEFT;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "left")
             {
                 alignment = TextFlowAlignment::LEFT;
@@ -479,7 +479,7 @@ namespace eyegui
 
             // Get vertical alignment
             std::string verticalAlignmentValue = parseStringAttribute("verticalalignment", xmlTextBlock);
-            TextFlowVerticalAlignment verticalAlignment;
+            TextFlowVerticalAlignment verticalAlignment = TextFlowVerticalAlignment::TOP;
             if (verticalAlignmentValue == EMPTY_STRING_ATTRIBUTE || verticalAlignmentValue == "top")
             {
                 verticalAlignment = TextFlowVerticalAlignment::TOP;
