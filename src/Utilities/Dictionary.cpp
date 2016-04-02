@@ -329,7 +329,7 @@ namespace eyegui
         bool mayAddLongerWords,
         std::set<std::u16string>& rFoundWords) const
     {
-        // Pointer to root map
+        // Pointer to root map as fallback
         NodeMap const * pMap = &mRootMap;
 
         // Get pointer to map provided by node
@@ -404,15 +404,17 @@ namespace eyegui
 
             // Try to find letter in current map
             NodeMap::const_iterator it = pMap->find(c);
-            if (pNode != NULL && it == pMap->end())
+            if (it == pMap->end())
             {
                 // Next character was not found. Only add to found words if
                 // remaining input pauses are enough to compensate extra letters
-                if((int)count - (int)(i+1) < remainingInputPauses)
+                if(pNode != NULL && (int)count - (int)(i+1) < remainingInputPauses)
                 {
                     // Decision whether here is a node is done in add method
                     addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
                 }
+
+				// Return from this recursion
                 return;
             }
             else
@@ -452,21 +454,25 @@ namespace eyegui
             }
         }
 
-        // Add word when no letters in input are left
-        if (pNode != NULL && i >= count)
-        {
-            // Adds word to found words
-            addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
+		// Only continue, if some node from map was chosen
+		if (pNode != NULL)
+		{
+			// Add current word when no letters in input are left
+			if (i >= count)
+			{
+				// Adds word to found words
+				addFuzzyWord(collectedWord, pNode->wordState, rFoundWords);
 
-            // This constraint means, that no words shorter than input can be added
-            // (but words like "Aaal" because of DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH)
-        }
+				// This constraint means, that no words shorter than input can be added
+				// (but words like "Aaal" because of DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH)
+			}
 
-        // Input word is empty. Now add words which have the collected word as prefix
-        if(mayAddLongerWords && pNode != NULL)
-        {
-            addLongerWords(collectedWord, *pNode, DICTIONARY_MAX_FOLLOWING_WORDS, rFoundWords);
-        }
+			// Input word is empty. Now add words which have the collected word as prefix
+			if (mayAddLongerWords)
+			{
+				addLongerWords(collectedWord, *pNode, DICTIONARY_MAX_FOLLOWING_WORDS, rFoundWords);
+			}
+		}
     }
 
     int Dictionary::addLongerWords(
