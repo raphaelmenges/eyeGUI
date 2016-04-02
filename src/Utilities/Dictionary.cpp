@@ -16,9 +16,6 @@
 #include <algorithm>
 #include <sstream>
 
-// TODO: testing
-#include <iostream>
-
 namespace eyegui
 {
     Dictionary::Dictionary(std::string filepath)
@@ -419,7 +416,7 @@ namespace eyegui
             }
             else
             {
-                // Some node was found, so remember that
+                // Some node was found since iterator not at end of map, so remember that
                 pNode = &(it->second);
 
                 // Add letter to collected word
@@ -441,16 +438,8 @@ namespace eyegui
                         rFoundWords);
                 }
 
-                if (!(pMap->empty()))
-                {
-                    // Go on for next iteration
-                    pMap = &(pNode->children);
-                }
-                else
-                {
-                    // No nodes available, break
-                    break;
-                }
+				// Prepare next iteration
+				pMap = &(pNode->children);
             }
         }
 
@@ -467,7 +456,7 @@ namespace eyegui
 				// (but words like "Aaal" because of DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH)
 			}
 
-			// Input word is empty. Now add words which have the collected word as prefix
+			// Add words which have the collected word as prefix, if wished
 			if (mayAddLongerWords)
 			{
 				addLongerWords(collectedWord, *pNode, DICTIONARY_MAX_FOLLOWING_WORDS, rFoundWords);
@@ -512,10 +501,6 @@ namespace eyegui
 
     bool Dictionary::addFuzzyWord(const std::u16string& rCollectedWord, WordState collectedState, std::set<std::u16string>& rFoundWords) const
     {
-        std::string output;
-        convertUTF16ToUTF8(rCollectedWord, output);
-        std::cout << output << std::endl;
-
         switch (collectedState)
         {
         case WordState::BOTH_STARTS:
