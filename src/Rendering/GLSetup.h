@@ -4,10 +4,11 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Stores the current state of used OpenGL functions, sets the necesarry ones
-// for rendering and restores to previous state after rendering. Texture slots
-// are NOT restored because this would be expensive and probably meaningless
-// when the user of this library is sane. Framebuffers are also not touched.
+// Stores the current state of used OpenGL functions, sets the necessary ones
+// for rendering and restores to previous state after rendering. Values in 
+// texture slots are NOT restored because this would be expensive and probably
+// meaningless when the user of this library is sane. Framebuffers are not 
+// touched.
 
 #ifndef GL_SETUP_H_
 #define GL_SETUP_H_
@@ -47,6 +48,7 @@ namespace eyegui
         GLboolean mStencilTest;
 		GLboolean mScissorTest;
 		GLint mScissorBox[4];
+		GLint mTextureSlot;
     };
 }
 
