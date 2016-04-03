@@ -1,4 +1,7 @@
 ### VERSION 0.9
+- WordSuggest
+  - Make distances between suggestions bigger
+	- maybe center suggestions
 - id mapper at brick loading into new floating frame
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
