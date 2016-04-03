@@ -1,6 +1,6 @@
 ### VERSION 0.9
-- Bug: keyboard freezes program when typing in characters like ß (nothing starts with ß, so nothing is found and everythink explodes?)
-  - Seems to ouput stuff which is not complete ("25-jähri" for example)
+- id mapper at brick loading into new floating frame
+- think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - Test dimming / marking
 - Textbutton
