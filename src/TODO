@@ -4,7 +4,7 @@
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - Test dimming / marking
 - Textbutton
-  - Threshold element (as superclass for all buttons, also textbutton)
+  - Maybe as part of icon element? just add text there..and key...
 - Check input of stylesheet parser and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
 - Dictionary
   - write email to utf8rewind author because of windows fix
@@ -38,6 +38,7 @@
 - uniform absolute include pathes
 - Think about: how to automatically fit text into box or fit box around text
 - set scale of text via interface (and determine whether text fits via interface?)
+- streamline interface a little bit (highlight interactive element ist strange for example)
 	
 ### VERSION 1.0
 - Code review!
