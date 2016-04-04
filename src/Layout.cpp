@@ -609,23 +609,23 @@ namespace eyegui
     {
         std::u16string input16;
         convertUTF8ToUTF16(input, input16);
-		std::u16string bestSuggestion16;
+        std::u16string bestSuggestion16;
         suggestWords(id, input16, dictionaryIndex, bestSuggestion16);
-		convertUTF16ToUTF8(bestSuggestion16, rBestSuggestion);
+        convertUTF16ToUTF8(bestSuggestion16, rBestSuggestion);
     }
 
-	void Layout::clearSuggestions(std::string id)
-	{
-		WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
-		if (pWordSuggest != NULL)
-		{
-			pWordSuggest->clear();
-		}
-		else
-		{
-			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find word suggest with id: " + id);
-		}
-	}
+    void Layout::clearSuggestions(std::string id)
+    {
+        WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
+        if (pWordSuggest != NULL)
+        {
+            pWordSuggest->clear();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find word suggest with id: " + id);
+        }
+    }
 
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
@@ -666,18 +666,18 @@ namespace eyegui
         }
     }
 
-	void Layout::registerWordSuggestListener(std::string id, std::weak_ptr<WordSuggestListener> wpListener)
-	{
-		WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
-		if (pWordSuggest != NULL)
-		{
-			pWordSuggest->registerListener(wpListener);
-		}
-		else
-		{
-			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find word suggest with id: " + id);
-		}
-	}
+    void Layout::registerWordSuggestListener(std::string id, std::weak_ptr<WordSuggestListener> wpListener)
+    {
+        WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
+        if (pWordSuggest != NULL)
+        {
+            pWordSuggest->registerListener(wpListener);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find word suggest with id: " + id);
+        }
+    }
 
     void Layout::selectInteractiveElement(std::string id)
     {
@@ -817,9 +817,17 @@ namespace eyegui
     {
         mupMainFrame->resetElements();
 
-        for (auto& upFrame : mFloatingFrames)
+        // Go over floating ones
+        for(int i = 0; i < (int)mFloatingFrames.size(); i++)
         {
-            upFrame->resetElements();
+            // Get pointer to frame
+            Frame* pFrame = mFloatingFrames.at(i).get();
+
+            // Check for NULL
+            if (pFrame != NULL)
+            {
+                pFrame->resetElements();
+            }
         }
     }
 
@@ -994,8 +1002,8 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
-				desc,
-				descKey,
+                desc,
+                descKey,
                 isSwitch));
 
             Element* pCircleButton = upCircleButton.get();
@@ -1031,8 +1039,8 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
-				desc,
-				descKey,
+                desc,
+                descKey,
                 isSwitch));
 
             Element* pBoxButton = upBoxButton.get();
@@ -1068,8 +1076,8 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
-				desc,
-				descKey));
+                desc,
+                descKey));
 
             Element* pSensor = upSensor.get();
 
@@ -1402,15 +1410,15 @@ namespace eyegui
         return result;
     }
 
-	bool Layout::getShowDescriptions() const
-	{
-		return mpGUI->getShowDescriptions();
-	}
+    bool Layout::getShowDescriptions() const
+    {
+        return mpGUI->getShowDescriptions();
+    }
 
-	FontSize Layout::getDescriptionFontSize() const
-	{
-		return mpGUI->getDescriptionFontSize();
-	}
+    FontSize Layout::getDescriptionFontSize() const
+    {
+        return mpGUI->getDescriptionFontSize();
+    }
 
     void Layout::internalResizing()
     {
