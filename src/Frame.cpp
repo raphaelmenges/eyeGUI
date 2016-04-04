@@ -258,7 +258,7 @@ namespace eyegui
 
     std::set<std::string> Frame::getAllElementsIds() const
     {
-        return mupRoot->getAllChildrensIds();
+        mupRoot->getAllIds();
     }
 
     void Frame::setRemovedFadingAlpha(float alpha)

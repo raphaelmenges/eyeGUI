@@ -192,19 +192,19 @@ namespace eyegui
                 if (!fade)
                 {
                     mActivity.setValue(1);
-                } 
+                }
             }
         }
-		else
-		{
-			mActive = false;
+        else
+        {
+            mActive = false;
 
-			// Do it immediately, maybe
-			if (!fade)
-			{
-				mActivity.setValue(0);
-			}
-		}
+            // Do it immediately, maybe
+            if (!fade)
+            {
+                mActivity.setValue(0);
+            }
+        }
     }
 
     void Element::setDimming(bool dimming)
@@ -254,12 +254,28 @@ namespace eyegui
 
     std::set<Element*> Element::getAllChildren() const
     {
-		return std::set<Element*>(); // implemented by Container
+        return std::set<Element*>(); // implemented by Container
     }
 
     std::set<std::string> Element::getAllChildrensIds() const
     {
-		return std::set<std::string>(); // implemented by Container
+        return std::set<std::string>(); // implemented by Container
+    }
+
+    std::set<std::string> Element::getAllIds() const
+    {
+        // Call it on children
+        std::set<std::string> ids = getAllChildrensIds();
+
+        // Add own
+        std::string id = getId();
+        if(id != "")
+        {
+            ids.insert(id);
+        }
+
+        // Return it
+        return ids;
     }
 
     void Element::transformAndSize(int x, int y, int width, int height)
@@ -509,7 +525,7 @@ namespace eyegui
                 mpDimItem->draw();
             }
 
-			drawOnTop();
+            drawOnTop();
 
         }
 
@@ -611,18 +627,18 @@ namespace eyegui
         return false;
     }
 
-	void Element::drawOnTop() const
-	{
-		// Standard is: do nothing
-	}
+    void Element::drawOnTop() const
+    {
+        // Standard is: do nothing
+    }
 
     float Element::getDim() const
     {
         return mDim.getValue();
     }
 
-	float Element::getMultipliedDimmedAlpha() const
-	{
-		return mAlpha * glm::mix(1.0f , getStyle()->dimAlpha, mDim.getValue());
-	}
+    float Element::getMultipliedDimmedAlpha() const
+    {
+        return mAlpha * glm::mix(1.0f , getStyle()->dimAlpha, mDim.getValue());
+    }
 }

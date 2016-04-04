@@ -140,7 +140,7 @@ namespace eyegui
         bool isDimming() const;
 
         // Set marking
-		virtual void setMarking(bool marking, int depth);
+        virtual void setMarking(bool marking, int depth);
 
         // Getter for marking
         bool isMarking() const;
@@ -165,6 +165,9 @@ namespace eyegui
 
         // Get ids of all children, recursively
         virtual std::set<std::string> getAllChildrensIds() const;
+
+        // Get all ids, of children and this node
+        std::set<std::string> getAllIds() const;
 
         // Change transformation and size (pixel values)
         void transformAndSize(int x, int y, int width, int height);
@@ -231,12 +234,12 @@ namespace eyegui
         // Checks, whether element is penetrated by input
         virtual bool penetratedByInput(Input const * pInput) const;
 
-		// Draw on top of element (used for drawing children in container over effects like marking)
-		virtual void drawOnTop() const;
+        // Draw on top of element (used for drawing children in container over effects like marking)
+        virtual void drawOnTop() const;
 
         // Getter
         float getDim() const;
-		float getMultipliedDimmedAlpha() const;
+        float getMultipliedDimmedAlpha() const;
 
         // Members
         int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
