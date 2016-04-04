@@ -1594,7 +1594,7 @@ namespace eyegui
 
         if (pFrame == NULL)
         {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find floating frame with index: " + frameIndex);
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find floating frame with index: " + std::to_string(frameIndex));
         }
 
         return pFrame;
