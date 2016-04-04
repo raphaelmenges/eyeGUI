@@ -2,7 +2,6 @@
 - WordSuggest
   - Make distances between suggestions bigger
 	- maybe center suggestions
-- id mapper at brick loading into new floating frame
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - Test dimming / marking
@@ -22,6 +21,8 @@
   - WordSuggest
   - ThresholdColor + DimAlpha
     - icon element descriptions (desc, descKey)
+- If dimming activated, start element dimmed
+- do notifications function to avoid extra update?
 
 ### VERSION 0.10
 - TextEdit element for easy text editing (zoom, cursor etc)
