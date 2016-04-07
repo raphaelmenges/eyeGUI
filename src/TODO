@@ -12,8 +12,6 @@
   - write email to utf8rewind author because of windows fix
 - Keyboard
   - Better german and english layout
-- Element description (text which is shown at penetration) for IconElement
-  - why no "..." when not enough space?
 - Wiki
   - Dictionary
     - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
@@ -41,7 +39,8 @@
 - Think about: how to automatically fit text into box or fit box around text
 - set scale of text via interface (and determine whether text fits via interface?)
 - streamline interface a little bit (highlight interactive element ist strange for example)
-	
+- TextFlow not perfect. Take a look at tests with description in IconElements. When it gets too narrow, letters start to miss and no "..." is displayed
+
 ### VERSION 1.0
 - Code review!
   - valgrind
