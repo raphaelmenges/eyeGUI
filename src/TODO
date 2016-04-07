@@ -1,5 +1,7 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
 - ScrollingBox element
+  - TODO in header
+
 - Circle Container
 - Textbutton
   - Maybe as part of icon element? just add text there..and key...
@@ -18,11 +20,11 @@
   - WordSuggest
   - ThresholdColor + DimAlpha
     - icon element descriptions (desc, descKey)
+  - Flow
 - TextEdit element for easy text editing (zoom, cursor etc)
 
 - do notifications function to avoid extra update?
 - test hitButton fuction in combination with visibility etc
-
 
 ### VERSION 0.11
 - Replace freetype2 by stb and use their packing algorithm!

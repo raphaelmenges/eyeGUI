@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Parser for elements.
+// Parser for elements. Error checking is done here.
 
 #ifndef ELEMENT_PARSER_H_
 #define ELEMENT_PARSER_H_
@@ -47,11 +47,12 @@ namespace eyegui
         std::unique_ptr<DropButton> parseDropButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlDropButton, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap);
         std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath);
         std::unique_ptr<WordSuggest> parseWordSuggest(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlWordSuggest, Element* pParent, std::string filepath);
+        std::unique_ptr<Flow> parseFlow(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFlow, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap);
 
         // Helper
         void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder);
         void fontSizeHelper(tinyxml2::XMLElement const * xmlElement, FontSize& rFontSize, std::string filepath);
-		void localizationHelper(tinyxml2::XMLElement const * xmlElement, std::string contentAttribute, std::string keyAttribute, std::u16string& rContent, std::string& rKey);
+        void localizationHelper(tinyxml2::XMLElement const * xmlElement, std::string contentAttribute, std::string keyAttribute, std::u16string& rContent, std::string& rKey);
 
         // Checking
         bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& rExpectedValue);

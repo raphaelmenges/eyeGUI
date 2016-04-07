@@ -59,7 +59,8 @@ namespace eyegui
             GRID,
             TEXT_BLOCK,
             KEYBOARD,
-            WORD_SUGGEST
+            WORD_SUGGEST,
+            FLOW
         };
 
         // Enumeration of rendering masks

@@ -117,6 +117,10 @@ namespace eyegui
             {
                 upElement = std::move(parseWordSuggest(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
+            else if (value == "flow")
+            {
+                upElement = std::move(parseFlow(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown element found: " + std::string(xmlElement->Value()), filepath);
@@ -500,10 +504,10 @@ namespace eyegui
             // Get text scale
             float textScale = parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
 
-			// Localization
-			std::u16string content;
-			std::string key;
-			localizationHelper(xmlTextBlock, "content", "key", content, key);
+            // Localization
+            std::u16string content;
+            std::string key;
+            localizationHelper(xmlTextBlock, "content", "key", content, key);
 
             // Create text block
             std::unique_ptr<TextBlock> upTextBlock =
@@ -540,10 +544,10 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlCircleButton);
 
-			// Description
-			std::u16string desc;
-			std::string descKey;
-			localizationHelper(xmlCircleButton, "desc", "descKey", desc, descKey);
+            // Description
+            std::u16string desc;
+            std::string descKey;
+            localizationHelper(xmlCircleButton, "desc", "descKey", desc, descKey);
 
             // Is button a switch?
             bool isSwitch = parseBoolAttribute("switch", xmlCircleButton);
@@ -560,10 +564,10 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlBoxButton);
 
-			// Description
-			std::u16string desc;
-			std::string descKey;
-			localizationHelper(xmlBoxButton, "desc", "descKey", desc, descKey);
+            // Description
+            std::u16string desc;
+            std::string descKey;
+            localizationHelper(xmlBoxButton, "desc", "descKey", desc, descKey);
 
             // Is button a switch?
             bool isSwitch = parseBoolAttribute("switch", xmlBoxButton);
@@ -580,10 +584,10 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlSensor);
 
-			// Description
-			std::u16string desc;
-			std::string descKey;
-			localizationHelper(xmlSensor, "desc", "descKey", desc, descKey);
+            // Description
+            std::u16string desc;
+            std::string descKey;
+            localizationHelper(xmlSensor, "desc", "descKey", desc, descKey);
 
             // Create sensor
             std::unique_ptr<Sensor> upSensor = std::unique_ptr<Sensor>(new Sensor(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, desc, descKey));
@@ -597,10 +601,10 @@ namespace eyegui
             // Extract filepath
             std::string iconFilepath = parseStringAttribute("icon", xmlDropButton);
 
-			// Description
-			std::u16string desc;
-			std::string descKey;
-			localizationHelper(xmlDropButton, "desc", "descKey", desc, descKey);
+            // Description
+            std::u16string desc;
+            std::string descKey;
+            localizationHelper(xmlDropButton, "desc", "descKey", desc, descKey);
 
             // Get usage of available space
             float space = parsePercentAttribute("space", xmlDropButton);
@@ -646,6 +650,60 @@ namespace eyegui
             // Create and return word suggest
             std::unique_ptr<WordSuggest> upWordSuggest = std::unique_ptr<WordSuggest>(new WordSuggest(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, fontSize));
             return (std::move(upWordSuggest));
+        }
+
+        std::unique_ptr<Flow> parseFlow(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFlow, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
+        {
+            // Fetch values for block from xml
+            bool consumeInput;
+            std::string backgroundFilepath;
+            ImageAlignment backgroundAlignment;
+            float innerBorder;
+            blockHelper(xmlFlow, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+
+            // Show background?
+            bool showBackground = parseBoolAttribute("showbackground", xmlFlow);
+
+            // Get space
+            float space = parsePercentAttribute("space", xmlFlow);
+
+            // Create flow
+            std::unique_ptr<Flow> upFlow = std::unique_ptr<Flow>(
+                new Flow(
+                    id,
+                    styleName,
+                    pParent,
+                    pLayout,
+                    pFrame,
+                    pAssetManager,
+                    pNotificationQueue,
+                    relativeScale,
+                    border,
+                    dimming,
+                    adaptiveScaling,
+                    consumeInput,
+                    backgroundFilepath,
+                    backgroundAlignment,
+                    innerBorder,
+                    showBackground,
+                    space));
+
+            // Attach inner element
+            tinyxml2::XMLElement const * xmlElement = xmlFlow->FirstChildElement();
+
+            if (xmlElement == NULL)
+            {
+                throwError(OperationNotifier::Operation::PARSING, "Flow has no inner element", filepath);
+            }
+            else if (xmlElement->NextSiblingElement() != NULL)
+            {
+                throwError(OperationNotifier::Operation::PARSING, "Flow has more than one inner element", filepath);
+            }
+
+            upFlow->attachInnerElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, upFlow.get(), filepath, rIdMapper, rIdMap)));
+
+            // Return flow
+            return (std::move(upFlow));
         }
 
         void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder)
@@ -705,20 +763,20 @@ namespace eyegui
             }
         }
 
-		void localizationHelper(tinyxml2::XMLElement const * xmlElement, std::string contentAttribute, std::string keyAttribute, std::u16string& rContent, std::string& rKey)
-		{
-			// Get content
-			std::string contentValue = parseStringAttribute(contentAttribute, xmlElement);
+        void localizationHelper(tinyxml2::XMLElement const * xmlElement, std::string contentAttribute, std::string keyAttribute, std::u16string& rContent, std::string& rKey)
+        {
+            // Get content
+            std::string contentValue = parseStringAttribute(contentAttribute, xmlElement);
 
-			// Xml parser replaces new lines with visible "\n"
-			replaceString(contentValue, "\\n", "\n");
+            // Xml parser replaces new lines with visible "\n"
+            replaceString(contentValue, "\\n", "\n");
 
-			// Convert to utf-16 string
-			convertUTF8ToUTF16(contentValue, rContent);
+            // Convert to utf-16 string
+            convertUTF8ToUTF16(contentValue, rContent);
 
-			// Get key for localization
-			rKey = parseStringAttribute(keyAttribute, xmlElement);
-		}
+            // Get key for localization
+            rKey = parseStringAttribute(keyAttribute, xmlElement);
+        }
 
         bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& rExpectedValue)
         {

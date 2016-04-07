@@ -25,5 +25,6 @@
 #include "src/Elements/InteractiveElements/IconElements/Sensor.h"
 #include "src/Elements/InteractiveElements/Keyboard.h"
 #include "src/Elements/InteractiveElements/WordSuggest.h"
+#include "src/Elements/Blocks/Container/Flow.h"
 
 #endif // ELEMENTS_H_
