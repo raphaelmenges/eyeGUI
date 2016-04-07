@@ -46,10 +46,8 @@ namespace eyegui
         mpNotificationQueue = pNotificationQueue;
         mRelativeScale = relativeScale;
         mBorder = border;
-        mDimming = dimming;
         mActive = true;
         mActivity.setValue(1);
-        mDim.setValue(0);
         mForceUndim = false;
         mAlpha = 1;
         mBorderAspectRatio = 1;
@@ -59,6 +57,17 @@ namespace eyegui
         mMarking = false;
         mMark.setValue(0);
         mRenderingMask = renderingMask;
+
+        // Decide about dimming
+        mDimming = dimming;
+        if(mDimming)
+        {
+            mDim.setValue(1);
+        }
+        else
+        {
+            mDim.setValue(0);
+        }
 
         // Fetch style from layout
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
@@ -541,7 +550,15 @@ namespace eyegui
         mActive = true;
         mActivity.setValue(1);
 
-        mDim.setValue(0);
+        // Decide about dimming
+        if(mDimming)
+        {
+            mDim.setValue(1);
+        }
+        else
+        {
+            mDim.setValue(0);
+        }
         mForceUndim = false;
 
         mAdaptiveScale.setValue(0);
