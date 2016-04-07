@@ -1,18 +1,14 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
 
-- Important
-  - WordSuggest
-    - Make distances between suggestions bigger
-    - maybe center suggestions
 - If dimming activated, start element dimmed
 - ScrollingBox element
 - Circle Container
+- Textbutton
+  - Maybe as part of icon element? just add text there..and key...
 
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - Test dimming / marking
-- Textbutton
-  - Maybe as part of icon element? just add text there..and key...
 - Check input of stylesheet parser / interface function and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
 - Dictionary
   - write email to utf8rewind author because of windows fix

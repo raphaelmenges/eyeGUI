@@ -42,8 +42,8 @@ namespace eyegui
         // Suggest. Best suggestion may be empty.
         void suggest(std::u16string input, Dictionary const * pDictionary, std::u16string& rBestSuggestion);
 
-		// Clear
-		void clear();
+        // Clear
+        void clear();
 
     protected:
 
@@ -67,42 +67,41 @@ namespace eyegui
 
     private:
 
-		// Structs
-		struct ChosenSuggestion
-		{
-			ChosenSuggestion(float alpha, float originalY, std::unique_ptr<TextSimple> upText)
-			{
-				this->alpha = alpha;
-				this->originalY = originalY;
-				this->upText = std::move(upText);
-			}
+        // Structs
+        struct ChosenSuggestion
+        {
+            ChosenSuggestion(float alpha, float originalY, std::unique_ptr<TextSimple> upText)
+            {
+                this->alpha = alpha;
+                this->originalY = originalY;
+                this->upText = std::move(upText);
+            }
 
-			float alpha;
-			float originalY; // saved as float for animation!
-			std::unique_ptr<TextSimple> upText;
-		};
+            float alpha;
+            float originalY; // saved as float for animation!
+            std::unique_ptr<TextSimple> upText;
+        };
 
-		// Transform the suggestions, fills members needed in position below
-		void transformSuggestions();
+        // Transform the suggestions, fills members needed in position below
+        void transformSuggestions();
 
-		// Position the suggestions
-		void positionSuggestions();
+        // Position the suggestions
+        void positionSuggestions();
 
-		// Chose suggestion
-		void chooseSuggestion(int index);
+        // Chose suggestion
+        void chooseSuggestion(int index);
 
         // Members
         RenderItem const * mpBackground;
         FontSize mFontSize;
         std::vector<std::unique_ptr<TextSimple> > mSuggestions;
-		LerpValue mOffset; // offset given in percent of all suggestions
-		int mStartOffset;
-		int mDelta;
-		int mCompleteWidth;
-		std::vector<LerpValue> mThresholds;
-		RenderItem const * mpThresholdItem;
-		std::u16string mLastChosenSuggestion;
-		std::vector<ChosenSuggestion> mChosenSuggestions;
+        LerpValue mOffset; // offset given in percent of all suggestions
+        int mDelta;
+        int mCompleteWidth;
+        std::vector<LerpValue> mThresholds;
+        RenderItem const * mpThresholdItem;
+        std::u16string mLastChosenSuggestion;
+        std::vector<ChosenSuggestion> mChosenSuggestions;
     };
 }
 
