@@ -1,18 +1,23 @@
-### VERSION 0.9
-- WordSuggest
-  - Make distances between suggestions bigger
-	- maybe center suggestions
+### VERSION 0.9 (getting quite big but no stable version in sight)
+
+- Important
+  - WordSuggest
+    - Make distances between suggestions bigger
+    - maybe center suggestions
+- If dimming activated, start element dimmed
+- ScrollingBox element
+- Circle Container
+
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - Test dimming / marking
 - Textbutton
   - Maybe as part of icon element? just add text there..and key...
-- Check input of stylesheet parser and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
+- Check input of stylesheet parser / interface function and DO NOT crash when it cannot be parsed.... (some fancy structure check...)
 - Dictionary
   - write email to utf8rewind author because of windows fix
 - Keyboard
   - Better german and english layout
-  - Jumps a little bit at resizing (no more seen)
 - Element description (text which is shown at penetration) for IconElement
   - why no "..." when not enough space?
 - Wiki
@@ -21,20 +26,19 @@
   - WordSuggest
   - ThresholdColor + DimAlpha
     - icon element descriptions (desc, descKey)
-- If dimming activated, start element dimmed
-- do notifications function to avoid extra update?
-
-### VERSION 0.10
 - TextEdit element for easy text editing (zoom, cursor etc)
-- Replace freetype2 by stb and use their packing algorithm!
+
+- do notifications function to avoid extra update?
+- test hitButton fuction in combination with visibility etc
+
 
 ### VERSION 0.11
+- Replace freetype2 by stb and use their packing algorithm!
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
 - IDEA: disable opengl storing stuff by function (to save computation time)
-- Uniform locations of texture slots not used! (may be problem if there is more than one in use at once)
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react
 - Localization reloading on the fly (all textflows would have to be recalculated, maybe other default font...)
@@ -47,7 +51,7 @@
 ### VERSION 1.0
 - Code review!
   - valgrind
-    - Check all fin whether utf-8 compatible
+  - Check all fin whether utf-8 compatible
 - Some members of element could be private but getters necessary..
 
 Notes:
