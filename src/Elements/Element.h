@@ -235,8 +235,8 @@ namespace eyegui
         // Checks, whether element is penetrated by input
         virtual bool penetratedByInput(Input const * pInput) const;
 
-        // Draw on top of element (used for drawing children in container over effects like marking)
-        virtual void drawOnTop() const;
+        // Draw on top of element
+        virtual void drawChildren() const;
 
         // Getter
         float getDim() const;

@@ -13,6 +13,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 * Dictionary with search for similar words
 * Now using utf8rewind instead of UTF8-CPP for unicode handling
 * Word suggest element
+* Flow element (scrolling box)
 
 #### Version 0.8
 * Keyboard

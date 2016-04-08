@@ -1,11 +1,16 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
-- ScrollingBox element
-  - TODO in header
 
-- Circle Container
+## New features
+- Flow element
+  - TODO in header
+  - WordSuggest / Flow: maybe some area in the center, where no scrolling happens?
+
+- Ring Container
 - Textbutton
   - Maybe as part of icon element? just add text there..and key...
+- TextEdit element for easy text editing (zoom, cursor etc)
 
+## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - Test dimming / marking
@@ -14,17 +19,19 @@
   - write email to utf8rewind author because of windows fix
 - Keyboard
   - Better german and english layout
-- Wiki
-  - Dictionary
-    - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
-  - WordSuggest
-  - ThresholdColor + DimAlpha
-    - icon element descriptions (desc, descKey)
-  - Flow
-- TextEdit element for easy text editing (zoom, cursor etc)
 
+## Testing
 - do notifications function to avoid extra update?
 - test hitButton fuction in combination with visibility etc
+
+## Wiki
+- Dictionary
+  - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
+- WordSuggest
+- ThresholdColor + DimAlpha
+  - icon element descriptions (desc, descKey)
+- Flow
+  - flow-speed-multiplier
 
 ### VERSION 0.11
 - Replace freetype2 by stb and use their packing algorithm!

@@ -8,9 +8,7 @@
 #include "Flow.h"
 
 #include "src/Rendering/ScissorStack.h"
-
-// TODO: testing
-#include <iostream>
+#include "src/Layout.h"
 
 namespace eyegui
 {
@@ -78,15 +76,11 @@ namespace eyegui
             // Update offset
             int y = pInput->gazeY - mY;
             float oldValue = mOffset.getValue();
-            if(y > (mHeight / 2))
-            {
-                mOffset.update(tpf);
-            }
-            else
-            {
-                mOffset.update(-tpf);
-            }
+            float offsetSpeed = ((float) (4*(y - (mHeight / 2))) / (float) mHeight);
+            offsetSpeed *= 1.0f / mSpace; // Normalization
+            mOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->flowSpeedMultiplier);
 
+            // Only transform inner element if necessary
             if(oldValue != mOffset.getValue())
             {
                 // Call transform and resize on child aka inner element
@@ -107,13 +101,13 @@ namespace eyegui
         transformInnerElement();
     }
 
-    void Flow::drawOnTop() const
+    void Flow::drawChildren() const
     {
         // Push scissor to render only in allowed area
-        pushScissor(mX, mY, mWidth, mHeight);
+        pushScissor(mX + ((mWidth-mInnerWidth)/2), mY + ((mHeight-mInnerHeight)/2), mInnerWidth, mInnerHeight);
 
         // Super call that draws children
-        Container::drawOnTop();
+        Container::drawChildren();
 
         popScissor();
     }
@@ -121,17 +115,38 @@ namespace eyegui
     void Flow::transformInnerElement()
     {
         // Transform and size child
-        int height = mHeight * mSpace; // TODO: make it somehow adaptive to content...
+        int height = mInnerHeight * mSpace;
 
+        // Evaluate used size
+        int usedWidth, usedHeight;
+        mChildren[0]->evaluateSize(
+            mInnerWidth,
+            height,
+            usedWidth,
+            usedHeight);
+
+        // Delta
+        int deltaX = (mInnerWidth - usedWidth) / 2;
+        int deltaY = (height - usedHeight) / 2;
+
+        // Transform the one and only child
         if(mHeight < height)
         {
             // Scrolling necessary
-            mChildren.at(0)->transformAndSize(mX, mY - (mOffset.getValue() * (height - mHeight)), mWidth, height);
+            mChildren.at(0)->transformAndSize(
+                mX + deltaX,
+                mY + deltaY - (mOffset.getValue() * std::max(0, (usedHeight - mInnerHeight))),
+                usedWidth,
+                usedHeight);
         }
         else
         {
             // No scrolling necessary
-            mChildren.at(0)->transformAndSize(mX, mY, mWidth, height);
+            mChildren.at(0)->transformAndSize(
+                mX + deltaX,
+                mY + deltaY,
+                usedWidth,
+                usedHeight);
         }
     }
 }

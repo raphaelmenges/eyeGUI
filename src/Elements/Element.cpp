@@ -534,7 +534,7 @@ namespace eyegui
                 mpDimItem->draw();
             }
 
-            drawOnTop();
+            drawChildren();
 
         }
 
@@ -644,7 +644,7 @@ namespace eyegui
         return false;
     }
 
-    void Element::drawOnTop() const
+    void Element::drawChildren() const
     {
         // Standard is: do nothing
     }

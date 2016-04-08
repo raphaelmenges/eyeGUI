@@ -4,7 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Flow is like a vertical scrolling box. One can define, how much vertical
+// space is reserved for an inner element compared to own height. Update and
+// drawing of inner element happens only in the bounds of the flow element.
 
 #ifndef FLOW_H_
 #define FLOW_H_
@@ -12,9 +14,6 @@
 #include "src/Elements/Blocks/Container/Container.h"
 
 // TODO
-// - Improve scrolling
-// - Use inner width and height
-// - Does not work correctly when just button or so is inner element (one has to evaluate used size first)
 // - Interface function to change space
 
 namespace eyegui
@@ -58,7 +57,7 @@ namespace eyegui
         virtual void specialTransformAndSize();
 
         // Draw on top of element (used for drawing children over effects like marking)
-        virtual void drawOnTop() const;
+        virtual void drawChildren() const;
 
     private:
 

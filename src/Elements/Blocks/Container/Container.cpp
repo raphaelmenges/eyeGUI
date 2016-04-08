@@ -189,7 +189,7 @@ namespace eyegui
         }
     }
 
-    void Container::drawOnTop() const
+    void Container::drawChildren() const
     {
         // Draw children
         for (const std::unique_ptr<Element>& rupElement : mChildren)

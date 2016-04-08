@@ -39,22 +39,22 @@ namespace eyegui
         // Destructor
         virtual ~Container() = 0;
 
-		// Activate or deactivate
-		virtual void setActivity(bool active, bool fade);
+        // Activate or deactivate
+        virtual void setActivity(bool active, bool fade);
 
-		// Set marking
-		virtual void setMarking(bool marking, int depth);
+        // Set marking
+        virtual void setMarking(bool marking, int depth);
 
-		// Get pointer to all children, recursively
-		virtual std::set<Element*> getAllChildren() const;
+        // Get pointer to all children, recursively
+        virtual std::set<Element*> getAllChildren() const;
 
-		// Get ids of all children, recursively
-		virtual std::set<std::string> getAllChildrensIds() const;
+        // Get ids of all children, recursively
+        virtual std::set<std::string> getAllChildrensIds() const;
 
-		// Replace an attached element, returns NULL if not found
-		virtual std::unique_ptr<Element> replaceAttachedElement(
-			Element* pTarget,
-			std::unique_ptr<Element> upReplacement);
+        // Replace an attached element, returns NULL if not found
+        virtual std::unique_ptr<Element> replaceAttachedElement(
+            Element* pTarget,
+            std::unique_ptr<Element> upReplacement);
 
     protected:
 
@@ -64,14 +64,14 @@ namespace eyegui
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
-		// Reset filled by subclasses
-		virtual void specialReset();
+        // Reset filled by subclasses
+        virtual void specialReset();
 
-		// Draw on top of element (used for drawing children over effects like marking)
-		virtual void drawOnTop() const;
+        // Draw on top of element (used for drawing children over effects like marking)
+        virtual void drawChildren() const;
 
-		// Members
-		std::vector<std::unique_ptr<Element> > mChildren;
+        // Members
+        std::vector<std::unique_ptr<Element> > mChildren;
 
     private:
 
