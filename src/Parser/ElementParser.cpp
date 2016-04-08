@@ -664,6 +664,22 @@ namespace eyegui
             // Show background?
             bool showBackground = parseBoolAttribute("showbackground", xmlFlow);
 
+			// Get flow direction
+			std::string flowDirectionValue = parseStringAttribute("direction", xmlFlow);
+			FlowDirection flowDirection = FlowDirection::VERTICAL;
+			if (flowDirectionValue == EMPTY_STRING_ATTRIBUTE || flowDirectionValue == "vertical")
+			{
+				flowDirection = FlowDirection::VERTICAL;
+			}
+			else if (flowDirectionValue == "horizontal")
+			{
+				flowDirection = FlowDirection::HORIZONTAL;
+			}
+			else
+			{
+				throwError(OperationNotifier::Operation::PARSING, "Unknown direction used in flow: " + flowDirectionValue, filepath);
+			}
+
             // Get space
             float space = parsePercentAttribute("space", xmlFlow);
 
@@ -686,6 +702,7 @@ namespace eyegui
                     backgroundAlignment,
                     innerBorder,
                     showBackground,
+					flowDirection,
                     space));
 
             // Attach inner element

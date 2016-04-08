@@ -148,8 +148,8 @@ namespace eyegui
                 for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
                 {
                     // Uses real position, offset is already in suggestion
-                    int x = rSuggestion->getX();
-                    int width = rSuggestion->getWidth();
+                    int x = rSuggestion->getX() - (mDelta / 2);
+                    int width = rSuggestion->getWidth() + mDelta;
                     if (pInput->gazeX >= x && pInput->gazeX < x + width)
                     {
                         focusedWord = i;
@@ -343,7 +343,7 @@ namespace eyegui
             int space = spaceText->getWidth();
 
             // Go over suggestions and transform them
-            mDelta = WORD_SUGGEST_SUGGESTION_DISTANCE * space;
+            mDelta = (int) (WORD_SUGGEST_SUGGESTION_DISTANCE * (float)space);
             mCompleteWidth = mDelta / 2;
             for (int i = 0; i < (int)mSuggestions.size(); i++)
             {

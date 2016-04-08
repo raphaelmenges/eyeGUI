@@ -36,6 +36,12 @@ namespace eyegui
 
     // Tries to cast pointer, returns NULL if fails
     TextBlock* toTextBlock(Element* pElement);
+
+	// Tries to cast pointer, returns NULL if fails
+	Flow* toFlow(Element* pElement);
+
+	// Tries to cast pointer, returns NULL if fails
+	Stack* toStack(Element* pElement);
 }
 
 #endif // ELEMENT_CASTING_H_

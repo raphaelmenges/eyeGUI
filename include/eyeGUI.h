@@ -686,6 +686,38 @@ namespace eyegui
 	*/
 	void clearSuggestions(Layout* pLayout, std::string id);
 
+	//! Set space of flow element.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param space is new space in percent of width or height, depending on direction.
+	*/
+	void setSpaceOfFlow(Layout* pLayout, std::string id, float space);
+
+	//! Add brick to stack
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param filepath is relative path to brick file.
+	*/
+	void addBrickToStack(
+		Layout* pLayout,
+		std::string id,
+		std::string filepath);
+
+	//! Add brick to stack
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param filepath is relative path to brick file.
+	\param idMapper changes ids inside brick to ones in map.
+	*/
+	void addBrickToStack(
+		Layout* pLayout,
+		std::string id,
+		std::string filepath,
+		std::map<std::string, std::string> idMapper);
+
     //! Register listener to button.
     /*!
       \param pLayout pointer to layout.

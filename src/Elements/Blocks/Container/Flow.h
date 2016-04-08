@@ -13,11 +13,11 @@
 
 #include "src/Elements/Blocks/Container/Container.h"
 
-// TODO
-// - Interface function to change space
-
 namespace eyegui
 {
+	// Direction of flow
+	enum class FlowDirection { HORIZONTAL, VERTICAL };
+
     class Flow : public Container
     {
     public:
@@ -40,6 +40,7 @@ namespace eyegui
             ImageAlignment backgroundAlignment,
             float innerBorder,
             bool showBackground,
+			FlowDirection direction,
             float space);
 
         // Destructor
@@ -47,6 +48,9 @@ namespace eyegui
 
         // Attach inner element (must be called exactly one time)
         void attachInnerElement(std::unique_ptr<Element> upElement);
+
+		// Set space
+		void setSpace(float space);
 
     protected:
 
@@ -65,6 +69,7 @@ namespace eyegui
         void transformInnerElement();
 
         // Members
+		FlowDirection mDirection;
         float mSpace;
         LerpValue mOffset;
     };

@@ -349,6 +349,29 @@ namespace eyegui
 		pLayout->clearSuggestions(id);
 	}
 
+	void setSpaceOfFlow(Layout* pLayout, std::string id, float space)
+	{
+		pLayout->setSpaceOfFlow(id, space);
+	}
+
+	void addBrickToStack(
+		Layout* pLayout,
+		std::string id,
+		std::string filepath)
+	{
+		// Delegate
+		addBrickToStack(pLayout, id, filepath, std::map<std::string, std::string>());
+	}
+
+	void addBrickToStack(
+		Layout* pLayout,
+		std::string id,
+		std::string filepath,
+		std::map<std::string, std::string> idMapper)
+	{
+		pLayout->addBrickToStack(id, filepath, idMapper);
+	}
+
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         pLayout->registerButtonListener(id, wpListener);

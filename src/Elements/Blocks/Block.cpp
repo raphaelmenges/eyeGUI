@@ -116,8 +116,6 @@ namespace eyegui
         mInnerY = mY + usedBorder / 2;
         mInnerWidth = mWidth - usedBorder;
         mInnerHeight = mHeight - usedBorder;
-
-
     }
 
     void Block::specialReset()

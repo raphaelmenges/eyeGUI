@@ -627,6 +627,53 @@ namespace eyegui
         }
     }
 
+	void Layout::setSpaceOfFlow(std::string id, float space)
+	{
+		Flow* pFlow = toFlow(fetchElement(id));
+		if (pFlow != NULL)
+		{
+			pFlow->setSpace(space);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find flow with id: " + id);
+		}
+	}
+
+	void Layout::addBrickToStack(
+		std::string id,
+		std::string filepath,
+		std::map<std::string, std::string> idMapper)
+	{
+		Stack* pStack = toStack(fetchElement(id));
+		if (pStack != NULL)
+		{
+			// Create brick
+			std::unique_ptr<elementsAndIds> upPair = std::move(
+				brick_parser::parse(
+					this,
+					pStack->getFrame(),
+					pStack->getAssetManager(),
+					pStack->getNotificationQueue(),
+					pStack,
+					filepath,
+					idMapper));
+
+			// Attach to stack
+			pStack->attachElement(std::move(upPair->first));
+
+			// Insert ids
+			insertIds(std::move(upPair->second));
+
+			// To transform and resize in next frame of frame
+			pStack->getFrame()->makeResizeNecessary();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find stack with id: " + id);
+		}		
+	}
+
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
         Button* pButton = toButton(fetchElement(id));

@@ -173,6 +173,15 @@ namespace eyegui
 		// Clear suggestions
 		void clearSuggestions(std::string id);
 
+		// Set space of flow
+		void setSpaceOfFlow(std::string id, float space);
+
+		// Add brick to stack
+		void addBrickToStack(
+			std::string id,
+			std::string filepath,
+			std::map<std::string, std::string> idMapper);
+
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
 

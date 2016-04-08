@@ -1,10 +1,6 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
 
 ## New features
-- Flow element
-  - TODO in header
-  - WordSuggest / Flow: maybe some area in the center, where no scrolling happens?
-
 - Ring Container
 - Textbutton
   - Maybe as part of icon element? just add text there..and key...
@@ -39,6 +35,7 @@
   - Audio effects defined in style sheet
 
 ### VERSION 0.x
+- WordSuggest / Flow: maybe some area in the center, where no scrolling happens?
 - IDEA: disable opengl storing stuff by function (to save computation time)
 - Right to left text (hebrew)
 	- Maybe detect hebrew characters and react

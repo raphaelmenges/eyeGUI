@@ -29,6 +29,7 @@ namespace eyegui
         ImageAlignment backgroundAlignment,
         float innerBorder,
         bool showBackground,
+		FlowDirection direction,
         float space) : Container(
             id,
             styleName,
@@ -50,6 +51,7 @@ namespace eyegui
         mType = Type::FLOW;
 
         // Members
+		mDirection = direction;
         mSpace = space;
         mOffset.setValue(0);
     }
@@ -65,6 +67,12 @@ namespace eyegui
         mChildren.push_back(std::move(upElement));
     }
 
+	void Flow::setSpace(float space)
+	{
+		mSpace = space;
+		transformInnerElement();
+	}
+
     float Flow::specialUpdate(float tpf, Input* pInput)
     {
         // Only give input to child when gaze upen element
@@ -74,9 +82,20 @@ namespace eyegui
             childInput = pInput;
 
             // Update offset
-            int y = pInput->gazeY - mY;
+			float offsetSpeed = 0;
             float oldValue = mOffset.getValue();
-            float offsetSpeed = ((float) (4*(y - (mHeight / 2))) / (float) mHeight);
+			if (mDirection == FlowDirection::VERTICAL)
+			{
+				// Vertical direction
+				int y = pInput->gazeY - mY;
+				offsetSpeed = ((float)(4 * (y - (mHeight / 2))) / (float)mHeight);
+			}
+			else
+			{
+				// Horizontal direction
+				int x = pInput->gazeX - mX;
+				offsetSpeed = ((float)(4 * (x - (mWidth / 2))) / (float)mWidth);
+			}
             offsetSpeed *= 1.0f / mSpace; // Normalization
             mOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->flowSpeedMultiplier);
 
@@ -114,39 +133,79 @@ namespace eyegui
 
     void Flow::transformInnerElement()
     {
-        // Transform and size child
-        int height = mInnerHeight * mSpace;
+		if (mDirection == FlowDirection::VERTICAL)
+		{
+			// Transform and size child
+			int height = (int)((float)mInnerHeight * mSpace);
 
-        // Evaluate used size
-        int usedWidth, usedHeight;
-        mChildren[0]->evaluateSize(
-            mInnerWidth,
-            height,
-            usedWidth,
-            usedHeight);
+			// Evaluate used size
+			int usedWidth, usedHeight;
+			mChildren[0]->evaluateSize(
+				mInnerWidth,
+				height,
+				usedWidth,
+				usedHeight);
 
-        // Delta
-        int deltaX = (mInnerWidth - usedWidth) / 2;
-        int deltaY = (height - usedHeight) / 2;
+			// Delta
+			int deltaX = (mInnerWidth - usedWidth) / 2;
+			int deltaY = (height - usedHeight) / 2;
 
-        // Transform the one and only child
-        if(mHeight < height)
-        {
-            // Scrolling necessary
-            mChildren.at(0)->transformAndSize(
-                mX + deltaX,
-                mY + deltaY - (mOffset.getValue() * std::max(0, (usedHeight - mInnerHeight))),
-                usedWidth,
-                usedHeight);
-        }
-        else
-        {
-            // No scrolling necessary
-            mChildren.at(0)->transformAndSize(
-                mX + deltaX,
-                mY + deltaY,
-                usedWidth,
-                usedHeight);
-        }
+			// Transform the one and only child
+			if (mHeight < height)
+			{
+				// Scrolling necessary
+				mChildren.at(0)->transformAndSize(
+					mX + deltaX,
+					mY + deltaY - (int)(mOffset.getValue() * (float)std::max(0, (usedHeight - mInnerHeight))),
+					usedWidth,
+					usedHeight);
+			}
+			else
+			{
+				// No scrolling necessary
+				mChildren.at(0)->transformAndSize(
+					mX + deltaX,
+					mY + deltaY,
+					usedWidth,
+					usedHeight);
+			}
+		}
+		else
+		{
+			// Transform and size child
+			int width = (int)((float)mInnerWidth * mSpace);
+
+			// Evaluate used size
+			int usedWidth, usedHeight;
+			mChildren[0]->evaluateSize(
+				width,
+				mInnerHeight,
+				usedWidth,
+				usedHeight);
+
+			// Delta
+			int deltaX = (width - usedWidth) / 2;
+			int deltaY = (mInnerHeight - usedHeight) / 2;
+
+			// Transform the one and only child
+			if (mWidth < width)
+			{
+				// Scrolling necessary
+				mChildren.at(0)->transformAndSize(
+					mX + deltaX - (int)(mOffset.getValue() * (float)std::max(0, (usedWidth - mInnerWidth))),
+					mY + deltaY,
+					usedWidth,
+					usedHeight);
+			}
+			else
+			{
+				// No scrolling necessary
+				mChildren.at(0)->transformAndSize(
+					mX + deltaX,
+					mY + deltaY,
+					usedWidth,
+					usedHeight);
+			}
+		}
     }
 }
