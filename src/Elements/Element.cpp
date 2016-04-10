@@ -628,6 +628,22 @@ namespace eyegui
         }
     }
 
+	bool Element::checkForParentType(Element::Type type) const
+	{
+		if (mpParent != NULL)
+		{
+			if (mpParent->getType() == type)
+			{
+				return true;
+			}
+			else
+			{
+				return mpParent->checkForParentType(type);
+			}
+		}
+		return false;
+	}
+
     bool Element::penetratedByInput(Input const * pInput) const
     {
         // Check whether gaze is upon element

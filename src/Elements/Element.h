@@ -215,6 +215,9 @@ namespace eyegui
         // Commit replaced element to this element
         void commitReplacedElement(std::unique_ptr<Element> upElement, bool fade);
 
+		// Check for any parent with certain type
+		bool checkForParentType(Element::Type type) const;
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale

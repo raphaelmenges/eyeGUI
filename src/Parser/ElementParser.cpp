@@ -630,6 +630,12 @@ namespace eyegui
 
             upDropButton->attachInnerElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, upDropButton.get(), filepath, rIdMapper, rIdMap)));
 
+			// Check, that drop button was NOT inserted into some kind of scrolling box
+			if (upDropButton->checkForParentType(Element::Type::FLOW))
+			{
+				throwWarning(OperationNotifier::Operation::PARSING, "DropButton is directly or indirectly child of Flow. Inner element will render on top of frame and not influenced by Flow", filepath);
+			}
+
             // Return drop button
             return (std::move(upDropButton));
         }
