@@ -316,44 +316,6 @@ namespace eyegui
             int sumUsedHeight = 0;
             std::vector<int> elemHeights;
 
-            /*
-            // Collect used size
-            std::vector<int> usedWidths, usedHeights;
-            uint elementNumber = 1;
-            for (const std::unique_ptr<Element>& element : mChildren)
-            {
-                int usedWidth, usedHeight;
-                int localElemWidth;
-                int localElemHeight;
-
-                // Available element height
-                localElemHeight = (int)((float)mInnerHeight
-                    * (element->getDynamicScale() / completeScale));
-                sumElemHeight += localElemHeight;
-
-                // Element width
-                if (mRelativeScaling == RelativeScaling::BOTH_AXES)
-                {
-                    localElemWidth = (int)((float)mInnerWidth
-                        * (element->getDynamicScale() / maxDynamicScale));
-                }
-                else
-                {
-                    localElemWidth = mInnerWidth;
-                }
-
-                elemHeights.push_back(localElemHeight);
-                element->evaluateSize(localElemWidth, localElemHeight, usedWidth, usedHeight);
-                usedWidths.push_back(usedWidth);
-                usedHeights.push_back(usedHeight);
-                sumUsedWidth += usedWidth;
-                sumUsedHeight += usedHeight;
-
-                // Next looping
-                elementNumber++;
-            }
-            */
-
             // Collect available size
             std::vector<int> usedWidths, usedHeights;
             uint elementNumber = 1;

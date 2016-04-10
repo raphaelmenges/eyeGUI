@@ -123,7 +123,7 @@ namespace eyegui
     void Flow::drawChildren() const
     {
         // Push scissor to render only in allowed area
-        pushScissor(mX + ((mWidth-mInnerWidth)/2), mY + ((mHeight-mInnerHeight)/2), mInnerWidth, mInnerHeight);
+        pushScissor(mInnerX, mInnerY, mInnerWidth, mInnerHeight);
 
         // Super call that draws children
         Container::drawChildren();
@@ -147,7 +147,7 @@ namespace eyegui
 				usedHeight);
 
 			// Delta
-			int deltaX = (mInnerWidth - usedWidth) / 2;
+			int deltaX = (mWidth - usedWidth) / 2;
 			int deltaY = (height - usedHeight) / 2;
 
 			// Transform the one and only child
@@ -185,7 +185,7 @@ namespace eyegui
 
 			// Delta
 			int deltaX = (width - usedWidth) / 2;
-			int deltaY = (mInnerHeight - usedHeight) / 2;
+			int deltaY = (mHeight - usedHeight) / 2;
 
 			// Transform the one and only child
 			if (mWidth < width)
