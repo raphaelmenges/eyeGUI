@@ -1,6 +1,7 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
 
 ## New features
+- Manual update / drawing of layouts? (easier to fit into own structures)
 - Ring Container
 - Textbutton
   - Maybe as part of icon element? just add text there..and key...
