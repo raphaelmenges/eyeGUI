@@ -451,7 +451,7 @@ namespace eyegui
                 mpGUI->mLayers.end(),
                 [](const std::unique_ptr<LayerPair>& a, const std::unique_ptr<LayerPair>& b)
                 { // Comparator function
-                    return a->first > b->first;
+                    return a->first < b->first;
                 });
 
             // Search again
