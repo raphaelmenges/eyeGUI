@@ -10,6 +10,7 @@
 #include "Defines.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Rendering/ScissorStack.h"
+#include "src/Parser/LayoutParser.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
@@ -77,7 +78,7 @@ namespace eyegui
         // Nothing to do so far
     }
 
-    Layout* GUI::addLayout(std::string filepath, bool visible)
+    Layout* GUI::addLayout(std::string filepath, bool visible, int layer)
     {
         // Parse layout
         std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), filepath);
@@ -89,7 +90,7 @@ namespace eyegui
         pLayout->setVisibility(visible, false);
 
         // Give unique pointer to job so it will be pushed back before next rendering but not during
-        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new AddLayoutJob(this, std::move(upLayout)))));
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new AddLayoutJob(this, std::move(upLayout), layer))));
 
         return pLayout;
     }
@@ -150,12 +151,12 @@ namespace eyegui
         // Copy constant input
         Input copyInput = input;
 
-        // Update all layouts in reversed order
-        for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
+        // Update all layers in reversed order TODO
+        /*for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
         {
             // Update and use input
             mLayouts[i]->update(tpf, &copyInput);
-        }
+        }*/
 
         // Update gaze drawer
         mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
@@ -173,11 +174,11 @@ namespace eyegui
 		// Init scissor stack for this frame
 		initScissorStack(getWindowWidth(), getWindowHeight());
 
-        // Draw all layouts
-        for (uint i = 0; i < mLayouts.size(); i++)
+        // Draw all layers TODO
+        /*for (uint i = 0; i < mLayouts.size(); i++)
         {
             mLayouts[i]->draw();
-        }
+        }*/
 
         // Render resize blend
         if (mResizing)
@@ -344,37 +345,6 @@ namespace eyegui
 		return mDescriptionFontSize;
 	}
 
-    int GUI::findLayout(Layout const * pLayout) const
-    {
-        // Try to find index of layout in vector
-        int index = -1;
-        for (uint i = 0; i < mLayouts.size(); i++)
-        {
-            if (mLayouts[i].get() == pLayout)
-            {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
-    void GUI::moveLayout(int oldIndex, int newIndex)
-    {
-        std::unique_ptr<Layout> upLayout = std::move(mLayouts[oldIndex]);
-        mLayouts.erase(mLayouts.begin() + oldIndex);
-
-        if (newIndex >= (int)(mLayouts.size()))
-        {
-            mLayouts.push_back(std::move(upLayout));
-        }
-        else
-        {
-            mLayouts.insert(mLayouts.begin() + newIndex, std::move(upLayout));
-        }
-    }
-
     void GUI::internalResizing()
     {
         // Actual resizing action
@@ -387,12 +357,11 @@ namespace eyegui
         // Reset gaze drawer
         mupGazeDrawer->reset();
 
-        // Then, resize all layouts
-        for (std::unique_ptr<Layout>& upLayout : mLayouts)
-        {
-            // Layout fetches size via const pointer to this
-            upLayout->makeResizeNecessary();
-        }
+        // Then, resize all layers
+		for (auto& rLayer : mLayerMap)
+		{
+			rLayer.second->makeResizeNecessary();
+		}
     }
 
     GUI::GUIJob::GUIJob(GUI* pGUI)
@@ -408,18 +377,29 @@ namespace eyegui
 
     void GUI::MoveLayoutJob::execute()
     {
-        int index = mpGUI->findLayout(mpLayout);
+		// Go over layers and try to remove layout
+		int layer = -1;
+		int layout = -1;
+		for (auto& rLayer : mpGUI->mLayerMap)
+		{
+			layout = rLayer.second->findLayout(mpLayout);
+			if (layout >= 0)
+			{
+				layer = rLayer.first;
+				break;
+			}
+		}
 
         // Continue only if found
-        if (index >= 0)
+        if (layout >= 0)
         {
             if (mToFront)
             {
-                mpGUI->moveLayout(index, (int)(mpGUI->mLayouts.size()) - 1);
+				mpGUI->mLayerMap.at(layer)->moveLayout(layout, (int)(mpGUI->mLayerMap.at(layer)->getLayoutCount()) - 1);
             }
             else
             {
-                mpGUI->moveLayout(index, 0);
+				mpGUI->mLayerMap.at(layer)->moveLayout(layout, 0);
             }
         }
         else
@@ -440,14 +420,17 @@ namespace eyegui
         mpGUI->mConfig = config_parser::parse(mFilepath);
     }
 
-    GUI::AddLayoutJob::AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout) : GUIJob(pGUI)
+    GUI::AddLayoutJob::AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout, int layer) : GUIJob(pGUI)
     {
         mupLayout = std::move(upLayout);
+		mLayer = layer;
     }
 
     void GUI::AddLayoutJob::execute()
     {
-        mpGUI->mLayouts.push_back(std::move(mupLayout));
+        mpGUI->mLayerMap[mLayer]->addLayout((std::move(mupLayout)));
+
+		// TODO: sort layers
     }
 
     GUI::RemoveLayoutJob::RemoveLayoutJob(GUI* pGUI, Layout const * pLayout) : GUIJob(pGUI)
@@ -457,22 +440,21 @@ namespace eyegui
 
     void GUI::RemoveLayoutJob::execute()
     {
-        // Saving count of layouts
-        int layoutCount = (int) mpGUI->mLayouts.size();
+		// Bool for check
+		bool check;
 
-        // Removing layout from vector
-        mpGUI->mLayouts.erase(
-            std::remove_if(
-                mpGUI->mLayouts.begin(),
-                mpGUI->mLayouts.end(),
-                [&] (std::unique_ptr<Layout> const & p)
-                { // This predicate checks, whether raw pointer is same as given
-                    return (p.get() == mpLayout);
-                }),
-            mpGUI->mLayouts.end());
+		// Go over layers and try to remove layout
+		for (auto& rLayer: mpGUI->mLayerMap)
+		{
+			check = rLayer.second->removeLayout(mpLayout);
+			if (check)
+			{
+				break;
+			}
+		}
 
-        // Check, whether something has changed
-        if((int)(mpGUI->mLayouts.size() )== layoutCount)
+        // Check, whether Layout was removed
+        if(!check)
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Tried to remove layout that did not exist");
         }

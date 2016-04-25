@@ -4,9 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// GUI class owning the layouts. Most access through interface is handled
-// using special job objects, which are executed before rendering. This
-// ensures that the vector of layouts is not changed during rendering and
+// GUI class owning the layers with layouts. Most access through interface is
+// handled using special job objects, which are executed before rendering.
+// This ensures that the vector of layers is not changed during rendering and
 // notifications from elements can trigger GUI jobs.
 
 #ifndef GUI_H_
@@ -14,8 +14,7 @@
 
 #include "include/eyeGUI.h"
 
-#include "Layout.h"
-#include "Parser/LayoutParser.h"
+#include "Layer.h"
 #include "Parser/ConfigParser.h"
 #include "Parser/LocalizationParser.h"
 #include "Rendering/AssetManager.h"
@@ -52,7 +51,7 @@ namespace eyegui
         virtual ~GUI();
 
         // Load layout from xml, returns NULL if fails
-        Layout* addLayout(std::string filepath, bool visible);
+        Layout* addLayout(std::string filepath, bool visible, int layer = 0);
 
         // Remove layout
         void removeLayout(Layout const * pLayout);
@@ -66,10 +65,10 @@ namespace eyegui
         // Drawing
         void draw() const;
 
-        // Move layout to front
+        // Move layout to front in its layer
         void moveLayoutToFront(Layout* pLayout);
 
-        // Move layout to back
+        // Move layout to back in its layer
         void moveLayoutToBack(Layout* pLayout);
 
         // Load a config
@@ -178,12 +177,13 @@ namespace eyegui
         {
         public:
 
-            AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout);
+            AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout, int layer);
             virtual void execute();
 
         protected:
 
             std::unique_ptr<Layout> mupLayout;
+			int mLayer;
         };
 
         // Job to remove layout
@@ -215,17 +215,11 @@ namespace eyegui
 
         // #####################################################################
 
-        // Find index of layout, returns -1 if fails
-        int findLayout(Layout const * pLayout) const;
-
-        // Move layout
-        void moveLayout(int oldIndex, int newIndex);
-
         // Internal resizing
         void internalResizing();
 
         // Members
-        std::vector<std::unique_ptr<Layout> > mLayouts;
+		std::map<int, std::unique_ptr<Layer> > mLayerMap;
         int mWidth, mHeight;
         int mNewWidth, mNewHeight;
         CharacterSet mCharacterSet;
