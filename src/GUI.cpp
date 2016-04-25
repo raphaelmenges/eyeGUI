@@ -14,7 +14,6 @@
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
-
 #include <algorithm>
 
 namespace eyegui
@@ -29,7 +28,7 @@ namespace eyegui
         float fontTallSize,
         float fontMediumSize,
         float fontSmallSize,
-		FontSize descriptionFontSize)
+        FontSize descriptionFontSize)
     {
         // Initialize OpenGL
         GLSetup::init();
@@ -51,8 +50,8 @@ namespace eyegui
         mFontTallSize = fontTallSize;
         mFontMediumSize = fontMediumSize;
         mFontSmallSize = fontSmallSize;
-		mDescriptionFontSize = descriptionFontSize;
-		mShowDescriptions = true;
+        mDescriptionFontSize = descriptionFontSize;
+        mShowDescriptions = true;
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -151,12 +150,12 @@ namespace eyegui
         // Copy constant input
         Input copyInput = input;
 
-        // Update all layers in reversed order TODO
-        /*for (int i = (int)mLayouts.size() - 1; i >= 0; i--)
+        // Update all layers in reversed order
+        for (int i = (int)mLayers.size() - 1; i >= 0; i--)
         {
             // Update and use input
-            mLayouts[i]->update(tpf, &copyInput);
-        }*/
+            mLayers[i]->second->update(tpf, &copyInput);
+        }
 
         // Update gaze drawer
         mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
@@ -171,14 +170,14 @@ namespace eyegui
         GLSetup glSetup;
         glSetup.setup(0, 0, getWindowWidth(), getWindowHeight());
 
-		// Init scissor stack for this frame
-		initScissorStack(getWindowWidth(), getWindowHeight());
+        // Init scissor stack for this frame
+        initScissorStack(getWindowWidth(), getWindowHeight());
 
-        // Draw all layers TODO
-        /*for (uint i = 0; i < mLayouts.size(); i++)
+        // Draw all layers
+        for (uint i = 0; i < mLayers.size(); i++)
         {
-            mLayouts[i]->draw();
-        }*/
+            mLayers[i]->second->draw();
+        }
 
         // Render resize blend
         if (mResizing)
@@ -247,10 +246,10 @@ namespace eyegui
         return index;
     }
 
-	void GUI::setShowDescriptions(bool showDescriptions)
-	{
-		mShowDescriptions = showDescriptions;
-	}
+    void GUI::setShowDescriptions(bool showDescriptions)
+    {
+        mShowDescriptions = showDescriptions;
+    }
 
     int GUI::getWindowWidth() const
     {
@@ -335,15 +334,15 @@ namespace eyegui
         }
     }
 
-	bool GUI::getShowDescriptions() const
-	{
-		return mShowDescriptions;
-	}
+    bool GUI::getShowDescriptions() const
+    {
+        return mShowDescriptions;
+    }
 
-	FontSize GUI::getDescriptionFontSize() const
-	{
-		return mDescriptionFontSize;
-	}
+    FontSize GUI::getDescriptionFontSize() const
+    {
+        return mDescriptionFontSize;
+    }
 
     void GUI::internalResizing()
     {
@@ -358,10 +357,10 @@ namespace eyegui
         mupGazeDrawer->reset();
 
         // Then, resize all layers
-		for (auto& rLayer : mLayerMap)
-		{
-			rLayer.second->makeResizeNecessary();
-		}
+        for (auto& rLayer : mLayers)
+        {
+            rLayer->second->makeResizeNecessary();
+        }
     }
 
     GUI::GUIJob::GUIJob(GUI* pGUI)
@@ -377,29 +376,29 @@ namespace eyegui
 
     void GUI::MoveLayoutJob::execute()
     {
-		// Go over layers and try to remove layout
-		int layer = -1;
-		int layout = -1;
-		for (auto& rLayer : mpGUI->mLayerMap)
-		{
-			layout = rLayer.second->findLayout(mpLayout);
-			if (layout >= 0)
-			{
-				layer = rLayer.first;
-				break;
-			}
-		}
+        // Go over layers and try to remove layout
+        int layerIndex = -1;
+        int layoutIndex = -1;
+        for (int i = 0; i < (int)mpGUI->mLayers.size(); i++)
+        {
+            layoutIndex = mpGUI->mLayers.at(i)->second->findLayout(mpLayout);
+            if (layoutIndex >= 0)
+            {
+                layerIndex = i;
+                break;
+            }
+        }
 
         // Continue only if found
-        if (layout >= 0)
+        if (layoutIndex >= 0)
         {
             if (mToFront)
             {
-				mpGUI->mLayerMap.at(layer)->moveLayout(layout, (int)(mpGUI->mLayerMap.at(layer)->getLayoutCount()) - 1);
+                mpGUI->mLayers.at(layerIndex)->second->moveLayout(layoutIndex, (int)(mpGUI->mLayers.at(layerIndex)->second->getLayoutCount()) - 1);
             }
             else
             {
-				mpGUI->mLayerMap.at(layer)->moveLayout(layout, 0);
+                mpGUI->mLayers.at(layerIndex)->second->moveLayout(layoutIndex, 0);
             }
         }
         else
@@ -423,14 +422,51 @@ namespace eyegui
     GUI::AddLayoutJob::AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout, int layer) : GUIJob(pGUI)
     {
         mupLayout = std::move(upLayout);
-		mLayer = layer;
+        mLayer = layer;
     }
 
     void GUI::AddLayoutJob::execute()
     {
-        mpGUI->mLayerMap[mLayer]->addLayout((std::move(mupLayout)));
+        // Search for layer
+        int layerIndex = -1;
+        for(int i = 0; i < (int)mpGUI->mLayers.size(); i++)
+        {
+            if(mpGUI->mLayers[i]->first == mLayer)
+            {
+                layerIndex = i;
+                break;
+            }
+        }
 
-		// TODO: sort layers
+        // No layer found
+        if(layerIndex < 0)
+        {
+            // Add layer first
+            std::unique_ptr<LayerPair> pair = std::unique_ptr<LayerPair>(new LayerPair(mLayer, std::unique_ptr<Layer>(new Layer)));
+            mpGUI->mLayers.push_back(std::move(pair));
+
+            // Sort layers
+            sort(
+                mpGUI->mLayers.begin(),
+                mpGUI->mLayers.end(),
+                [](const std::unique_ptr<LayerPair>& a, const std::unique_ptr<LayerPair>& b)
+                { // Comparator function
+                    return a->first > b->first;
+                });
+
+            // Search again
+            for(int i = 0; i < (int)mpGUI->mLayers.size(); i++)
+            {
+                if(mpGUI->mLayers[i]->first == mLayer)
+                {
+                    layerIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Add to correspondig layer
+        mpGUI->mLayers[layerIndex]->second->addLayout((std::move(mupLayout)));
     }
 
     GUI::RemoveLayoutJob::RemoveLayoutJob(GUI* pGUI, Layout const * pLayout) : GUIJob(pGUI)
@@ -440,24 +476,26 @@ namespace eyegui
 
     void GUI::RemoveLayoutJob::execute()
     {
-		// Bool for check
-		bool check;
+        // Bool for check
+        bool check;
 
-		// Go over layers and try to remove layout
-		for (auto& rLayer: mpGUI->mLayerMap)
-		{
-			check = rLayer.second->removeLayout(mpLayout);
-			if (check)
-			{
-				break;
-			}
-		}
+        // Go over layers and try to remove layout
+        for (auto& rLayer: mpGUI->mLayers)
+        {
+            check = rLayer->second->removeLayout(mpLayout);
+            if (check)
+            {
+                break;
+            }
+        }
 
         // Check, whether Layout was removed
         if(!check)
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Tried to remove layout that did not exist");
         }
+
+        // TODO: Remove layer if empty
     }
 
     GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, std::string value) : GUIJob(pGUI)

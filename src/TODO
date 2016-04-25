@@ -1,7 +1,6 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
 
 ## New features
-- Layer system for layouts (so easier to maintain layered but dynamic structures)
 - Ring Container
 - Textbutton
   - Maybe as part of icon element? just add text there..and key...

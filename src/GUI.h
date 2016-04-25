@@ -45,7 +45,7 @@ namespace eyegui
             float fontTallSize,
             float fontMediumSize,
             float fontSmallSize,
-			FontSize descriptionFontSize);
+            FontSize descriptionFontSize);
 
         // Destructor
         virtual ~GUI();
@@ -89,8 +89,8 @@ namespace eyegui
         // Add dictionary. Returns index as handle
         uint addDictionary(std::string filepath);
 
-		// Set whether descriptions are shown
-		void setShowDescriptions(bool showDescriptions);
+        // Set whether descriptions are shown
+        void setShowDescriptions(bool showDescriptions);
 
         // *** Methods accessed by other classes ***
 
@@ -122,11 +122,11 @@ namespace eyegui
         // Get pointer to dictionary, may be NULL
         Dictionary const * getDictionary(uint dictionaryIndex) const;
 
-		// Get whether buttons should show description
-		bool getShowDescriptions() const;
+        // Get whether buttons should show description
+        bool getShowDescriptions() const;
 
-		// Get font size for descriptions
-		FontSize getDescriptionFontSize() const;
+        // Get font size for descriptions
+        FontSize getDescriptionFontSize() const;
 
     private:
 
@@ -183,7 +183,7 @@ namespace eyegui
         protected:
 
             std::unique_ptr<Layout> mupLayout;
-			int mLayer;
+            int mLayer;
         };
 
         // Job to remove layout
@@ -218,8 +218,11 @@ namespace eyegui
         // Internal resizing
         void internalResizing();
 
+        // Typedefs
+        typedef std::pair<int, std::unique_ptr<Layer> > LayerPair;
+
         // Members
-		std::map<int, std::unique_ptr<Layer> > mLayerMap;
+        std::vector<std::unique_ptr<LayerPair> > mLayers;
         int mWidth, mHeight;
         int mNewWidth, mNewHeight;
         CharacterSet mCharacterSet;
@@ -239,8 +242,8 @@ namespace eyegui
         float mFontMediumSize;
         float mFontSmallSize;
         std::vector<std::unique_ptr<Dictionary> > mDictionaries;
-		bool mShowDescriptions;
-		FontSize mDescriptionFontSize;
+        bool mShowDescriptions;
+        FontSize mDescriptionFontSize;
     };
 }
 

@@ -8,6 +8,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 ## Features
 
 #### Version 0.9
+* Layers
 * Descriptions for icon elements
 * Rewrote rendering of elements
 * Dictionary with search for similar words
