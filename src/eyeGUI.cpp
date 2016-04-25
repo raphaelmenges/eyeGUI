@@ -29,12 +29,12 @@ namespace eyegui
             fontTallSize,
             fontMediumSize,
             fontSmallSize,
-			descriptionFontSize);
+            descriptionFontSize);
     }
 
-    Layout* addLayout(GUI* pGUI, std::string filepath, bool visible)
+    Layout* addLayout(GUI* pGUI, std::string filepath, int layer, bool visible)
     {
-        return pGUI->addLayout(filepath, visible);
+        return pGUI->addLayout(filepath, layer, visible);
     }
 
     void removeLayout(GUI* pGUI, Layout const * pLayout)
@@ -85,10 +85,10 @@ namespace eyegui
         pGUI->toggleGazeVisualizationDrawing();
     }
 
-	void setShowDescriptions(GUI* pGUI, bool showDescriptions)
-	{
-		pGUI->setShowDescriptions(showDescriptions);
-	}
+    void setShowDescriptions(GUI* pGUI, bool showDescriptions)
+    {
+        pGUI->setShowDescriptions(showDescriptions);
+    }
 
     void prefetchImage(GUI* pGUI, std::string filepath)
     {
@@ -227,7 +227,7 @@ namespace eyegui
         Layout* pLayout,
         std::string styleName,
         std::string attribute,
-		std::string value)
+        std::string value)
     {
         pLayout->setValueOfStyleAttribute(styleName, attribute, value);
     }
@@ -324,53 +324,53 @@ namespace eyegui
 
     void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex)
     {
-		std::u16string bestSuggestion;
+        std::u16string bestSuggestion;
         pLayout->suggestWords(id, input, dictionaryIndex, bestSuggestion);
     }
 
     void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex)
     {
-		std::string bestSuggestion;
-		pLayout->suggestWords(id, input, dictionaryIndex, bestSuggestion);
+        std::string bestSuggestion;
+        pLayout->suggestWords(id, input, dictionaryIndex, bestSuggestion);
     }
 
-	void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex, std::u16string& rBestSuggestion)
-	{
-		pLayout->suggestWords(id, input, dictionaryIndex, rBestSuggestion);
-	}
+    void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex, std::u16string& rBestSuggestion)
+    {
+        pLayout->suggestWords(id, input, dictionaryIndex, rBestSuggestion);
+    }
 
-	void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex, std::string& rBestSuggestion)
-	{
-		pLayout->suggestWords(id, input, dictionaryIndex, rBestSuggestion);
-	}
+    void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex, std::string& rBestSuggestion)
+    {
+        pLayout->suggestWords(id, input, dictionaryIndex, rBestSuggestion);
+    }
 
-	void clearSuggestions(Layout* pLayout, std::string id)
-	{
-		pLayout->clearSuggestions(id);
-	}
+    void clearSuggestions(Layout* pLayout, std::string id)
+    {
+        pLayout->clearSuggestions(id);
+    }
 
-	void setSpaceOfFlow(Layout* pLayout, std::string id, float space)
-	{
-		pLayout->setSpaceOfFlow(id, space);
-	}
+    void setSpaceOfFlow(Layout* pLayout, std::string id, float space)
+    {
+        pLayout->setSpaceOfFlow(id, space);
+    }
 
-	void addBrickToStack(
-		Layout* pLayout,
-		std::string id,
-		std::string filepath)
-	{
-		// Delegate
-		addBrickToStack(pLayout, id, filepath, std::map<std::string, std::string>());
-	}
+    void addBrickToStack(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath)
+    {
+        // Delegate
+        addBrickToStack(pLayout, id, filepath, std::map<std::string, std::string>());
+    }
 
-	void addBrickToStack(
-		Layout* pLayout,
-		std::string id,
-		std::string filepath,
-		std::map<std::string, std::string> idMapper)
-	{
-		pLayout->addBrickToStack(id, filepath, idMapper);
-	}
+    void addBrickToStack(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath,
+        std::map<std::string, std::string> idMapper)
+    {
+        pLayout->addBrickToStack(id, filepath, idMapper);
+    }
 
     void registerButtonListener(Layout* pLayout, std::string id, std::weak_ptr<ButtonListener> wpListener)
     {
@@ -387,10 +387,10 @@ namespace eyegui
         pLayout->registerKeyboardListener(id, wpListener);
     }
 
-	void registerWordSuggestListener(Layout* pLayout, std::string id, std::weak_ptr<WordSuggestListener> wpListener)
-	{
-		pLayout->registerWordSuggestListener(id, wpListener);
-	}
+    void registerWordSuggestListener(Layout* pLayout, std::string id, std::weak_ptr<WordSuggestListener> wpListener)
+    {
+        pLayout->registerWordSuggestListener(id, wpListener);
+    }
 
     void replaceElementWithBlock(
         Layout* pLayout,
@@ -414,37 +414,37 @@ namespace eyegui
     }
 
     void replaceElementWithCircleButton(
-		Layout* pLayout,
-		std::string id,
-		std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
-		bool isSwitch,
-		bool fade)
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        std::u16string desc,
+        std::string descKey,
+        bool isSwitch,
+        bool fade)
     {
         pLayout->replaceElementWithCircleButton(id, iconFilepath, desc, descKey, isSwitch, fade);
     }
 
     void replaceElementWithBoxButton(
-		Layout* pLayout,
-		std::string id,
-		std::string
-		iconFilepath,
-		std::u16string desc,
-		std::string descKey,
-		bool isSwitch,
-		bool fade)
+        Layout* pLayout,
+        std::string id,
+        std::string
+        iconFilepath,
+        std::u16string desc,
+        std::string descKey,
+        bool isSwitch,
+        bool fade)
     {
         pLayout->replaceElementWithBoxButton(id, iconFilepath, desc, descKey, isSwitch, fade);
     }
 
     void replaceElementWithSensor(
-		Layout* pLayout,
-		std::string id,
-		std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
-		bool fade)
+        Layout* pLayout,
+        std::string id,
+        std::string iconFilepath,
+        std::u16string desc,
+        std::string descKey,
+        bool fade)
     {
         pLayout->replaceElementWithSensor(id, iconFilepath, desc, descKey, fade);
     }

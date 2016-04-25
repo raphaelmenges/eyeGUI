@@ -51,7 +51,7 @@ namespace eyegui
         virtual ~GUI();
 
         // Load layout from xml, returns NULL if fails
-        Layout* addLayout(std::string filepath, bool visible, int layer = 0);
+        Layout* addLayout(std::string filepath, int layer, bool visible);
 
         // Remove layout
         void removeLayout(Layout const * pLayout);

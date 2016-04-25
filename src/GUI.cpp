@@ -77,7 +77,7 @@ namespace eyegui
         // Nothing to do so far
     }
 
-    Layout* GUI::addLayout(std::string filepath, bool visible, int layer)
+    Layout* GUI::addLayout(std::string filepath, int layer, bool visible)
     {
         // Parse layout
         std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), filepath);

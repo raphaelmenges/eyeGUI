@@ -140,33 +140,33 @@ namespace eyegui
         void virtual keyPressed(Layout* pLayout, std::string id, std::string value) = 0;
     };
 
-	//! Abstract listener class for word suggest.
-	class WordSuggestListener
-	{
-	public:
+    //! Abstract listener class for word suggest.
+    class WordSuggestListener
+    {
+    public:
 
-		//! Constructor.
-		WordSuggestListener();
+        //! Constructor.
+        WordSuggestListener();
 
-		//! Destructor.
-		virtual ~WordSuggestListener() = 0;
+        //! Destructor.
+        virtual ~WordSuggestListener() = 0;
 
-		//! Callback for choosing suggested word.
-		/*!
-		\param pLayout pointer to layout from which callback is coming.
-		\param id is the unique id of the word suggest which causes the callback.
-		\param value is the u16string of the suggestion.
-		*/
-		void virtual chosen(Layout* pLayout, std::string id, std::u16string value) = 0;
+        //! Callback for choosing suggested word.
+        /*!
+        \param pLayout pointer to layout from which callback is coming.
+        \param id is the unique id of the word suggest which causes the callback.
+        \param value is the u16string of the suggestion.
+        */
+        void virtual chosen(Layout* pLayout, std::string id, std::u16string value) = 0;
 
-		//! Callback for choosing suggested word.
-		/*!
-		\param pLayout pointer to layout from which callback is coming.
-		\param id is the unique id of the word suggest which causes the callback.
-		\param value is the string of the suggestion.
-		*/
-		void virtual chosen(Layout* pLayout, std::string id, std::string value) = 0;
-	};
+        //! Callback for choosing suggested word.
+        /*!
+        \param pLayout pointer to layout from which callback is coming.
+        \param id is the unique id of the word suggest which causes the callback.
+        \param value is the string of the suggestion.
+        */
+        void virtual chosen(Layout* pLayout, std::string id, std::string value) = 0;
+    };
 
     //! Struct for relative values of position and size
     struct RelativePositionAndSize
@@ -210,17 +210,18 @@ namespace eyegui
         float fontTallSize = 0.1f; //!< Height of tall font in percentage of GUI height
         float fontMediumSize = 0.04f; //!< Height of medium font in percentage of GUI height
         float fontSmallSize = 0.0175f; //!< Height of small font in percentage of GUI height
-		FontSize descriptionFontSize = FontSize::SMALL; // Font size of icon element descriptions
+        FontSize descriptionFontSize = FontSize::SMALL; // Font size of icon element descriptions
     };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.
     /*!
       \param pGUI pointer to GUI.
       \param filepath is path to layout xml file.
+      \param layer is index of layer into which layout is added. Higher ones are in front.
       \param visible shall added layout be visible.
       \return pointer to added layout. Null if creation was not possible because layouts were locked.
     */
-    Layout* addLayout(GUI* pGUI, std::string filepath, bool visible = true);
+    Layout* addLayout(GUI* pGUI, std::string filepath, int layer = 0, bool visible = true);
 
     //! Removes layout in GUI by pointer. Is executed at update call.
     /*!
@@ -278,12 +279,12 @@ namespace eyegui
     */
     void toggleGazeVisualizationDrawing(GUI* pGUI);
 
-	//! Set whether descriptions of icon elements are displayed at penetration.
-	/*!
-	\param pGUI pointer to GUI.
-	\param showDescriptions indicates whether descriptions should be drawn.
-	*/
-	void setShowDescriptions(GUI* pGUI, bool showDescriptions);
+    //! Set whether descriptions of icon elements are displayed at penetration.
+    /*!
+    \param pGUI pointer to GUI.
+    \param showDescriptions indicates whether descriptions should be drawn.
+    */
+    void setShowDescriptions(GUI* pGUI, bool showDescriptions);
 
     //! Prefetch image to avoid lags.
     /*!
@@ -641,23 +642,23 @@ namespace eyegui
     */
     void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
 
-	//! Give input to word suggest element.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\param input is input for suggestions as UTF-16 string.
-	\param dictionaryIndex is index of used dictionary.
-	*/
-	void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex);
+    //! Give input to word suggest element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param input is input for suggestions as UTF-16 string.
+    \param dictionaryIndex is index of used dictionary.
+    */
+    void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex);
 
-	//! Give input to word suggest element.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\param input is input for suggestions as UTF-8 string.
-	\param dictionaryIndex is index of used dictionary.
-	*/
-	void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex);
+    //! Give input to word suggest element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param input is input for suggestions as UTF-8 string.
+    \param dictionaryIndex is index of used dictionary.
+    */
+    void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex);
 
     //! Give input to word suggest element.
     /*!
@@ -665,7 +666,7 @@ namespace eyegui
       \param id is the unique id of an element.
       \param input is input for suggestions as UTF-16 string.
       \param dictionaryIndex is index of used dictionary.
-	  \param rBestSuggestion is reference to UTF-16 string into which best suggestion is written. May be empty.
+      \param rBestSuggestion is reference to UTF-16 string into which best suggestion is written. May be empty.
     */
     void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex, std::u16string& rBestSuggestion);
 
@@ -675,48 +676,48 @@ namespace eyegui
       \param id is the unique id of an element.
       \param input is input for suggestions as UTF-8 string.
       \param dictionaryIndex is index of used dictionary.
-	  \param rBestSuggestion is reference to UTF-8 string into which best suggestion is written. May be empty.
+      \param rBestSuggestion is reference to UTF-8 string into which best suggestion is written. May be empty.
     */
     void suggestWords(Layout* pLayout, std::string id, std::string input, unsigned int dictionaryIndex, std::string& rBestSuggestion);
 
-	//! Clears suggestions of word suggest element.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	*/
-	void clearSuggestions(Layout* pLayout, std::string id);
+    //! Clears suggestions of word suggest element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    */
+    void clearSuggestions(Layout* pLayout, std::string id);
 
-	//! Set space of flow element.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\param space is new space in percent of width or height, depending on direction.
-	*/
-	void setSpaceOfFlow(Layout* pLayout, std::string id, float space);
+    //! Set space of flow element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param space is new space in percent of width or height, depending on direction.
+    */
+    void setSpaceOfFlow(Layout* pLayout, std::string id, float space);
 
-	//! Add brick to stack
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\param filepath is relative path to brick file.
-	*/
-	void addBrickToStack(
-		Layout* pLayout,
-		std::string id,
-		std::string filepath);
+    //! Add brick to stack
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param filepath is relative path to brick file.
+    */
+    void addBrickToStack(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath);
 
-	//! Add brick to stack
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\param filepath is relative path to brick file.
-	\param idMapper changes ids inside brick to ones in map.
-	*/
-	void addBrickToStack(
-		Layout* pLayout,
-		std::string id,
-		std::string filepath,
-		std::map<std::string, std::string> idMapper);
+    //! Add brick to stack
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param filepath is relative path to brick file.
+    \param idMapper changes ids inside brick to ones in map.
+    */
+    void addBrickToStack(
+        Layout* pLayout,
+        std::string id,
+        std::string filepath,
+        std::map<std::string, std::string> idMapper);
 
     //! Register listener to button.
     /*!
@@ -751,16 +752,16 @@ namespace eyegui
         std::string id,
         std::weak_ptr<KeyboardListener> wpListener);
 
-	//! Register listener to word suggest.
-	/*!
-	\param pLayout pointer to layout.
-	\param id is the unique id of an element.
-	\param wpListener is weak pointer to listener that should be registered.
-	*/
-	void registerWordSuggestListener(
-		Layout* pLayout,
-		std::string id,
-		std::weak_ptr<WordSuggestListener> wpListener);
+    //! Register listener to word suggest.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    \param wpListener is weak pointer to listener that should be registered.
+    */
+    void registerWordSuggestListener(
+        Layout* pLayout,
+        std::string id,
+        std::weak_ptr<WordSuggestListener> wpListener);
 
     //! Replace element with block.
     /*!
@@ -811,8 +812,8 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
-	  \param desc is fallback for description.
-	  \param descKey is key for lookup in localization file for description.
+      \param desc is fallback for description.
+      \param descKey is key for lookup in localization file for description.
       \param isSwitch indicates, whether button should be a switch.
       \param fade indicates, whether replaced element should fade.
     */
@@ -820,8 +821,8 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
+        std::u16string desc,
+        std::string descKey,
         bool isSwitch = false,
         bool fade = false);
 
@@ -830,8 +831,8 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
-	  \param desc is fallback for description.
-	  \param descKey is key for lookup in localization file for description.
+      \param desc is fallback for description.
+      \param descKey is key for lookup in localization file for description.
       \param isSwitch indicates, whether button should be a switch.
       \param fade indicates, whether replaced element should fade.
     */
@@ -839,8 +840,8 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
+        std::u16string desc,
+        std::string descKey,
         bool isSwitch = false,
         bool fade = false);
 
@@ -849,16 +850,16 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param iconFilepath path to image which should be used as icon.
-	  \param desc is fallback for description.
-	  \param descKey is key for lookup in localization file for description.
+      \param desc is fallback for description.
+      \param descKey is key for lookup in localization file for description.
       \param fade indicates, whether replaced element should fade.
     */
     void replaceElementWithSensor(
         Layout* pLayout,
         std::string id,
         std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
+        std::u16string desc,
+        std::string descKey,
         bool fade = false);
 
     //! Replace element with text block.
