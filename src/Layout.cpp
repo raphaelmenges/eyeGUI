@@ -55,7 +55,6 @@ namespace eyegui
 
         // *** RESIZING ***
         internalResizing(mForceResize);
-		mForceResize = false;
 
         // *** NOTIFICATIONS ***
         mupNotificationQueue->process();
@@ -68,7 +67,7 @@ namespace eyegui
         // *** UPDATE FRAMES ***
 
         // Update root only if own alpha greater zero
-        if (mAlpha.getValue() > 0)
+        if (mForceResize || (mAlpha.getValue() > 0))
         {
             // Do not use input if still fading
             if (!mUseInput || mAlpha.getValue() < 1)
@@ -92,7 +91,7 @@ namespace eyegui
                         pFrame->setRemovedFadingAlpha(fadingAlpha);
 
                         // Update
-                        pFrame->update(tpf, mAlpha.getValue(), NULL);
+                        pFrame->update(tpf, mAlpha.getValue(), NULL, mForceResize);
 
                         // Delete frame in next update
                         if (fadingAlpha <= 0)
@@ -103,14 +102,17 @@ namespace eyegui
                     else
                     {
                         // Standard update
-                        pFrame->update(tpf, mAlpha.getValue(), pInput);
+                        pFrame->update(tpf, mAlpha.getValue(), pInput, mForceResize);
                     }
                 }
             }
 
             // Update main frame
-            mupMainFrame->update(tpf, mAlpha.getValue(), pInput);
+            mupMainFrame->update(tpf, mAlpha.getValue(), pInput, mForceResize);
         }
+
+		// Reset force resize
+		mForceResize = false;
     }
 
     void Layout::draw() const

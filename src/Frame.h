@@ -53,7 +53,7 @@ namespace eyegui
         virtual float getRelativeSizeOnLayoutY() const;
 
         // Updating
-        void update(float tpf, float alpha, Input* pInput);
+        void update(float tpf, float alpha, Input* pInput, bool force);
 
         // Drawing
         void draw() const;

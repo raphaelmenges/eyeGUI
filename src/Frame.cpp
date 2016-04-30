@@ -82,7 +82,7 @@ namespace eyegui
         return mRelativeSizeY;
     }
 
-    void Frame::update(float tpf, float alpha, Input* pInput)
+    void Frame::update(float tpf, float alpha, Input* pInput, bool force)
     {
         // *** RESIZING ***
         internalResizing();
@@ -98,7 +98,7 @@ namespace eyegui
          // *** OWN ROOT AND FRONT ELEMENTS ***
 
         // Update root only if own alpha greater zero
-        if (mCombinedAlpha > 0)
+        if (force || (mCombinedAlpha > 0))
         {
             // Do not use input if still fading
             if (mCombinedAlpha < 1)
@@ -313,7 +313,10 @@ namespace eyegui
 
     void Frame::internalResizing()
     {
-        if (mResizeNecessary && mCombinedAlpha > 0)
+		// Makes problems when resizing of invisible layouts is activated
+		// if (mResizeNecessary && mCombinedAlpha > 0)
+
+        if (mResizeNecessary)
         {
             // Fetch values from layout
             int layoutWidth = mpLayout->getLayoutWidth();
