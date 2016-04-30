@@ -119,28 +119,50 @@ namespace eyegui
         }
     }
 
+	void GUI::update()
+	{
+		// Execute all jobs
+		for (std::unique_ptr<GUIJob>& rupJob : mJobs)
+		{
+			rupJob->execute();
+		}
+		mJobs.clear();
+
+		// Force resizing
+		internalResizing();
+		mResizing = false;
+		mResizeWaitTime = 0;
+
+		// Update all layers in reversed order
+		for (int i = (int)mLayers.size() - 1; i >= 0; i--)
+		{
+			// Update without delta time or input
+			mLayers[i]->second->update(0, NULL);
+		}
+	}
+
     Input GUI::update(float tpf, const Input input)
     {
-        // Execute all jobs
-        for (std::unique_ptr<GUIJob>& rupJob : mJobs)
-        {
-            rupJob->execute();
-        }
-        mJobs.clear();
+		// Execute all jobs
+		for (std::unique_ptr<GUIJob>& rupJob : mJobs)
+		{
+			rupJob->execute();
+		}
+		mJobs.clear();
 
-        // Resizing
-        if (mResizing)
-        {
-            mResizeWaitTime -= tpf;
+		// Resizing
+		if (mResizing)
+		{
+			mResizeWaitTime -= tpf;
 
-            // Resizing should take place?
-            if (mResizeWaitTime <= 0)
-            {
-                internalResizing();
-                mResizing = false;
-                mResizeWaitTime = 0;
-            }
-        }
+			// Resizing should take place?
+			if (mResizeWaitTime <= 0)
+			{
+				internalResizing();
+				mResizing = false;
+				mResizeWaitTime = 0;
+			}
+		}
 
         // Handle time
         mAccPeriodicTime += tpf;

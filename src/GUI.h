@@ -61,6 +61,7 @@ namespace eyegui
         void resize(int width, int height);
 
         // Updating
+		void update();
         Input update(float tpf, const Input input);
 
         // Drawing

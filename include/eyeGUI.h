@@ -231,6 +231,12 @@ namespace eyegui
     */
     void removeLayout(GUI* pGUI, Layout const * pLayout);
 
+	//! Simple update of whole GUI. Should not be used as default call, only thought for resizing added layouts or applying of settings.
+	/*!
+	\param pGUI pointer to GUI.
+	*/
+	void updateGUI(GUI* pGUI);
+
     //! Update whole GUI.
     /*!
       \param pGUI pointer to GUI.
