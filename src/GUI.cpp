@@ -37,8 +37,8 @@ namespace eyegui
         // Initialize members
         mWidth = width;
         mHeight = height;
-        mNewWidth = 0;
-        mNewHeight = 0;
+        mNewWidth = mWidth;
+        mNewHeight = mHeight;
         mCharacterSet = characterSet;
         mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
         mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
