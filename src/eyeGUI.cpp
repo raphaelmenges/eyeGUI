@@ -29,7 +29,8 @@ namespace eyegui
             fontTallSize,
             fontMediumSize,
             fontSmallSize,
-            descriptionFontSize);
+            descriptionFontSize,
+			resizeInvisibleLayouts);
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, int layer, bool visible)

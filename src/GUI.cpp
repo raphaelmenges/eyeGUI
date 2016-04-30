@@ -28,7 +28,8 @@ namespace eyegui
         float fontTallSize,
         float fontMediumSize,
         float fontSmallSize,
-        FontSize descriptionFontSize)
+        FontSize descriptionFontSize,
+		bool resizeInvisibleLayouts)
     {
         // Initialize OpenGL
         GLSetup::init();
@@ -51,6 +52,7 @@ namespace eyegui
         mFontMediumSize = fontMediumSize;
         mFontSmallSize = fontSmallSize;
         mDescriptionFontSize = descriptionFontSize;
+		mResizeInvisibleLayouts = resizeInvisibleLayouts;
         mShowDescriptions = true;
 
         // Initialize default font ("" handled by asset manager)
@@ -359,7 +361,7 @@ namespace eyegui
         // Then, resize all layers
         for (auto& rLayer : mLayers)
         {
-            rLayer->second->makeResizeNecessary();
+            rLayer->second->makeResizeNecessary(mResizeInvisibleLayouts);
         }
     }
 

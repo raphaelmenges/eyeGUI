@@ -38,7 +38,7 @@ namespace eyegui
         }
     }
 
-    void Layer::makeResizeNecessary()
+    void Layer::makeResizeNecessary(bool force)
     {
         for (std::unique_ptr<Layout>& upLayout : mLayouts)
         {

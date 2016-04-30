@@ -30,7 +30,7 @@ namespace eyegui
 		void draw() const;
 
 		// Resize
-		void makeResizeNecessary();
+		void makeResizeNecessary(bool force);
 
 		// Add layout
 		void addLayout(std::unique_ptr<Layout> upLayout);

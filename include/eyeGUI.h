@@ -210,7 +210,8 @@ namespace eyegui
         float fontTallSize = 0.1f; //!< Height of tall font in percentage of GUI height
         float fontMediumSize = 0.04f; //!< Height of medium font in percentage of GUI height
         float fontSmallSize = 0.0175f; //!< Height of small font in percentage of GUI height
-        FontSize descriptionFontSize = FontSize::SMALL; // Font size of icon element descriptions
+        FontSize descriptionFontSize = FontSize::SMALL; //!< Font size of icon element descriptions
+		bool resizeInvisibleLayouts = true; //!< Resize invisible layouts. Has advantage that one can ask for the size of elements all time
     };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.

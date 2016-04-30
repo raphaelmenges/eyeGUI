@@ -45,7 +45,8 @@ namespace eyegui
             float fontTallSize,
             float fontMediumSize,
             float fontSmallSize,
-            FontSize descriptionFontSize);
+            FontSize descriptionFontSize,
+			bool resizeInvisibleLayouts);
 
         // Destructor
         virtual ~GUI();
@@ -244,6 +245,7 @@ namespace eyegui
         std::vector<std::unique_ptr<Dictionary> > mDictionaries;
         bool mShowDescriptions;
         FontSize mDescriptionFontSize;
+		bool mResizeInvisibleLayouts;
     };
 }
 

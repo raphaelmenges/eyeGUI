@@ -30,6 +30,7 @@ namespace eyegui
         mpSelectedInteractiveElement = NULL;
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
         mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
+		mForceResize = false;
 
         // Parse style file
         mupStyles = stylesheet_parser::parse(stylesheetFilepath);
@@ -53,7 +54,8 @@ namespace eyegui
         mDyingFloatingFramesIndices.clear();
 
         // *** RESIZING ***
-        internalResizing();
+        internalResizing(mForceResize);
+		mForceResize = false;
 
         // *** NOTIFICATIONS ***
         mupNotificationQueue->process();
@@ -131,9 +133,10 @@ namespace eyegui
         }
     }
 
-    void Layout::makeResizeNecessary()
+    void Layout::makeResizeNecessary(bool force)
     {
         mResizeNecessary = true;
+		mForceResize = force;
     }
 
     void Layout::attachElementToMainFrameAsRoot(
@@ -1467,9 +1470,9 @@ namespace eyegui
         return mpGUI->getDescriptionFontSize();
     }
 
-    void Layout::internalResizing()
+    void Layout::internalResizing(bool force)
     {
-        if (mResizeNecessary && mAlpha.getValue() > 0)
+        if (force || (mResizeNecessary && mAlpha.getValue() > 0))
         {
             // Resize main frame
             mupMainFrame->makeResizeNecessary();

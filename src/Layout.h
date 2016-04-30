@@ -52,7 +52,7 @@ namespace eyegui
         void draw() const;
 
         // Make resize necessary
-        void makeResizeNecessary();
+        void makeResizeNecessary(bool force);
 
         // Attach element to main frame as root
         void attachElementToMainFrameAsRoot(
@@ -315,7 +315,7 @@ namespace eyegui
     private:
 
         // Resize function
-        void internalResizing();
+        void internalResizing(bool force);
 
         // Fetch pointer to element by id
         Element* fetchElement(std::string id) const;
