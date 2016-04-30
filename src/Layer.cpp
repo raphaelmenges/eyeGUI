@@ -43,7 +43,7 @@ namespace eyegui
         for (std::unique_ptr<Layout>& upLayout : mLayouts)
         {
             // Layout fetches size via const pointer to GUI
-            upLayout->makeResizeNecessary();
+            upLayout->makeResizeNecessary(force);
         }
     }
 

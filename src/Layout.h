@@ -350,6 +350,7 @@ namespace eyegui
         std::unique_ptr<std::map<std::string, Style> > mupStyles;
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<NotificationQueue> mupNotificationQueue;
+		bool mForceResize;
     };
 }
 
