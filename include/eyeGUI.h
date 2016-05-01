@@ -34,6 +34,7 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <functional>
 
 namespace eyegui
 {
@@ -1089,15 +1090,22 @@ namespace eyegui
 
     //! Set error callback function.
     /*!
-      \param pCallbackFunction is function pointer to function which should be called back.
+      \param callbackFunction is function object which should be called back.
     */
-    void setErrorCallback(void(*pCallbackFunction)(std::string));
+    void setErrorCallback(std::function<void(std::string)> callbackFunction);
 
     //! Set warning callback function.
     /*!
-      \param pCallbackFunction is function pointer to function which should be called back.
+      \param callbackFunction is function object which should be called back.
     */
-    void setWarningCallback(void(*pCallbackFunction)(std::string));
+    void setWarningCallback(std::function<void(std::string)> callbackFunction);
+
+	//! Set resize callback function since eyeGUI does not resize directly at resizeGUI call.
+	/*!
+	\param pGUI is pointer to GUI object which shall use callback.
+	\param callbackFunction is function object which should be called back.
+	*/
+	void setResizeCallback(GUI* pGUI, std::function<void(int, int)> callbackFunction);
 
     //! Return string describing the version of the linked library.
     /*!

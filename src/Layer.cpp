@@ -113,6 +113,6 @@ namespace eyegui
 
     int Layer::getLayoutCount() const
     {
-        return mLayouts.size();
+        return (int) mLayouts.size();
     }
 }

@@ -592,15 +592,20 @@ namespace eyegui
         return pLayout->getAbsolutePositionAndSizeOfFloatingFrame(frameIndex);
     }
 
-    void setErrorCallback(void(*pCallbackFunction)(std::string))
+    void setErrorCallback(std::function<void(std::string)> callbackFunction)
     {
-        OperationNotifier::setErrorCallback(pCallbackFunction);
+        OperationNotifier::setErrorCallback(callbackFunction);
     }
 
-    void setWarningCallback(void(*pCallbackFunction)(std::string))
+    void setWarningCallback(std::function<void(std::string)> callbackFunction)
     {
-        OperationNotifier::setWarningCallback(pCallbackFunction);
+        OperationNotifier::setWarningCallback(callbackFunction);
     }
+
+	void setResizeCallback(GUI* pGUI, std::function<void(int, int)> callbackFunction)
+	{
+		pGUI->setResizeCallback(callbackFunction);
+	}
 
     std::string getLibraryVersion()
     {

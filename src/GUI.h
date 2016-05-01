@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 
 namespace eyegui
 {
@@ -129,6 +130,9 @@ namespace eyegui
 
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
+
+		// Set function to callback after real resize
+		void setResizeCallback(std::function<void(int, int)> callbackFunction);
 
     private:
 
@@ -247,6 +251,8 @@ namespace eyegui
         bool mShowDescriptions;
         FontSize mDescriptionFontSize;
 		bool mResizeInvisibleLayouts;
+		std::function<void(int, int)> mResizeCallbackFunction;
+		bool mResizeCallbackSet;
     };
 }
 

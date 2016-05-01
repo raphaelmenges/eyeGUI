@@ -54,6 +54,7 @@ namespace eyegui
         mDescriptionFontSize = descriptionFontSize;
 		mResizeInvisibleLayouts = resizeInvisibleLayouts;
         mShowDescriptions = true;
+		mResizeCallbackSet = false;
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -139,6 +140,12 @@ namespace eyegui
 			// Update without delta time or input
 			mLayers[i]->second->update(0, NULL);
 		}
+
+		// Call resize callback (after update of layouts)
+		if (mResizeCallbackSet)
+		{
+			mResizeCallbackFunction(mWidth, mHeight);
+		}
 	}
 
     Input GUI::update(float tpf, const Input input)
@@ -151,6 +158,7 @@ namespace eyegui
 		mJobs.clear();
 
 		// Resizing
+		bool resized = false;
 		if (mResizing)
 		{
 			mResizeWaitTime -= tpf;
@@ -161,6 +169,7 @@ namespace eyegui
 				internalResizing();
 				mResizing = false;
 				mResizeWaitTime = 0;
+				resized = true;
 			}
 		}
 
@@ -183,6 +192,12 @@ namespace eyegui
 
         // Update gaze drawer
         mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
+
+		// Call resize callback (after update of layouts)
+		if (resized && mResizeCallbackSet)
+		{
+			mResizeCallbackFunction(mWidth, mHeight);
+		}
 
         // Return copy of used input
         return copyInput;
@@ -367,6 +382,12 @@ namespace eyegui
     {
         return mDescriptionFontSize;
     }
+
+	void GUI::setResizeCallback(std::function<void(int, int)> callbackFunction)
+	{
+		mResizeCallbackFunction = callbackFunction;
+		mResizeCallbackSet = true;
+	}
 
     void GUI::internalResizing()
     {

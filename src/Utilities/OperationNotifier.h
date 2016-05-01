@@ -13,6 +13,7 @@
 #include "PathBuilder.h"
 
 #include <string>
+#include <functional>
 
 // Defines for easier use
 #define throwError eyegui::OperationNotifier::notifyAboutError
@@ -40,15 +41,15 @@ namespace eyegui
         }
 
         // Set function to call back
-        static void setErrorCallback(void(*pCallbackFunction)(std::string))
+        static void setErrorCallback(std::function<void(std::string)> callbackFunction)
         {
-            getInstance()->internalSetErrorCallback(pCallbackFunction);
+            getInstance()->internalSetErrorCallback(callbackFunction);
         }
 
         // Set function to call back
-        static void setWarningCallback(void(*pCallbackFunction)(std::string))
+        static void setWarningCallback(std::function<void(std::string)> callbackFunction)
         {
-            getInstance()->internalSetWarningCallback(pCallbackFunction);
+            getInstance()->internalSetWarningCallback(callbackFunction);
         }
 
     private:
@@ -80,16 +81,16 @@ namespace eyegui
         }
 
         // Set callback function
-        void internalSetErrorCallback(void(*pCallbackFunction)(std::string))
+        void internalSetErrorCallback(std::function<void(std::string)> callbackFunction)
         {
-            mpErrorCallbackFunction = pCallbackFunction;
+			mErrorCallbackFunction = callbackFunction;
             mErrorCallbackSet = true;
         }
 
         // Set callback function
-        void internalSetWarningCallback(void(*pCallbackFunction)(std::string))
+        void internalSetWarningCallback(std::function<void(std::string)> callbackFunction)
         {
-            mpWarningCallbackFunction = pCallbackFunction;
+			mWarningCallbackFunction = callbackFunction;
             mWarningCallbackSet = true;
         }
 
@@ -100,7 +101,7 @@ namespace eyegui
             if (mErrorCallbackSet)
             {
                 // Call callback function
-                mpErrorCallbackFunction(buildContent(Type::ERROR_CALLBACK, operation, message, filepath));
+				mErrorCallbackFunction(buildContent(Type::ERROR_CALLBACK, operation, message, filepath));
             }
         }
 
@@ -111,7 +112,7 @@ namespace eyegui
             if (mWarningCallbackSet)
             {
                 // Call callback function
-                mpWarningCallbackFunction(buildContent(Type::WARNING_CALLBACK, operation, message, filepath));
+				mWarningCallbackFunction(buildContent(Type::WARNING_CALLBACK, operation, message, filepath));
             }
         }
 
@@ -171,8 +172,8 @@ namespace eyegui
         // Member
         bool mErrorCallbackSet;
         bool mWarningCallbackSet;
-        void(*mpErrorCallbackFunction)(std::string);
-        void(*mpWarningCallbackFunction)(std::string);
+		std::function<void(std::string)> mErrorCallbackFunction;
+		std::function<void(std::string)> mWarningCallbackFunction;
     };
 }
 
