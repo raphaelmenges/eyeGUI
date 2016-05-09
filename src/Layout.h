@@ -137,6 +137,14 @@ namespace eyegui
             int height,
             unsigned char const * pIconData);
 
+        // Set image of picture
+        void setImageOfPicture(
+            std::string id,
+            std::string name,
+            int width,
+            int height,
+            unsigned char const * pData);
+
         // Interact with interactive element
         void interactWithInteractiveElement(std::string id);
 

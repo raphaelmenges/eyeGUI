@@ -528,9 +528,9 @@ namespace eyegui
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param name is unique name of later texture. Can be used to overwrite existing one.
-      \param width is with of icon
-      \param height is height of icon
-      \param pIconData is pointer to unsigned char data. Must have size of width * height * 4 (RGBA)
+      \param width is with of icon.
+      \param height is height of icon.
+      \param pIconData is pointer to unsigned char data. Must have size of width * height * 4 (RGBA).
     */
     void setIconOfIconElement(
         Layout* pLayout,
@@ -539,6 +539,23 @@ namespace eyegui
         int width,
         int height,
         unsigned char const * pIconData);
+
+    //! Set image in picture.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param name is unique name of later texture. Can be used to overwrite existing one.
+      \param width is with of image.
+      \param height is height of image.
+      \param pIconData is pointer to unsigned char data. Must have size of width * height * 4 (RGBA).
+    */
+    void setImageOfPicture(
+        Layout* pLayout,
+        std::string id,
+        std::string name,
+        int width,
+        int height,
+        unsigned char const * pData);
 
     //! Interact with interactive element.
     /*!

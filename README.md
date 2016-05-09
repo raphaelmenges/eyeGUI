@@ -15,6 +15,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 * Now using utf8rewind instead of UTF8-CPP for unicode handling
 * Word suggest element
 * Flow element (scrolling box)
+* Image data can be set via interface
 
 #### Version 0.8
 * Keyboard

@@ -147,29 +147,42 @@ namespace eyegui
         return NULL;
     }
 
-	Flow* toFlow(Element* pElement)
-	{
-		if (pElement != NULL)
-		{
-			Element::Type type = pElement->getType();
-			if (type == Element::Type::FLOW)
-			{
-				return static_cast<Flow*>(pElement);
-			}
-		}
-		return NULL;
-	}
+    Flow* toFlow(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            Element::Type type = pElement->getType();
+            if (type == Element::Type::FLOW)
+            {
+                return static_cast<Flow*>(pElement);
+            }
+        }
+        return NULL;
+    }
 
-	Stack* toStack(Element* pElement)
-	{
-		if (pElement != NULL)
-		{
-			Element::Type type = pElement->getType();
-			if (type == Element::Type::STACK)
-			{
-				return static_cast<Stack*>(pElement);
-			}
-		}
-		return NULL;
-	}
+    Stack* toStack(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            Element::Type type = pElement->getType();
+            if (type == Element::Type::STACK)
+            {
+                return static_cast<Stack*>(pElement);
+            }
+        }
+        return NULL;
+    }
+
+    Picture* toPicture(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            Element::Type type = pElement->getType();
+            if (type == Element::Type::PICTURE)
+            {
+                return static_cast<Picture*>(pElement);
+            }
+        }
+        return NULL;
+    }
 }

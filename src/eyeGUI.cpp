@@ -254,6 +254,17 @@ namespace eyegui
         pLayout->setIconOfIconElement(id, name, width, height, pIconData);
     }
 
+    void setImageOfPicture(
+        Layout* pLayout,
+        std::string id,
+        std::string name,
+        int width,
+        int height,
+        unsigned char const * pData)
+    {
+        pLayout->setImageOfPicture(id, name, width, height, pData);
+    }
+
     void interactWithInteractiveElement(Layout* pLayout, std::string id)
     {
         pLayout->interactWithInteractiveElement(id);

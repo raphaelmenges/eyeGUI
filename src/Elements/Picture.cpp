@@ -63,6 +63,15 @@ namespace eyegui
         mupImage->evaluateSize(availableWidth, availableHeight, rWidth, rHeight);
     }
 
+    void Picture::setContentOfImage(
+        std::string name,
+        int width,
+        int height,
+        unsigned char const * pData)
+    {
+        mupImage->setContent(name, width, height, pData);
+    }
+
     float Picture::specialUpdate(float tpf, Input* pInput)
     {
         return 0;

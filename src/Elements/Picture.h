@@ -43,6 +43,9 @@ namespace eyegui
             int& rWidth,
             int& rHeight) const;
 
+        // Set image in picture
+        void setContentOfImage(std::string name, int width, int height, unsigned char const * pData);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale

@@ -37,6 +37,13 @@ namespace eyegui
         // Deconstructor
         virtual ~Image();
 
+        // Set content
+        void setContent(
+            std::string name,
+            int width,
+            int height,
+            unsigned char const * pData);
+
         // Check before transformation, how much space is needed
         void evaluateSize(
             int availableWidth,
@@ -58,6 +65,7 @@ namespace eyegui
 
         // Members
         Layout const * mpLayout;
+        AssetManager* mpAssetManager;
         RenderItem const * mpQuad;
         Texture const * mpTexture;
         ImageAlignment mAlignment;

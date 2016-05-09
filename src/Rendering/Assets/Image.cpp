@@ -20,8 +20,9 @@ namespace eyegui
     {
         // Initialize members
         mpLayout = pLayout;
-        mpQuad = pAssetManager->fetchRenderItem(shaders::Type::IMAGE, meshes::Type::QUAD);
-        mpTexture = pAssetManager->fetchTexture(filepath);
+        mpAssetManager = pAssetManager;
+        mpQuad = mpAssetManager->fetchRenderItem(shaders::Type::IMAGE, meshes::Type::QUAD);
+        mpTexture = mpAssetManager->fetchTexture(filepath);
         mAlignment = alignment;
         mX = 0;
         mY = 0;
@@ -32,6 +33,15 @@ namespace eyegui
     Image::~Image()
     {
         // Nothing to do
+    }
+
+    void Image::setContent(
+        std::string name,
+        int width,
+        int height,
+        unsigned char const * pData)
+    {
+        mpTexture = mpAssetManager->fetchTexture(name, width, height, pData);
     }
 
     void Image::evaluateSize(
