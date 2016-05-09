@@ -92,7 +92,7 @@ namespace eyegui
         }
 
         // Create OpenGL from image
-        createOpenGLTexture(image, filtering, wrap, width, height, channelCount, filepath);
+        createOpenGLTexture(image.data(), filtering, wrap, width, height, channelCount, filepath);
 
         // Delete NanoSVG stuff
         nsvgDeleteRasterizer(rast);

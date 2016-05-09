@@ -30,7 +30,7 @@ namespace eyegui
         mpSelectedInteractiveElement = NULL;
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
         mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
-		mForceResize = false;
+        mForceResize = false;
 
         // Parse style file
         mupStyles = stylesheet_parser::parse(stylesheetFilepath);
@@ -111,8 +111,8 @@ namespace eyegui
             mupMainFrame->update(tpf, mAlpha.getValue(), pInput, mForceResize);
         }
 
-		// Reset force resize
-		mForceResize = false;
+        // Reset force resize
+        mForceResize = false;
     }
 
     void Layout::draw() const
@@ -138,7 +138,7 @@ namespace eyegui
     void Layout::makeResizeNecessary(bool force)
     {
         mResizeNecessary = true;
-		mForceResize = force;
+        mForceResize = force;
     }
 
     void Layout::attachElementToMainFrameAsRoot(
@@ -415,6 +415,24 @@ namespace eyegui
         }
     }
 
+    void Layout::setIconOfIconElement(
+            std::string id,
+            std::string name,
+            int width,
+            int height,
+            unsigned char const * pIconData)
+    {
+        IconElement* pIconElement = toIconElement(fetchElement(id));
+        if (pIconElement != NULL)
+        {
+            pIconElement->setIcon(name, width, height, pIconData);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find icon element with id: " + id);
+        }
+    }
+
     void Layout::interactWithInteractiveElement(std::string id)
     {
         InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));
@@ -632,52 +650,52 @@ namespace eyegui
         }
     }
 
-	void Layout::setSpaceOfFlow(std::string id, float space)
-	{
-		Flow* pFlow = toFlow(fetchElement(id));
-		if (pFlow != NULL)
-		{
-			pFlow->setSpace(space);
-		}
-		else
-		{
-			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find flow with id: " + id);
-		}
-	}
+    void Layout::setSpaceOfFlow(std::string id, float space)
+    {
+        Flow* pFlow = toFlow(fetchElement(id));
+        if (pFlow != NULL)
+        {
+            pFlow->setSpace(space);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find flow with id: " + id);
+        }
+    }
 
-	void Layout::addBrickToStack(
-		std::string id,
-		std::string filepath,
-		std::map<std::string, std::string> idMapper)
-	{
-		Stack* pStack = toStack(fetchElement(id));
-		if (pStack != NULL)
-		{
-			// Create brick
-			std::unique_ptr<elementsAndIds> upPair = std::move(
-				brick_parser::parse(
-					this,
-					pStack->getFrame(),
-					pStack->getAssetManager(),
-					pStack->getNotificationQueue(),
-					pStack,
-					filepath,
-					idMapper));
+    void Layout::addBrickToStack(
+        std::string id,
+        std::string filepath,
+        std::map<std::string, std::string> idMapper)
+    {
+        Stack* pStack = toStack(fetchElement(id));
+        if (pStack != NULL)
+        {
+            // Create brick
+            std::unique_ptr<elementsAndIds> upPair = std::move(
+                brick_parser::parse(
+                    this,
+                    pStack->getFrame(),
+                    pStack->getAssetManager(),
+                    pStack->getNotificationQueue(),
+                    pStack,
+                    filepath,
+                    idMapper));
 
-			// Attach to stack
-			pStack->attachElement(std::move(upPair->first));
+            // Attach to stack
+            pStack->attachElement(std::move(upPair->first));
 
-			// Insert ids
-			insertIds(std::move(upPair->second));
+            // Insert ids
+            insertIds(std::move(upPair->second));
 
-			// To transform and resize in next frame of frame
-			pStack->getFrame()->makeResizeNecessary();
-		}
-		else
-		{
-			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find stack with id: " + id);
-		}		
-	}
+            // To transform and resize in next frame of frame
+            pStack->getFrame()->makeResizeNecessary();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find stack with id: " + id);
+        }
+    }
 
     void Layout::registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener)
     {

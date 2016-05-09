@@ -30,7 +30,7 @@ namespace eyegui
             fontMediumSize,
             fontSmallSize,
             descriptionFontSize,
-			resizeInvisibleLayouts);
+            resizeInvisibleLayouts);
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, int layer, bool visible)
@@ -43,10 +43,10 @@ namespace eyegui
         pGUI->removeLayout(pLayout);
     }
 
-	void updateGUI(GUI* pGUI)
-	{
-		pGUI->update();
-	}
+    void updateGUI(GUI* pGUI)
+    {
+        pGUI->update();
+    }
 
     Input updateGUI(GUI* pGUI, float tpf, const Input input)
     {
@@ -241,6 +241,17 @@ namespace eyegui
     void setIconOfIconElement(Layout* pLayout, std::string id, std::string iconFilepath)
     {
         pLayout->setIconOfIconElement(id, iconFilepath);
+    }
+
+    void setIconOfIconElement(
+        Layout* pLayout,
+        std::string id,
+        std::string name,
+        int width,
+        int height,
+        unsigned char const * pIconData)
+    {
+        pLayout->setIconOfIconElement(id, name, width, height, pIconData);
     }
 
     void interactWithInteractiveElement(Layout* pLayout, std::string id)
@@ -602,10 +613,10 @@ namespace eyegui
         OperationNotifier::setWarningCallback(callbackFunction);
     }
 
-	void setResizeCallback(GUI* pGUI, std::function<void(int, int)> callbackFunction)
-	{
-		pGUI->setResizeCallback(callbackFunction);
-	}
+    void setResizeCallback(GUI* pGUI, std::function<void(int, int)> callbackFunction)
+    {
+        pGUI->setResizeCallback(callbackFunction);
+    }
 
     std::string getLibraryVersion()
     {

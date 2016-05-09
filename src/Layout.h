@@ -129,6 +129,14 @@ namespace eyegui
         // Set icon of icon element
         void setIconOfIconElement(std::string id, std::string iconFilepath);
 
+        // Set icon of icon element
+        void setIconOfIconElement(
+            std::string id,
+            std::string name,
+            int width,
+            int height,
+            unsigned char const * pIconData);
+
         // Interact with interactive element
         void interactWithInteractiveElement(std::string id);
 
@@ -170,17 +178,17 @@ namespace eyegui
         void suggestWords(std::string id, std::u16string input, uint dictionaryIndex, std::u16string& rBestSuggestion);
         void suggestWords(std::string id, std::string input, uint dictionaryIndex, std::string& rBestSuggestion);
 
-		// Clear suggestions
-		void clearSuggestions(std::string id);
+        // Clear suggestions
+        void clearSuggestions(std::string id);
 
-		// Set space of flow
-		void setSpaceOfFlow(std::string id, float space);
+        // Set space of flow
+        void setSpaceOfFlow(std::string id, float space);
 
-		// Add brick to stack
-		void addBrickToStack(
-			std::string id,
-			std::string filepath,
-			std::map<std::string, std::string> idMapper);
+        // Add brick to stack
+        void addBrickToStack(
+            std::string id,
+            std::string filepath,
+            std::map<std::string, std::string> idMapper);
 
         // Register button listener
         void registerButtonListener(std::string id, std::weak_ptr<ButtonListener> wpListener);
@@ -191,8 +199,8 @@ namespace eyegui
         // Register keyboard listener
         void registerKeyboardListener(std::string id, std::weak_ptr<KeyboardListener> wpListener);
 
-		// Register word suggest listener
-		void registerWordSuggestListener(std::string id, std::weak_ptr<WordSuggestListener> wpListener);
+        // Register word suggest listener
+        void registerWordSuggestListener(std::string id, std::weak_ptr<WordSuggestListener> wpListener);
 
         // Select interactive element by id
         void selectInteractiveElement(std::string id);
@@ -304,13 +312,13 @@ namespace eyegui
         RelativePositionAndSize getRelativePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
 
         // Get absolute position and size of floating frame
-		AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
+        AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
 
-		// Get whether buttons should show description
-		bool getShowDescriptions() const;
+        // Get whether buttons should show description
+        bool getShowDescriptions() const;
 
-		// Get font size for descriptions
-		FontSize getDescriptionFontSize() const;
+        // Get font size for descriptions
+        FontSize getDescriptionFontSize() const;
 
     private:
 
@@ -350,7 +358,7 @@ namespace eyegui
         std::unique_ptr<std::map<std::string, Style> > mupStyles;
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<NotificationQueue> mupNotificationQueue;
-		bool mForceResize;
+        bool mForceResize;
     };
 }
 

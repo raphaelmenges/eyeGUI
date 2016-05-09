@@ -55,7 +55,7 @@ namespace eyegui
     protected:
 
         // Create OpenGL texture (something like initialization)
-        void createOpenGLTexture(const std::vector<uchar>& rData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, std::string filepath);
+        void createOpenGLTexture(unsigned char const * pData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, std::string filepath);
 
     private:
 

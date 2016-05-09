@@ -33,37 +33,38 @@ namespace eyegui
             bool dimming,
             bool adaptiveScaling,
             std::string iconFilepath,
-			std::u16string desc,
-			std::string descKey);
+            std::u16string desc,
+            std::string descKey);
 
         // Destructor
         virtual ~IconElement() = 0;
 
         // Set icon
         void setIcon(std::string filepath);
+        void setIcon(std::string name, int width, int height, unsigned char const * pIconData);
 
     protected:
 
-		// Updating filled by subclasses, returns adaptive scale
-		virtual float specialUpdate(float tpf, Input* pInput);
+        // Updating filled by subclasses, returns adaptive scale
+        virtual float specialUpdate(float tpf, Input* pInput);
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;
 
-		// Transformation filled by subclasses
-		virtual void specialTransformAndSize();
+        // Transformation filled by subclasses
+        virtual void specialTransformAndSize();
 
-		// Reset filled by subclasses
-		virtual void specialReset();
+        // Reset filled by subclasses
+        virtual void specialReset();
 
         // Calculate aspect ratio correction for icon on gizmo
         glm::vec2 iconAspectRatioCorrection() const;
 
         // Members
         Texture const * mpIcon;
-		std::string mDescriptionKey;
-		std::unique_ptr<TextFlow> mupDescriptionFlow; // May be NULL when no description given
-		LerpValue mDescriptionAlpha;
+        std::string mDescriptionKey;
+        std::unique_ptr<TextFlow> mupDescriptionFlow; // May be NULL when no description given
+        LerpValue mDescriptionAlpha;
 
 
     };

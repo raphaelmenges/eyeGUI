@@ -26,8 +26,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey) : InteractiveElement(
+        std::u16string desc,
+        std::string descKey) : InteractiveElement(
             id,
             styleName,
             pParent,
@@ -45,44 +45,44 @@ namespace eyegui
 
         // Fill members
         setIcon(iconFilepath);
-		mDescriptionKey = descKey;
-		mDescriptionAlpha.setValue(0);
+        mDescriptionKey = descKey;
+        mDescriptionAlpha.setValue(0);
 
-		// Create description (TODO: maybe merge somehow with text block init)
-		std::u16string descriptionContent;
-		if (mDescriptionKey != EMPTY_STRING_ATTRIBUTE)
-		{
-			std::u16string localization = mpLayout->getContentFromLocalization(mDescriptionKey);
-			if (localization == LOCALIZATION_NOT_FOUND)
-			{
-				throwWarning(
-					OperationNotifier::Operation::RUNTIME,
-					"No localization used or one found for following key: " + mDescriptionKey + ". Element has following id: " + getId());
+        // Create description (TODO: maybe merge somehow with text block init)
+        std::u16string descriptionContent;
+        if (mDescriptionKey != EMPTY_STRING_ATTRIBUTE)
+        {
+            std::u16string localization = mpLayout->getContentFromLocalization(mDescriptionKey);
+            if (localization == LOCALIZATION_NOT_FOUND)
+            {
+                throwWarning(
+                    OperationNotifier::Operation::RUNTIME,
+                    "No localization used or one found for following key: " + mDescriptionKey + ". Element has following id: " + getId());
 
-				descriptionContent = desc;
-			}
-			else
-			{
-				descriptionContent = localization;
-			}
-		}
-		else
-		{
-			descriptionContent = desc;
+                descriptionContent = desc;
+            }
+            else
+            {
+                descriptionContent = localization;
+            }
+        }
+        else
+        {
+            descriptionContent = desc;
 
-		}
+        }
 
-		// Check for non empty content. Otherwise, description flow unique pointer is just NULL
-		if (!descriptionContent.empty())
-		{
-			mupDescriptionFlow = std::move(
-				mpAssetManager->createTextFlow(
-					mpLayout->getDescriptionFontSize(),
-					TextFlowAlignment::CENTER,
-					TextFlowVerticalAlignment::CENTER,
-					1.f,
-					descriptionContent));
-		}
+        // Check for non empty content. Otherwise, description flow unique pointer is just NULL
+        if (!descriptionContent.empty())
+        {
+            mupDescriptionFlow = std::move(
+                mpAssetManager->createTextFlow(
+                    mpLayout->getDescriptionFontSize(),
+                    TextFlowAlignment::CENTER,
+                    TextFlowVerticalAlignment::CENTER,
+                    1.f,
+                    descriptionContent));
+        }
 
 
     }
@@ -104,55 +104,60 @@ namespace eyegui
         }
     }
 
-	float IconElement::specialUpdate(float tpf, Input* pInput)
-	{
-		// Super call
-		float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
+    void IconElement::setIcon(std::string name, int width, int height, unsigned char const * pIconData)
+    {
+        mpIcon = mpAssetManager->fetchTexture(name, width, height, pIconData);
+    }
 
-		// Check for penetration by input
-		bool penetrated = penetratedByInput(pInput);
+    float IconElement::specialUpdate(float tpf, Input* pInput)
+    {
+        // Super call
+        float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
-		// Make description visible
-		if (mpLayout->getShowDescriptions() && penetrated)
-		{
-			mDescriptionAlpha.update(tpf / mpLayout->getConfig()->animationDuration);
-		}
-		else
-		{
-			mDescriptionAlpha.update(-tpf / mpLayout->getConfig()->animationDuration);
-		}
+        // Check for penetration by input
+        bool penetrated = penetratedByInput(pInput);
 
-		return adaptiveScale;
-	}
+        // Make description visible
+        if (mpLayout->getShowDescriptions() && penetrated)
+        {
+            mDescriptionAlpha.update(tpf / mpLayout->getConfig()->animationDuration);
+        }
+        else
+        {
+            mDescriptionAlpha.update(-tpf / mpLayout->getConfig()->animationDuration);
+        }
+
+        return adaptiveScale;
+    }
 
     void IconElement::specialDraw() const
     {
-		// Draw description
-		if (mupDescriptionFlow != NULL && mDescriptionAlpha.getValue() > 0)
-		{
-			// Drawing of text flow
-			mupDescriptionFlow->draw(getStyle()->fontColor, mDescriptionAlpha.getValue() * mAlpha);
-		}
+        // Draw description
+        if (mupDescriptionFlow != NULL && mDescriptionAlpha.getValue() > 0)
+        {
+            // Drawing of text flow
+            mupDescriptionFlow->draw(getStyle()->fontColor, mDescriptionAlpha.getValue() * mAlpha);
+        }
 
         // Draw stuff like highlighting
         InteractiveElement::specialDraw();
     }
 
-	void IconElement::specialTransformAndSize()
-	{
-		// Tell description text flow about it
-		if (mupDescriptionFlow != NULL)
-		{
-			mupDescriptionFlow->transformAndSize(mX, mY, mWidth, mHeight);
-		}
-	}
+    void IconElement::specialTransformAndSize()
+    {
+        // Tell description text flow about it
+        if (mupDescriptionFlow != NULL)
+        {
+            mupDescriptionFlow->transformAndSize(mX, mY, mWidth, mHeight);
+        }
+    }
 
-	void IconElement::specialReset()
-	{
-		InteractiveElement::specialReset();
+    void IconElement::specialReset()
+    {
+        InteractiveElement::specialReset();
 
-		mDescriptionAlpha.setValue(0);
-	}
+        mDescriptionAlpha.setValue(0);
+    }
 
     glm::vec2 IconElement::iconAspectRatioCorrection() const
     {

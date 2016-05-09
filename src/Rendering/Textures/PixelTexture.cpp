@@ -37,10 +37,16 @@ namespace eyegui
         std::vector<unsigned char> image(data, data + width * height * suspectedChannels);
 
         // Create OpenGL texture
-        createOpenGLTexture(image, filtering, wrap, width, height, suspectedChannels, filepath);
+        createOpenGLTexture(image.data(), filtering, wrap, width, height, suspectedChannels, filepath);
 
         // Delete raw image data
         stbi_image_free(data);
+    }
+
+    PixelTexture::PixelTexture(int width, int height, unsigned char const * pIconData, Filtering filtering, Wrap wrap, int suspectedChannels)
+    {
+        // Create OpenGL texture
+        createOpenGLTexture(pIconData, filtering, wrap, width, height, suspectedChannels, "No filepath");
     }
 
     PixelTexture::~PixelTexture()

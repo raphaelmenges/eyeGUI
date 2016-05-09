@@ -212,7 +212,7 @@ namespace eyegui
         float fontMediumSize = 0.04f; //!< Height of medium font in percentage of GUI height
         float fontSmallSize = 0.0175f; //!< Height of small font in percentage of GUI height
         FontSize descriptionFontSize = FontSize::SMALL; //!< Font size of icon element descriptions
-		bool resizeInvisibleLayouts = true; //!< Resize invisible layouts. Has advantage that one can ask for the size of elements all time
+        bool resizeInvisibleLayouts = true; //!< Resize invisible layouts. Has advantage that one can ask for the size of elements all time
     };
 
     //! Creates layout inside GUI and returns pointer to it. Is executed at update call.
@@ -232,11 +232,11 @@ namespace eyegui
     */
     void removeLayout(GUI* pGUI, Layout const * pLayout);
 
-	//! Simple update of whole GUI. Should not be used as default call, only thought for resizing added layouts or applying of settings.
-	/*!
-	\param pGUI pointer to GUI.
-	*/
-	void updateGUI(GUI* pGUI);
+    //! Simple update of whole GUI. Should not be used as default call, only thought for resizing added layouts or applying of settings.
+    /*!
+    \param pGUI pointer to GUI.
+    */
+    void updateGUI(GUI* pGUI);
 
     //! Update whole GUI.
     /*!
@@ -522,6 +522,23 @@ namespace eyegui
         Layout* pLayout,
         std::string id,
         std::string iconFilepath);
+
+    //! Set icon of icon element.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param name is unique name of later texture. Can be used to overwrite existing one.
+      \param width is with of icon
+      \param height is height of icon
+      \param pIconData is pointer to unsigned char data. Must have size of width * height * 4 (RGBA)
+    */
+    void setIconOfIconElement(
+        Layout* pLayout,
+        std::string id,
+        std::string name,
+        int width,
+        int height,
+        unsigned char const * pIconData);
 
     //! Interact with interactive element.
     /*!
@@ -1100,12 +1117,12 @@ namespace eyegui
     */
     void setWarningCallback(std::function<void(std::string)> callbackFunction);
 
-	//! Set resize callback function since eyeGUI does not resize directly at resizeGUI call.
-	/*!
-	\param pGUI is pointer to GUI object which shall use callback.
-	\param callbackFunction is function object which should be called back.
-	*/
-	void setResizeCallback(GUI* pGUI, std::function<void(int, int)> callbackFunction);
+    //! Set resize callback function since eyeGUI does not resize directly at resizeGUI call.
+    /*!
+    \param pGUI is pointer to GUI object which shall use callback.
+    \param callbackFunction is function object which should be called back.
+    */
+    void setResizeCallback(GUI* pGUI, std::function<void(int, int)> callbackFunction);
 
     //! Return string describing the version of the linked library.
     /*!

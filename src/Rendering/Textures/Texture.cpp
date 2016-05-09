@@ -57,7 +57,7 @@ namespace eyegui
         return mChannelCount;
     }
 
-    void Texture::createOpenGLTexture(const std::vector<uchar>& rData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, std::string filepath)
+    void Texture::createOpenGLTexture(unsigned char const * pData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, std::string filepath)
     {
         // Save members
         mWidth = width;
@@ -94,17 +94,17 @@ namespace eyegui
         switch (mChannelCount)
         {
         case 1:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RED, GL_UNSIGNED_BYTE, &rData[0]);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RED, GL_UNSIGNED_BYTE, pData);
             break;
         case 3:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, &rData[0]);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, pData);
             break;
         case 4:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &rData[0]);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
             break;
         default:
             throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Unknown number of color channels", filepath);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, &rData[0]);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, pData);
             break;
         }
 

@@ -143,6 +143,13 @@ namespace eyegui
         return pTexture;
     }
 
+    Texture const * AssetManager::fetchTexture(std::string name, int width, int height, unsigned char const * pIconData)
+    {
+        // Just overwrite it if existing (only RGBA is supported, yet)
+        mTextures[name] = std::move(std::unique_ptr<Texture>(new PixelTexture(width, height, pIconData, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, 4)));
+        return mTextures[name].get();
+    }
+
     Texture const * AssetManager::fetchTexture(graphics::Type graphic)
     {
         // Search in map for graphic and create if needed
