@@ -24,7 +24,7 @@
   - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
 - WordSuggest
 - ThresholdColor + DimAlpha
-  - icon element descriptions (desc, descKey)
+- icon element descriptions (desc, desckey)
 - Flow
   - flow-speed-multiplier
 

@@ -547,7 +547,7 @@ namespace eyegui
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlCircleButton, "desc", "descKey", desc, descKey);
+            localizationHelper(xmlCircleButton, "desc", "desckey", desc, descKey);
 
             // Is button a switch?
             bool isSwitch = parseBoolAttribute("switch", xmlCircleButton);
@@ -567,7 +567,7 @@ namespace eyegui
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlBoxButton, "desc", "descKey", desc, descKey);
+            localizationHelper(xmlBoxButton, "desc", "desckey", desc, descKey);
 
             // Is button a switch?
             bool isSwitch = parseBoolAttribute("switch", xmlBoxButton);
@@ -587,7 +587,7 @@ namespace eyegui
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlSensor, "desc", "descKey", desc, descKey);
+            localizationHelper(xmlSensor, "desc", "desckey", desc, descKey);
 
             // Create sensor
             std::unique_ptr<Sensor> upSensor = std::unique_ptr<Sensor>(new Sensor(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, iconFilepath, desc, descKey));
@@ -604,7 +604,7 @@ namespace eyegui
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlDropButton, "desc", "descKey", desc, descKey);
+            localizationHelper(xmlDropButton, "desc", "desckey", desc, descKey);
 
             // Get usage of available space
             float space = parsePercentAttribute("space", xmlDropButton);
@@ -630,11 +630,11 @@ namespace eyegui
 
             upDropButton->attachInnerElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, upDropButton.get(), filepath, rIdMapper, rIdMap)));
 
-			// Check, that drop button was NOT inserted into some kind of scrolling box
-			if (upDropButton->checkForParentType(Element::Type::FLOW))
-			{
-				throwWarning(OperationNotifier::Operation::PARSING, "DropButton is directly or indirectly child of Flow. Inner element will render on top of frame and not influenced by Flow", filepath);
-			}
+            // Check, that drop button was NOT inserted into some kind of scrolling box
+            if (upDropButton->checkForParentType(Element::Type::FLOW))
+            {
+                throwWarning(OperationNotifier::Operation::PARSING, "DropButton is directly or indirectly child of Flow. Inner element will render on top of frame and not influenced by Flow", filepath);
+            }
 
             // Return drop button
             return (std::move(upDropButton));
@@ -670,21 +670,21 @@ namespace eyegui
             // Show background?
             bool showBackground = parseBoolAttribute("showbackground", xmlFlow);
 
-			// Get flow direction
-			std::string flowDirectionValue = parseStringAttribute("direction", xmlFlow);
-			FlowDirection flowDirection = FlowDirection::VERTICAL;
-			if (flowDirectionValue == EMPTY_STRING_ATTRIBUTE || flowDirectionValue == "vertical")
-			{
-				flowDirection = FlowDirection::VERTICAL;
-			}
-			else if (flowDirectionValue == "horizontal")
-			{
-				flowDirection = FlowDirection::HORIZONTAL;
-			}
-			else
-			{
-				throwError(OperationNotifier::Operation::PARSING, "Unknown direction used in flow: " + flowDirectionValue, filepath);
-			}
+            // Get flow direction
+            std::string flowDirectionValue = parseStringAttribute("direction", xmlFlow);
+            FlowDirection flowDirection = FlowDirection::VERTICAL;
+            if (flowDirectionValue == EMPTY_STRING_ATTRIBUTE || flowDirectionValue == "vertical")
+            {
+                flowDirection = FlowDirection::VERTICAL;
+            }
+            else if (flowDirectionValue == "horizontal")
+            {
+                flowDirection = FlowDirection::HORIZONTAL;
+            }
+            else
+            {
+                throwError(OperationNotifier::Operation::PARSING, "Unknown direction used in flow: " + flowDirectionValue, filepath);
+            }
 
             // Get space
             float space = parsePercentAttribute("space", xmlFlow);
@@ -708,7 +708,7 @@ namespace eyegui
                     backgroundAlignment,
                     innerBorder,
                     showBackground,
-					flowDirection,
+                    flowDirection,
                     space));
 
             // Attach inner element
