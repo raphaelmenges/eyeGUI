@@ -249,9 +249,11 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-        unsigned char const * pIconData)
+		ColorFormat format,
+        unsigned char const * pIconData,
+		bool flipY)
     {
-        pLayout->setIconOfIconElement(id, name, width, height, pIconData);
+        pLayout->setIconOfIconElement(id, name, width, height, format, pIconData, flipY);
     }
 
     void setImageOfPicture(
@@ -260,9 +262,11 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-        unsigned char const * pData)
+		ColorFormat format,
+        unsigned char const * pData,
+		bool flipY)
     {
-        pLayout->setImageOfPicture(id, name, width, height, pData);
+        pLayout->setImageOfPicture(id, name, width, height, format, pData, flipY);
     }
 
     void interactWithInteractiveElement(Layout* pLayout, std::string id)

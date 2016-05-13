@@ -19,7 +19,6 @@ namespace eyegui
         mTexture = 0;
         mWidth = 0;
         mHeight = 0;
-        mChannelCount = 0;
     }
 
     Texture::~Texture()
@@ -52,17 +51,19 @@ namespace eyegui
         return ((float)mWidth) / ((float)mHeight);
     }
 
-    uint Texture::getChannelCount() const
-    {
-        return mChannelCount;
-    }
-
-    void Texture::createOpenGLTexture(unsigned char const * pData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, std::string filepath)
+    void Texture::createOpenGLTexture(unsigned char const * pData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, GLenum format, GLenum internalFormat, bool flipY, std::string filepath)
     {
         // Save members
         mWidth = width;
         mHeight = height;
-        mChannelCount = channelCount;
+
+		// Flip if necessary
+		std::vector<uchar> flippedData;
+		if (flipY)
+		{
+			flippedData.resize(width * height * channelCount);
+			flipPixelsY(pData, flippedData.data(), width, height, channelCount);
+		}
 
         // Create OpenGL texture
         glActiveTexture(GL_TEXTURE0);
@@ -91,22 +92,14 @@ namespace eyegui
         }
 
         // Load it to GPU
-        switch (mChannelCount)
-        {
-        case 1:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RED, GL_UNSIGNED_BYTE, pData);
-            break;
-        case 3:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, pData);
-            break;
-        case 4:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
-            break;
-        default:
-            throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Unknown number of color channels", filepath);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, pData);
-            break;
-        }
+		if (flipY)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat , mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, flippedData.data());
+		}
+		else
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, pData);
+		}
 
         // Filtering
         switch (filtering)
@@ -125,4 +118,21 @@ namespace eyegui
         // Unbind texture
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+
+	void Texture::flipPixelsY(unsigned char const * pData, unsigned char* pFlippedData, uint width, uint height, uint channelCount) const
+	{
+		// Go over lines
+		for (uint i = 0; i < height; i++)
+		{
+			// Go over columns
+			for (uint j = 0; j < width; j++)
+			{
+				// Go over channels
+				for (uint k = 0; k < channelCount; k++)
+				{
+					pFlippedData[i * width * channelCount + j * channelCount + k] = pData[(height - 1 - i) * width * channelCount + j * channelCount + k];
+				}
+			}
+		}
+	}	
 }

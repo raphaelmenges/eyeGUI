@@ -56,7 +56,13 @@ namespace eyegui
 
         // Fetch texture
         Texture const * fetchTexture(std::string filepath);
-        Texture const * fetchTexture(std::string name, int width, int height, unsigned char const * pIconData);
+        Texture const * fetchTexture(
+			std::string name,
+			int width,
+			int height,
+			ColorFormat format,
+			unsigned char const * pData,
+			bool flipY);
 
         // Fetch graphics
         Texture const * fetchTexture(graphics::Type graphic);

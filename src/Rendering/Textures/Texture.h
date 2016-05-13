@@ -49,13 +49,13 @@ namespace eyegui
         // Getter for aspect ratio
         float getAspectRatio() const;
 
-        // Getter for channel count of texture
-        uint getChannelCount() const;
-
     protected:
 
         // Create OpenGL texture (something like initialization)
-        void createOpenGLTexture(unsigned char const * pData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, std::string filepath);
+		void createOpenGLTexture(unsigned char const * pData, Filtering filtering, Wrap wrap, uint width, uint height, uint channelCount, GLenum format, GLenum internalFormat, bool flipY, std::string filepath);
+
+		// Flip pixels vertically
+		void flipPixelsY(unsigned char const * pData, unsigned char* pFlippedData, uint width, uint height, uint channelCount) const;
 
     private:
 
@@ -63,7 +63,6 @@ namespace eyegui
         GLuint mTexture;
         uint mWidth;
         uint mHeight;
-        uint mChannelCount;
     };
 }
 

@@ -74,25 +74,8 @@ namespace eyegui
         // Rasterize
         nsvgRasterize(rast, svg, 0, 0, 1, image.data(), width, height, width * channelCount);
 
-        // Flip image
-        std::vector<uchar> copyImage(image);
-
-        // Go over lines
-        for (uint i = 0; i < height; i++)
-        {
-            // Go over columns
-            for (uint j = 0; j < width; j++)
-            {
-                // Go over channels
-                for (uint k = 0; k < channelCount; k++)
-                {
-                    image[i * width * channelCount + j * channelCount + k] = copyImage[(height - 1 - i) * width * channelCount + j * channelCount + k];
-                }
-            }
-        }
-
         // Create OpenGL from image
-        createOpenGLTexture(image.data(), filtering, wrap, width, height, channelCount, filepath);
+		createOpenGLTexture(image.data(), filtering, wrap, width, height, channelCount, GL_RGBA, GL_RGBA, true, filepath);
 
         // Delete NanoSVG stuff
         nsvgDeleteRasterizer(rast);

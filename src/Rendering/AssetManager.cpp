@@ -143,10 +143,16 @@ namespace eyegui
         return pTexture;
     }
 
-    Texture const * AssetManager::fetchTexture(std::string name, int width, int height, unsigned char const * pIconData)
+    Texture const * AssetManager::fetchTexture(
+		std::string name,
+		int width,
+		int height,
+		ColorFormat format,
+		unsigned char const * pData,
+		bool flipY)
     {
-        // Just overwrite it if existing (only RGBA is supported, yet)
-        mTextures[name] = std::move(std::unique_ptr<Texture>(new PixelTexture(width, height, pIconData, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP, 4)));
+        // Just overwrite it if existing
+        mTextures[name] = std::move(std::unique_ptr<Texture>(new PixelTexture(width, height, format, pData, flipY, Texture::Filtering::LINEAR, Texture::Wrap::CLAMP)));
         return mTextures[name].get();
     }
 

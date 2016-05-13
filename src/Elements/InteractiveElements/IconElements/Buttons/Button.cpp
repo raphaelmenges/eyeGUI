@@ -117,7 +117,7 @@ namespace eyegui
 
     void Button::up(bool immediately)
     {
-        if (mIsDown && isActive())
+        if (mIsDown && (isActive() || !mIsSwitch))
         {
             // Remove highlight
             highlight(false);

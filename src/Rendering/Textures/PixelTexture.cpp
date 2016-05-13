@@ -18,7 +18,11 @@
 
 namespace eyegui
 {
-    PixelTexture::PixelTexture(std::string filepath, Filtering filtering, Wrap wrap, int suspectedChannels) : Texture()
+    PixelTexture::PixelTexture(
+		std::string filepath,
+		Filtering filtering,
+		Wrap wrap,
+		int suspectedChannels) : Texture()
     {
         // Setup stb_image
         stbi_set_flip_vertically_on_load(true);
@@ -36,17 +40,65 @@ namespace eyegui
         // Create vector out of data
         std::vector<unsigned char> image(data, data + width * height * suspectedChannels);
 
+		// Decide format
+		GLenum glFormat;
+		GLenum glInternalFormat;
+		switch (suspectedChannels)
+		{
+		case 1:
+			glFormat = GL_R8;
+			glInternalFormat = GL_RED;
+			break;
+		case 3:
+			glFormat = GL_RGB8;
+			glInternalFormat = GL_RGB;
+			break;
+		case 4:
+			glFormat = GL_RGBA8;
+			glInternalFormat = GL_RGBA;
+			break;
+		default:
+			glFormat = GL_R8;
+			glInternalFormat = GL_RGB;
+			throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Unknown number of color channels", filepath);
+			break;
+		}
+
         // Create OpenGL texture
-        createOpenGLTexture(image.data(), filtering, wrap, width, height, suspectedChannels, filepath);
+        createOpenGLTexture(image.data(), filtering, wrap, width, height, channelCount, glFormat, glInternalFormat, false, filepath);
 
         // Delete raw image data
         stbi_image_free(data);
     }
 
-    PixelTexture::PixelTexture(int width, int height, unsigned char const * pIconData, Filtering filtering, Wrap wrap, int suspectedChannels)
-    {
+    PixelTexture::PixelTexture(
+		int width,
+		int height,
+		ColorFormat format,
+		unsigned char const * pData,
+		bool flipY,
+		Filtering filtering,
+		Wrap wrap)
+	{
+		// Decide format
+		uint channelCount = 4;
+		GLenum glFormat;
+		GLenum glInternalFormat;
+		
+		switch (format)
+		{
+		case ColorFormat::RGBA:
+			glFormat = GL_RGBA;
+			glInternalFormat = GL_RGBA;
+			break;
+		case ColorFormat::BGRA:
+			glFormat = GL_BGRA;
+			glInternalFormat = GL_RGBA;
+			break;
+		}
+
         // Create OpenGL texture
-        createOpenGLTexture(pIconData, filtering, wrap, width, height, suspectedChannels, "No filepath");
+        createOpenGLTexture(pData, filtering, wrap, width, height, channelCount, glFormat, glInternalFormat, flipY, "No filepath");
     }
 
     PixelTexture::~PixelTexture()

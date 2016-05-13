@@ -64,12 +64,14 @@ namespace eyegui
     }
 
     void Picture::setContentOfImage(
-        std::string name,
-        int width,
-        int height,
-        unsigned char const * pData)
+		std::string name,
+		int width,
+		int height,
+		ColorFormat format,
+		unsigned char const * pData,
+		bool flipY)
     {
-        mupImage->setContent(name, width, height, pData);
+        mupImage->setContent(name, width, height, format, pData, flipY);
     }
 
     float Picture::specialUpdate(float tpf, Input* pInput)

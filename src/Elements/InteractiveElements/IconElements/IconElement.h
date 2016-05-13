@@ -41,7 +41,13 @@ namespace eyegui
 
         // Set icon
         void setIcon(std::string filepath);
-        void setIcon(std::string name, int width, int height, unsigned char const * pIconData);
+        void setIcon(
+			std::string name,
+			int width,
+			int height,
+			ColorFormat format,
+			unsigned char const * pIconData,
+			bool flipY);
 
     protected:
 

@@ -420,12 +420,14 @@ namespace eyegui
             std::string name,
             int width,
             int height,
-            unsigned char const * pIconData)
+			ColorFormat format,
+            unsigned char const * pIconData,
+			bool flipY)
     {
         IconElement* pIconElement = toIconElement(fetchElement(id));
         if (pIconElement != NULL)
         {
-            pIconElement->setIcon(name, width, height, pIconData);
+            pIconElement->setIcon(name, width, height, format, pIconData, flipY);
         }
         else
         {
@@ -438,12 +440,14 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-        unsigned char const * pData)
+		ColorFormat format,
+        unsigned char const * pData,
+		bool flipY)
     {
         Picture* pPicture = toPicture(fetchElement(id));
         if (pPicture != NULL)
         {
-            pPicture->setContentOfImage(name, width, height, pData);
+            pPicture->setContentOfImage(name, width, height, format, pData, flipY);
         }
         else
         {

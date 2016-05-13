@@ -135,7 +135,9 @@ namespace eyegui
             std::string name,
             int width,
             int height,
-            unsigned char const * pIconData);
+			ColorFormat format,
+            unsigned char const * pIconData,
+			bool flipY);
 
         // Set image of picture
         void setImageOfPicture(
@@ -143,7 +145,9 @@ namespace eyegui
             std::string name,
             int width,
             int height,
-            unsigned char const * pData);
+			ColorFormat format,
+            unsigned char const * pData,
+			bool flipY);
 
         // Interact with interactive element
         void interactWithInteractiveElement(std::string id);

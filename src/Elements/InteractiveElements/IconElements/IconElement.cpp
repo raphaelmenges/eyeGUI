@@ -104,9 +104,15 @@ namespace eyegui
         }
     }
 
-    void IconElement::setIcon(std::string name, int width, int height, unsigned char const * pIconData)
-    {
-        mpIcon = mpAssetManager->fetchTexture(name, width, height, pIconData);
+    void IconElement::setIcon(
+		std::string name,
+		int width,
+		int height,
+		ColorFormat format,
+		unsigned char const * pIconData,
+		bool flipY)
+	{
+        mpIcon = mpAssetManager->fetchTexture(name, width, height, format, pIconData, flipY);
     }
 
     float IconElement::specialUpdate(float tpf, Input* pInput)

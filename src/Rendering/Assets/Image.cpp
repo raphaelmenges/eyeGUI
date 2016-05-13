@@ -39,9 +39,11 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-        unsigned char const * pData)
+		ColorFormat format,
+        unsigned char const * pData,
+		bool flipY)
     {
-        mpTexture = mpAssetManager->fetchTexture(name, width, height, pData);
+        mpTexture = mpAssetManager->fetchTexture(name, width, height, format, pData, flipY);
     }
 
     void Image::evaluateSize(

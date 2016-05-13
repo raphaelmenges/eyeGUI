@@ -60,6 +60,9 @@ namespace eyegui
     //! Enumeration of cases of keyboard.
     enum class KeyboardCase { LOWER, UPPER };
 
+	//! Enumeration of available color formats.
+	enum class ColorFormat { RGBA, BGRA };
+
     //! Abstract listener class for buttons.
     class ButtonListener
     {
@@ -530,7 +533,9 @@ namespace eyegui
       \param name is unique name of later texture. Can be used to overwrite existing one.
       \param width is with of icon.
       \param height is height of icon.
-      \param pIconData is pointer to unsigned char data. Must have size of width * height * 4 (RGBA).
+	  \param format is format of pixel data.
+      \param pIconData is pointer to unsigned char data. Must have size of width * height * channelCount (as specified in format implicitly).
+	  \param flipY indicates, whether texture is flipped vertically.
     */
     void setIconOfIconElement(
         Layout* pLayout,
@@ -538,7 +543,9 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-        unsigned char const * pIconData);
+		ColorFormat format,
+        unsigned char const * pIconData,
+		bool flipY = false);
 
     //! Set image in picture.
     /*!
@@ -547,7 +554,9 @@ namespace eyegui
       \param name is unique name of later texture. Can be used to overwrite existing one.
       \param width is with of image.
       \param height is height of image.
-      \param pIconData is pointer to unsigned char data. Must have size of width * height * 4 (RGBA).
+	  \param format is format of pixel data.
+      \param pIconData is pointer to unsigned char data. Must have size of width * height *  channelCount (as specified in format implicitly).
+	  \param flipY indicates, whether texture is flipped vertically.
     */
     void setImageOfPicture(
         Layout* pLayout,
@@ -555,7 +564,9 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-        unsigned char const * pData);
+		ColorFormat format,
+        unsigned char const * pData,
+		bool flipY = false);
 
     //! Interact with interactive element.
     /*!
