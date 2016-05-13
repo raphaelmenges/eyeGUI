@@ -15,6 +15,9 @@
   - write email to utf8rewind author because of windows fix
 - Keyboard
   - Better german and english layout
+- Do not reset activity at reset
+- Accept pointer to input instead of reference in interface
+- Accept open gl texture handles as button icons
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
