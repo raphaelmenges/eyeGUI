@@ -18,6 +18,7 @@
 - Do not reset activity at reset
 - Accept pointer to input instead of reference in interface
 - Accept open gl texture handles as button icons
+- Let button go up if no switch and not activated
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
