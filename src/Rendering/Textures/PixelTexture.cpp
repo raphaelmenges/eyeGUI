@@ -29,7 +29,7 @@ namespace eyegui
 
         // Try to load image
         int width, height, channelCount;
-        unsigned char *data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, suspectedChannels);
+        unsigned char* data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, suspectedChannels);
 
         // Check whether file was found and parsed
         if (data == NULL)
@@ -37,35 +37,32 @@ namespace eyegui
             throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or error at parsing", filepath);
         }
 
-        // Create vector out of data
-        std::vector<unsigned char> image(data, data + width * height * suspectedChannels);
-
 		// Decide format
 		GLenum glFormat;
 		GLenum glInternalFormat;
 		switch (suspectedChannels)
 		{
 		case 1:
-			glFormat = GL_R8;
-			glInternalFormat = GL_RED;
+			glFormat = GL_RED;
+			glInternalFormat = GL_R8;
 			break;
 		case 3:
-			glFormat = GL_RGB8;
-			glInternalFormat = GL_RGB;
+			glFormat = GL_RGB;
+			glInternalFormat = GL_RGB8;
 			break;
 		case 4:
-			glFormat = GL_RGBA8;
-			glInternalFormat = GL_RGBA;
+			glFormat = GL_RGBA;
+			glInternalFormat = GL_RGBA8;
 			break;
 		default:
-			glFormat = GL_R8;
-			glInternalFormat = GL_RGB;
+			glFormat= GL_RGB; 
+			glInternalFormat = GL_R8;
 			throwWarning(OperationNotifier::Operation::IMAGE_LOADING, "Unknown number of color channels", filepath);
 			break;
 		}
 
         // Create OpenGL texture
-        createOpenGLTexture(image.data(), filtering, wrap, width, height, channelCount, glFormat, glInternalFormat, false, filepath);
+        createOpenGLTexture(data, filtering, wrap, width, height, channelCount, glFormat, glInternalFormat, false, filepath);
 
         // Delete raw image data
         stbi_image_free(data);
