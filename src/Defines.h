@@ -59,6 +59,7 @@ namespace eyegui
     static const float INTERACTION_FADING_DURATION = 0.5f; // used by pressed keys in keyboard and chosen suggestions in word suggest
     static const float WORD_SUGGEST_CHOSEN_ANIMATION_OFFSET = 0.03f; // in relation to height of layout
     static const float WORD_SUGGEST_SUGGESTION_DISTANCE = 4; // in size of letter which represents space
+	static const float TEXT_BACKGROUND_SIZE = 1.3f;
 }
 
 #endif // DEFINES_H_

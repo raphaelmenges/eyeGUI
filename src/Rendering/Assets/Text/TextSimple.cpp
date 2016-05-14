@@ -61,8 +61,10 @@ namespace eyegui
 		mY = y;
 	}
 
-    void TextSimple::draw(glm::vec4 color, float alpha) const
+    void TextSimple::draw(glm::vec4 color, float alpha, bool renderBackground) const
     {
+		// TODO: render background if necessary
+
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
 

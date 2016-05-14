@@ -38,6 +38,9 @@ namespace eyegui
         mY = 0;
         mVertexCount = 0;
 
+		// Background
+		mpBackground = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+
 		// Prepare OpenGL stuff for text
 		prepareText();
 	}

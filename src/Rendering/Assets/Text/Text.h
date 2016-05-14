@@ -20,6 +20,7 @@ namespace eyegui
     // Forward declaration
     class GUI;
     class AssetManager;
+	class RenderItem;
 
     class Text
     {
@@ -41,7 +42,7 @@ namespace eyegui
         virtual ~Text() = 0;
 
         // Draw
-        virtual void draw(glm::vec4 color, float alpha) const = 0;
+        virtual void draw(glm::vec4 color, float alpha, bool renderBackground = false) const = 0;
 
         // Set content and calls "calculateMesh"
         void setContent(std::u16string content);
@@ -80,6 +81,7 @@ namespace eyegui
         int mX;
         int mY;
         std::u16string mContent;
+		RenderItem const * mpBackground;
 
         Shader const * mpShader;
         GLuint mVertexCount;

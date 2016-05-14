@@ -10,6 +10,7 @@
 #include "src/GUI.h"
 #include "src/Rendering/AssetManager.h"
 #include "src/Utilities/OperationNotifier.h"
+#include "src/Utilities/Helper.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
 #include <cmath>
@@ -35,6 +36,7 @@ namespace eyegui
         // Fill members
         mAlignment = alignment;
         mVerticalAlignment = verticalAlignment;
+		mFlowWidth = 0;
         mFlowHeight = 0;
 
         // TransformAndSize has to be called before usage (no calculate mesh is called here)
@@ -63,11 +65,9 @@ namespace eyegui
 
     void TextFlow::draw(
         glm::vec4 color,
-        float alpha) const
+        float alpha,
+		bool renderBackground) const
     {
-        mpShader->bind();
-        glBindVertexArray(mVertexArrayObject);
-
         // Calculate y offset because of vertical alignment
         int yOffset = 0;
         switch (mVerticalAlignment)
@@ -83,10 +83,23 @@ namespace eyegui
             break;
         }
 
-        // Calculate transformation matrix
-        glm::mat4 matrix = glm::mat4(1.0f);
-        matrix = glm::translate(matrix, glm::vec3(mX, mpGUI->getWindowHeight() - (mY + yOffset), 0)); // Change coordinate system and translate to position
-        matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
+		// Calculate transformation matrix for text flow
+		glm::mat4 matrix = glm::mat4(1.0f);
+		matrix = glm::translate(matrix, glm::vec3(mX, mpGUI->getWindowHeight() - (mY + yOffset), 0)); // Change coordinate system and translate to position
+		matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
+
+		// Draw background
+		if (renderBackground)
+		{
+			int backgroundWidth = (int)(TEXT_BACKGROUND_SIZE * (float)mFlowWidth);
+			int backgroundHeight = (int)(TEXT_BACKGROUND_SIZE * (float)mFlowHeight);
+			glm::mat4 backgroundMatrix = calculateDrawMatrix(mpGUI->getWindowWidth(), mpGUI->getWindowHeight(), mX + ((mWidth - backgroundWidth) / 2), mY + yOffset, backgroundWidth, backgroundHeight);
+			mpBackground->bind();
+			mpBackground->getShader()->fillValue("matrix", backgroundMatrix);
+			mpBackground->getShader()->fillValue("color", glm::vec4(0.f, 0.f, 0.f, 0.3f));
+			mpBackground->getShader()->fillValue("alpha", alpha);
+			mpBackground->draw();
+		}
 
         // Bind atlas texture
         if (mScale == 1.0f)
@@ -97,6 +110,10 @@ namespace eyegui
         {
             mpFont->bindAtlasTexture(mFontSize, 1, true);
         }
+
+		// Bind shader
+		mpShader->bind();
+		glBindVertexArray(mVertexArrayObject);
 
         // Fill uniforms
         mpShader->fillValue("matrix", matrix);
@@ -113,6 +130,9 @@ namespace eyegui
             float lineHeight, std::vector<glm::vec3>& rVertices,
             std::vector<glm::vec2>& rTextureCoordinates)
     {
+		// Reset flow width to get longest line's width of this computation
+		mFlowWidth = 0;
+
         // OpenGL setup done in calling method
 
         // Get size of space character
@@ -212,6 +232,9 @@ namespace eyegui
                         wordsPixelWidth = overflowMark.pixelWidth;
                         line.push_back(&overflowMark);
                     }
+
+					// Remember longest line's width
+					mFlowWidth = mFlowWidth < ((int) wordsPixelWidth + 1) ? ((int)wordsPixelWidth + 1) : mFlowWidth;
 
                     // Decide dynamic space for line
                     float dynamicSpace = pixelOfSpace;
