@@ -91,9 +91,16 @@ namespace eyegui
 		// Draw background
 		if (renderBackground)
 		{
-			int backgroundWidth = (int)(TEXT_BACKGROUND_SIZE * (float)mFlowWidth);
-			int backgroundHeight = (int)(TEXT_BACKGROUND_SIZE * (float)mFlowHeight);
-			glm::mat4 backgroundMatrix = calculateDrawMatrix(mpGUI->getWindowWidth(), mpGUI->getWindowHeight(), mX + ((mWidth - backgroundWidth) / 2), mY + yOffset, backgroundWidth, backgroundHeight);
+			// Determine smaller value of width and height
+			int value = mWidth < mHeight ? mWidth : mHeight;
+			int extraPixels = (int)(((float)value) * TEXT_BACKGROUND_SIZE) - value;
+
+			// Add extra pixels
+			int backgroundWidth = extraPixels + mFlowWidth;
+			int backgroundHeight = extraPixels + mFlowHeight;
+
+			// Determine which 
+			glm::mat4 backgroundMatrix = calculateDrawMatrix(mpGUI->getWindowWidth(), mpGUI->getWindowHeight(), mX + ((mWidth - backgroundWidth) / 2), mY + yOffset - (extraPixels/2), backgroundWidth, backgroundHeight);
 			mpBackground->bind();
 			mpBackground->getShader()->fillValue("matrix", backgroundMatrix);
 			mpBackground->getShader()->fillValue("color", glm::vec4(0.f, 0.f, 0.f, 0.3f));
