@@ -68,8 +68,11 @@ namespace eyegui
                 line = content.substr(0, pos);
                 content.erase(0, pos + delimiter.length());
 
-                // Extract key and value from line
-                parseLine(*(upMap.get()), line, lineCount, filepath);
+				if (!line.empty())
+				{
+					// Extract key and value from line
+					parseLine(*(upMap.get()), line, lineCount, filepath);
+				}
 
                 // Next line
                 lineCount++;
