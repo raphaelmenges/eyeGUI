@@ -17,6 +17,7 @@
   - Better german and english layout
 - Do not reset activity at reset
 - Accept pointer to input instead of reference in interface
+- Localization: new line at end of file necessary
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
