@@ -16,7 +16,6 @@
 - Keyboard
   - Better german and english layout
 - Accept pointer to input instead of reference in interface
-- Localization: new line at end of file necessary
 
 ## Testing
 - test hitButton fuction in combination with visibility etc

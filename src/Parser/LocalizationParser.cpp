@@ -52,6 +52,9 @@ namespace eyegui
             // Streamline line endings
             streamlineLineEnding(content);
 
+			// Add some new line at the end of content because while loop does not read last line
+			content += "\n";
+
             // Some values for iteration
             uint lineCount = 1;
             std::string delimiter = "\n";
