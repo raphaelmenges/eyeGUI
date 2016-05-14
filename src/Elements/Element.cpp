@@ -547,8 +547,9 @@ namespace eyegui
 
     void Element::reset()
     {
-        mActive = true;
-        mActivity.setValue(1);
+		// Only reset stuff that is not actively set (like activity...)
+        // mActive = true;
+        // mActivity.setValue(1);
 
         // Decide about dimming
         if(mDimming)

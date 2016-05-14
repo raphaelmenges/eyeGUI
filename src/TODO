@@ -15,7 +15,6 @@
   - write email to utf8rewind author because of windows fix
 - Keyboard
   - Better german and english layout
-- Do not reset activity at reset
 - Accept pointer to input instead of reference in interface
 - Localization: new line at end of file necessary
 
