@@ -358,41 +358,8 @@ namespace eyegui
                                 mGazePosition))
                         < keySize / 2)
                     {
-                        // Get value of pressed key
-                        std::u16string pressedValue = (*pKeys)[i][j]->getValue();
-
-                        if (mUseFastTyping)
-                        {
-                            // If fast typing is used, initial last pressed key value with buffer
-                            mLastPressedKeyValue = mFastBuffer;
-
-                            // Check whether one has to add pressed key as well, because only new picked keys were added so far
-                            if((int)i != mLastFastKeyRow && (int)j != mLastFastKeyColumn)
-                            {
-                                mLastPressedKeyValue.append(pressedValue);
-                            }
-                        }
-                        else
-                        {
-                            // Save value in member to have it when notification queue calls the pipe method
-                            mLastPressedKeyValue = pressedValue;
-                        }
-
-                        // Reset fast buffer
-                        mFastBuffer = u"";
-                        mLastFastKeyRow = -1;
-                        mLastFastKeyColumn = -1;
-
-                        // Just a reminder for the threshold to decrease
-                        mKeyWasPressed = true;
-
-                        // Inform listener after updating
-                        mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
-
-                        // Add pressed key for nice animation
-                        std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)((*pKeys)[i][j].get())));
-                        upPressedKey->transformAndSize();
-                        mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
+                        // Press key
+						pressKey(pKeys, i, j);
                     }
                 }
             }
@@ -547,7 +514,18 @@ namespace eyegui
 
     void Keyboard::specialInteract()
     {
-        // Not implemented for keyboard, yet
+		// Either currently focused or the one with highest combination of focus and threshold...first idea used here
+		if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
+		{
+			if (mBigCharactersActive)
+			{
+				pressKey(&mKeymaps[mCurrentKeymapIndex].bigKeys, mFocusedKeyRow, mFocusedKeyColumn);
+			}
+			else
+			{
+				pressKey(&mKeymaps[mCurrentKeymapIndex].smallKeys, mFocusedKeyRow, mFocusedKeyColumn);
+			}
+		}
     }
 
     void Keyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
@@ -708,4 +686,43 @@ namespace eyegui
             }
         }
     }
+
+	void Keyboard::pressKey(SubKeymap* pKeys, int i, int j)
+	{
+		// Get value of pressed key
+		std::u16string pressedValue = (*pKeys)[i][j]->getValue();
+
+		if (mUseFastTyping)
+		{
+			// If fast typing is used, initial last pressed key value with buffer
+			mLastPressedKeyValue = mFastBuffer;
+
+			// Check whether one has to add pressed key as well, because only new picked keys were added so far
+			if ((int)i != mLastFastKeyRow && (int)j != mLastFastKeyColumn)
+			{
+				mLastPressedKeyValue.append(pressedValue);
+			}
+		}
+		else
+		{
+			// Save value in member to have it when notification queue calls the pipe method
+			mLastPressedKeyValue = pressedValue;
+		}
+
+		// Reset fast buffer
+		mFastBuffer = u"";
+		mLastFastKeyRow = -1;
+		mLastFastKeyColumn = -1;
+
+		// Just a reminder for the threshold to decrease
+		mKeyWasPressed = true;
+
+		// Inform listener after updating
+		mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
+
+		// Add pressed key for nice animation
+		std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)((*pKeys)[i][j].get())));
+		upPressedKey->transformAndSize();
+		mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
+	}
 }

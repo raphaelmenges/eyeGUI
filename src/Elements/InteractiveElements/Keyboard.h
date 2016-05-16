@@ -127,6 +127,9 @@ namespace eyegui
         // Reset keymaps
         void resetKeymapsAndState();
 
+		// Press key
+		void pressKey(SubKeymap* pKeys, int i, int j);
+
         // Members
         RenderItem const * mpBackground;
         LerpValue mThreshold;
