@@ -98,7 +98,7 @@ namespace eyegui
         {
             sum += height;
         }
-        if (sum != 1)
+        if ((sum < 1.f - GRID_FILL_EPSILON) || (sum > 1.f + GRID_FILL_EPSILON))
         {
             return false;
         }
@@ -111,7 +111,7 @@ namespace eyegui
             {
                 sum += width;
             }
-            if (sum != 1)
+			if ((sum < 1.f - GRID_FILL_EPSILON) || (sum > 1.f + GRID_FILL_EPSILON))
             {
                 return false;
             }

@@ -60,6 +60,7 @@ namespace eyegui
     static const float WORD_SUGGEST_CHOSEN_ANIMATION_OFFSET = 0.03f; // in relation to height of layout
     static const float WORD_SUGGEST_SUGGESTION_DISTANCE = 4; // in size of letter which represents space
 	static const float TEXT_BACKGROUND_SIZE = 1.1f;
+	static const float GRID_FILL_EPSILON = 0.01f;  // since floating point precision does not sum everything to 100%
 }
 
 #endif // DEFINES_H_
