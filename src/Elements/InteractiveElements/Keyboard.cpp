@@ -435,10 +435,12 @@ namespace eyegui
         {
             for(const auto& rupKey : rLine)
             {
-                rupKey->draw(
+				rupKey->draw(
                     getStyle()->color,
                     getStyle()->pickColor,
                     getStyle()->iconColor,
+					getStyle()->thresholdColor,
+					mThreshold.getValue() * rupKey->getFocusValue(),
 					getMultipliedDimmedAlpha());
             }
         }
@@ -450,6 +452,8 @@ namespace eyegui
                 getStyle()->color,
                 getStyle()->pickColor,
                 getStyle()->iconColor,
+				getStyle()->thresholdColor,
+				0,
 				getMultipliedDimmedAlpha() * rPressedKey.first);
         }
 

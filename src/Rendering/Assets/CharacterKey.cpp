@@ -111,6 +111,8 @@ namespace eyegui
             glm::vec4 color,
             glm::vec4 pickColor,
             glm::vec4 iconColor,
+			glm::vec4 thresholdColor,
+			float threshold,
             float alpha) const
     {
         // Draw circle of key
@@ -137,6 +139,12 @@ namespace eyegui
 
         // Draw character quad (vertex count must be 6)
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		// Draw threshold
+		drawThreshold(
+			thresholdColor,
+			threshold,
+			alpha);
     }
 
     std::u16string CharacterKey::getValue() const

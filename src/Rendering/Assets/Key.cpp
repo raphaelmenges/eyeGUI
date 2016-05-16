@@ -33,6 +33,11 @@ namespace eyegui
         mpCircleRenderItem = mpAssetManager->fetchRenderItem(
             shaders::Type::KEY,
             meshes::Type::QUAD);
+
+		// Fetch render item for threshold visualization
+		mpThresholdItem = mpAssetManager->fetchRenderItem(
+			shaders::Type::CIRCLE_THRESHOLD,
+			meshes::Type::QUAD);
     }
 
     Key::Key(const Key& rOtherKey)
@@ -48,6 +53,7 @@ namespace eyegui
         mPicked = rOtherKey.mPicked;
         mPick.setValue(rOtherKey.mPick.getValue());
         mpCircleRenderItem = rOtherKey.mpCircleRenderItem;
+		mpThresholdItem = rOtherKey.mpThresholdItem;
     }
 
     Key::~Key()
@@ -146,4 +152,21 @@ namespace eyegui
         // Drawing
         mpCircleRenderItem->draw();
     }
+
+	void Key::drawThreshold(
+		glm::vec4 thresholdColor,
+		float threshold,
+		float alpha) const
+	{
+		if (threshold > 0)
+		{
+			mpThresholdItem->bind();
+			mpThresholdItem->getShader()->fillValue("matrix", mCircleMatrix);
+			mpThresholdItem->getShader()->fillValue("thresholdColor", thresholdColor);
+			mpThresholdItem->getShader()->fillValue("threshold", threshold);
+			mpThresholdItem->getShader()->fillValue("alpha", alpha);
+			mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
+			mpThresholdItem->draw();
+		}
+	}
 }

@@ -45,11 +45,13 @@ namespace eyegui
         virtual void update(float tpf);
 
         // Draw
-        virtual void draw(
-            glm::vec4 color,
-            glm::vec4 pickColor,
-            glm::vec4 iconColor,
-            float alpha) const = 0;
+		virtual void draw(
+			glm::vec4 color,
+			glm::vec4 pickColor,
+			glm::vec4 iconColor,
+			glm::vec4 thresholdColor,
+			float threshold,
+			float alpha) const = 0;
 
         // Reset
         virtual void reset();
@@ -86,6 +88,12 @@ namespace eyegui
             glm::vec4 pickColor,
             float alpha) const;
 
+		// Draw threshold
+		void drawThreshold(
+			glm::vec4 thresholdColor,
+			float threshold,
+			float alpha) const;
+
         // Members
         int mX;
         int mY;
@@ -93,6 +101,7 @@ namespace eyegui
         Layout const * mpLayout;
         AssetManager* mpAssetManager;
         RenderItem const * mpCircleRenderItem;
+		RenderItem const * mpThresholdItem;
         bool mFocused;
         LerpValue mFocus;
         bool mPicked;
