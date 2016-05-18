@@ -146,9 +146,13 @@ namespace eyegui
         }
     }
 
-    void Frame::makeResizeNecessary()
+    void Frame::makeResizeNecessary(bool instant)
     {
         mResizeNecessary = true;
+        if(instant)
+        {
+            internalResizing();
+        }
     }
 
     void Frame::attachRoot(std::unique_ptr<Element> upElement)
@@ -313,8 +317,8 @@ namespace eyegui
 
     void Frame::internalResizing()
     {
-		// Makes problems when resizing of invisible layouts is activated
-		// if (mResizeNecessary && mCombinedAlpha > 0)
+        // Makes problems when resizing of invisible layouts is activated
+        // if (mResizeNecessary && mCombinedAlpha > 0)
 
         if (mResizeNecessary)
         {

@@ -92,7 +92,7 @@ namespace eyegui
         pLayout->setVisibility(visible, false);
 
         // Do some initial resize to be ok for first draw
-        // TODO
+        pLayout->makeResizeNecessary(true, true);
 
         // Give unique pointer to job so it will be pushed back before next rendering but not during
         mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new AddLayoutJob(this, std::move(upLayout), layer))));

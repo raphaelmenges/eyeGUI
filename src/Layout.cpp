@@ -135,10 +135,14 @@ namespace eyegui
         }
     }
 
-    void Layout::makeResizeNecessary(bool force)
+    void Layout::makeResizeNecessary(bool force, bool instant)
     {
         mResizeNecessary = true;
         mForceResize = force;
+        if(instant)
+        {
+           internalResizing(force);
+        }
     }
 
     void Layout::attachElementToMainFrameAsRoot(
@@ -1334,7 +1338,7 @@ namespace eyegui
         insertIds(std::move(upPair->second));
 
         // Do some initial resize to be ok for first draw
-        // TODO
+        pFrame->makeResizeNecessary(true);
 
         // Return index
         return frameIndex;
@@ -1628,11 +1632,8 @@ namespace eyegui
                 mupIds->erase(id);
             }
 
-            // Do resizing of whole frame
-            pTarget->getFrame()->makeResizeNecessary();
-
             // Do direct resize to be ok for first draw
-            // TODO
+            pTarget->getFrame()->makeResizeNecessary(true);
 
             // Success
             return true;

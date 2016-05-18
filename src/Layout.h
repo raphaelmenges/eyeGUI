@@ -52,7 +52,7 @@ namespace eyegui
         void draw() const;
 
         // Make resize necessary
-        void makeResizeNecessary(bool force);
+        void makeResizeNecessary(bool force, bool instant = false);
 
         // Attach element to main frame as root
         void attachElementToMainFrameAsRoot(
@@ -135,9 +135,9 @@ namespace eyegui
             std::string name,
             int width,
             int height,
-			ColorFormat format,
+            ColorFormat format,
             unsigned char const * pIconData,
-			bool flipY);
+            bool flipY);
 
         // Set image of picture
         void setImageOfPicture(
@@ -145,9 +145,9 @@ namespace eyegui
             std::string name,
             int width,
             int height,
-			ColorFormat format,
+            ColorFormat format,
             unsigned char const * pData,
-			bool flipY);
+            bool flipY);
 
         // Interact with interactive element
         void interactWithInteractiveElement(std::string id);
