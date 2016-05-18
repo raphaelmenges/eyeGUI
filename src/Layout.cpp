@@ -420,9 +420,9 @@ namespace eyegui
             std::string name,
             int width,
             int height,
-			ColorFormat format,
+            ColorFormat format,
             unsigned char const * pIconData,
-			bool flipY)
+            bool flipY)
     {
         IconElement* pIconElement = toIconElement(fetchElement(id));
         if (pIconElement != NULL)
@@ -440,9 +440,9 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-		ColorFormat format,
+        ColorFormat format,
         unsigned char const * pData,
-		bool flipY)
+        bool flipY)
     {
         Picture* pPicture = toPicture(fetchElement(id));
         if (pPicture != NULL)
@@ -1333,6 +1333,9 @@ namespace eyegui
         // Insert ids
         insertIds(std::move(upPair->second));
 
+        // Do some initial resize to be ok for first draw
+        // TODO
+
         // Return index
         return frameIndex;
     }
@@ -1627,6 +1630,9 @@ namespace eyegui
 
             // Do resizing of whole frame
             pTarget->getFrame()->makeResizeNecessary();
+
+            // Do direct resize to be ok for first draw
+            // TODO
 
             // Success
             return true;

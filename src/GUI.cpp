@@ -29,7 +29,7 @@ namespace eyegui
         float fontMediumSize,
         float fontSmallSize,
         FontSize descriptionFontSize,
-		bool resizeInvisibleLayouts)
+        bool resizeInvisibleLayouts)
     {
         // Initialize OpenGL
         GLSetup::init();
@@ -52,9 +52,9 @@ namespace eyegui
         mFontMediumSize = fontMediumSize;
         mFontSmallSize = fontSmallSize;
         mDescriptionFontSize = descriptionFontSize;
-		mResizeInvisibleLayouts = resizeInvisibleLayouts;
+        mResizeInvisibleLayouts = resizeInvisibleLayouts;
         mShowDescriptions = true;
-		mResizeCallbackSet = false;
+        mResizeCallbackSet = false;
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -91,6 +91,9 @@ namespace eyegui
         // Set visibility
         pLayout->setVisibility(visible, false);
 
+        // Do some initial resize to be ok for first draw
+        // TODO
+
         // Give unique pointer to job so it will be pushed back before next rendering but not during
         mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new AddLayoutJob(this, std::move(upLayout), layer))));
 
@@ -120,58 +123,58 @@ namespace eyegui
         }
     }
 
-	void GUI::update()
-	{
-		// Execute all jobs
-		for (std::unique_ptr<GUIJob>& rupJob : mJobs)
-		{
-			rupJob->execute();
-		}
-		mJobs.clear();
+    void GUI::update()
+    {
+        // Execute all jobs
+        for (std::unique_ptr<GUIJob>& rupJob : mJobs)
+        {
+            rupJob->execute();
+        }
+        mJobs.clear();
 
-		// Force resizing
-		internalResizing();
-		mResizing = false;
-		mResizeWaitTime = 0;
+        // Force resizing
+        internalResizing();
+        mResizing = false;
+        mResizeWaitTime = 0;
 
-		// Update all layers in reversed order
-		for (int i = (int)mLayers.size() - 1; i >= 0; i--)
-		{
-			// Update without delta time or input
-			mLayers[i]->second->update(0, NULL);
-		}
+        // Update all layers in reversed order
+        for (int i = (int)mLayers.size() - 1; i >= 0; i--)
+        {
+            // Update without delta time or input
+            mLayers[i]->second->update(0, NULL);
+        }
 
-		// Call resize callback (after update of layouts)
-		if (mResizeCallbackSet)
-		{
-			mResizeCallbackFunction(mWidth, mHeight);
-		}
-	}
+        // Call resize callback (after update of layouts)
+        if (mResizeCallbackSet)
+        {
+            mResizeCallbackFunction(mWidth, mHeight);
+        }
+    }
 
     Input GUI::update(float tpf, const Input input)
     {
-		// Execute all jobs
-		for (std::unique_ptr<GUIJob>& rupJob : mJobs)
-		{
-			rupJob->execute();
-		}
-		mJobs.clear();
+        // Execute all jobs
+        for (std::unique_ptr<GUIJob>& rupJob : mJobs)
+        {
+            rupJob->execute();
+        }
+        mJobs.clear();
 
-		// Resizing
-		bool resized = false;
-		if (mResizing)
-		{
-			mResizeWaitTime -= tpf;
+        // Resizing
+        bool resized = false;
+        if (mResizing)
+        {
+            mResizeWaitTime -= tpf;
 
-			// Resizing should take place?
-			if (mResizeWaitTime <= 0)
-			{
-				internalResizing();
-				mResizing = false;
-				mResizeWaitTime = 0;
-				resized = true;
-			}
-		}
+            // Resizing should take place?
+            if (mResizeWaitTime <= 0)
+            {
+                internalResizing();
+                mResizing = false;
+                mResizeWaitTime = 0;
+                resized = true;
+            }
+        }
 
         // Handle time
         mAccPeriodicTime += tpf;
@@ -193,11 +196,11 @@ namespace eyegui
         // Update gaze drawer
         mupGazeDrawer->update(input.gazeX, input.gazeY, tpf);
 
-		// Call resize callback (after update of layouts)
-		if (resized && mResizeCallbackSet)
-		{
-			mResizeCallbackFunction(mWidth, mHeight);
-		}
+        // Call resize callback (after update of layouts)
+        if (resized && mResizeCallbackSet)
+        {
+            mResizeCallbackFunction(mWidth, mHeight);
+        }
 
         // Return copy of used input
         return copyInput;
@@ -383,11 +386,11 @@ namespace eyegui
         return mDescriptionFontSize;
     }
 
-	void GUI::setResizeCallback(std::function<void(int, int)> callbackFunction)
-	{
-		mResizeCallbackFunction = callbackFunction;
-		mResizeCallbackSet = true;
-	}
+    void GUI::setResizeCallback(std::function<void(int, int)> callbackFunction)
+    {
+        mResizeCallbackFunction = callbackFunction;
+        mResizeCallbackSet = true;
+    }
 
     void GUI::internalResizing()
     {
