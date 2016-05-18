@@ -141,7 +141,7 @@ namespace eyegui
         mForceResize = force;
         if(instant)
         {
-           internalResizing(force);
+           internalResizing(force, instant);
         }
     }
 
@@ -714,8 +714,8 @@ namespace eyegui
             // Insert ids
             insertIds(std::move(upPair->second));
 
-            // To transform and resize in next frame of frame
-            pStack->getFrame()->makeResizeNecessary();
+            // To transform and resize now
+            pStack->getFrame()->makeResizeNecessary(true);
         }
         else
         {
@@ -1519,12 +1519,12 @@ namespace eyegui
         return mpGUI->getDescriptionFontSize();
     }
 
-    void Layout::internalResizing(bool force)
+    void Layout::internalResizing(bool force, bool instant)
     {
         if (force || (mResizeNecessary && mAlpha.getValue() > 0))
         {
             // Resize main frame
-            mupMainFrame->makeResizeNecessary();
+            mupMainFrame->makeResizeNecessary(instant);
 
             // Resize floating frames
             for (auto& upFrame : mFloatingFrames)
@@ -1532,7 +1532,7 @@ namespace eyegui
                 Frame* pFrame = upFrame.get();
                 if (pFrame != NULL)
                 {
-                    pFrame->makeResizeNecessary();
+                    pFrame->makeResizeNecessary(instant);
                 }
             }
             mResizeNecessary = false;

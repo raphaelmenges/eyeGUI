@@ -335,7 +335,7 @@ namespace eyegui
     private:
 
         // Resize function
-        void internalResizing(bool force);
+        void internalResizing(bool force, bool instant = false);
 
         // Fetch pointer to element by id
         Element* fetchElement(std::string id) const;

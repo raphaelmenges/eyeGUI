@@ -16,6 +16,7 @@
 - Keyboard
   - Better german and english layout
 - Accept pointer to input instead of reference in interface
+- Improve resize chaos
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
