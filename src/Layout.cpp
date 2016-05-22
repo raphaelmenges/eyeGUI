@@ -1332,7 +1332,7 @@ namespace eyegui
         pFrame->attachRoot(std::move(upPair->first));
 
         // Set visibility
-        pFrame->setVisibility(visible, !fade);
+        pFrame->setVisibility(visible, fade);
 
         // Insert ids
         insertIds(std::move(upPair->second));
