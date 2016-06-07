@@ -301,10 +301,23 @@ namespace eyegui
 
     void WordSuggest::specialInteract()
     {
-        // Just use first suggestion
-        if (!mSuggestions.empty())
+        // Find suggestion with value most close to threshold
+		int maxIndex = -1;
+		float maxValue = -1.f;
+		for (int i = 0; i < mThresholds.size(); i++)
+		{
+			float value = mThresholds.at(i).getValue();
+			if (value > maxValue)
+			{
+				maxValue = value;
+				maxIndex = i;
+			}
+		}
+
+		// Use found one as suggestion
+        if (maxIndex >= 0)
         {
-            chooseSuggestion(0);
+            chooseSuggestion(maxIndex);
         }
     }
 
