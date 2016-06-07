@@ -36,6 +36,7 @@
 #include <map>
 #include <functional>
 
+//! Namespace of eyeGUI interface.
 namespace eyegui
 {
     class GUI;
@@ -1163,6 +1164,26 @@ namespace eyegui
       \param rootFilepath is used as prefix for used filepaths.
     */
     void setRootFilepath(std::string rootFilepath);
+}
+
+//! Namespace for simple helper functions.
+namespace eyegui_helper
+{
+	//! Converts std::string to std::u16string and returns, whether successful.
+	/*!
+	\param rInput is input string.
+	\param rOutput is reference to output string.
+	\return TRUE if successful, FALSE otherwise
+	*/
+	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput);
+
+	//! Converts std::u16string to std::string and returns, whether successful.
+	/*!
+	\param rInput is input string.
+	\param rOutput is reference to output string.
+	\return TRUE if successful, FALSE otherwise
+	*/
+	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
 }
 
 #endif // EYE_GUI_H_

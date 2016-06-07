@@ -644,3 +644,16 @@ namespace eyegui
         PathBuilder::rootFilepath = rootFilepath;
     }
 }
+
+namespace eyegui_helper
+{
+	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput)
+	{
+		return eyegui::convertUTF8ToUTF16(rInput, rOutput);
+	}
+
+	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput)
+	{
+		return eyegui::convertUTF16ToUTF8(rInput, rOutput);
+	}
+}
