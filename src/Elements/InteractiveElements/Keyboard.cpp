@@ -351,12 +351,14 @@ namespace eyegui
                 if(!mKeyWasPressed && mThreshold.getValue() >= 1.f && (*pKeys)[i][j]->isFocused())
                 {
                     // Check, whether gaze is really on focused key
+					/*
                     if(
                         glm::abs(
                             glm::distance(
                                 glm::vec2(keyPositionX, keyPositionY),
                                 mGazePosition))
                         < keySize / 2)
+					*/
                     {
                         // Press key
 						pressKey(pKeys, i, j);
