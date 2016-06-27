@@ -52,8 +52,8 @@ namespace eyegui
             // Streamline line endings
             streamlineLineEnding(content);
 
-			// Add some new line at the end of content because while loop does not read last line
-			content += "\n";
+            // Add some new line at the end of content because while loop does not read last line
+            content += "\n";
 
             // Some values for iteration
             uint lineCount = 1;
@@ -68,11 +68,11 @@ namespace eyegui
                 line = content.substr(0, pos);
                 content.erase(0, pos + delimiter.length());
 
-				if (!line.empty())
-				{
-					// Extract key and value from line
-					parseLine(*(upMap.get()), line, lineCount, filepath);
-				}
+                if (!line.empty())
+                {
+                    // Extract key and value from line
+                    parseLine(*(upMap.get()), line, lineCount, filepath);
+                }
 
                 // Next line
                 lineCount++;
@@ -112,7 +112,7 @@ namespace eyegui
             std::u16string utf16right;
             if (!convertUTF8ToUTF16(right, utf16right))
             {
-                throwError(OperationNotifier::Operation::PARSING, "Invalid UTF-8 encoding detected at line " + lineCount, filepath);
+                throwError(OperationNotifier::Operation::PARSING, "Invalid UTF-8 encoding detected at line " + std::to_string(lineCount), filepath);
             }
 
             // Fill in map
