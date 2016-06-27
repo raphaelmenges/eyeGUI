@@ -1,6 +1,8 @@
+dist: trusty
+
 language: cpp
 
 compiler:
-  - gcc
+  - clang
 
 script: cmake . && make
