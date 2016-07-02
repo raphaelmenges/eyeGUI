@@ -1509,14 +1509,9 @@ namespace eyegui
         return result;
     }
 
-    bool Layout::getShowDescriptions() const
-    {
-        return mpGUI->getShowDescriptions();
-    }
-
-	bool Layout::getDescriptionsOnlyOnPeneration() const
+	DescriptionVisibility Layout::getDescriptionVisibility() const
 	{
-		return mpGUI->getDescriptionsOnlyOnPeneration();
+		return mpGUI->getDescriptionVisibility();
 	}
 
     FontSize Layout::getDescriptionFontSize() const

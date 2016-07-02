@@ -53,8 +53,7 @@ namespace eyegui
         mFontSmallSize = fontSmallSize;
         mDescriptionFontSize = descriptionFontSize;
         mResizeInvisibleLayouts = resizeInvisibleLayouts;
-        mShowDescriptions = true;
-		mDescriptionsOnlyOnPenetration = true;
+		mDescriptionVisibility = DescriptionVisibility::ON_PENETRATION;
         mResizeCallbackSet = false;
 
         // Initialize default font ("" handled by asset manager)
@@ -289,10 +288,9 @@ namespace eyegui
         return index;
     }
 
-    void GUI::setShowDescriptions(bool showDescriptions, bool onPenetrationOnly)
+    void GUI::setDescriptionVisibility(DescriptionVisibility visbility)
     {
-        mShowDescriptions = showDescriptions;
-		mDescriptionsOnlyOnPenetration = onPenetrationOnly;
+		mDescriptionVisibility = visbility;
     }
 
     int GUI::getWindowWidth() const
@@ -378,15 +376,10 @@ namespace eyegui
         }
     }
 
-    bool GUI::getShowDescriptions() const
+    DescriptionVisibility GUI::getDescriptionVisibility() const
     {
-        return mShowDescriptions;
+        return mDescriptionVisibility;
     }
-
-	bool GUI::getDescriptionsOnlyOnPeneration() const
-	{
-		return mDescriptionsOnlyOnPenetration;
-	}
 
     FontSize GUI::getDescriptionFontSize() const
     {

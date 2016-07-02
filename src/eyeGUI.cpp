@@ -91,9 +91,9 @@ namespace eyegui
         pGUI->toggleGazeVisualizationDrawing();
     }
 
-    void setShowDescriptions(GUI* pGUI, bool showDescriptions, bool onPenetrationOnly)
+    void setDescriptionVisibility(GUI* pGUI, DescriptionVisibility visbility)
     {
-        pGUI->setShowDescriptions(showDescriptions, onPenetrationOnly);
+        pGUI->setDescriptionVisibility(visbility);
     }
 
     void prefetchImage(GUI* pGUI, std::string filepath)

@@ -326,11 +326,8 @@ namespace eyegui
         // Get absolute position and size of floating frame
         AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
 
-        // Get whether buttons should show description
-        bool getShowDescriptions() const;
-
-		// Get whether buttons should show description only on penetration
-		bool getDescriptionsOnlyOnPeneration() const;
+		// Get visibility of descriptions
+		DescriptionVisibility getDescriptionVisibility() const;
 
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;

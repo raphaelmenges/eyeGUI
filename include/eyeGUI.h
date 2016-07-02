@@ -64,6 +64,9 @@ namespace eyegui
 	//! Enumeration of available color formats.
 	enum class ColorFormat { RGBA, BGRA };
 
+	//! Enumeration of available description visibility behaviors.
+	enum class DescriptionVisibility { HIDDEN, ON_PENETRATION, VISIBLE };
+
     //! Abstract listener class for buttons.
     class ButtonListener
     {
@@ -291,13 +294,12 @@ namespace eyegui
     */
     void toggleGazeVisualizationDrawing(GUI* pGUI);
 
-    //! Set whether descriptions of icon elements are displayed.
+    //! Set how descriptions of icon elements are displayed.
     /*!
     \param pGUI pointer to GUI.
-    \param showDescriptions indicates whether descriptions should be drawn.
-	\param onPenetrationOnly indicates whether descriptions are only visible when penetrated, for example by gaze.
+    \param visbility describes the visibility of descriptions in that GUI.
     */
-    void setShowDescriptions(GUI* pGUI, bool showDescriptions, bool onPenetrationOnly = true);
+    void setDescriptionVisibility(GUI* pGUI, DescriptionVisibility visbility);
 
     //! Prefetch image to avoid lags.
     /*!
