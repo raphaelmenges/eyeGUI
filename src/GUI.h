@@ -126,7 +126,7 @@ namespace eyegui
         Dictionary const * getDictionary(uint dictionaryIndex) const;
 
 		// Get visibility of descriptions
-		DescriptionVisibility GUI::getDescriptionVisibility() const;
+		DescriptionVisibility getDescriptionVisibility() const;
 
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
