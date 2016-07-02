@@ -291,12 +291,13 @@ namespace eyegui
     */
     void toggleGazeVisualizationDrawing(GUI* pGUI);
 
-    //! Set whether descriptions of icon elements are displayed at penetration.
+    //! Set whether descriptions of icon elements are displayed.
     /*!
     \param pGUI pointer to GUI.
     \param showDescriptions indicates whether descriptions should be drawn.
+	\param onPenetrationOnly indicates whether descriptions are only visible when penetrated, for example by gaze.
     */
-    void setShowDescriptions(GUI* pGUI, bool showDescriptions);
+    void setShowDescriptions(GUI* pGUI, bool showDescriptions, bool onPenetrationOnly = true);
 
     //! Prefetch image to avoid lags.
     /*!

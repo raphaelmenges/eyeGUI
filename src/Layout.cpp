@@ -1514,6 +1514,11 @@ namespace eyegui
         return mpGUI->getShowDescriptions();
     }
 
+	bool Layout::getDescriptionsOnlyOnPeneration() const
+	{
+		return mpGUI->getDescriptionsOnlyOnPeneration();
+	}
+
     FontSize Layout::getDescriptionFontSize() const
     {
         return mpGUI->getDescriptionFontSize();

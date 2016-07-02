@@ -93,7 +93,7 @@ namespace eyegui
         uint addDictionary(std::string filepath);
 
         // Set whether descriptions are shown
-        void setShowDescriptions(bool showDescriptions);
+        void setShowDescriptions(bool showDescriptions, bool onPenetrationOnly);
 
         // *** Methods accessed by other classes ***
 
@@ -127,6 +127,9 @@ namespace eyegui
 
         // Get whether buttons should show description
         bool getShowDescriptions() const;
+
+		// Get whether buttons should show description only on penetration
+		bool getDescriptionsOnlyOnPeneration() const;
 
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
@@ -249,6 +252,7 @@ namespace eyegui
         float mFontSmallSize;
         std::vector<std::unique_ptr<Dictionary> > mDictionaries;
         bool mShowDescriptions;
+		bool mDescriptionsOnlyOnPenetration;
         FontSize mDescriptionFontSize;
 		bool mResizeInvisibleLayouts;
 		std::function<void(int, int)> mResizeCallbackFunction;

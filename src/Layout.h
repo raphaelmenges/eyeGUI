@@ -329,6 +329,9 @@ namespace eyegui
         // Get whether buttons should show description
         bool getShowDescriptions() const;
 
+		// Get whether buttons should show description only on penetration
+		bool getDescriptionsOnlyOnPeneration() const;
+
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
 

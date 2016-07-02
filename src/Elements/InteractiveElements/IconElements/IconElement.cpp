@@ -123,8 +123,8 @@ namespace eyegui
         // Check for penetration by input
         bool penetrated = penetratedByInput(pInput);
 
-        // Make description visible
-        if (mpLayout->getShowDescriptions() && penetrated)
+        // Make description visible if either penetrated or always visible
+        if (mpLayout->getShowDescriptions() && (penetrated || !(mpLayout->getDescriptionsOnlyOnPeneration())))
         {
             mDescriptionAlpha.update(tpf / mpLayout->getConfig()->animationDuration);
         }
