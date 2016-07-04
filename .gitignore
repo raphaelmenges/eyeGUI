@@ -15,3 +15,6 @@
 
 # Project files
 CMakeLists.txt.user
+
+# Build folders
+build
