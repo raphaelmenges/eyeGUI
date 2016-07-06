@@ -716,5 +716,10 @@ namespace eyegui
         std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)((*pKeys)[i][j].get())));
         upPressedKey->transformAndSize();
         mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
+
+        // Interaction notification
+        std::string interactionInfo;
+        convertUTF16ToUTF8(mLastPressedKeyValue, interactionInfo);
+        notifyInteraction("KEY_PRESS", interactionInfo);
     }
 }

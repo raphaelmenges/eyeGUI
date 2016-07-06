@@ -249,7 +249,7 @@ namespace eyegui
         float getMultipliedDimmedAlpha() const;
 
         // Notify about interaction with element
-        void notifyInteraction(std::string interactionType, std::string interactionInfoA) const;
+        void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;
 
         // Members
         int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE

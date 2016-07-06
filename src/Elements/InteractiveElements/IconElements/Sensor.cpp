@@ -27,8 +27,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey) : IconElement(
+        std::u16string desc,
+        std::string descKey) : IconElement(
             id,
             styleName,
             pParent,
@@ -42,8 +42,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             iconFilepath,
-			desc,
-			descKey)
+            desc,
+            descKey)
     {
         // Fill members
         mType = Type::SENSOR;
@@ -74,8 +74,8 @@ namespace eyegui
 
     float Sensor::specialUpdate(float tpf, Input* pInput)
     {
-		// Super call
-		float adaptiveScale = IconElement::specialUpdate(tpf, pInput);
+        // Super call
+        float adaptiveScale = IconElement::specialUpdate(tpf, pInput);
 
         // Penetration by input
         bool penetrated = penetratedByInput(pInput);
@@ -97,6 +97,9 @@ namespace eyegui
         if (mPenetration.getValue() > 0)
         {
             mpNotificationQueue->enqueue(getId(), NotificationType::SENSOR_PENETRATED);
+
+            // Interaction notification
+            notifyInteraction("PENETRATION", std::to_string(mPenetration.getValue()));
         }
 
         return adaptiveScale;

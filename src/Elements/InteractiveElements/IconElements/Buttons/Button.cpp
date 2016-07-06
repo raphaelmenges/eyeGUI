@@ -29,8 +29,8 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling,
         std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
+        std::u16string desc,
+        std::string descKey,
         bool isSwitch) : IconElement(
             id,
             styleName,
@@ -45,8 +45,8 @@ namespace eyegui
             dimming,
             adaptiveScaling,
             iconFilepath,
-			desc,
-			descKey)
+            desc,
+            descKey)
     {
         mType = Type::BUTTON;
 
@@ -112,6 +112,9 @@ namespace eyegui
             {
                 mPressing.setValue(1);
             }
+
+            // Interaction notification
+            notifyInteraction("DOWN");
         }
     }
 
@@ -133,6 +136,9 @@ namespace eyegui
             {
                 mPressing.setValue(0);
             }
+
+            // Interaction notification
+            notifyInteraction("UP");
         }
     }
 
@@ -219,8 +225,8 @@ namespace eyegui
             mpThresholdItem->draw();
         }
 
-		// Super call
-		IconElement::specialDraw();
+        // Super call
+        IconElement::specialDraw();
     }
 
     void Button::specialReset()
