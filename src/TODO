@@ -20,6 +20,10 @@
 ## Testing
 - test hitButton fuction in combination with visibility etc
 
+## Debugging
+- Keyboard.cpp Line 209
+- Keyboard class: mFocusPosition no more necessary?
+
 ## Wiki
 - Dictionary
   - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
@@ -30,9 +34,10 @@
   - flow-speed-multiplier
 
 ### VERSION 0.11
-- Replace freetype2 by stb and use their packing algorithm!
+- Redo font packing algorithm
 - Audio (PortAudio library?)
   - Audio effects defined in style sheet
+- Improve keyboard
 
 ### VERSION 0.x
 - WordSuggest / Flow: maybe some area in the center, where no scrolling happens?
