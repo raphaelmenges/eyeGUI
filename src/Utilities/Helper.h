@@ -21,6 +21,9 @@ namespace eyegui
 
     bool checkFileNameExtension(std::string filepath, std::string expectedExtension);
 
+    // Extracts file name without extension
+    std::string extractFileName(std::string filepath);
+
     void replaceString(std::string& rInput, const std::string &rTarget, const std::string& rReplacement);
 
     // Convert pixel space to drawing space (origin top left)

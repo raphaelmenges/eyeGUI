@@ -43,8 +43,11 @@ namespace eyegui
             // Get path to stylesheet
             std::string stylesheetFilepath = element_parser::parseStringAttribute("stylesheet", xmlLayout);
 
+            // Extract name of layout
+            std::string name = extractFileName(filepath);
+
             // Create layout
-            std::unique_ptr<Layout> upLayout = std::unique_ptr<Layout>(new Layout(pGUI, pAssetManager, stylesheetFilepath));
+            std::unique_ptr<Layout> upLayout = std::unique_ptr<Layout>(new Layout(name, pGUI, pAssetManager, stylesheetFilepath));
 
             // Then there should be an element
             tinyxml2::XMLElement* xmlRoot = xmlLayout->FirstChildElement();

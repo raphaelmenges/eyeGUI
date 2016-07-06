@@ -17,9 +17,10 @@
 
 namespace eyegui
 {
-    Layout::Layout(GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath)
+    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath)
     {
         // Initialize members
+        mName = name;
         mpGUI = pGUI;
         mpAssetManager = pAssetManager;
         mupIds = NULL;
@@ -39,6 +40,11 @@ namespace eyegui
     Layout::~Layout()
     {
         // Nothing to do
+    }
+
+    std::string Layout::getName() const
+    {
+        return mName;
     }
 
     void Layout::update(float tpf, Input* pInput)
@@ -1509,10 +1515,10 @@ namespace eyegui
         return result;
     }
 
-	DescriptionVisibility Layout::getDescriptionVisibility() const
-	{
-		return mpGUI->getDescriptionVisibility();
-	}
+    DescriptionVisibility Layout::getDescriptionVisibility() const
+    {
+        return mpGUI->getDescriptionVisibility();
+    }
 
     FontSize Layout::getDescriptionFontSize() const
     {

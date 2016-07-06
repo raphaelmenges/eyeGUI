@@ -57,6 +57,7 @@ namespace eyegui
         mMarking = false;
         mMark.setValue(0);
         mRenderingMask = renderingMask;
+        mPenetratedLastUpdate = false;
 
         // Decide about dimming
         mDimming = dimming;
@@ -133,6 +134,52 @@ namespace eyegui
     Element::Type Element::getType() const
     {
         return mType;
+    }
+
+    std::string Element::getTypeString() const
+    {
+        switch(mType)
+        {
+        case Type::ELEMENT:
+            return "ELEMENT"; break;
+        case Type::PICTURE:
+            return "PICTURE"; break;
+        case Type::BLANK:
+            return "BLANK"; break;
+        case Type::NOTIFIER_ELEMENT:
+            return "NOTIFIER_ELEMENT"; break;
+        case Type::INTERACTIVE_ELEMENT:
+            return "INTERACTIVE_ELEMENT"; break;
+        case Type::ICON_ELEMENT:
+            return "ICON_ELEMENT"; break;
+        case Type::SENSOR:
+            return "SENSOR"; break;
+        case Type::BUTTON:
+            return "BUTTON"; break;
+        case Type::CIRCLE_BUTTON:
+            return "CIRCLE_BUTTON"; break;
+        case Type::BOX_BUTTON:
+            return "BOX_BUTTON"; break;
+        case Type::DROP_BUTTON:
+            return "DROP_BUTTON"; break;
+        case Type::BLOCK:
+            return "BLOCK"; break;
+        case Type::STACK:
+            return "STACK"; break;
+        case Type::GRID:
+            return "GRID"; break;
+        case Type::TEXT_BLOCK:
+            return "TEXT_BLOCK"; break;
+        case Type::KEYBOARD:
+            return "KEYBOARD"; break;
+        case Type::WORD_SUGGEST:
+            return "WORD_SUGGEST"; break;
+        case Type::FLOW:
+            return "FLOW"; break;
+        default:
+            OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::BUG, "Element type to string not available.");
+            return "UNDEFINED";
+        }
     }
 
     std::string Element::getId() const
@@ -469,6 +516,22 @@ namespace eyegui
             pInput->gazeUsed = true;
         }
 
+        // *** PENETRATION NOTIFICATION (ENTER / LEAVE) *** // TODO: Setting for which elements to react
+        if(penetrated != mPenetratedLastUpdate &&
+        (mType == Type::BOX_BUTTON
+        || mType == Type::CIRCLE_BUTTON
+        || mType == Type::DROP_BUTTON
+        || mType == Type::SENSOR
+        || mType == Type::KEYBOARD
+        || mType == Type::WORD_SUGGEST
+        || mType == Type::PICTURE))
+        {
+            this->notifyInteraction(
+                "PENETRATION",
+                penetrated ? "ENTER" : "LEAVE");
+        }
+        mPenetratedLastUpdate = penetrated;
+
         // *** ADAPTIVE SCALE RETURNING ***
 
         // Decide, which adaptive scale to save. Own adaptive scale decreases if adaptive scaling is deactivated!
@@ -547,10 +610,6 @@ namespace eyegui
 
     void Element::reset()
     {
-		// Only reset stuff that is not actively set (like activity...)
-        // mActive = true;
-        // mActivity.setValue(1);
-
         // Decide about dimming
         if(mDimming)
         {
@@ -563,6 +622,9 @@ namespace eyegui
         mForceUndim = false;
 
         mAdaptiveScale.setValue(0);
+
+        // TODO: makes sense to reset that value?
+        mPenetratedLastUpdate = false;
 
         // TODO: one could reset marking, too
 
@@ -629,21 +691,21 @@ namespace eyegui
         }
     }
 
-	bool Element::checkForParentType(Element::Type type) const
-	{
-		if (mpParent != NULL)
-		{
-			if (mpParent->getType() == type)
-			{
-				return true;
-			}
-			else
-			{
-				return mpParent->checkForParentType(type);
-			}
-		}
-		return false;
-	}
+    bool Element::checkForParentType(Element::Type type) const
+    {
+        if (mpParent != NULL)
+        {
+            if (mpParent->getType() == type)
+            {
+                return true;
+            }
+            else
+            {
+                return mpParent->checkForParentType(type);
+            }
+        }
+        return false;
+    }
 
     bool Element::penetratedByInput(Input const * pInput) const
     {
@@ -674,5 +736,15 @@ namespace eyegui
     float Element::getMultipliedDimmedAlpha() const
     {
         return mAlpha * glm::mix(1.0f , getStyle()->dimAlpha, mDim.getValue());
+    }
+
+    void Element::notifyInteraction(std::string interactionType, std::string interactionInfoA) const
+    {
+        OperationNotifier::notifyAboutInteraction(
+            mpLayout->getName(),
+            this->getTypeString(),
+            this->getId(),
+            interactionType,
+            interactionInfoA);
     }
 }

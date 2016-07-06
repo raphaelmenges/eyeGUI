@@ -151,6 +151,30 @@ namespace eyegui
         return (filepath.compare(expectedExtension) == 0);
     }
 
+    std::string extractFileName(std::string filepath)
+    {
+        // Extract string behind last slash
+        std::string delimiter = "/";
+        size_t pos = 0;
+        while ((pos = filepath.find(delimiter)) != std::string::npos)
+        {
+            filepath.erase(0, pos + delimiter.length());
+        }
+
+        // Extract name before dot
+        std::string token;
+        delimiter = ".";
+        pos = 0;
+        while ((pos = filepath.find(delimiter)) != std::string::npos)
+        {
+            token = filepath.substr(0, pos);
+            filepath.erase(0, pos + delimiter.length());
+        }
+
+        // Return name
+        return token;
+    }
+
     void replaceString(std::string& rInput, const std::string &rTarget, const std::string& rReplacement)
     {
         // Check whether there is a target

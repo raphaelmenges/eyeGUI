@@ -249,9 +249,9 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-		ColorFormat format,
+        ColorFormat format,
         unsigned char const * pIconData,
-		bool flipY)
+        bool flipY)
     {
         pLayout->setIconOfIconElement(id, name, width, height, format, pIconData, flipY);
     }
@@ -262,9 +262,9 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-		ColorFormat format,
+        ColorFormat format,
         unsigned char const * pData,
-		bool flipY)
+        bool flipY)
     {
         pLayout->setImageOfPicture(id, name, width, height, format, pData, flipY);
     }
@@ -628,6 +628,18 @@ namespace eyegui
         OperationNotifier::setWarningCallback(callbackFunction);
     }
 
+    void setInteractionCallback(
+        std::function<
+            void(
+                std::string,
+                std::string,
+                std::string,
+                std::string,
+                std::string)> callbackFunction)
+    {
+        OperationNotifier::setInteractionCallback(callbackFunction);
+    }
+
     void setResizeCallback(GUI* pGUI, std::function<void(int, int)> callbackFunction)
     {
         pGUI->setResizeCallback(callbackFunction);
@@ -647,13 +659,13 @@ namespace eyegui
 
 namespace eyegui_helper
 {
-	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput)
-	{
-		return eyegui::convertUTF8ToUTF16(rInput, rOutput);
-	}
+    bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput)
+    {
+        return eyegui::convertUTF8ToUTF16(rInput, rOutput);
+    }
 
-	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput)
-	{
-		return eyegui::convertUTF16ToUTF8(rInput, rOutput);
-	}
+    bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput)
+    {
+        return eyegui::convertUTF16ToUTF8(rInput, rOutput);
+    }
 }

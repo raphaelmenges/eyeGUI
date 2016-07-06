@@ -40,6 +40,22 @@ namespace eyegui
             getInstance()->callbackWarning(operation, message, filepath);
         }
 
+        // Send interaction to callback
+        static void notifyAboutInteraction(
+            std::string layout,
+            std::string elementType,
+            std::string elementId,
+            std::string interactionType,
+            std::string interactionInfoA)
+        {
+            getInstance()->callbackInteraction(
+                layout,
+                elementType,
+                elementId,
+                interactionType,
+                interactionInfoA);
+        }
+
         // Set function to call back
         static void setErrorCallback(std::function<void(std::string)> callbackFunction)
         {
@@ -50,6 +66,19 @@ namespace eyegui
         static void setWarningCallback(std::function<void(std::string)> callbackFunction)
         {
             getInstance()->internalSetWarningCallback(callbackFunction);
+        }
+
+        // Set function to call back
+        static void setInteractionCallback(
+            std::function<
+                void(
+                    std::string,
+                    std::string,
+                    std::string,
+                    std::string,
+                    std::string)> callbackFunction)
+        {
+            getInstance()->internalSetInteractionCallback(callbackFunction);
         }
 
     private:
@@ -83,15 +112,29 @@ namespace eyegui
         // Set callback function
         void internalSetErrorCallback(std::function<void(std::string)> callbackFunction)
         {
-			mErrorCallbackFunction = callbackFunction;
+            mErrorCallbackFunction = callbackFunction;
             mErrorCallbackSet = true;
         }
 
         // Set callback function
         void internalSetWarningCallback(std::function<void(std::string)> callbackFunction)
         {
-			mWarningCallbackFunction = callbackFunction;
+            mWarningCallbackFunction = callbackFunction;
             mWarningCallbackSet = true;
+        }
+
+        // Set callback function
+        void internalSetInteractionCallback(
+            std::function<
+                void(
+                    std::string,
+                    std::string,
+                    std::string,
+                    std::string,
+                    std::string)> callbackFunction)
+        {
+            mInteractionCallbackFunction = callbackFunction;
+            mInteractionCallbackSet = true;
         }
 
         // Notify about error
@@ -101,7 +144,7 @@ namespace eyegui
             if (mErrorCallbackSet)
             {
                 // Call callback function
-				mErrorCallbackFunction(buildContent(Type::ERROR_CALLBACK, operation, message, filepath));
+                mErrorCallbackFunction(buildContent(Type::ERROR_CALLBACK, operation, message, filepath));
             }
         }
 
@@ -112,7 +155,28 @@ namespace eyegui
             if (mWarningCallbackSet)
             {
                 // Call callback function
-				mWarningCallbackFunction(buildContent(Type::WARNING_CALLBACK, operation, message, filepath));
+                mWarningCallbackFunction(buildContent(Type::WARNING_CALLBACK, operation, message, filepath));
+            }
+        }
+
+        // Notify about interaction
+        void callbackInteraction(
+            std::string layout,
+            std::string elementType,
+            std::string elementId,
+            std::string interactionType,
+            std::string interactionInfoA)
+        {
+            // Only do something when callback is given
+            if (mInteractionCallbackSet)
+            {
+                // Call callback function
+                mInteractionCallbackFunction(
+                    layout,
+                    elementType,
+                    elementId,
+                    interactionType,
+                    interactionInfoA);
             }
         }
 
@@ -172,8 +236,10 @@ namespace eyegui
         // Member
         bool mErrorCallbackSet;
         bool mWarningCallbackSet;
-		std::function<void(std::string)> mErrorCallbackFunction;
-		std::function<void(std::string)> mWarningCallbackFunction;
+        bool mInteractionCallbackSet;
+        std::function<void(std::string)> mErrorCallbackFunction;
+        std::function<void(std::string)> mWarningCallbackFunction;
+        std::function<void(std::string, std::string, std::string, std::string, std::string)> mInteractionCallbackFunction;
     };
 }
 

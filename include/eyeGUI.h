@@ -61,11 +61,11 @@ namespace eyegui
     //! Enumeration of cases of keyboard.
     enum class KeyboardCase { LOWER, UPPER };
 
-	//! Enumeration of available color formats.
-	enum class ColorFormat { RGBA, BGRA };
+    //! Enumeration of available color formats.
+    enum class ColorFormat { RGBA, BGRA };
 
-	//! Enumeration of available description visibility behaviors.
-	enum class DescriptionVisibility { HIDDEN, ON_PENETRATION, VISIBLE };
+    //! Enumeration of available description visibility behaviors.
+    enum class DescriptionVisibility { HIDDEN, ON_PENETRATION, VISIBLE };
 
     //! Abstract listener class for buttons.
     class ButtonListener
@@ -537,9 +537,9 @@ namespace eyegui
       \param name is unique name of later texture. Can be used to overwrite existing one.
       \param width is with of icon.
       \param height is height of icon.
-	  \param format is format of pixel data.
+      \param format is format of pixel data.
       \param pIconData is pointer to unsigned char data. Must have size of width * height * channelCount (as specified in format implicitly).
-	  \param flipY indicates, whether texture is flipped vertically.
+      \param flipY indicates, whether texture is flipped vertically.
     */
     void setIconOfIconElement(
         Layout* pLayout,
@@ -547,9 +547,9 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-		ColorFormat format,
+        ColorFormat format,
         unsigned char const * pIconData,
-		bool flipY = false);
+        bool flipY = false);
 
     //! Set image in picture.
     /*!
@@ -558,9 +558,9 @@ namespace eyegui
       \param name is unique name of later texture. Can be used to overwrite existing one.
       \param width is with of image.
       \param height is height of image.
-	  \param format is format of pixel data.
+      \param format is format of pixel data.
       \param pIconData is pointer to unsigned char data. Must have size of width * height *  channelCount (as specified in format implicitly).
-	  \param flipY indicates, whether texture is flipped vertically.
+      \param flipY indicates, whether texture is flipped vertically.
     */
     void setImageOfPicture(
         Layout* pLayout,
@@ -568,9 +568,9 @@ namespace eyegui
         std::string name,
         int width,
         int height,
-		ColorFormat format,
+        ColorFormat format,
         unsigned char const * pData,
-		bool flipY = false);
+        bool flipY = false);
 
     //! Interact with interactive element.
     /*!
@@ -1149,6 +1149,25 @@ namespace eyegui
     */
     void setWarningCallback(std::function<void(std::string)> callbackFunction);
 
+    //! Set interaction callback function. Could look like that:
+    //! interactionCallback(
+    //!     std::string layout,
+    //!     std::string elementType
+    //!     std::string elementId
+    //!     std::string interactionType
+    //!     std::string interactionInfoA
+    /*!
+      \param callbackFunction is function object which should be called back.
+    */
+    void setInteractionCallback(
+        std::function<
+            void(
+                std::string,
+                std::string,
+                std::string,
+                std::string,
+                std::string)> callbackFunction);
+
     //! Set resize callback function since eyeGUI does not resize directly at resizeGUI call.
     /*!
     \param pGUI is pointer to GUI object which shall use callback.
@@ -1172,21 +1191,21 @@ namespace eyegui
 //! Namespace for simple helper functions.
 namespace eyegui_helper
 {
-	//! Converts std::string to std::u16string and returns, whether successful.
-	/*!
-	\param rInput is input string.
-	\param rOutput is reference to output string.
-	\return TRUE if successful, FALSE otherwise
-	*/
-	bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput);
+    //! Converts std::string to std::u16string and returns, whether successful.
+    /*!
+    \param rInput is input string.
+    \param rOutput is reference to output string.
+    \return TRUE if successful, FALSE otherwise
+    */
+    bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput);
 
-	//! Converts std::u16string to std::string and returns, whether successful.
-	/*!
-	\param rInput is input string.
-	\param rOutput is reference to output string.
-	\return TRUE if successful, FALSE otherwise
-	*/
-	bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
+    //! Converts std::u16string to std::string and returns, whether successful.
+    /*!
+    \param rInput is input string.
+    \param rOutput is reference to output string.
+    \return TRUE if successful, FALSE otherwise
+    */
+    bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
 }
 
 #endif // EYE_GUI_H_

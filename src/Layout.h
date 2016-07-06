@@ -40,10 +40,13 @@ namespace eyegui
         friend class NotificationQueue;
 
         // Constructor
-        Layout(GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath);
+        Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath);
 
         // Destructor
         virtual ~Layout();
+
+        // Get name
+        std::string getName() const;
 
         // Updating
         void update(float tpf, Input* pInput);
@@ -326,8 +329,8 @@ namespace eyegui
         // Get absolute position and size of floating frame
         AbsolutePositionAndSize getAbsolutePositionAndSizeOfFloatingFrame(unsigned int frameIndex) const;
 
-		// Get visibility of descriptions
-		DescriptionVisibility getDescriptionVisibility() const;
+        // Get visibility of descriptions
+        DescriptionVisibility getDescriptionVisibility() const;
 
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
@@ -356,6 +359,7 @@ namespace eyegui
         void moveFloatingFrame(int oldIndex, int newIndex);
 
         // Members
+        std::string mName;
         GUI const * mpGUI;
         AssetManager* mpAssetManager;
         std::unique_ptr<Frame> mupMainFrame;

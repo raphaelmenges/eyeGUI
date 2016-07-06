@@ -104,6 +104,9 @@ namespace eyegui
         // Type getter
         Type getType() const;
 
+        // Type string getter
+        std::string getTypeString() const;
+
         // Id getter
         std::string getId() const;
 
@@ -215,8 +218,8 @@ namespace eyegui
         // Commit replaced element to this element
         void commitReplacedElement(std::unique_ptr<Element> upElement, bool fade);
 
-		// Check for any parent with certain type
-		bool checkForParentType(Element::Type type) const;
+        // Check for any parent with certain type
+        bool checkForParentType(Element::Type type) const;
 
     protected:
 
@@ -244,6 +247,9 @@ namespace eyegui
         // Getter
         float getDim() const;
         float getMultipliedDimmedAlpha() const;
+
+        // Notify about interaction with element
+        void notifyInteraction(std::string interactionType, std::string interactionInfoA) const;
 
         // Members
         int mX, mY, mWidth, mHeight; // ONLY PIXEL BASED VALUES HERE
@@ -276,6 +282,7 @@ namespace eyegui
         RenderItem const * mpActivityItem;
         RenderItem const * mpDimItem;
         RenderItem const * mpMarkItem;
+        bool mPenetratedLastUpdate; // useful for interaction notification
 
         bool mActive;
         LerpValue mActivity; // [0..1]
