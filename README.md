@@ -18,6 +18,7 @@ Video hosted on YouTube, click on the preview for watching. Turn on subtitles fo
 * Word suggest element
 * Flow element (scrolling box)
 * Image data can be set via interface
+* Interaction logging
 
 #### Version 0.8
 * Keyboard
