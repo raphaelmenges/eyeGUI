@@ -127,15 +127,14 @@ namespace eyegui
         // Reset keymaps
         void resetKeymapsAndState();
 
-		// Press key
-		void pressKey(SubKeymap* pKeys, int i, int j);
+        // Press key
+        void pressKey(SubKeymap* pKeys, int i, int j);
 
         // Members
         RenderItem const * mpBackground;
         LerpValue mThreshold;
         int mFocusedKeyRow;
         int mFocusedKeyColumn;
-        glm::vec2 mFocusPosition;
         glm::vec2 mGazePosition;
         std::u16string mLastPressedKeyValue;
         bool mKeyWasPressed;

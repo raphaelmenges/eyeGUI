@@ -46,7 +46,6 @@ namespace eyegui
         mThreshold.setValue(0);
         mFocusedKeyRow = -1;
         mFocusedKeyColumn = -1;
-        mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
         mKeyWasPressed = false;
         mCurrentKeymapIndex = 0;
@@ -206,7 +205,7 @@ namespace eyegui
         // Delete dying pressed keys (go backwards through it)
         for (int i = (int)dyingPressedKeys.size()-1; i >= 0; i--)
         {
-            mPressedKeys.erase(mPressedKeys.begin() + i);
+            mPressedKeys.erase(mPressedKeys.begin() + dyingPressedKeys[i]);
         }
 
         // *** FILTER USER'S GAZE ***
@@ -298,14 +297,6 @@ namespace eyegui
                     mLastFastKeyColumn = mFocusedKeyColumn;
                 }
             }
-        }
-
-        // *** UPDATE POSITION OF FOCUS ***
-
-        // Update focus position
-        if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
-        {
-            mFocusPosition = (*pInitialKeyPositions)[mFocusedKeyRow][mFocusedKeyColumn];
         }
 
         // *** UPDATE KEY POSITIONS ***
@@ -503,7 +494,6 @@ namespace eyegui
         // Call super
         InteractiveElement::specialReset();
 
-        mFocusPosition = glm::vec2(0,0);
         mGazePosition = glm::vec2(0,0);
         mPressedKeys.clear();
 

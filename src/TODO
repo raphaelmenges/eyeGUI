@@ -20,10 +20,6 @@
 ## Testing
 - test hitButton fuction in combination with visibility etc
 
-## Debugging
-- Keyboard.cpp Line 209
-- Keyboard class: mFocusPosition no more necessary?
-
 ## Wiki
 - Dictionary
   - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
