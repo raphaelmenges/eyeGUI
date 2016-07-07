@@ -168,17 +168,13 @@ namespace eyegui
             // Notify about leaving
             if(mLastFocusedSuggestion != -1)
             {
-                std::string suggestion8;
-                convertUTF16ToUTF8(mSuggestions[mLastFocusedSuggestion]->getContent(), suggestion8);
-                notifyInteraction("LEAVE SUGGESTION", suggestion8);
+                notifyInteraction("LEAVE_SUGGESTION", convertUTF16ToUTF8(mSuggestions[mLastFocusedSuggestion]->getContent()));
             }
 
             // Notify about entering
             if(focusedSuggestion != -1)
             {
-                std::string suggestion8;
-                convertUTF16ToUTF8(mSuggestions[focusedSuggestion]->getContent(), suggestion8);
-                notifyInteraction("ENTER SUGGESTION", suggestion8);
+                notifyInteraction("ENTER_SUGGESTION", convertUTF16ToUTF8(mSuggestions[focusedSuggestion]->getContent()));
             }
 
             // Remember focus
@@ -207,9 +203,7 @@ namespace eyegui
                 mThresholds[i].setValue(0.f);
 
                 // Notify interaction
-                std::string suggestion8;
-                convertUTF16ToUTF8(mSuggestions[i]->getContent(), suggestion8);
-                notifyInteraction("CHOOSE", suggestion8);
+                notifyInteraction("CHOOSE", convertUTF16ToUTF8(mSuggestions[i]->getContent()));
             }
         }
 

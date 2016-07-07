@@ -294,6 +294,32 @@ namespace eyegui
         return (errors == UTF8_ERR_NONE);
     }
 
+    std::string convertUTF16ToUTF8(const std::u16string& rInput)
+    {
+        std::string string8;
+        if(convertUTF16ToUTF8(rInput, string8))
+        {
+            return string8;
+        }
+        else
+        {
+            return std::string();
+        }
+    }
+
+    std::u16string convertUTF8ToUTF16(const std::string& rInput)
+    {
+        std::u16string string16;
+        if(convertUTF8ToUTF16(rInput, string16))
+        {
+            return string16;
+        }
+        else
+        {
+            return std::u16string();
+        }
+    }
+
     bool toLower(std::u16string& rString)
     {
         // Variables which will be filled

@@ -4,11 +4,7 @@
 - Ring Container
 - TextEdit element for easy text editing (zoom, cursor etc)
 - InteractionLogging
-  - Starting time
-  - URL of tab
   - What to do with Sensors and penetration?
-  - Keys in Keyboard
-  - Word Suggestion interaction
 
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)

@@ -275,12 +275,18 @@ namespace eyegui
                 {
                     (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
                     (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setPicked(false);
+
+                    // Notify interaction
+                    notifyInteraction("LEAVE_KEY", convertUTF16ToUTF8((*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->getValue()));
                 }
 
                 // Set new focus
                 mFocusedKeyRow = newFocusedKeyRow;
                 mFocusedKeyColumn = newFocusedKeyColumn;
                 (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
+
+                // Notify interaction
+                notifyInteraction("ENTER_KEY", convertUTF16ToUTF8((*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->getValue()));
             }
 
             // Pick focused key when using fast typing
@@ -718,8 +724,6 @@ namespace eyegui
         mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
 
         // Interaction notification
-        std::string interactionInfo;
-        convertUTF16ToUTF8(mLastPressedKeyValue, interactionInfo);
-        notifyInteraction("KEY_PRESS", interactionInfo);
+        notifyInteraction("KEY_PRESS", convertUTF16ToUTF8(mLastPressedKeyValue));
     }
 }

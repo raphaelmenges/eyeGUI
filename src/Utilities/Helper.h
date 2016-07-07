@@ -35,6 +35,12 @@ namespace eyegui
     // Returns whether conversion was successful
     bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
 
+    // Returns UTF8 string. Is empty if fails
+    std::string convertUTF16ToUTF8(const std::u16string& rInput);
+
+    // Returns UTF16 string. Is empty if fails
+    std::u16string convertUTF8ToUTF16(const std::string& rInput);
+
     // Returns whether change in case was successful
     bool toLower(std::u16string& rString);
 
