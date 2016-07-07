@@ -102,6 +102,7 @@ namespace eyegui
         RenderItem const * mpThresholdItem;
         std::u16string mLastChosenSuggestion;
         std::vector<ChosenSuggestion> mChosenSuggestions;
+        int mLastFocusedSuggestion; // used for interaction logging
     };
 }
 

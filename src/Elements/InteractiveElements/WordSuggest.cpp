@@ -46,6 +46,7 @@ namespace eyegui
         mOffset.setValue(0.f);
         mDelta = 0;
         mCompleteWidth = 0;
+        mLastFocusedSuggestion = -1;
 
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
@@ -116,6 +117,7 @@ namespace eyegui
         mOffset.setValue(0.f);
         mCompleteWidth = 0;
         mSuggestions.clear();
+        mLastFocusedSuggestion = -1;
     }
 
     float WordSuggest::specialUpdate(float tpf, Input* pInput)
@@ -127,7 +129,7 @@ namespace eyegui
 
         // Check for penetration
         bool penetrated = penetratedByInput(pInput);
-        int focusedWord = -1; // no word focused is indicated by -1
+        int focusedSuggestion = -1; // no word focused is indicated by -1
         if (penetrated)
         {
             // Only update suggestions when there are some
@@ -152,12 +154,35 @@ namespace eyegui
                     int width = rSuggestion->getWidth() + mDelta;
                     if (pInput->gazeX >= x && pInput->gazeX < x + width)
                     {
-                        focusedWord = i;
+                        focusedSuggestion = i;
                         break;
                     }
                     i++;
                 }
             }
+        }
+
+        // Do interaction notification
+        if(focusedSuggestion != mLastFocusedSuggestion)
+        {
+            // Notify about leaving
+            if(mLastFocusedSuggestion != -1)
+            {
+                std::string suggestion8;
+                convertUTF16ToUTF8(mSuggestions[mLastFocusedSuggestion]->getContent(), suggestion8);
+                notifyInteraction("LEAVE SUGGESTION", suggestion8);
+            }
+
+            // Notify about entering
+            if(focusedSuggestion != -1)
+            {
+                std::string suggestion8;
+                convertUTF16ToUTF8(mSuggestions[focusedSuggestion]->getContent(), suggestion8);
+                notifyInteraction("ENTER SUGGESTION", suggestion8);
+            }
+
+            // Remember focus
+            mLastFocusedSuggestion = focusedSuggestion;
         }
 
         // *** UPDATE THRESHOLD ***
@@ -170,7 +195,7 @@ namespace eyegui
             float lengthCompensationMultiplicator = 0.75f + 0.25f * (standardWidth / width); // raw values would be too heavy
 
             // Update threshold
-            mThresholds[i].update(tpf * WORD_SUGGEST_THRESHOLD_SPEED * lengthCompensationMultiplicator, i != focusedWord);
+            mThresholds[i].update(tpf * WORD_SUGGEST_THRESHOLD_SPEED * lengthCompensationMultiplicator, i != focusedSuggestion);
 
             // Check for full threshold
             if (mThresholds[i].getValue() >= 1)
@@ -180,6 +205,11 @@ namespace eyegui
 
                 // Reset that threshold
                 mThresholds[i].setValue(0.f);
+
+                // Notify interaction
+                std::string suggestion8;
+                convertUTF16ToUTF8(mSuggestions[i]->getContent(), suggestion8);
+                notifyInteraction("CHOOSE", suggestion8);
             }
         }
 
@@ -302,19 +332,19 @@ namespace eyegui
     void WordSuggest::specialInteract()
     {
         // Find suggestion with value most close to threshold
-		int maxIndex = -1;
-		float maxValue = -1.f;
-		for (int i = 0; i < mThresholds.size(); i++)
-		{
-			float value = mThresholds.at(i).getValue();
-			if (value > maxValue)
-			{
-				maxValue = value;
-				maxIndex = i;
-			}
-		}
+        int maxIndex = -1;
+        float maxValue = -1.f;
+        for (int i = 0; i < mThresholds.size(); i++)
+        {
+            float value = mThresholds.at(i).getValue();
+            if (value > maxValue)
+            {
+                maxValue = value;
+                maxIndex = i;
+            }
+        }
 
-		// Use found one as suggestion
+        // Use found one as suggestion
         if (maxIndex >= 0)
         {
             chooseSuggestion(maxIndex);
