@@ -527,8 +527,7 @@ namespace eyegui
         || mType == Type::PICTURE))
         {
             this->notifyInteraction(
-                "PENETRATION",
-                penetrated ? "ENTER" : "LEAVE");
+                penetrated ? "ENTER_ELEMENT" : "LEAVE_ELEMENT");
         }
 
         // Remember some values for interaction logging
