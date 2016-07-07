@@ -4,11 +4,14 @@
 - Ring Container
 - TextEdit element for easy text editing (zoom, cursor etc)
 - InteractionLogging
+  - Starting time
+  - URL of tab
   - What to do with Sensors and penetration?
   - Keys in Keyboard
   - Word Suggestion interaction
   - Activity of element
-  - Gaze coordinates? Element coordinates?
+  - Gaze coordinates
+  - Element coordinates
 
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
@@ -25,6 +28,12 @@
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
+
+## Keyboard
+- Coloring suggestions
+- Coloring letters corresponding to suggestions
+  - just for next letter, guide you through word
+- Optional: Somehow suggestions in letters <- think about other keyboard
 
 ## Wiki
 - Dictionary
