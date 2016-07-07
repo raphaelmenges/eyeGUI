@@ -635,6 +635,9 @@ namespace eyegui
                 std::string,
                 std::string,
                 std::string,
+                std::string,
+                std::string,
+                std::string,
                 std::string)> callbackFunction)
     {
         OperationNotifier::setInteractionCallback(callbackFunction);

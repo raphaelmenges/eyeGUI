@@ -1152,16 +1152,22 @@ namespace eyegui
     //! Set interaction callback function. Could look like that:
     //! interactionCallback(
     //!     std::string layout,
-    //!     std::string elementType
-    //!     std::string elementId
-    //!     std::string interactionType
-    //!     std::string interactionInfoA
+    //!     std::string gazeCoordinate,
+    //!     std::string elementType,
+    //!     std::string elementId,
+    //!     std::string elementRect, // "x1, y1; x2, y2" -> upper left and lower right point
+    //!     std::string elementActivity,
+    //!     std::string interactionType,
+    //!     std::string interactionInfoA)
     /*!
       \param callbackFunction is function object which should be called back.
     */
     void setInteractionCallback(
         std::function<
             void(
+                std::string,
+                std::string,
+                std::string,
                 std::string,
                 std::string,
                 std::string,

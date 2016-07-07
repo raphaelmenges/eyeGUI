@@ -530,7 +530,10 @@ namespace eyegui
                 "PENETRATION",
                 penetrated ? "ENTER" : "LEAVE");
         }
+
+        // Remember some values for interaction logging
         mPenetratedLastUpdate = penetrated;
+        mLastGazeCoordinate = pInput != NULL ? glm::vec2(pInput->gazeX, pInput->gazeY) : mLastGazeCoordinate;
 
         // *** ADAPTIVE SCALE RETURNING ***
 
@@ -742,8 +745,11 @@ namespace eyegui
     {
         OperationNotifier::notifyAboutInteraction(
             mpLayout->getName(),
+            "\"" + std::to_string(mLastGazeCoordinate.x) + ", " + std::to_string(mLastGazeCoordinate.y) + "\"",
             this->getTypeString(),
             this->getId(),
+            "\"" + std::to_string(mX) + ", " + std::to_string(mY) + "; " + std::to_string(mX + mWidth) + ", " + std::to_string(mY + mHeight) + "\"",
+            mActive ? "ACTIVE" : "UNACTIVE",
             interactionType,
             interactionInfoA);
     }

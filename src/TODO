@@ -9,9 +9,6 @@
   - What to do with Sensors and penetration?
   - Keys in Keyboard
   - Word Suggestion interaction
-  - Activity of element
-  - Gaze coordinates
-  - Element coordinates
 
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
@@ -28,6 +25,7 @@
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
+- Interaction notification and inner size in elements
 
 ## Keyboard
 - Coloring suggestions

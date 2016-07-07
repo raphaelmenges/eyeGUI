@@ -283,6 +283,7 @@ namespace eyegui
         RenderItem const * mpDimItem;
         RenderItem const * mpMarkItem;
         bool mPenetratedLastUpdate; // useful for interaction notification
+        glm::vec2 mLastGazeCoordinate; // useful for interaction notification
 
         bool mActive;
         LerpValue mActivity; // [0..1]

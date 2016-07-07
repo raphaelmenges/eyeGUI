@@ -43,15 +43,21 @@ namespace eyegui
         // Send interaction to callback
         static void notifyAboutInteraction(
             std::string layout,
+            std::string gazeCoordinate,
             std::string elementType,
             std::string elementId,
+            std::string elementRect,
+            std::string elementActivity,
             std::string interactionType,
             std::string interactionInfoA)
         {
             getInstance()->callbackInteraction(
                 layout,
+                gazeCoordinate,
                 elementType,
                 elementId,
+                elementRect,
+                elementActivity,
                 interactionType,
                 interactionInfoA);
         }
@@ -72,6 +78,9 @@ namespace eyegui
         static void setInteractionCallback(
             std::function<
                 void(
+                    std::string,
+                    std::string,
+                    std::string,
                     std::string,
                     std::string,
                     std::string,
@@ -131,6 +140,9 @@ namespace eyegui
                     std::string,
                     std::string,
                     std::string,
+                    std::string,
+                    std::string,
+                    std::string,
                     std::string)> callbackFunction)
         {
             mInteractionCallbackFunction = callbackFunction;
@@ -162,8 +174,11 @@ namespace eyegui
         // Notify about interaction
         void callbackInteraction(
             std::string layout,
+            std::string gazeCoordinate,
             std::string elementType,
             std::string elementId,
+            std::string elementRect,
+            std::string elementActivity,
             std::string interactionType,
             std::string interactionInfoA)
         {
@@ -173,8 +188,11 @@ namespace eyegui
                 // Call callback function
                 mInteractionCallbackFunction(
                     layout,
+                    gazeCoordinate,
                     elementType,
                     elementId,
+                    elementRect,
+                    elementActivity,
                     interactionType,
                     interactionInfoA);
             }
@@ -239,7 +257,15 @@ namespace eyegui
         bool mInteractionCallbackSet;
         std::function<void(std::string)> mErrorCallbackFunction;
         std::function<void(std::string)> mWarningCallbackFunction;
-        std::function<void(std::string, std::string, std::string, std::string, std::string)> mInteractionCallbackFunction;
+        std::function<void(
+            std::string,
+            std::string,
+            std::string,
+            std::string,
+            std::string,
+            std::string,
+            std::string,
+            std::string)> mInteractionCallbackFunction;
     };
 }
 
