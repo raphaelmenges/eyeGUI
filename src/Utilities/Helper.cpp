@@ -439,15 +439,14 @@ namespace eyegui
         {
             if(value.at(0) == '-')
             {
-                i = 1;
+                i = 1; // first char is minus, so start at second
                 negative = true;
             }
         }
 
         // Ugly but more portable than C++11 converter functions which may use locale of computer
-        std::vector<int> preDot;
-        std::vector<int> postDot;
-        bool dotFound = false;
+        std::vector<int> numbers;
+        int dotIndex = -1;
         for(; i < (int)value.length(); i++)
         {
             // Fetch character
@@ -457,43 +456,45 @@ namespace eyegui
             switch(c)
             {
             case '0':
-                dotFound ? postDot.push_back(0) : preDot.push_back(0);
+                numbers.push_back(0);
                 break;
             case '1':
-                dotFound ? postDot.push_back(1) : preDot.push_back(1);
+                numbers.push_back(1);
                 break;
             case '2':
-                dotFound ? postDot.push_back(2) : preDot.push_back(2);
+                numbers.push_back(2);
                 break;
             case '3':
-                dotFound ? postDot.push_back(3) : preDot.push_back(3);
+                numbers.push_back(3);
                 break;
             case '4':
-                dotFound ? postDot.push_back(4) : preDot.push_back(4);
+                numbers.push_back(4);
                 break;
             case '5':
-                dotFound ? postDot.push_back(5) : preDot.push_back(5);
+                numbers.push_back(5);
                 break;
             case '6':
-                dotFound ? postDot.push_back(6) : preDot.push_back(6);
+                numbers.push_back(6);
                 break;
             case '7':
-                dotFound ? postDot.push_back(7) : preDot.push_back(7);
+                numbers.push_back(7);
                 break;
             case '8':
-                dotFound ? postDot.push_back(8) : preDot.push_back(8);
+                numbers.push_back(8);
                 break;
             case '9':
-                dotFound ? postDot.push_back(9) : preDot.push_back(9);
+                numbers.push_back(9);
                 break;
             case '.':
-                if(dotFound)
+                if(dotIndex >= 0)
                 {
+                    // More than one dot in a floating point number is no good
                     return -1.f;
                 }
                 else
                 {
-                    dotFound = true;
+                    // Remember index where dot appeared
+                    dotIndex = negative ? i -1 : i; // if negative, subtract index of negative sign
                 }
                 break;
             default:
@@ -502,14 +503,12 @@ namespace eyegui
         }
 
         // Build floating point
+        int numbersCount = numbers.size();
+        if(dotIndex < 0) { dotIndex = numbersCount; }
         float result = 0;
-        for(int i = 0; i < (int)preDot.size(); i++)
+        for(int i = numbersCount - 1; i >= 0 ; i--)
         {
-            result += (preDot.at(i) * glm::pow(10.f, preDot.size() - i - 1));
-        }
-        for(int i = 0; i < (int)postDot.size(); i++)
-        {
-            result += (postDot.at(i) * glm::pow(0.1f, i+1));
+            result += glm::pow(10.f, dotIndex - i - 1) * numbers.at(i);
         }
 
         // Make it negative if necessary
