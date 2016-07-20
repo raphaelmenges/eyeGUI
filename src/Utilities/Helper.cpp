@@ -437,15 +437,18 @@ namespace eyegui
         bool negative = false;
         if(!value.empty())
         {
-            i = 1;
-            negative = (value.at(0) == '-');
+            if(value.at(0) == '-')
+            {
+                i = 1;
+                negative = true;
+            }
         }
 
         // Ugly but more portable than C++11 converter functions which may use locale of computer
         std::vector<int> preDot;
         std::vector<int> postDot;
         bool dotFound = false;
-        for(; i < value.length(); i++)
+        for(; i < (int)value.length(); i++)
         {
             // Fetch character
             char c = value.at(i);
@@ -500,11 +503,11 @@ namespace eyegui
 
         // Build floating point
         float result = 0;
-        for(int i = 0; i < preDot.size(); i++)
+        for(int i = 0; i < (int)preDot.size(); i++)
         {
             result += (preDot.at(i) * glm::pow(10.f, preDot.size() - i - 1));
         }
-        for(int i = 0; i < postDot.size(); i++)
+        for(int i = 0; i < (int)postDot.size(); i++)
         {
             result += (postDot.at(i) * glm::pow(0.1f, i+1));
         }

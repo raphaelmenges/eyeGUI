@@ -266,7 +266,7 @@ namespace eyegui
             }
 			else if (attribute == "dim-alpha")
 			{
-				rStyle.dimAlpha = std::stof(value);
+                rStyle.dimAlpha = stringToFloat(value);
 			}
             else if (attribute == "mark-color")
             {
