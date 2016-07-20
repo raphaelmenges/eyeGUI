@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 
 namespace eyegui
 {
@@ -102,51 +103,51 @@ namespace eyegui
             // Go through the cases
             if (attribute == "animation-duration")
             {
-                rConfig.animationDuration = std::stof(value);
+                rConfig.animationDuration = stringToFloat(value);
             }
             else if (attribute == "sensor-penetration-increase-duration")
             {
-                rConfig.sensorPenetrationIncreaseDuration = std::stof(value);
+                rConfig.sensorPenetrationIncreaseDuration = stringToFloat(value);
             }
             else if (attribute == "sensor-penetration-decrease-duration")
             {
-                rConfig.sensorPenetrationDecreaseDuration = std::stof(value);
+                rConfig.sensorPenetrationDecreaseDuration = stringToFloat(value);
             }
             else if (attribute == "button-threshold-increase-duration")
             {
-                rConfig.buttonThresholdIncreaseDuration = std::stof(value);
+                rConfig.buttonThresholdIncreaseDuration = stringToFloat(value);
             }
             else if (attribute == "button-threshold-decrease-duration")
             {
-                rConfig.buttonThresholdDecreaseDuration = std::stof(value);
+                rConfig.buttonThresholdDecreaseDuration = stringToFloat(value);
             }
             else if (attribute == "button-pressing-duration")
             {
-                rConfig.buttonPressingDuration = std::stof(value);
+                rConfig.buttonPressingDuration = stringToFloat(value);
             }
             else if (attribute == "sensor-interaction-penetration-amount")
             {
-                rConfig.sensorInteractionPenetrationAmount = std::stof(value);
+                rConfig.sensorInteractionPenetrationAmount = stringToFloat(value);
             }
             else if (attribute == "dim-increase-duration")
             {
-                rConfig.dimIncreaseDuration = std::stof(value);
+                rConfig.dimIncreaseDuration = stringToFloat(value);
             }
             else if (attribute == "dim-decrease-duration")
             {
-                rConfig.dimDecreaseDuration = std::stof(value);
+                rConfig.dimDecreaseDuration = stringToFloat(value);
             }
             else if (attribute == "maximal-adaptive-scale-increase")
             {
-                rConfig.maximalAdaptiveScaleIncrease = std::stof(value);
+                rConfig.maximalAdaptiveScaleIncrease = stringToFloat(value);
             }
             else if (attribute == "adaptive-scale-increase-duration")
             {
-                rConfig.adaptiveScaleIncreaseDuration = std::stof(value);
+                rConfig.adaptiveScaleIncreaseDuration = stringToFloat(value);
             }
             else if (attribute == "adaptive-scale-decrease-duration")
             {
-                rConfig.adaptiveScaleDecreaseDuration = std::stof(value);
+                rConfig.adaptiveScaleDecreaseDuration = stringToFloat(value);
             }
             else if (attribute == "gaze-visualization-color")
             {
@@ -154,31 +155,31 @@ namespace eyegui
             }
             else if (attribute == "gaze-visualization-fade-duration")
             {
-                rConfig.gazeVisualizationFadeDuration = std::stof(value);
+                rConfig.gazeVisualizationFadeDuration = stringToFloat(value);
             }
             else if (attribute == "gaze-visualization-focus-duration")
             {
-                rConfig.gazeVisualizationFocusDuration = std::stof(value);
+                rConfig.gazeVisualizationFocusDuration = stringToFloat(value);
             }
             else if (attribute == "gaze-visualization-reject-threshold")
             {
-                rConfig.gazeVisualizationRejectThreshold = std::stof(value);
+                rConfig.gazeVisualizationRejectThreshold = stringToFloat(value);
             }
             else if (attribute == "gaze-visualization-min-size")
             {
-                rConfig.gazeVisualizationMinSize = std::stof(value);
+                rConfig.gazeVisualizationMinSize = stringToFloat(value);
             }
             else if (attribute == "gaze-visualization-max-size")
             {
-                rConfig.gazeVisualizationMaxSize = std::stof(value);
+                rConfig.gazeVisualizationMaxSize = stringToFloat(value);
             }
             else if (attribute == "keyboard-speed-multiplier")
             {
-                rConfig.keyboardSpeedMultiplier = std::stof(value);
+                rConfig.keyboardSpeedMultiplier = stringToFloat(value);
             }
             else if (attribute == "flow-speed-multiplier")
             {
-                rConfig.flowSpeedMultiplier = std::stof(value);
+                rConfig.flowSpeedMultiplier = stringToFloat(value);
             }
             else
             {

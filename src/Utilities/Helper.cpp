@@ -423,10 +423,96 @@ namespace eyegui
         // CR -> LF
         std::replace(rInput.begin(), rInput.end(), u'\r', u'\n');
 
-                // Add new lline at end
+        // Add new lline at end
         if(addNewLineAtEnd)
         {
             rInput += u"\n";
         }
+    }
+
+    float stringToFloat(std::string value)
+    {
+        // Find out whether negative
+        int i = 0;
+        bool negative = false;
+        if(!value.empty())
+        {
+            i = 1;
+            negative = (value.at(0) == '-');
+        }
+
+        // Ugly but more portable than C++11 converter functions which may use locale of computer
+        std::vector<int> preDot;
+        std::vector<int> postDot;
+        bool dotFound = false;
+        for(; i < value.length(); i++)
+        {
+            // Fetch character
+            char c = value.at(i);
+
+            // Decide what to do with it
+            switch(c)
+            {
+            case '0':
+                dotFound ? postDot.push_back(0) : preDot.push_back(0);
+                break;
+            case '1':
+                dotFound ? postDot.push_back(1) : preDot.push_back(1);
+                break;
+            case '2':
+                dotFound ? postDot.push_back(2) : preDot.push_back(2);
+                break;
+            case '3':
+                dotFound ? postDot.push_back(3) : preDot.push_back(3);
+                break;
+            case '4':
+                dotFound ? postDot.push_back(4) : preDot.push_back(4);
+                break;
+            case '5':
+                dotFound ? postDot.push_back(5) : preDot.push_back(5);
+                break;
+            case '6':
+                dotFound ? postDot.push_back(6) : preDot.push_back(6);
+                break;
+            case '7':
+                dotFound ? postDot.push_back(7) : preDot.push_back(7);
+                break;
+            case '8':
+                dotFound ? postDot.push_back(8) : preDot.push_back(8);
+                break;
+            case '9':
+                dotFound ? postDot.push_back(9) : preDot.push_back(9);
+                break;
+            case '.':
+                if(dotFound)
+                {
+                    return -1.f;
+                }
+                else
+                {
+                    dotFound = true;
+                }
+                break;
+            default:
+                return -1.f;
+            }
+        }
+
+        // Build floating point
+        float result = 0;
+        for(int i = 0; i < preDot.size(); i++)
+        {
+            result += (preDot.at(i) * glm::pow(10.f, preDot.size() - i - 1));
+        }
+        for(int i = 0; i < postDot.size(); i++)
+        {
+            result += (postDot.at(i) * glm::pow(0.1f, i+1));
+        }
+
+        // Make it negative if necessary
+        if(negative) { result = -result; }
+
+        // Return result
+        return result;
     }
 }
