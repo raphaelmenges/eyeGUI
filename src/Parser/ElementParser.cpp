@@ -10,7 +10,6 @@
 #include "Defines.h"
 #include "Layout.h"
 #include "src/Utilities/OperationNotifier.h"
-#include <iostream>
 
 namespace eyegui
 {
@@ -926,7 +925,6 @@ namespace eyegui
                 std::string value = xmlAttribute->Value();
                 std::string delimiter = "%";
                 std::string token = value.substr(0, value.find(delimiter));
-                std::cout << token << " : " << stringToFloat(token) << std::endl;
                 return (stringToFloat(token) / 100.0f);
             }
             else
