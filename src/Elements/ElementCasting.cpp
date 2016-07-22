@@ -185,4 +185,17 @@ namespace eyegui
         }
         return NULL;
     }
+
+    ProgressBar* toProgressBar(Element* pElement)
+    {
+        if (pElement != NULL)
+        {
+            Element::Type type = pElement->getType();
+            if (type == Element::Type::PROGRESS_BAR)
+            {
+                return static_cast<ProgressBar*>(pElement);
+            }
+        }
+        return NULL;
+    }
 }

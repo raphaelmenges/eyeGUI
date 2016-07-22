@@ -1,0 +1,127 @@
+//============================================================================
+// Distributed under the MIT License. (See accompanying file LICENSE
+// or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
+//============================================================================
+
+// Author: Raphael Menges (https://github.com/raphaelmenges)
+
+#include "ProgressBar.h"
+
+#include "src/Layout.h"
+
+namespace eyegui
+{
+    ProgressBar::ProgressBar(
+        std::string id,
+        std::string styleName,
+        Element* pParent,
+        Layout const * pLayout,
+        Frame* pFrame,
+        AssetManager* pAssetManager,
+        NotificationQueue* pNotificationQueue,
+        float relativeScale,
+        float border,
+        bool dimming,
+        bool adaptiveScaling,
+        bool consumeInput,
+        std::string backgroundFilepath,
+        ImageAlignment backgroundAlignment,
+        float innerBorder,
+        ProgressDirection progressDirection) : Block(
+            id,
+            styleName,
+            pParent,
+            pLayout,
+            pFrame,
+            pAssetManager,
+            pNotificationQueue,
+            relativeScale,
+            border,
+            dimming,
+            adaptiveScaling,
+            consumeInput,
+            backgroundFilepath,
+            backgroundAlignment,
+            innerBorder)
+    {
+        mType = Type::PROGRESS_BAR;
+
+        // Fill members
+        mProgress = 0;
+        mDirection = progressDirection;
+
+        // Render time for progress
+        mpProgressItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+    }
+
+    ProgressBar::~ProgressBar()
+    {
+        // Nothing to do
+    }
+
+    void ProgressBar::setProgress(float progress)
+    {
+        // Clamp and set member
+        mProgress = glm::clamp(progress, 0.f, 1.f);
+    }
+
+    void ProgressBar::specialDraw() const
+    {
+        // Draw background
+        Block::specialDraw();
+
+        // Draw progress
+        if(mProgress > 0)
+        {
+            // Calculate draw matrix for progress
+            glm::mat4 progressDrawMatrix;
+
+            // Decide the direction
+            switch(mDirection)
+            {
+            case ProgressDirection::LEFT_TO_RIGHT:
+                progressDrawMatrix = calculateDrawMatrix(
+                    mpLayout->getLayoutWidth(),
+                    mpLayout->getLayoutHeight(),
+                    mInnerX,
+                    mInnerY,
+                    mInnerWidth * mProgress,
+                    mInnerHeight);
+                break;
+            case ProgressDirection::RIGHT_TO_LEFT:
+                progressDrawMatrix = calculateDrawMatrix(
+                    mpLayout->getLayoutWidth(),
+                    mpLayout->getLayoutHeight(),
+                    mInnerX + (mInnerWidth * (1.f - mProgress)),
+                    mInnerY,
+                    mInnerWidth * mProgress,
+                    mInnerHeight);
+                break;
+            case ProgressDirection::TOP_TO_BOTTOM:
+                progressDrawMatrix = calculateDrawMatrix(
+                    mpLayout->getLayoutWidth(),
+                    mpLayout->getLayoutHeight(),
+                    mInnerX,
+                    mInnerY,
+                    mInnerWidth,
+                    mInnerHeight * mProgress);
+                break;
+            case ProgressDirection::BOTTOM_TO_TOP:
+                progressDrawMatrix = calculateDrawMatrix(
+                    mpLayout->getLayoutWidth(),
+                    mpLayout->getLayoutHeight(),
+                    mInnerX,
+                    mInnerY  + (mInnerHeight * (1.f - mProgress)),
+                    mInnerWidth,
+                    mInnerHeight * mProgress);
+                break;
+            }
+
+            mpProgressItem->bind();
+            mpProgressItem->getShader()->fillValue("matrix", progressDrawMatrix);
+            mpProgressItem->getShader()->fillValue("color", getStyle()->color);
+            mpProgressItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
+            mpProgressItem->draw();
+        }
+    }
+}

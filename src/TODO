@@ -37,6 +37,7 @@
 - icon element descriptions (desc, desckey)
 - Flow
   - flow-speed-multiplier
+- ProgressBar
 
 ### VERSION 0.11
 - Redo font packing algorithm

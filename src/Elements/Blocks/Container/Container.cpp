@@ -42,6 +42,8 @@ namespace eyegui
             backgroundAlignment,
             innerBorder)
     {
+        mType = Type::CONTAINER;
+
         // Fill members
         mShowBackground = showBackground;
     }

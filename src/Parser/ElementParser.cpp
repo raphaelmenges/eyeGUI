@@ -121,6 +121,10 @@ namespace eyegui
             {
                 upElement = std::move(parseFlow(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
             }
+            else if (value == "progressbar")
+            {
+                upElement = std::move(parseProgressBar(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown element found: " + std::string(xmlElement->Value()), filepath);
@@ -727,6 +731,63 @@ namespace eyegui
 
             // Return flow
             return (std::move(upFlow));
+        }
+
+        std::unique_ptr<ProgressBar> parseProgressBar(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlProgressBar, Element* pParent, std::string filepath)
+        {
+            // Fetch values for block from xml
+            bool consumeInput;
+            std::string backgroundFilepath;
+            ImageAlignment backgroundAlignment;
+            float innerBorder;
+            blockHelper(xmlProgressBar, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+
+            // Fetch direction of progress
+            std::string progressDirectionValue = parseStringAttribute("direction", xmlProgressBar);
+            ProgressDirection progressDirection = ProgressDirection::LEFT_TO_RIGHT;
+            if (progressDirectionValue == EMPTY_STRING_ATTRIBUTE || progressDirectionValue == "leftright")
+            {
+                progressDirection = ProgressDirection::LEFT_TO_RIGHT;
+            }
+            else if (progressDirectionValue == "rightleft")
+            {
+                progressDirection = ProgressDirection::RIGHT_TO_LEFT;
+            }
+            else if (progressDirectionValue == "topbottom")
+            {
+                progressDirection = ProgressDirection::TOP_TO_BOTTOM;
+            }
+            else if (progressDirectionValue == "bottomtop")
+            {
+                progressDirection = ProgressDirection::BOTTOM_TO_TOP;
+            }
+            else
+            {
+                throwError(OperationNotifier::Operation::PARSING, "Unknown direction used in progress: " + progressDirectionValue, filepath);
+            }
+
+            // Create progress bar
+            std::unique_ptr<ProgressBar> upProgressBar = std::unique_ptr<ProgressBar>(
+                new ProgressBar(
+                    id,
+                    styleName,
+                    pParent,
+                    pLayout,
+                    pFrame,
+                    pAssetManager,
+                    pNotificationQueue,
+                    relativeScale,
+                    border,
+                    dimming,
+                    adaptiveScaling,
+                    consumeInput,
+                    backgroundFilepath,
+                    backgroundAlignment,
+                    innerBorder,
+                    progressDirection));
+
+            // Return progress bar
+            return (std::move(upProgressBar));
         }
 
         void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder)

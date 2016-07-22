@@ -386,6 +386,11 @@ namespace eyegui
         pLayout->setSpaceOfFlow(id, space);
     }
 
+    void setProgress(Layout *pLayout, std::string id, float progress)
+    {
+        pLayout->setProgress(id, progress);
+    }
+
     void addBrickToStack(
         Layout* pLayout,
         std::string id,

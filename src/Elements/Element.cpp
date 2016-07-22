@@ -162,6 +162,8 @@ namespace eyegui
             return "BOX_BUTTON"; break;
         case Type::DROP_BUTTON:
             return "DROP_BUTTON"; break;
+        case Type::CONTAINER:
+            return "CONTAINER"; break;
         case Type::BLOCK:
             return "BLOCK"; break;
         case Type::STACK:
@@ -176,6 +178,8 @@ namespace eyegui
             return "WORD_SUGGEST"; break;
         case Type::FLOW:
             return "FLOW"; break;
+        case Type::PROGRESS_BAR:
+            return "PROGRESS_BAR"; break;
         default:
             OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::BUG, "Element type to string not available.");
             return "UNDEFINED";

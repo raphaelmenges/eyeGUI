@@ -54,13 +54,15 @@ namespace eyegui
             CIRCLE_BUTTON,
             BOX_BUTTON,
             DROP_BUTTON,
+            CONTAINER,
             BLOCK,
             STACK,
             GRID,
             TEXT_BLOCK,
             KEYBOARD,
             WORD_SUGGEST,
-            FLOW
+            FLOW,
+            PROGRESS_BAR
         };
 
         // Enumeration of rendering masks

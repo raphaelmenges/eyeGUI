@@ -26,5 +26,6 @@
 #include "src/Elements/InteractiveElements/Keyboard.h"
 #include "src/Elements/InteractiveElements/WordSuggest.h"
 #include "src/Elements/Blocks/Container/Flow.h"
+#include "src/Elements/Blocks/ProgressBar.h"
 
 #endif // ELEMENTS_H_

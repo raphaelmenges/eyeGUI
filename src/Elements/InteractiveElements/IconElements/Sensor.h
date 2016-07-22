@@ -39,7 +39,7 @@ namespace eyegui
         ~Sensor();
 
         // Penetrating
-        virtual void penetrate(float amount);
+        void penetrate(float amount);
 
     protected:
 

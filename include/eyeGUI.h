@@ -752,6 +752,14 @@ namespace eyegui
     */
     void setSpaceOfFlow(Layout* pLayout, std::string id, float space);
 
+    //! Set progress in progress bar.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param progress is progress between 0 and 1 which is to be set.
+    */
+    void setProgress(Layout* pLayout, std::string id, float progress);
+
     //! Add brick to stack
     /*!
     \param pLayout pointer to layout.

@@ -695,6 +695,19 @@ namespace eyegui
         }
     }
 
+    void Layout::setProgress(std::string id, float progress)
+    {
+        ProgressBar* pProgressBar = toProgressBar(fetchElement(id));
+        if (pProgressBar != NULL)
+        {
+            pProgressBar->setProgress(progress);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find progress bar with id: " + id);
+        }
+    }
+
     void Layout::addBrickToStack(
         std::string id,
         std::string filepath,

@@ -199,6 +199,9 @@ namespace eyegui
         // Set space of flow
         void setSpaceOfFlow(std::string id, float space);
 
+        // Set progress in progress bar
+        void setProgress(std::string id, float progress);
+
         // Add brick to stack
         void addBrickToStack(
             std::string id,
