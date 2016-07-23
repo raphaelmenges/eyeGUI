@@ -8,6 +8,7 @@
 #include "Helper.h"
 
 #include "externals/utf8rewind/include/utf8rewind/utf8rewind.h"
+#include <vector>
 
 namespace eyegui
 {
