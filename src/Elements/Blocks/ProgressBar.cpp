@@ -27,7 +27,7 @@ namespace eyegui
         std::string backgroundFilepath,
         ImageAlignment backgroundAlignment,
         float innerBorder,
-        ProgressDirection progressDirection) : Block(
+        Direction direction) : Block(
             id,
             styleName,
             pParent,
@@ -48,7 +48,7 @@ namespace eyegui
 
         // Fill members
         mProgress = 0;
-        mDirection = progressDirection;
+        mDirection = direction;
 
         // Render time for progress
         mpProgressItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
@@ -79,7 +79,7 @@ namespace eyegui
             // Decide the direction
             switch(mDirection)
             {
-            case ProgressDirection::LEFT_TO_RIGHT:
+            case ProgressBar::Direction::LEFT_TO_RIGHT:
                 progressDrawMatrix = calculateDrawMatrix(
                     mpLayout->getLayoutWidth(),
                     mpLayout->getLayoutHeight(),
@@ -88,7 +88,7 @@ namespace eyegui
                     mInnerWidth * mProgress,
                     mInnerHeight);
                 break;
-            case ProgressDirection::RIGHT_TO_LEFT:
+            case ProgressBar::Direction::RIGHT_TO_LEFT:
                 progressDrawMatrix = calculateDrawMatrix(
                     mpLayout->getLayoutWidth(),
                     mpLayout->getLayoutHeight(),
@@ -97,7 +97,7 @@ namespace eyegui
                     mInnerWidth * mProgress,
                     mInnerHeight);
                 break;
-            case ProgressDirection::TOP_TO_BOTTOM:
+            case ProgressBar::Direction::TOP_TO_BOTTOM:
                 progressDrawMatrix = calculateDrawMatrix(
                     mpLayout->getLayoutWidth(),
                     mpLayout->getLayoutHeight(),
@@ -106,7 +106,7 @@ namespace eyegui
                     mInnerWidth,
                     mInnerHeight * mProgress);
                 break;
-            case ProgressDirection::BOTTOM_TO_TOP:
+            case ProgressBar::Direction::BOTTOM_TO_TOP:
                 progressDrawMatrix = calculateDrawMatrix(
                     mpLayout->getLayoutWidth(),
                     mpLayout->getLayoutHeight(),

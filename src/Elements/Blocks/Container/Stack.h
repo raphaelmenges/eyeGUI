@@ -21,6 +21,11 @@ namespace eyegui
     {
     public:
 
+		enum class Direction
+		{
+			HORIZONTAL, VERTICAL, AUTOMATIC
+		};
+
         enum class Alignment
         {
             FILL, CENTER, HEAD, TAIL
@@ -32,27 +37,28 @@ namespace eyegui
         };
 
         // Constructor
-        Stack(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            float innerBorder,
-            bool showBackground,
-            RelativeScaling relativeScaling,
-            Alignment alignment,
-            float padding,
-            float separator);
+		Stack(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			bool consumeInput,
+			std::string backgroundFilepath,
+			ImageAlignment backgroundAlignment,
+			float innerBorder,
+			bool showBackground,
+			Direction direction,
+			RelativeScaling relativeScaling,
+			Alignment alignment,
+			float padding,
+			float separator);
 
         // Destructor
         virtual ~Stack();
@@ -74,6 +80,7 @@ namespace eyegui
     private:
 
         // Members
+		Direction mDirection;
         RelativeScaling mRelativeScaling;
         Alignment mAlignment;
         float mPadding; // [0..1]

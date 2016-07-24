@@ -15,11 +15,16 @@ namespace eyegui
 {
 
     // Directions of progress visualization
-    enum class ProgressDirection { LEFT_TO_RIGHT, RIGHT_TO_LEFT, TOP_TO_BOTTOM, BOTTOM_TO_TOP };
+   
 
     class ProgressBar : public Block
     {
     public:
+
+		enum class Direction
+		{
+			LEFT_TO_RIGHT, RIGHT_TO_LEFT, TOP_TO_BOTTOM, BOTTOM_TO_TOP
+		};
 
         // Constructor
         ProgressBar(
@@ -38,7 +43,7 @@ namespace eyegui
             std::string backgroundFilepath,
             ImageAlignment backgroundAlignment,
             float innerBorder,
-            ProgressDirection progressDirection);
+            Direction progressDirection);
 
         // Destructor
         virtual ~ProgressBar();
@@ -54,7 +59,7 @@ namespace eyegui
     private:
 
         // Members
-        ProgressDirection mDirection;
+        Direction mDirection;
         float mProgress; // [0..1]
         RenderItem const * mpProgressItem;
     };

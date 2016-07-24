@@ -355,6 +355,26 @@ namespace eyegui
             // Show background?
             bool showBackground = parseBoolAttribute("showbackground", xmlStack);
 
+			// Get direction of stack
+			std::string directionValue = parseStringAttribute("direction", xmlStack);
+			Stack::Direction direction = Stack::Direction::AUTOMATIC;
+			if (directionValue == EMPTY_STRING_ATTRIBUTE || directionValue == "automatic")
+			{
+				direction = Stack::Direction::AUTOMATIC;
+			}
+			else if (directionValue == "horizontal")
+			{
+				direction = Stack::Direction::HORIZONTAL;
+			}
+			else if (directionValue == "vertical")
+			{
+				direction = Stack::Direction::VERTICAL;
+			}
+			else
+			{
+				throwError(OperationNotifier::Operation::PARSING, "Unknown direction used in stack: " + directionValue, filepath);
+			}
+
             // Get mode of relative scaling
             std::string relativeScalingValue = parseStringAttribute("relativescaling", xmlStack);
             Stack::RelativeScaling relativeScaling = Stack::RelativeScaling::MAIN_AXIS;
@@ -428,6 +448,7 @@ namespace eyegui
                     backgroundAlignment,
                     innerBorder,
                     showBackground,
+					direction,
                     relativeScaling,
                     alignment,
                     padding,
@@ -676,14 +697,14 @@ namespace eyegui
 
             // Get flow direction
             std::string flowDirectionValue = parseStringAttribute("direction", xmlFlow);
-            FlowDirection flowDirection = FlowDirection::VERTICAL;
+            Flow::Direction flowDirection = Flow::Direction::VERTICAL;
             if (flowDirectionValue == EMPTY_STRING_ATTRIBUTE || flowDirectionValue == "vertical")
             {
-                flowDirection = FlowDirection::VERTICAL;
+                flowDirection = Flow::Direction::VERTICAL;
             }
             else if (flowDirectionValue == "horizontal")
             {
-                flowDirection = FlowDirection::HORIZONTAL;
+                flowDirection = Flow::Direction::HORIZONTAL;
             }
             else
             {
@@ -744,22 +765,22 @@ namespace eyegui
 
             // Fetch direction of progress
             std::string progressDirectionValue = parseStringAttribute("direction", xmlProgressBar);
-            ProgressDirection progressDirection = ProgressDirection::LEFT_TO_RIGHT;
+            ProgressBar::Direction progressDirection = ProgressBar::Direction::LEFT_TO_RIGHT;
             if (progressDirectionValue == EMPTY_STRING_ATTRIBUTE || progressDirectionValue == "leftright")
             {
-                progressDirection = ProgressDirection::LEFT_TO_RIGHT;
+                progressDirection = ProgressBar::Direction::LEFT_TO_RIGHT;
             }
             else if (progressDirectionValue == "rightleft")
             {
-                progressDirection = ProgressDirection::RIGHT_TO_LEFT;
+                progressDirection = ProgressBar::Direction::RIGHT_TO_LEFT;
             }
             else if (progressDirectionValue == "topbottom")
             {
-                progressDirection = ProgressDirection::TOP_TO_BOTTOM;
+                progressDirection = ProgressBar::Direction::TOP_TO_BOTTOM;
             }
             else if (progressDirectionValue == "bottomtop")
             {
-                progressDirection = ProgressDirection::BOTTOM_TO_TOP;
+                progressDirection = ProgressBar::Direction::BOTTOM_TO_TOP;
             }
             else
             {

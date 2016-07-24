@@ -29,6 +29,7 @@ namespace eyegui
         ImageAlignment backgroundAlignment,
         float innerBorder,
         bool showBackground,
+		Direction direction,
         RelativeScaling relativeScaling,
         Alignment alignment,
         float padding,
@@ -53,6 +54,7 @@ namespace eyegui
         mType = Type::STACK;
 
         // Fill members
+		mDirection = direction;
         mRelativeScaling = relativeScaling;
         mAlignment = alignment;
         mPadding = padding;
@@ -133,6 +135,9 @@ namespace eyegui
         // Super call
         Container::specialTransformAndSize();
 
+		// Decide direction of stacking
+		bool horizontal = (mDirection == Direction::HORIZONTAL) || (mDirection == Direction::AUTOMATIC && (getOrientation() == Element::Orientation::HORIZONTAL));
+
         // Calculate separator sizes and adjust inner sizes
         int separatorCount = (int)mChildren.size() - 1;
         int separatorSize = 0;
@@ -142,8 +147,8 @@ namespace eyegui
         if (mSeparator > 0 && separatorCount >= 1)
         {
             // Test even if enough pixels are there to render the separators
-            if (getOrientation() == Element::Orientation::HORIZONTAL
-                && separatorCount <= mInnerWidth)
+			if (horizontal
+				&& separatorCount <= mInnerWidth)
             {
                 separatorSize = (int)(mInnerWidth * mSeparator);
                 separatorSize = separatorSize < 1 ? 1 : separatorSize;
@@ -168,7 +173,7 @@ namespace eyegui
         }
 
         // Determine direction of stacking
-        if (getOrientation() == Element::Orientation::HORIZONTAL)
+        if (horizontal)
         {
             // Horizontal
             int usedElemX = 0;
@@ -457,7 +462,7 @@ namespace eyegui
             int separatorWidth, separatorHeight;
 
             // Scale depending on orientation
-            if (getOrientation() == Element::Orientation::HORIZONTAL)
+            if (horizontal)
             {
                 separatorWidth = separatorSize;
                 separatorHeight = mHeight;
@@ -471,7 +476,7 @@ namespace eyegui
             for (uint i = 0; i < separatorPositions.size(); i++)
             {
                 // Translation depending on orientation
-                if (getOrientation() == Element::Orientation::HORIZONTAL)
+                if (horizontal)
                 {
                     mSeparatorDrawMatrices.push_back(
                         calculateDrawMatrix(

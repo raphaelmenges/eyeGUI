@@ -29,7 +29,7 @@ namespace eyegui
         ImageAlignment backgroundAlignment,
         float innerBorder,
         bool showBackground,
-		FlowDirection direction,
+		Direction direction,
         float space) : Container(
             id,
             styleName,
@@ -84,7 +84,7 @@ namespace eyegui
             // Update offset
 			float offsetSpeed = 0;
             float oldValue = mOffset.getValue();
-			if (mDirection == FlowDirection::VERTICAL)
+			if (mDirection == Direction::VERTICAL)
 			{
 				// Vertical direction
 				int y = pInput->gazeY - mY;
@@ -133,7 +133,7 @@ namespace eyegui
 
     void Flow::transformInnerElement()
     {
-		if (mDirection == FlowDirection::VERTICAL)
+		if (mDirection == Direction::VERTICAL)
 		{
 			// Transform and size child
 			int height = (int)((float)mInnerHeight * mSpace);

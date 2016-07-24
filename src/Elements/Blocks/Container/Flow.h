@@ -15,12 +15,14 @@
 
 namespace eyegui
 {
-	// Direction of flow
-	enum class FlowDirection { HORIZONTAL, VERTICAL };
-
     class Flow : public Container
     {
     public:
+
+		enum class Direction
+		{
+			HORIZONTAL, VERTICAL
+		};
 
         // Constructor
         Flow(
@@ -40,7 +42,7 @@ namespace eyegui
             ImageAlignment backgroundAlignment,
             float innerBorder,
             bool showBackground,
-			FlowDirection direction,
+			Direction direction,
             float space);
 
         // Destructor
@@ -69,7 +71,7 @@ namespace eyegui
         void transformInnerElement();
 
         // Members
-		FlowDirection mDirection;
+		Direction mDirection;
         float mSpace;
         LerpValue mOffset;
     };
