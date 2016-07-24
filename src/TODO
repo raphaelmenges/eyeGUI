@@ -39,6 +39,7 @@
   - flow-speed-multiplier
 - ProgressBar
 - flash-color
+- flash-duration
 
 ### VERSION 0.11
 - Redo font packing algorithm

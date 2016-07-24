@@ -26,6 +26,7 @@ namespace eyegui
         float sensorInteractionPenetrationAmount = 0.5f;
         float dimIncreaseDuration = 1.5f;
         float dimDecreaseDuration = 0.25f;
+		float flashDuration = 2.0f;
         float maximalAdaptiveScaleIncrease = 0.5f;
         float adaptiveScaleIncreaseDuration = 1.0f;
         float adaptiveScaleDecreaseDuration = 1.0f;

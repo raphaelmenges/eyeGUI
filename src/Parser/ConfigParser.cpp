@@ -137,6 +137,10 @@ namespace eyegui
             {
                 rConfig.dimDecreaseDuration = stringToFloat(value);
             }
+			else if (attribute == "flash-duration")
+			{
+				rConfig.flashDuration = stringToFloat(value);
+			}
             else if (attribute == "maximal-adaptive-scale-increase")
             {
                 rConfig.maximalAdaptiveScaleIncrease = stringToFloat(value);

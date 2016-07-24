@@ -467,7 +467,7 @@ namespace eyegui
 		// Flashing
 		if (mFlash.getValue() > 0.f)
 		{
-			mFlash.update(-tpf); // just display it one second
+			mFlash.update(-tpf / mpLayout->getConfig()->flashDuration);
 		}
 
         // Adaptive scaling
