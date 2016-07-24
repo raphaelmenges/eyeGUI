@@ -214,6 +214,11 @@ namespace eyegui
         return pLayout->checkForId(id);
     }
 
+	void flash(Layout* pLayout, std::string id)
+	{
+		pLayout->flash(id);
+	}
+
     void highlightInteractiveElement(Layout* pLayout, std::string id, bool doHighlight)
     {
         pLayout->highlightInteractiveElement(id, doHighlight);

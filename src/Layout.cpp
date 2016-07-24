@@ -959,6 +959,19 @@ namespace eyegui
         }
     }
 
+	void Layout::flash(std::string id)
+	{
+		Element* pElement = fetchElement(id);
+		if (pElement != NULL)
+		{
+			pElement->flash();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+		}
+	}
+
     bool Layout::isInteractiveElementHighlighted(std::string id) const
     {
         InteractiveElement* pInteractiveElement = toInteractiveElement(fetchElement(id));

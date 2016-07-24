@@ -241,6 +241,9 @@ namespace eyegui
         // Check for existence of id
         bool checkForId(std::string id) const;
 
+		// Flash element
+		void flash(std::string id);
+
         // Check whether element is highlighted
         bool isInteractiveElementHighlighted(std::string id) const;
 

@@ -84,6 +84,7 @@ namespace eyegui
         // Render items
         mpActivityItem = mpAssetManager->fetchRenderItem(shaders::Type::ACTIVITY, meshes::Type::QUAD);
         mpDimItem = mpAssetManager->fetchRenderItem(shaders::Type::DIM, meshes::Type::QUAD);
+		mpFlashItem = mpAssetManager->fetchRenderItem(shaders::Type::FLASH, meshes::Type::QUAD);
         mpMarkItem = mpAssetManager->fetchRenderItem(shaders::Type::MARK, meshes::Type::QUAD);
     }
 
@@ -277,6 +278,11 @@ namespace eyegui
         return mDimming;
     }
 
+	void Element::flash()
+	{
+		mFlash.setValue(1.f);
+	}
+
     void Element::setMarking(bool marking, int depth)
     {
         mMarking = marking;
@@ -458,6 +464,12 @@ namespace eyegui
             mDim.setValue(dim);
         }
 
+		// Flashing
+		if (mFlash.getValue() > 0.f)
+		{
+			mFlash.update(-tpf); // just display it one second
+		}
+
         // Adaptive scaling
         if (mAdaptiveScaling)
         {
@@ -602,6 +614,18 @@ namespace eyegui
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
                 mpDimItem->draw();
             }
+
+			// Draw flash
+			if (mFlash.getValue() > 0)
+			{
+				mpFlashItem->bind();
+				mpFlashItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+				mpFlashItem->getShader()->fillValue("flashColor", getStyle()->flashColor);
+				mpFlashItem->getShader()->fillValue("flash", mFlash.getValue());
+				mpFlashItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
+				mpFlashItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+				mpFlashItem->draw();
+			}
 
             drawChildren();
 

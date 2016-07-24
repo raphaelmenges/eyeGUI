@@ -145,6 +145,9 @@ namespace eyegui
         // Getter for dimming
         bool isDimming() const;
 
+		// Flash
+		void flash();
+
         // Set marking
         virtual void setMarking(bool marking, int depth);
 
@@ -283,6 +286,7 @@ namespace eyegui
         RenderingMask mRenderingMask;
         RenderItem const * mpActivityItem;
         RenderItem const * mpDimItem;
+		RenderItem const * mpFlashItem;
         RenderItem const * mpMarkItem;
         bool mPenetratedLastUpdate; // useful for interaction notification
         glm::vec2 mLastGazeCoordinate; // useful for interaction notification
@@ -292,6 +296,8 @@ namespace eyegui
 
         bool mDimming;
         LerpValue mDim; // [0..1]
+
+		LerpValue mFlash; // [0..1]. Set to 1 when should flash and goes back to zero
 
         bool mMarking;
         LerpValue mMark; // [0..1]

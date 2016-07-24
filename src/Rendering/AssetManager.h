@@ -33,7 +33,7 @@ namespace eyegui
     // Available assets
 
     namespace shaders { enum class Type {
-    COLOR, CIRCLE, DIM, ACTIVITY, MARK, CIRCLE_THRESHOLD, BOX_THRESHOLD, HIGHLIGHT, SELECTION, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, TEXT, IMAGE, KEY, CHARACTER_KEY}; }
+    COLOR, CIRCLE, DIM, FLASH, ACTIVITY, MARK, CIRCLE_THRESHOLD, BOX_THRESHOLD, HIGHLIGHT, SELECTION, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, TEXT, IMAGE, KEY, CHARACTER_KEY}; }
 
     namespace meshes { enum class Type { QUAD, LINE }; }
     namespace graphics { enum class Type { CIRCLE, BOX, NOT_FOUND }; }

@@ -68,6 +68,18 @@ namespace eyegui
             "   fragColor = vec4(0.3, 0.3, 0.3, texture(mask, uv).r * 0.5 * alpha) * (1.0 - activity);\n"
             "}\n";
 
+		static const char* pFlashFragmentShader =
+			"#version 330 core\n"
+			"out vec4 fragColor;\n"
+			"in vec2 uv;\n"
+			"uniform vec4 flashColor = vec4(1,0,0,0.5);\n"
+			"uniform float flash = 1;\n"
+			"uniform float alpha = 1;\n"
+			"uniform sampler2D mask;\n"
+			"void main() {\n"
+			"   fragColor = flashColor * vec4(1, 1, 1, texture(mask, uv).r * alpha * flash);\n"
+			"}\n";
+
         static const char* pMarkFragmentShader =
             "#version 330 core\n"
             "out vec4 fragColor;\n"

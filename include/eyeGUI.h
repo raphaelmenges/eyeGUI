@@ -480,6 +480,13 @@ namespace eyegui
     */
     bool checkForId(Layout const * pLayout, std::string id);
 
+	//! Flashes element one time.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	*/
+	void flash(Layout* pLayout, std::string id);
+
     //! Set interactive element as highlighted.
     /*!
       \param pLayout pointer to layout.

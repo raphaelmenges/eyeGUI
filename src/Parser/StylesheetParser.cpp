@@ -264,6 +264,10 @@ namespace eyegui
             {
                 rStyle.dimColor = parseColor(value);
             }
+			else if (attribute == "flash-color")
+			{
+				rStyle.flashColor = parseColor(value);
+			}
 			else if (attribute == "dim-alpha")
 			{
                 rStyle.dimAlpha = stringToFloat(value);

@@ -204,6 +204,9 @@ namespace eyegui
             case shaders::Type::DIM:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pDimFragmentShader));
                 break;
+			case shaders::Type::FLASH:
+				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pFlashFragmentShader));
+				break;
             case shaders::Type::ACTIVITY:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pActivityFragmentShader));
                 break;
