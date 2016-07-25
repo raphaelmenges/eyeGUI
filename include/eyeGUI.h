@@ -308,6 +308,13 @@ namespace eyegui
     */
     void prefetchImage(GUI* pGUI, std::string filepath);
 
+	//! Fetch localization from localization file by key.
+	/*!
+	\param pGUI pointer to GUI.
+	\param key defines where to look up in localization file.
+	*/
+	std::u16string fetchLocalization(GUI const * pGUI, std::string key);
+
     //! Add dictionary which can be used for text suggestions.
     /*!
       \param pGUI pointer to GUI.

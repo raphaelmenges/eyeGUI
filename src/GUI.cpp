@@ -323,20 +323,6 @@ namespace eyegui
         return mpDefaultFont;
     }
 
-    std::u16string GUI::getContentFromLocalization(std::string key) const
-    {
-        auto it = mupLocalizationMap->find(key);
-
-        if (it != mupLocalizationMap->end())
-        {
-            return it->second;
-        }
-        else
-        {
-            return LOCALIZATION_NOT_FOUND;
-        }
-    }
-
     float GUI::getVectorGraphicsDPI() const
     {
         return mVectorGraphicsDPI;
@@ -391,6 +377,23 @@ namespace eyegui
         mResizeCallbackFunction = callbackFunction;
         mResizeCallbackSet = true;
     }
+
+	std::u16string GUI::getContentFromLocalization(std::string key) const
+	{
+		auto it = mupLocalizationMap->find(key);
+
+		if (it != mupLocalizationMap->end())
+		{
+			return it->second;
+		}
+		else
+		{
+			throwWarning(
+				OperationNotifier::Operation::RUNTIME,
+				"Tried to fetch localization but failed for key: " + key);
+			return LOCALIZATION_NOT_FOUND;
+		}
+	}
 
     void GUI::internalResizing()
     {

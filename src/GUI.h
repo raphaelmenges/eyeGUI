@@ -113,9 +113,6 @@ namespace eyegui
         // Get set default font
         Font const * getDefaultFont() const;
 
-        // Get string content from localization
-        std::u16string getContentFromLocalization(std::string key) const;
-
         // Get dpi for rasterization of vector graphics
         float getVectorGraphicsDPI() const;
 
@@ -133,6 +130,11 @@ namespace eyegui
 
 		// Set function to callback after real resize
 		void setResizeCallback(std::function<void(int, int)> callbackFunction);
+
+		// *** Methods accessed by other classes and interface ***
+
+		// Get string content from localization
+		std::u16string getContentFromLocalization(std::string key) const;
 
     private:
 

@@ -101,6 +101,11 @@ namespace eyegui
         pGUI->prefetchImage(filepath);
     }
 
+	std::u16string fetchLocalization(GUI const * pGUI, std::string key)
+	{
+		return pGUI->getContentFromLocalization(key);
+	}
+
     unsigned int addDictionary(GUI* pGUI, std::string filepath)
     {
         return pGUI->addDictionary(filepath);
