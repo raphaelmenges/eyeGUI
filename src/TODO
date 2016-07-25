@@ -18,6 +18,7 @@
 - Accept pointer to input instead of reference in interface
 - Improve resize chaos
   - At the moment: adding layouts -> direct resize. changing flow size -> no direct resize. what :D some resize before drawing would be cool.. (then drawing no more const but ok)
+- Let one create Stacks without inner element (either that or a Nothing element)
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
