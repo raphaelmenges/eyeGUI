@@ -233,9 +233,17 @@ namespace eyegui
     {
         IconElement::specialReset();
 
-        mIsDown = false;
         mThreshold.setValue(0);
-        mPressing.setValue(0);
+
+        // Set pressing directly to finale value
+        if(mIsDown)
+        {
+            mPressing.setValue(1);
+        }
+        else
+        {
+            mPressing.setValue(0);
+        }
     }
 
     void Button::specialInteract()
