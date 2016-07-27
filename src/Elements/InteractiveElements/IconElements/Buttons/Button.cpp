@@ -235,15 +235,26 @@ namespace eyegui
 
         mThreshold.setValue(0);
 
-        // Set pressing directly to finale value
-        if(mIsDown)
+        // Handle pressing
+        if(mIsSwitch)
         {
-            mPressing.setValue(1);
+            // Set pressing directly to finale value when this is a switch
+            if(mIsDown)
+            {
+                mPressing.setValue(1);
+            }
+            else
+            {
+                mPressing.setValue(0);
+            }
         }
         else
         {
+            // No switch, so reset to unpressed position
             mPressing.setValue(0);
+            mIsDown = false;
         }
+
     }
 
     void Button::specialInteract()
