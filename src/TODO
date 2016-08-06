@@ -64,6 +64,7 @@
 - Instead of FontAtlas, do Font caching
 - What about "GazeSnap"? Snapping to focused element and exit it with blink or so
 - Reset with bit masks (what to reset)
+- Maybe make possible to limit adaptive scaling to certain elements or tell it: do not make that elements smaller, only bigger is allowed
 
 ### VERSION 1.0
 - Code review!

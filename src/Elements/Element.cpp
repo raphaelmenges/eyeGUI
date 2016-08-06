@@ -139,7 +139,7 @@ namespace eyegui
 
     std::string Element::getTypeString() const
     {
-        switch(mType)
+        switch(mType) // TODO: maybe move somewhere where one remebers to add new elements
         {
         case Type::ELEMENT:
             return "ELEMENT"; break;
@@ -181,6 +181,8 @@ namespace eyegui
             return "FLOW"; break;
         case Type::PROGRESS_BAR:
             return "PROGRESS_BAR"; break;
+		case Type::TEXT_EDIT:
+			return "TEXT_EDIT"; break;
         default:
             OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::BUG, "Element type to string not available.");
             return "UNDEFINED";
@@ -533,6 +535,7 @@ namespace eyegui
         }
 
         // *** PENETRATION NOTIFICATION (ENTER / LEAVE) *** // TODO: Setting for which elements to react
+		// TODO: maybe move somewhere where one remebers to add new elements
         if(penetrated != mPenetratedLastUpdate &&
         (mType == Type::BOX_BUTTON
         || mType == Type::CIRCLE_BUTTON
@@ -540,7 +543,8 @@ namespace eyegui
         || mType == Type::SENSOR
         || mType == Type::KEYBOARD
         || mType == Type::WORD_SUGGEST
-        || mType == Type::PICTURE))
+        || mType == Type::PICTURE
+		|| mType == Type::TEXT_EDIT))
         {
             this->notifyInteraction(
                 penetrated ? "ENTER_ELEMENT" : "LEAVE_ELEMENT");

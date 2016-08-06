@@ -125,6 +125,10 @@ namespace eyegui
             {
                 upElement = std::move(parseProgressBar(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
+			else if (value == "textedit")
+			{
+				upElement = std::move(parseTextEdit(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+			}
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown element found: " + std::string(xmlElement->Value()), filepath);
@@ -810,6 +814,17 @@ namespace eyegui
             // Return progress bar
             return (std::move(upProgressBar));
         }
+
+		std::unique_ptr<TextEdit> parseTextEdit(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlTextEdit, Element* pParent, std::string filepath)
+		{
+			// Get font size
+			FontSize fontSize;
+			fontSizeHelper(xmlTextEdit, fontSize, filepath);
+
+			// Create and return text edit
+			std::unique_ptr<TextEdit> upTextEdit = std::unique_ptr<TextEdit>(new TextEdit(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, fontSize));
+			return (std::move(upTextEdit));
+		}
 
         void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder)
         {
