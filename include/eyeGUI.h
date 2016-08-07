@@ -194,7 +194,7 @@ namespace eyegui
         int height = 0;
     };
 
-    //! Struct for input
+    //! Struct for input. Coordinate system orginates at upper left corner of screen.
     struct Input
     {
         int gazeX = 0; //!< X position of gaze in pixels
