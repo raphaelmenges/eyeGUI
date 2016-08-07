@@ -83,7 +83,7 @@ namespace eyegui
 			offsetSpeed /= (float)mupTextFlow->getHeight() / (float)mHeight;
 
 			// Update relative offset
-			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->flowSpeedMultiplier); // TODO: own multiplier
+			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
 		}
 
         return adaptiveScale;

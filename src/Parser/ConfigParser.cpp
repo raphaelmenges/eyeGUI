@@ -185,6 +185,10 @@ namespace eyegui
             {
                 rConfig.flowSpeedMultiplier = stringToFloat(value);
             }
+			else if (attribute == "text-edit-scroll-speed-multiplier")
+			{
+				rConfig.textEditScrollSpeedMultiplier = stringToFloat(value);
+			}
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);

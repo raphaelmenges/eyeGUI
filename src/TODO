@@ -42,6 +42,7 @@
 - flash-color
 - flash-duration
 - stack direction
+- text-edit-scroll-speed-multiplier
 
 ### VERSION 0.11
 - Redo font packing algorithm
