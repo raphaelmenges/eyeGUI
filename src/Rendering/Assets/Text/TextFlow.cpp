@@ -158,6 +158,26 @@ namespace eyegui
 		return result;
 	}
 
+	std::vector<TextFlow::SubFlowWord>TextFlow::getSubFlowWord(int x, int y) const
+	{
+		for (const auto& rFlowWord : mFlowWords)
+		{
+			for (const auto& rSubFlowWord : rFlowWord.subWords)
+			{
+				// Check whether coordinates inside sub word
+				if (x >= rSubFlowWord.x
+					&& x < rSubFlowWord.x + rSubFlowWord.width
+					&& y >= rSubFlowWord.y
+					&& y < rSubFlowWord.y + getLineHeight())
+				{
+					// If check is true, return sub words instantly
+					return rFlowWord.subWords;
+				}
+			}
+		}
+		return std::vector<TextFlow::SubFlowWord>();
+	}
+
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
             float lineHeight, std::vector<glm::vec3>& rVertices,
@@ -258,7 +278,7 @@ namespace eyegui
                 uint wordIndex = 0;
                 bool hasNext = !words.empty();
 				int flowWordsIndex = 0;
-				int flowWordsSubIndex = 0;
+				int subFlowWordsIndex = 0;
 
                 // Go over lines to write paragraph
                 while (hasNext && (abs(yPixelPen) <= mHeight || mOverflowHeight))
@@ -343,17 +363,19 @@ namespace eyegui
                         }
 
 						// Save information about layouting of (fit)word to flow words vector
-						mFlowWords.at(flowWordsIndex).subWords.at(flowWordsSubIndex).x = (int)xPixelPen;
-						mFlowWords.at(flowWordsIndex).subWords.at(flowWordsSubIndex).y = std::ceil(abs(yPixelPen) - lineHeight);
-						mFlowWords.at(flowWordsIndex).subWords.at(flowWordsSubIndex).width = (int)line[i]->pixelWidth;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).x = (int)xPixelPen;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).y = std::ceil(abs(yPixelPen) - lineHeight);
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).width = (int)line[i]->pixelWidth;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).flowWordsIndex = flowWordsIndex;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).subFlowWordsIndex = subFlowWordsIndex;
 
 						// Increment indices
 						int subIndexCount = (int)mFlowWords.at(flowWordsIndex).subWords.size();
-						flowWordsSubIndex++;
-						if (flowWordsSubIndex >= subIndexCount)
+						subFlowWordsIndex++;
+						if (subFlowWordsIndex >= subIndexCount)
 						{
 							flowWordsIndex++;
-							flowWordsSubIndex = 0;
+							subFlowWordsIndex = 0;
 						}
 
                         // Advance xPen

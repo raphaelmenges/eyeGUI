@@ -81,14 +81,62 @@ namespace eyegui
         // Super call
         float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
+		// Update previous active words
+		for (auto& rPair : mPreviousActiveWords)
+		{
+			rPair.second -= tpf;
+		}
+		mPreviousActiveWords.erase(
+			std::remove_if(
+				mPreviousActiveWords.begin(),
+				mPreviousActiveWords.end(),
+				[](const auto& i) { return i.second <= 0; }),
+			mPreviousActiveWords.end());
+
 		// Scroll text flow
 		if (penetratedByInput(pInput) && (mupTextFlow->getHeight() > 0))
 		{
-			// Y in element coordinates
-			int y = pInput->gazeY - mY;
+			// Coordinates in flow coordinates
+			int flowX = pInput->gazeX - mX;
+			int flowY = pInput->gazeY - mY;
+
+			// (Old) y offset of text flow in pixels
+			int oldTextFlowYOffset = calculateTextFlowYOffset();
+
+			// Get currently selected word
+			auto newActiveWord = mupTextFlow->getSubFlowWord(flowX, flowY + oldTextFlowYOffset);
+
+			// Decide whether active word has changed
+			bool overwriteActiveWord = false;
+			if (!mActiveWord.first.empty())
+			{
+				if (!newActiveWord.empty())
+				{
+					// Compare flow word index
+					if (newActiveWord.at(0).flowWordsIndex != mActiveWord.first.at(0).flowWordsIndex)
+					{
+						mPreviousActiveWords.push_back(std::make_pair(mActiveWord.first, mpLayout->getConfig()->animationDuration));
+						overwriteActiveWord = true;
+					}
+				}
+			}
+			else
+			{
+				overwriteActiveWord = true;
+			}
+			
+			// Overwrite active word
+			if (overwriteActiveWord)
+			{
+				mActiveWord = std::make_pair(newActiveWord, 0.f);
+
+				// Set cursor position to position after word
+				mCursorX = mActiveWord.first.back().x + mActiveWord.first.back().width;
+				mCursorY = mActiveWord.first.back().y;
+			}
 
 			// How much is gazeY away from elements center used for speed
-			float offsetSpeed = ((float)(4 * (y - (mHeight / 2))) / (float)mHeight); // [-0.5, 0.5]
+			float offsetSpeed = ((float)(4 * (flowY - (mHeight / 2))) / (float)mHeight); // [-0.5, 0.5]
 
 			// Normalize speed by height of text flow
 			float textFlowHeight = (mupTextFlow->getHeight() + mupTextFlow->getLineHeight()); // add line height to avoid cutting letters like 'p'
@@ -97,6 +145,9 @@ namespace eyegui
 			// Update relative offset
 			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
 		}
+
+		// Update active word
+		mActiveWord.second = glm::min(mActiveWord.second + tpf, mpLayout->getConfig()->animationDuration);
 
 		// Update pulsing of cursor
 		float fullCircle = 2 * glm::pi<float>();
@@ -124,26 +175,55 @@ namespace eyegui
 		// Push scissor to render text only within element
 		pushScissor(mX, mY, mWidth, mHeight);
 
-		// Y offset of text flow
-		int textFlowYOffset = (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)(mupTextFlow->getHeight() - mHeight)));
+		// Y offset of text flow in pixels
+		int textFlowYOffset = calculateTextFlowYOffset();
+
+		// Function for draw matrix of active word background
+		std::function<glm::mat4(int, int, int)> calculateActiveWordBackgroundDrawMatrix = [&](int x, int y, int width)
+		{
+			// Calculate width and height for active word background
+			int activeBackgroundWidth = (int)(TEXT_EDIT_ACTIVE_WORD_BACKGROUND_SIZE * (float)width);
+			int activeBackgroundHeight = (int)(TEXT_EDIT_ACTIVE_WORD_BACKGROUND_SIZE * mupTextFlow->getLineHeight());
+
+			// Calculate draw matrix
+			return calculateDrawMatrix(
+				mpLayout->getLayoutWidth(),
+				mpLayout->getLayoutHeight(),
+				mX + x - ((activeBackgroundWidth - width) / 2),
+				mY + y - textFlowYOffset - ((activeBackgroundHeight - (int)mupTextFlow->getLineHeight()) / 2),
+				activeBackgroundWidth,
+				activeBackgroundHeight);
+		};
 
 		// Draw background behind active word (or better said behind active sub words
 		mpActiveWordBackground->bind();
-		mpActiveWordBackground->getShader()->fillValue("color", glm::vec4(1,0,0,1));
-		mpActiveWordBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
-		for (const auto& rSubFlowWord : mupTextFlow->getSubFlowWord(5)) // TODO test
+		mpActiveWordBackground->getShader()->fillValue("color", getStyle()->markColor); // TODO: marked color used. Maybe use some custom
+
+		// Draw previous active ones
+		for (const auto& rPair : mPreviousActiveWords)
+		{
+			for (const auto& rSubFlowWord : rPair.first)
+			{
+				// Calculate draw matrix
+				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord.x, rSubFlowWord.y, rSubFlowWord.width);
+
+				// Draw previous active sub word's background
+				mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
+				mpActiveWordBackground->getShader()->fillValue("alpha", (rPair.second / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
+				mpActiveWordBackground->draw();
+			}
+		}
+
+		// Draw currently active one
+		for (const auto& rSubFlowWord : mActiveWord.first)
 		{
 			// Calculate draw matrix
-			glm::mat4 activeWordBackgroundDrawMatrix = calculateDrawMatrix(
-				mpLayout->getLayoutWidth(),
-				mpLayout->getLayoutHeight(),
-				mX + rSubFlowWord.x,
-				mY + rSubFlowWord.y - textFlowYOffset,
-				rSubFlowWord.width,
-				(int)mupTextFlow->getLineHeight());
+			glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord.x, rSubFlowWord.y, rSubFlowWord.width);
 
 			// Draw active sub word's background
 			mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
+			mpActiveWordBackground->getShader()->fillValue("alpha", (mActiveWord.second / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
+			
 			mpActiveWordBackground->draw();
 		}
 
@@ -159,8 +239,8 @@ namespace eyegui
 		glm::mat4 cursorDrawMatrix = calculateDrawMatrix(
 			mpLayout->getLayoutWidth(),
 			mpLayout->getLayoutHeight(),
-			mX,
-			mY - textFlowYOffset,
+			mX + mCursorX,
+			mY + mCursorY - textFlowYOffset,
 			glm::max(1, (int)(TEXT_EDIT_CURSOR_RELATIVE_WIDTH * mupTextFlow->getPixelWidthOfSpace())),
 			(int)mupTextFlow->getLineHeight());
 
@@ -210,4 +290,9 @@ namespace eyegui
             break;
         }
     }
+
+	int TextEdit::calculateTextFlowYOffset() const
+	{
+		return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getHeight() + mupTextFlow->getLineHeight()) - mHeight)));
+	}
 }

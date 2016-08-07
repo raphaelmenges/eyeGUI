@@ -94,7 +94,7 @@ namespace eyegui
                     mpLayout->getLayoutHeight(),
 					(int)(mInnerX + (mInnerWidth * (1.f - mProgress))),
                     mInnerY,
-                    mInnerWidth * mProgress,
+                    (int)(mInnerWidth * mProgress),
                     mInnerHeight);
                 break;
             case ProgressBar::Direction::TOP_TO_BOTTOM:
@@ -113,7 +113,7 @@ namespace eyegui
                     mInnerX,
 					(int)(mInnerY  + (mInnerHeight * (1.f - mProgress))),
                     mInnerWidth,
-                    mInnerHeight * mProgress);
+                    (int)(mInnerHeight * mProgress));
                 break;
             }
 

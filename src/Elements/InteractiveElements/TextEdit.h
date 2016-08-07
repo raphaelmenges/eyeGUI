@@ -57,6 +57,9 @@ namespace eyegui
 
     private:
 
+		// Calculate text flow y offset
+		int calculateTextFlowYOffset() const;
+
         // Members
         RenderItem const * mpBackground;
 		RenderItem const * mpCursor;
@@ -65,6 +68,11 @@ namespace eyegui
 		std::unique_ptr<TextFlow> mupTextFlow;
 		LerpValue mTextFlowYOffset;
 		float mCursorPulse; // [0..2*Pi]
+		int mCursorX; // in text flow coordinates
+		int mCursorY; // in text flow coordinates
+		std::pair<std::vector<TextFlow::SubFlowWord>, float> mActiveWord; // float is initialized with zero
+		std::vector<std::pair<std::vector<TextFlow::SubFlowWord>, float> > mPreviousActiveWords; // float is initialized with animation
+																								 // duration and decremented at each update
     };
 }
 

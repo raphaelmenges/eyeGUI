@@ -747,9 +747,9 @@ namespace eyegui
         if (pInput != NULL && !pInput->gazeUsed)
         {
             if (pInput->gazeX >= mX
-                && pInput->gazeX <= mX + mWidth
+                && pInput->gazeX < mX + mWidth
                 && pInput->gazeY >= mY
-                && pInput->gazeY <= mY + mHeight)
+                && pInput->gazeY < mY + mHeight)
             {
                 return true;
             }
