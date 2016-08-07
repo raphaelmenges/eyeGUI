@@ -29,7 +29,8 @@ namespace eyegui
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
             float scale,
-            std::u16string content);
+            std::u16string content,
+			bool overflowHeight);
 
         // Destructor
         virtual ~TextFlow();
@@ -42,7 +43,15 @@ namespace eyegui
             int height);
 
         // Draw
-        virtual void draw(glm::vec4 color, float alpha, bool renderBackground = false) const;
+        virtual void draw(
+			glm::vec4 color,
+			float alpha,
+			bool renderBackground = false,
+			int xOffset = 0,
+			int yOffset = 0) const;
+
+		// Get height (interesting if overflowHeight is true)
+		int getHeight() const { return mHeight; }
 
     protected:
 
@@ -65,6 +74,7 @@ namespace eyegui
         int mHeight;
 		int mFlowWidth;
         int mFlowHeight;
+		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
     };
 }
 

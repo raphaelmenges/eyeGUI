@@ -96,7 +96,7 @@ namespace eyegui
 				int x = pInput->gazeX - mX;
 				offsetSpeed = ((float)(4 * (x - (mWidth / 2))) / (float)mWidth);
 			}
-            offsetSpeed *= 1.0f / mSpace; // Normalization
+            offsetSpeed /= mSpace; // Normalization
             mOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->flowSpeedMultiplier);
 
             // Only transform inner element if necessary

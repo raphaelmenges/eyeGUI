@@ -38,7 +38,12 @@ namespace eyegui
 		void setPosition(int x, int y);
 
         // Draw
-        virtual void draw(glm::vec4 color, float alpha, bool renderBackground = false) const;
+        virtual void draw(
+			glm::vec4 color,
+			float alpha,
+			bool renderBackground = false,
+			int xOffset = 0,
+			int yOffset = 0) const;
 
         // Getter
 		int getX() const;

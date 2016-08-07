@@ -43,6 +43,7 @@ namespace eyegui
 
 		// Fill members
 		mFontSize = fontSize;
+		mTextFlowYOffset.setValue(0);
 
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
@@ -50,7 +51,13 @@ namespace eyegui
 			meshes::Type::QUAD);
 
 		// Create text flow
-		mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP, 1.f, u"TextEdit"));
+		mupTextFlow = std::move(mpAssetManager->createTextFlow(
+			fontSize,
+			TextFlowAlignment::LEFT,
+			TextFlowVerticalAlignment::TOP,
+			1.0f,
+			u"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+			true));
 	}
 
     TextEdit::~TextEdit()
@@ -62,6 +69,22 @@ namespace eyegui
     {
         // Super call
         float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
+
+		// Scroll text flow
+		if (penetratedByInput(pInput) && (mupTextFlow->getHeight() > 0))
+		{
+			// Y in element coordinates
+			int y = pInput->gazeY - mY;
+
+			// How much is gazeY away from elements center used for speed
+			float offsetSpeed = ((float)(4 * (y - (mHeight / 2))) / (float)mHeight); // [-0.5, 0.5]
+
+			// Normalize speed by height of text flow
+			offsetSpeed /= (float)mupTextFlow->getHeight() / (float)mHeight;
+
+			// Update relative offset
+			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->flowSpeedMultiplier); // TODO: own multiplier
+		}
 
         return adaptiveScale;
     }
@@ -79,10 +102,19 @@ namespace eyegui
             mpBackground->draw();
         }
 
-		// Drawing of text flow
-		mupTextFlow->draw(getStyle()->fontColor, mAlpha);
+		// Push scissor to render text only within element
+		pushScissor(mX, mY, mWidth, mHeight);
 
-		// TODO: Scissor stack usage
+		// Drawing of text flow
+		mupTextFlow->draw(
+			getStyle()->fontColor,
+			mAlpha,
+			false,
+			0.f,
+			mTextFlowYOffset.getValue() * glm::max(0.f, (float)(mupTextFlow->getHeight() - mHeight)));
+
+		// Pop own scissor
+		popScissor();
 
         // Draw stuff like highlighting
         InteractiveElement::specialDraw();
@@ -92,8 +124,6 @@ namespace eyegui
     {
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
-
-		// TODO: textflow may be bigger than element, depending on how much height is necessary
     }
 
     void TextEdit::specialReset()

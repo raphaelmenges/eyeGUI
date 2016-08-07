@@ -31,10 +31,25 @@
 namespace eyegui
 {
     // Available assets
-
     namespace shaders { enum class Type {
-    COLOR, CIRCLE, DIM, FLASH, ACTIVITY, MARK, CIRCLE_THRESHOLD, BOX_THRESHOLD, HIGHLIGHT, SELECTION, CIRCLE_BUTTON, BOX_BUTTON, SENSOR, TEXT, IMAGE, KEY, CHARACTER_KEY}; }
-
+		COLOR,
+		CIRCLE,
+		DIM,
+		FLASH,
+		ACTIVITY,
+		MARK,
+		CIRCLE_THRESHOLD,
+		BOX_THRESHOLD,
+		HIGHLIGHT,
+		SELECTION,
+		CIRCLE_BUTTON,
+		BOX_BUTTON,
+		SENSOR,
+		TEXT,
+		IMAGE,
+		KEY,
+		CHARACTER_KEY};
+	}
     namespace meshes { enum class Type { QUAD, LINE }; }
     namespace graphics { enum class Type { CIRCLE, BOX, NOT_FOUND }; }
 
@@ -84,14 +99,15 @@ namespace eyegui
             FontSize fontSize,
             TextFlowAlignment alignment,
             TextFlowVerticalAlignment verticalAlignment,
-            float scale,
-            std::u16string content);
+            float scale = 1.f,
+            std::u16string content = u"",
+			bool overflowHeight = false);
 
         // Create text simple and return it as unique pointer
         std::unique_ptr<TextSimple> createTextSimple(
             FontSize fontSize,
-            float scale,
-            std::u16string content);
+            float scale = 1.f,
+            std::u16string content = u"");
 
         // Create key for keyboard and return it as unique pointer
         std::unique_ptr<Key> createKey(Layout const * pLayout, char16_t character);

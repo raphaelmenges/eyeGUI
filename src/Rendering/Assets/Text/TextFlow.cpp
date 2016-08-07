@@ -25,7 +25,8 @@ namespace eyegui
         TextFlowAlignment alignment,
         TextFlowVerticalAlignment verticalAlignment,
         float scale,
-        std::u16string content) : Text(
+        std::u16string content,
+		bool overflowHeight) : Text(
             pGUI,
             pAssetManager,
             pFont,
@@ -38,6 +39,7 @@ namespace eyegui
         mVerticalAlignment = verticalAlignment;
 		mFlowWidth = 0;
         mFlowHeight = 0;
+		mOverflowHeight = overflowHeight;
 
         // TransformAndSize has to be called before usage (no calculate mesh is called here)
         mWidth = 0;
@@ -66,26 +68,33 @@ namespace eyegui
     void TextFlow::draw(
         glm::vec4 color,
         float alpha,
-		bool renderBackground) const
+		bool renderBackground,
+		int xOffset,
+		int yOffset) const
     {
         // Calculate y offset because of vertical alignment
-        int yOffset = 0;
+        int yAlignmentOffset = 0;
         switch (mVerticalAlignment)
         {
         case TextFlowVerticalAlignment::TOP:
-            yOffset = 0;
+			yAlignmentOffset = 0;
             break;
         case TextFlowVerticalAlignment::CENTER:
-            yOffset = std::max((mHeight - mFlowHeight) / 2, 0);
+			yAlignmentOffset = std::max((mHeight - mFlowHeight) / 2, 0);
             break;
         case TextFlowVerticalAlignment::BOTTOM:
-            yOffset = std::max((mHeight - mFlowHeight), 0);
+			yAlignmentOffset = std::max((mHeight - mFlowHeight), 0);
             break;
         }
 
 		// Calculate transformation matrix for text flow
 		glm::mat4 matrix = glm::mat4(1.0f);
-		matrix = glm::translate(matrix, glm::vec3(mX, mpGUI->getWindowHeight() - (mY + yOffset), 0)); // Change coordinate system and translate to position
+		matrix = glm::translate(
+			matrix,
+			glm::vec3(
+				mX + xOffset,
+				mpGUI->getWindowHeight() - (mY + yAlignmentOffset) + yOffset,
+				0)); // Change coordinate system and translate to position
 		matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
 
 		// Draw background
@@ -100,7 +109,13 @@ namespace eyegui
 			int backgroundHeight = extraPixels + mFlowHeight;
 
 			// Determine which 
-			glm::mat4 backgroundMatrix = calculateDrawMatrix(mpGUI->getWindowWidth(), mpGUI->getWindowHeight(), mX + ((mWidth - backgroundWidth) / 2), mY + yOffset - (extraPixels/2), backgroundWidth, backgroundHeight);
+			glm::mat4 backgroundMatrix = calculateDrawMatrix(
+				mpGUI->getWindowWidth(),
+				mpGUI->getWindowHeight(),
+				mX + ((mWidth - backgroundWidth) / 2) + xOffset,
+				mY + yAlignmentOffset - (extraPixels/2) + yOffset,
+				backgroundWidth,
+				backgroundHeight);
 			mpBackground->bind();
 			mpBackground->getShader()->fillValue("matrix", backgroundMatrix);
 			mpBackground->getShader()->fillValue("color", glm::vec4(0.f, 0.f, 0.f, 0.3f));
@@ -203,7 +218,7 @@ namespace eyegui
                 bool hasNext = !words.empty();
 
                 // Go over lines to write paragraph
-                while (hasNext && abs(yPixelPen) <= mHeight)
+                while (hasNext && (abs(yPixelPen) <= mHeight || mOverflowHeight))
                 {
                     // Collect words in one line
                     std::vector<Word const *> line;
@@ -233,7 +248,7 @@ namespace eyegui
                     }
 
                     // If this is last line and after it still words left, replace it by some mark for overflow
-                    if (hasNext && abs(yPixelPen - lineHeight) > mHeight && overflowMark.pixelWidth <= mWidth)
+                    if (!mOverflowHeight && hasNext && (abs(yPixelPen - lineHeight) > mHeight) && (overflowMark.pixelWidth <= mWidth))
                     {
                         line.clear();
                         wordsPixelWidth = overflowMark.pixelWidth;
@@ -300,10 +315,19 @@ namespace eyegui
             // Vertex count will become zero
             rVertices.clear();
             rTextureCoordinates.clear();
+			mFlowHeight = 0;
         }
+		else
+		{
+			// Get height of all lines (yPixelPen is one line to low now, but some letters are in that line so do not subtract lineHeight)
+			mFlowHeight = (int)abs(yPixelPen);
 
-        // Get height of all lines (yPixelPen is one line to low now)
-        mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
+			// If overflow allowed, set height to flow height
+			if (mOverflowHeight)
+			{
+				mHeight = mFlowHeight;
+			}
+		}
     }
 
     std::vector<TextFlow::Word> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const

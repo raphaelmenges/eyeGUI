@@ -301,6 +301,7 @@ namespace eyegui
                 rChosenSuggestion.upText->draw(getStyle()->fontColor, rChosenSuggestion.alpha);
             }
 
+			// Pop own scissor from stack
             popScissor();
         }
 

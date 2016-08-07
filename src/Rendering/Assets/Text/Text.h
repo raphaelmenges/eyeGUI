@@ -42,7 +42,12 @@ namespace eyegui
         virtual ~Text() = 0;
 
         // Draw
-        virtual void draw(glm::vec4 color, float alpha, bool renderBackground = false) const = 0;
+        virtual void draw(
+			glm::vec4 color,
+			float alpha,
+			bool renderBackground = false,
+			int xOffset = 0,
+			int yOffset = 0) const = 0;
 
         // Set content and calls "calculateMesh"
         void setContent(std::u16string content);

@@ -61,6 +61,7 @@ namespace eyegui
         RenderItem const * mpBackground;
 		FontSize mFontSize;
 		std::unique_ptr<TextFlow> mupTextFlow;
+		LerpValue mTextFlowYOffset;
     };
 }
 

@@ -61,7 +61,12 @@ namespace eyegui
 		mY = y;
 	}
 
-    void TextSimple::draw(glm::vec4 color, float alpha, bool renderBackground) const
+	void TextSimple::draw(
+		glm::vec4 color,
+		float alpha,
+		bool renderBackground,
+		int xOffset,
+		int yOffset) const
     {
 		// TODO: render background if necessary
 
@@ -70,7 +75,12 @@ namespace eyegui
 
         // Calculate transformation matrix
         glm::mat4 matrix = glm::mat4(1.0f);
-        matrix = glm::translate(matrix, glm::vec3(mX, mpGUI->getWindowHeight() - mY, 0)); // Change coordinate system and translate to position
+        matrix = glm::translate(
+			matrix,
+			glm::vec3(
+				mX + xOffset,
+				mpGUI->getWindowHeight() - mY + yOffset,
+				0)); // Change coordinate system and translate to position
         matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
 
         // Bind atlas texture
