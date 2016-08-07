@@ -63,6 +63,7 @@ namespace eyegui
             std::shared_ptr<std::vector<glm::vec3> > spVertices;
             std::shared_ptr<std::vector<glm::vec2> > spTextureCoordinates;
             float pixelWidth;
+			std::vector<int> lettersXOffsets; // position after letter
         };
 
         // Calculate mesh (in pixel coordinates). Calls specialized method of subclasses

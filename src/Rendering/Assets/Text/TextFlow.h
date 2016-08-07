@@ -31,6 +31,9 @@ namespace eyegui
 			// Used to address back here in TextFlow after returning to using object
 			int flowWordsIndex;
 			int subFlowWordsIndex;
+
+			// Vector which saves the x offsets of single letters inside sub word
+			std::vector<int> lettersXOffsets; // position after letter
 		};
 
         // Constructor

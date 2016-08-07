@@ -131,7 +131,7 @@ namespace eyegui
 				mActiveWord = std::make_pair(newActiveWord, 0.f);
 
 				// Set cursor position to position after word
-				mCursorX = mActiveWord.first.back().x + mActiveWord.first.back().width;
+				mCursorX = mActiveWord.first.back().x + mActiveWord.first.front().lettersXOffsets.front();
 				mCursorY = mActiveWord.first.back().y;
 			}
 

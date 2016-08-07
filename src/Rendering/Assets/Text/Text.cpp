@@ -120,6 +120,7 @@ namespace eyegui
         Word word;
         word.spVertices = std::shared_ptr<std::vector<glm::vec3> >(new std::vector<glm::vec3>);
         word.spTextureCoordinates = std::shared_ptr<std::vector<glm::vec2> >(new std::vector<glm::vec2>);
+		word.lettersXOffsets.reserve(content.size());
 
         // Fill word with data
         float xPixelPen = 0;
@@ -148,7 +149,11 @@ namespace eyegui
             glm::vec2 textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
             glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
 
-            xPixelPen += scale * pGlyph->advance.x;
+			// Advance x pen
+			xPixelPen += scale * pGlyph->advance.x;
+
+			// Push back x offset of letters
+			word.lettersXOffsets.push_back(xPixelPen);
 
             // Fill into data blocks
             word.spVertices->push_back(vertexA);

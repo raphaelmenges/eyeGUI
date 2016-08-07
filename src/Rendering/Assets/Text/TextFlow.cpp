@@ -365,9 +365,10 @@ namespace eyegui
 						// Save information about layouting of (fit)word to flow words vector
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).x = (int)xPixelPen;
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).y = std::ceil(abs(yPixelPen) - lineHeight);
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).width = (int)line[i]->pixelWidth;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).width = (int)line.at(i)->pixelWidth;
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).flowWordsIndex = flowWordsIndex;
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).subFlowWordsIndex = subFlowWordsIndex;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).lettersXOffsets = line.at(i)->lettersXOffsets;
 
 						// Increment indices
 						int subIndexCount = (int)mFlowWords.at(flowWordsIndex).subWords.size();
