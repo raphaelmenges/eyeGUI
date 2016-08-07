@@ -50,7 +50,7 @@ namespace eyegui
         // Delete used face
         FT_Done_Face(*(mupFace.get()));
     }
-
+	
     void AtlasFont::resizeFontAtlases()
     {
         // Update pixel heights

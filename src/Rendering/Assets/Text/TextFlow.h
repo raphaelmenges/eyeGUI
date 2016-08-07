@@ -53,6 +53,9 @@ namespace eyegui
 		// Get height (interesting if overflowHeight is true)
 		int getHeight() const { return mHeight; }
 
+		// Get pixel width of space letter in used font
+		float getPixelWidthOfSpace() const { return mPixelOfSpace; }
+
     protected:
 
         // Calculate mesh (in pixel coordinates)
@@ -74,6 +77,7 @@ namespace eyegui
         int mHeight;
 		int mFlowWidth;
         int mFlowHeight;
+		float mPixelOfSpace;
 		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
     };
 }

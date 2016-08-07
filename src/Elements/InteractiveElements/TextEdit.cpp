@@ -44,9 +44,15 @@ namespace eyegui
 		// Fill members
 		mFontSize = fontSize;
 		mTextFlowYOffset.setValue(0);
+		mCursorPulse = 1.f;
 
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
+			shaders::Type::COLOR,
+			meshes::Type::QUAD);
+
+		// Fetch render item for cursor
+		mpCursor = mpAssetManager->fetchRenderItem(
 			shaders::Type::COLOR,
 			meshes::Type::QUAD);
 
@@ -86,6 +92,11 @@ namespace eyegui
 			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
 		}
 
+		// Update pulsing of cursor
+		float fullCircle = 2 * glm::pi<float>();
+		mCursorPulse += (tpf * fullCircle) / TEXT_EDIT_CURSOR_PULSE_DURATION;
+		while (mCursorPulse >= fullCircle) { mCursorPulse -= fullCircle;  }
+
         return adaptiveScale;
     }
 
@@ -102,16 +113,37 @@ namespace eyegui
             mpBackground->draw();
         }
 
+		// *** TEXT ***
+
 		// Push scissor to render text only within element
 		pushScissor(mX, mY, mWidth, mHeight);
+
+		// Y offset of text flow
+		int textFlowYOffset = (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)(mupTextFlow->getHeight() - mHeight)));
 
 		// Drawing of text flow
 		mupTextFlow->draw(
 			getStyle()->fontColor,
 			mAlpha,
 			false,
-			0.f,
-			mTextFlowYOffset.getValue() * glm::max(0.f, (float)(mupTextFlow->getHeight() - mHeight)));
+			0,
+			textFlowYOffset);
+
+		// Calculate matrix for cursor
+		glm::mat4 cursorDrawMatrix = calculateDrawMatrix(
+			mpLayout->getLayoutWidth(),
+			mpLayout->getLayoutHeight(),
+			mX,
+			mY - textFlowYOffset,
+			glm::max(1, (int)(TEXT_EDIT_CURSOR_RELATIVE_WIDTH * mupTextFlow->getPixelWidthOfSpace())),
+			(int)mupTextFlow->getLineHeight());
+
+		// Draw pulsing cursor over text
+		mpCursor->bind();
+		mpCursor->getShader()->fillValue("matrix", cursorDrawMatrix);
+		mpCursor->getShader()->fillValue("color", getStyle()->fontColor);
+		mpCursor->getShader()->fillValue("alpha", getMultipliedDimmedAlpha() * (glm::cos(mCursorPulse) * 0.5f) + 0.5f);
+		mpCursor->draw();
 
 		// Pop own scissor
 		popScissor();
@@ -130,6 +162,9 @@ namespace eyegui
     {
         // Call super
 		InteractiveElement::specialReset();
+
+		// Class resets
+		mCursorPulse = 1.f;
     }
 
     void TextEdit::specialInteract()

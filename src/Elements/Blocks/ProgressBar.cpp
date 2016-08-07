@@ -85,14 +85,14 @@ namespace eyegui
                     mpLayout->getLayoutHeight(),
                     mInnerX,
                     mInnerY,
-                    mInnerWidth * mProgress,
+                    (int)(mInnerWidth * mProgress),
                     mInnerHeight);
                 break;
             case ProgressBar::Direction::RIGHT_TO_LEFT:
                 progressDrawMatrix = calculateDrawMatrix(
                     mpLayout->getLayoutWidth(),
                     mpLayout->getLayoutHeight(),
-                    mInnerX + (mInnerWidth * (1.f - mProgress)),
+					(int)(mInnerX + (mInnerWidth * (1.f - mProgress))),
                     mInnerY,
                     mInnerWidth * mProgress,
                     mInnerHeight);
@@ -104,14 +104,14 @@ namespace eyegui
                     mInnerX,
                     mInnerY,
                     mInnerWidth,
-                    mInnerHeight * mProgress);
+					(int)(mInnerHeight * mProgress));
                 break;
             case ProgressBar::Direction::BOTTOM_TO_TOP:
                 progressDrawMatrix = calculateDrawMatrix(
                     mpLayout->getLayoutWidth(),
                     mpLayout->getLayoutHeight(),
                     mInnerX,
-                    mInnerY  + (mInnerHeight * (1.f - mProgress)),
+					(int)(mInnerY  + (mInnerHeight * (1.f - mProgress))),
                     mInnerWidth,
                     mInnerHeight * mProgress);
                 break;

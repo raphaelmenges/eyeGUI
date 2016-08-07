@@ -39,6 +39,7 @@ namespace eyegui
         mVerticalAlignment = verticalAlignment;
 		mFlowWidth = 0;
         mFlowHeight = 0;
+		mPixelOfSpace = 0.f;
 		mOverflowHeight = overflowHeight;
 
         // TransformAndSize has to be called before usage (no calculate mesh is called here)
@@ -158,7 +159,7 @@ namespace eyegui
         // OpenGL setup done in calling method
 
         // Get size of space character
-        float pixelOfSpace = 0;
+		mPixelOfSpace = 0;
 
         Glyph const * pGlyph = mpFont->getGlyph(mFontSize, u' ');
         if (pGlyph == NULL)
@@ -169,7 +170,7 @@ namespace eyegui
         }
         else
         {
-            pixelOfSpace = mScale * pGlyph->advance.x;
+			mPixelOfSpace = mScale * pGlyph->advance.x;
         }
 
         // Create mark for overflow
@@ -243,7 +244,7 @@ namespace eyegui
                             // Calculate next width of line
                             newWordsWithSpacesPixelWidth = std::ceil(
                                 (wordsPixelWidth + (float)words[wordIndex].pixelWidth) // Words size (old ones and new one)
-                                + (((float)line.size()) - 1.0f) * pixelOfSpace); // Spaces between words
+                                + (((float)line.size()) - 1.0f) * mPixelOfSpace); // Spaces between words
                         }
                     }
 
@@ -259,7 +260,7 @@ namespace eyegui
 					mFlowWidth = mFlowWidth < ((int) wordsPixelWidth + 1) ? ((int)wordsPixelWidth + 1) : mFlowWidth;
 
                     // Decide dynamic space for line
-                    float dynamicSpace = pixelOfSpace;
+                    float dynamicSpace = mPixelOfSpace;
                     if (line.size() > 1)
                     {
                         if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext && line.size() > 1) // Do not use dynamic space for last line

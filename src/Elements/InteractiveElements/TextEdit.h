@@ -59,9 +59,11 @@ namespace eyegui
 
         // Members
         RenderItem const * mpBackground;
+		RenderItem const * mpCursor;
 		FontSize mFontSize;
 		std::unique_ptr<TextFlow> mupTextFlow;
 		LerpValue mTextFlowYOffset;
+		float mCursorPulse; // [0..2*Pi]
     };
 }
 

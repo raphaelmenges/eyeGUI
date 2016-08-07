@@ -61,6 +61,8 @@ namespace eyegui
     static const float WORD_SUGGEST_SUGGESTION_DISTANCE = 4; // in size of letter which represents space
 	static const float TEXT_BACKGROUND_SIZE = 1.1f;
 	static const float GRID_FILL_EPSILON = 0.01f;  // since floating point precision does not sum everything to 100%
+	static const float TEXT_EDIT_CURSOR_PULSE_DURATION = 1.0f;
+	static const float TEXT_EDIT_CURSOR_RELATIVE_WIDTH = 0.2f;
 }
 
 #endif // DEFINES_H_

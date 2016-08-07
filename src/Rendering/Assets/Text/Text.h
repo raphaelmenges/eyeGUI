@@ -52,6 +52,9 @@ namespace eyegui
         // Set content and calls "calculateMesh"
         void setContent(std::u16string content);
 
+		// Get height of line
+		float getLineHeight() const { return mpFont->getLineHeight(mFontSize); }
+
     protected:
 
         // Struct for word
