@@ -148,6 +148,16 @@ namespace eyegui
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
 
+	std::vector<TextFlow::SubFlowWord> TextFlow::getSubFlowWord(int index) const
+	{
+		std::vector<TextFlow::SubFlowWord> result;
+		if (index < mFlowWords.size())
+		{
+			result = mFlowWords.at(index).subWords;
+		}
+		return result;
+	}
+
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
             float lineHeight, std::vector<glm::vec3>& rVertices,
@@ -155,6 +165,9 @@ namespace eyegui
     {
 		// Reset flow width to get longest line's width of this computation
 		mFlowWidth = 0;
+
+		// Clear vector which holds information about words in flow
+		mFlowWords.clear();
 
         // OpenGL setup done in calling method
 
@@ -201,15 +214,42 @@ namespace eyegui
             // Get words out of paragraph
             std::vector<Word> words;
             std::u16string wordDelimiter = u" ";
+			int contentStartIndex = 0;
             while ((pos = rPargraph.find(wordDelimiter)) != std::u16string::npos)
             {
+				// Create structure which holds information about word
+				mFlowWords.push_back(FlowWord());
+				mFlowWords.back().contentStartIndex = contentStartIndex;
+				mFlowWords.back().contentEndIndex = contentStartIndex + (int)pos;
+
+				// Extract current token aka word
                 token = rPargraph.substr(0, pos);
+
+				// Erase token from paragraph
                 rPargraph.erase(0, pos + wordDelimiter.length());
-                failure |= !insertFitWord(words, token, mWidth, mScale);
+
+				// Create vector of fitting words
+				std::vector<Word> fitWords;
+                failure |= !insertFitWord(fitWords, token, mWidth, mScale);
+
+				// Create as many sub flow words as fit words are added to global words vector
+				mFlowWords.back().subWords.resize(fitWords.size());
+
+				// Set content start index for next run
+				contentStartIndex = contentStartIndex + (int)pos + (int)wordDelimiter.length();
+
+				// Insert fitting words to global words vector
+				words.insert(words.end(), fitWords.begin(), fitWords.end());
             }
 
             // Add last token from paragraph as well
-            failure |= !insertFitWord(words, rPargraph, mWidth, mScale);
+			std::vector<Word> fitWords;
+            failure |= !insertFitWord(fitWords, rPargraph, mWidth, mScale);
+			mFlowWords.push_back(FlowWord());
+			mFlowWords.back().contentStartIndex = contentStartIndex;
+			mFlowWords.back().contentEndIndex = contentStartIndex + (int)rPargraph.length();
+			mFlowWords.back().subWords.resize(fitWords.size());
+			words.insert(words.end(), fitWords.begin(), fitWords.end());
 
             // Failure appeared, forget it
             if (!failure)
@@ -217,6 +257,8 @@ namespace eyegui
                 // Prepare some values
                 uint wordIndex = 0;
                 bool hasNext = !words.empty();
+				int flowWordsIndex = 0;
+				int flowWordsSubIndex = 0;
 
                 // Go over lines to write paragraph
                 while (hasNext && (abs(yPixelPen) <= mHeight || mOverflowHeight))
@@ -300,6 +342,20 @@ namespace eyegui
                             rTextureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
                         }
 
+						// Save information about layouting of (fit)word to flow words vector
+						mFlowWords.at(flowWordsIndex).subWords.at(flowWordsSubIndex).x = (int)xPixelPen;
+						mFlowWords.at(flowWordsIndex).subWords.at(flowWordsSubIndex).y = std::ceil(abs(yPixelPen) - lineHeight);
+						mFlowWords.at(flowWordsIndex).subWords.at(flowWordsSubIndex).width = (int)line[i]->pixelWidth;
+
+						// Increment indices
+						int subIndexCount = (int)mFlowWords.at(flowWordsIndex).subWords.size();
+						flowWordsSubIndex++;
+						if (flowWordsSubIndex >= subIndexCount)
+						{
+							flowWordsIndex++;
+							flowWordsSubIndex = 0;
+						}
+
                         // Advance xPen
                         xPixelPen += dynamicSpace + line[i]->pixelWidth;
                     }
@@ -320,8 +376,8 @@ namespace eyegui
         }
 		else
 		{
-			// Get height of all lines (yPixelPen is one line to low now, but some letters are in that line so do not subtract lineHeight)
-			mFlowHeight = (int)abs(yPixelPen);
+			// Get height of all lines (yPixelPen is one line to low now)
+			mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
 
 			// If overflow allowed, set height to flow height
 			if (mOverflowHeight)
@@ -331,7 +387,7 @@ namespace eyegui
 		}
     }
 
-    std::vector<TextFlow::Word> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
+    std::vector<Text::Word> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
     {
         // Calculate word from content
         Word word = calculateWord(content, scale);

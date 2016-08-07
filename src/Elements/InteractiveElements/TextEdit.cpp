@@ -56,6 +56,11 @@ namespace eyegui
 			shaders::Type::COLOR,
 			meshes::Type::QUAD);
 
+		// Fetch render item for background of active word
+		mpActiveWordBackground = mpAssetManager->fetchRenderItem(
+			shaders::Type::COLOR,
+			meshes::Type::QUAD);
+
 		// Create text flow
 		mupTextFlow = std::move(mpAssetManager->createTextFlow(
 			fontSize,
@@ -86,7 +91,8 @@ namespace eyegui
 			float offsetSpeed = ((float)(4 * (y - (mHeight / 2))) / (float)mHeight); // [-0.5, 0.5]
 
 			// Normalize speed by height of text flow
-			offsetSpeed /= (float)mupTextFlow->getHeight() / (float)mHeight;
+			float textFlowHeight = (mupTextFlow->getHeight() + mupTextFlow->getLineHeight()); // add line height to avoid cutting letters like 'p'
+			offsetSpeed /= textFlowHeight / (float)mHeight;
 
 			// Update relative offset
 			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
@@ -120,6 +126,26 @@ namespace eyegui
 
 		// Y offset of text flow
 		int textFlowYOffset = (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)(mupTextFlow->getHeight() - mHeight)));
+
+		// Draw background behind active word (or better said behind active sub words
+		mpActiveWordBackground->bind();
+		mpActiveWordBackground->getShader()->fillValue("color", glm::vec4(1,0,0,1));
+		mpActiveWordBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
+		for (const auto& rSubFlowWord : mupTextFlow->getSubFlowWord(5)) // TODO test
+		{
+			// Calculate draw matrix
+			glm::mat4 activeWordBackgroundDrawMatrix = calculateDrawMatrix(
+				mpLayout->getLayoutWidth(),
+				mpLayout->getLayoutHeight(),
+				mX + rSubFlowWord.x,
+				mY + rSubFlowWord.y - textFlowYOffset,
+				rSubFlowWord.width,
+				(int)mupTextFlow->getLineHeight());
+
+			// Draw active sub word's background
+			mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
+			mpActiveWordBackground->draw();
+		}
 
 		// Drawing of text flow
 		mupTextFlow->draw(

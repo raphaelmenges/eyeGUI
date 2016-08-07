@@ -20,6 +20,14 @@ namespace eyegui
     {
     public:
 
+		// Struct for sub flow word (if word is devided to fit into lines)
+		struct SubFlowWord
+		{
+			int x;
+			int y;
+			int width;
+		};
+
         // Constructor
         TextFlow(
             GUI const * pGUI,
@@ -56,7 +64,20 @@ namespace eyegui
 		// Get pixel width of space letter in used font
 		float getPixelWidthOfSpace() const { return mPixelOfSpace; }
 
+		// Get position and width of certain word by index. Returns empty vector if not found.
+		// Position is given in flow coordinates
+		std::vector<SubFlowWord> getSubFlowWord(int index) const;
+
     protected:
+
+		// Struct for word in flow which is used to get a word at given coordinate in text flow
+		struct FlowWord
+		{
+			int contentStartIndex; // End index in content
+			int contentEndIndex; // Start index in content
+			std::vector<SubFlowWord> subWords; // Can be divided into more words to fit into given space
+			// Height is given by line height
+		};
 
         // Calculate mesh (in pixel coordinates)
         virtual void specialCalculateMesh(
@@ -79,7 +100,8 @@ namespace eyegui
         int mFlowHeight;
 		float mPixelOfSpace;
 		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
-    };
+		std::vector<FlowWord> mFlowWords; // holding information to make text manipulation possible
+	};
 }
 
 #endif // TEXT_FLOW_H_
