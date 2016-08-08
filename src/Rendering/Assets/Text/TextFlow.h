@@ -35,8 +35,7 @@ namespace eyegui
 		// Struct for word in flow which is used to get a word at given coordinate in text flow
 		struct FlowWord
 		{
-			int contentStartIndex; // end index in content
-			int contentEndIndex; // start index in content
+			int contentIndex; // index in content where flow word starts
 			std::vector<SubFlowWord> subWords; // can be divided into multiple sub words to fit into given space
 			int index; // index in text flow's vector for readdressing
 		};
@@ -83,6 +82,9 @@ namespace eyegui
 
 		// Use position in flow coordinates to find a word. Returns false if not found
 		bool getFlowWord(int x, int y, FlowWord& rFlowWord) const;
+
+		// Add content after index of exisiting content
+		void addContent(int index, std::u16string content);
 
     protected:
 

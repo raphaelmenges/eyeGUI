@@ -208,6 +208,9 @@ namespace eyegui
 		// Move cursor a certain amount of words
 		void moveCursorOverWordsInTextEdit(std::string id, int wordCount);
 
+		// Add content at cursor
+		void addContentAtCursorInTextEdit(std::string id, std::u16string content);
+
         // Add brick to stack
         void addBrickToStack(
             std::string id,

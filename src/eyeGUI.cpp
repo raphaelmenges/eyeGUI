@@ -411,6 +411,11 @@ namespace eyegui
 		pLayout->moveCursorOverWordsInTextEdit(id, wordCount);
 	}
 
+	void addContentAtCursorInTextEdit(Layout* pLayout, std::string id, std::u16string content)
+	{
+		pLayout->addContentAtCursorInTextEdit(id, content);
+	}
+
     void addBrickToStack(
         Layout* pLayout,
         std::string id,

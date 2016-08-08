@@ -734,6 +734,19 @@ namespace eyegui
 		}
 	}
 
+	void Layout::addContentAtCursorInTextEdit(std::string id, std::u16string content)
+	{
+		TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+		if (pTextEdit != NULL)
+		{
+			pTextEdit->addContentAtCursor(content);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+		}
+	}
+
     void Layout::addBrickToStack(
         std::string id,
         std::string filepath,

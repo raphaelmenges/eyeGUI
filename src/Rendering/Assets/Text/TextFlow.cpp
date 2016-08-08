@@ -182,6 +182,15 @@ namespace eyegui
 		return false;
 	}
 
+	void TextFlow::addContent(int index, std::u16string content)
+	{
+		if (index < mContent.size())
+		{
+			content.insert(index, content);
+			calculateMesh();
+		}
+	}
+
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
             float lineHeight, std::vector<glm::vec3>& rVertices,
@@ -243,8 +252,7 @@ namespace eyegui
             {
 				// Create structure which holds information about word
 				mFlowWords.push_back(FlowWord());
-				mFlowWords.back().contentStartIndex = contentStartIndex;
-				mFlowWords.back().contentEndIndex = contentStartIndex + (int)pos;
+				mFlowWords.back().contentIndex = contentStartIndex;
 
 				// Extract current token aka word
                 token = rPargraph.substr(0, pos);
@@ -273,8 +281,7 @@ namespace eyegui
 			std::vector<Word> fitWords;
             failure |= !insertFitWord(fitWords, rPargraph, mWidth, mScale);
 			mFlowWords.push_back(FlowWord());
-			mFlowWords.back().contentStartIndex = contentStartIndex;
-			mFlowWords.back().contentEndIndex = contentStartIndex + (int)rPargraph.length();
+			mFlowWords.back().contentIndex = contentStartIndex;
 			mFlowWords.back().subWords.resize(fitWords.size());
 			mFlowWords.back().index = mFlowWords.size() - 1;
 			words.insert(words.end(), fitWords.begin(), fitWords.end());

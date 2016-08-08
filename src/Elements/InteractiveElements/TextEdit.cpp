@@ -183,6 +183,26 @@ namespace eyegui
 		}
 	}
 
+	void TextEdit::addContentAtCursor(std::u16string content)
+	{
+		// TODO: only works when there is a active word, must also work for empty text
+		if (mupActiveWord != NULL)
+		{
+			// Find out, where the cursor is in content
+			int contentIndex = mupActiveWord->contentIndex;
+			for (int i = 0; i < mCursorSubWordIndex; i++)
+			{
+				contentIndex += (int)mupActiveWord->subWords.at(i).lettersXOffsets.size();
+			}
+			contentIndex += mCursorLetterIndex; // TODO: how to handle -1 ?
+
+			// Tell text flow to add content there
+			mupTextFlow->addContent(contentIndex, content);
+
+			// TODO: set cursor to end of insertion
+		}
+	}
+
     float TextEdit::specialUpdate(float tpf, Input* pInput)
     {
         // Super call

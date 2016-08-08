@@ -790,6 +790,14 @@ namespace eyegui
 	*/
 	void moveCursorOverWordsInTextEdit(Layout* pLayout, std::string id, int wordCount);
 
+	//! Add text at cursor in text edit element.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param content is added text.
+	*/
+	void addContentAtCursorInTextEdit(Layout* pLayout, std::string id, std::u16string content);
+
     //! Add brick to stack
     /*!
     \param pLayout pointer to layout.

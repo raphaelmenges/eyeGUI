@@ -43,6 +43,9 @@ namespace eyegui
 		// Negative word count indicates leftward movement, positive rightward movement
 		void moveCursorOverWords(int wordCount);
 
+		// Adds content behind cursor position
+		void addContentAtCursor(std::u16string content);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
