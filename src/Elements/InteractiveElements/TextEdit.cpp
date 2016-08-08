@@ -185,7 +185,10 @@ namespace eyegui
 
 	void TextEdit::addContentAtCursor(std::u16string content)
 	{
-		// TODO: only works when there is a active word, must also work for empty text
+        // When there is already text and a active word, use that cursor position
+        TextFlow::FlowWord flowWord;
+        int subWordIndex = 0;
+        int letterIndex = 0;
 		if (mupActiveWord != NULL)
 		{
 			// Find out, where the cursor is in content
@@ -194,13 +197,28 @@ namespace eyegui
 			{
 				contentIndex += (int)mupActiveWord->subWords.at(i).lettersXOffsets.size();
 			}
-			contentIndex += mCursorLetterIndex; // TODO: how to handle -1 ?
+            contentIndex += mCursorLetterIndex; // -1 is ok here, since even at start of text, it should be inserted after -1 at 0
 
-			// Tell text flow to add content there
-			mupTextFlow->addContent(contentIndex, content);
-
-			// TODO: set cursor to end of insertion
+            // Tell text flow insert add content there
+            if(mupTextFlow->insertContent(contentIndex, content, flowWord, subWordIndex, letterIndex))
+            {
+                // Update active word and cursor indices stuff
+                setActiveWord(flowWord, false);
+                mCursorSubWordIndex = subWordIndex;
+                mCursorLetterIndex = letterIndex;
+            }
 		}
+        else
+        {
+            // No active word and therefore no cursor position
+            if(mupTextFlow->insertContent(-1, content, flowWord, subWordIndex, letterIndex))
+            {
+                // Update active word and cursor indices stuff
+                setActiveWord(flowWord, false);
+                mCursorSubWordIndex = subWordIndex;
+                mCursorLetterIndex = letterIndex;
+            }
+        }
 	}
 
     float TextEdit::specialUpdate(float tpf, Input* pInput)
@@ -367,8 +385,8 @@ namespace eyegui
 			textFlowYOffset);
 
 		// Calculate x and y of cursor
-		int cursorX = 0;
-		int cursorY = 0;
+        int cursorX = 0; // fallback when there is no active word
+        int cursorY = 0; // fallback when there is no active word
 
 		// If there is a active word, get cursor position
 		if (mupActiveWord != NULL)

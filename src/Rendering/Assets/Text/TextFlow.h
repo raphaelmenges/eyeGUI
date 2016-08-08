@@ -83,8 +83,14 @@ namespace eyegui
 		// Use position in flow coordinates to find a word. Returns false if not found
 		bool getFlowWord(int x, int y, FlowWord& rFlowWord) const;
 
-		// Add content after index of exisiting content
-		void addContent(int index, std::u16string content);
+        // Get flow word, sub word index and letter index by content index. Returns whether successfull.
+        // rLetterIndex of -1 symbolizes position int front of first letter
+        bool getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const;
+
+        // Insert content after index of exisiting content.
+        // Fills resulting information about flow word, sub word index and letter index at end of inseration.
+        // Returns whether successull
+        bool insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
 
     protected:
 

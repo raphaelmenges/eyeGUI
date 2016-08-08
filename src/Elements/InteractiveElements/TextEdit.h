@@ -88,7 +88,7 @@ namespace eyegui
 		FontSize mFontSize;
 
 		// Active word and cursor
-		std::unique_ptr<TextFlow::FlowWord> mupActiveWord; // unique pointer to active flow word
+        std::unique_ptr<TextFlow::FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
 		int mCursorSubWordIndex; // inside active sub word
 		int mCursorLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word
 		

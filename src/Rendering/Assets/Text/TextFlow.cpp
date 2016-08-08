@@ -182,13 +182,92 @@ namespace eyegui
 		return false;
 	}
 
-	void TextFlow::addContent(int index, std::u16string content)
+    bool TextFlow::getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const
+    {
+        // Go over flow words and search index
+        if(contentIndex >= 0 && contentIndex < mContent.length())
+        {
+            // TODO: Not correct! Tends do crash here!
+
+            // Calculate flow index
+            int flowIndex = 0;
+            for(; flowIndex < (int)mFlowWords.size(); flowIndex++)
+            {
+                if(mFlowWords.at(flowIndex).contentIndex > contentIndex)
+                {
+                    // Found correct flow words index
+                    flowIndex--; // TODO: always in range?
+                    break;
+                }
+                else if(mFlowWords.at(flowIndex).contentIndex == contentIndex)
+                {
+                    // Special case where letter index is -1 because in front of flow word
+                    rFlowWord = mFlowWords.at(flowIndex);
+                    rSubWordIndex = 0;
+                    rLetterIndex = -1;
+                    return false;
+                }
+            }
+
+            // Found index, so assume it as searched flow word
+            FlowWord flowWord = mFlowWords.at(flowIndex);
+
+            // Fill sub word index and letter index
+            int innerIndex = contentIndex - flowWord.contentIndex;
+
+            // Go over subwords and search inner index
+            for(int subWordIndex = 0; subWordIndex < (int)flowWord.subWords.size(); subWordIndex++)
+            {
+                // TODO: Replace call by method of upcoming FlowWord class
+
+                // Subtract letter count of sub words until correct sub word index is found
+                int subWordLetterCount = flowWord.subWords.at(subWordIndex).lettersXOffsets.size();
+                if((innerIndex - subWordLetterCount) > 0)
+                {
+                    // Subtract letters of subword from inner letter index and go on with loop
+                    innerIndex -= subWordLetterCount;
+                }
+                else
+                {
+                    // Set references and return true
+                    rFlowWord = flowWord;
+                    rSubWordIndex = subWordIndex;
+                    rLetterIndex = innerIndex;
+                    return true;
+                }
+            }
+        }
+        else if(contentIndex == (int)mContent.size())
+        {
+            // TODO: Replace call by method of upcoming FlowWord class
+            rFlowWord = mFlowWords.back();
+            rSubWordIndex = (int)rFlowWord.subWords.size() - 1;
+            rLetterIndex = (int)rFlowWord.subWords.at(rSubWordIndex).lettersXOffsets.size();
+            return true;
+        }
+
+        return false;
+    }
+
+    bool TextFlow::insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
 	{
-		if (index < mContent.size())
+        // Index has to be advanced by one to be insert after given index
+        int contentIndex = index + 1;
+        if (contentIndex < (int)mContent.size())
 		{
-			content.insert(index, content);
+            // Insert at given index
+            mContent.insert(contentIndex, content);
 			calculateMesh();
-		}
+            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+        }
+        else if(contentIndex == (int)mContent.size())
+        {
+            // Append to existing content
+            mContent.append(content);
+            calculateMesh();
+            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+        }
+        return false;
 	}
 
     void TextFlow::specialCalculateMesh(
