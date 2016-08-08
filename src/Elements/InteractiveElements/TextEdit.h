@@ -69,7 +69,7 @@ namespace eyegui
 		int calculateTextFlowYOffset() const;
 
 		// Set new active word
-		void setActiveWord(const std::vector<TextFlow::SubFlowWord>& rSubFlowWords, bool setCursorToEnd);
+		void setActiveWord(const TextFlow::FlowWord& rFlowWord, bool setCursorToEnd);
 
 		// Typedef
 		typedef std::pair<std::vector<TextFlow::SubFlowWord>, float> SubFlowWordAlphaPair;
@@ -85,12 +85,13 @@ namespace eyegui
 		FontSize mFontSize;
 
 		// Active word and cursor
-		std::unique_ptr<SubFlowWordAlphaPair> mupActiveWord; // unique pointer to active word
-		int mCursorSubFlowWordIndex; // inside active sub word
-		int mCursorSubFlowLetterIndex; // inside active sub word's letters
+		std::unique_ptr<TextFlow::FlowWord> mupActiveWord; // unique pointer to active flow word
+		int mCursorSubWordIndex; // inside active sub word
+		int mCursorLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word
 		
 		// Animation related members
 		float mCursorPulse; // [0..2*Pi]
+		float mActiveWordFading; // [0..AnimationDuration]
 		std::vector<SubFlowWordAlphaPair> mPreviousActiveWords; // float is initialized with animation
 																								 // duration and decremented at each update
     };

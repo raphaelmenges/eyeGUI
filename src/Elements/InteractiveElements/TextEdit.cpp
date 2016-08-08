@@ -47,8 +47,9 @@ namespace eyegui
 		// Fill members
 		mFontSize = fontSize;
 		mTextFlowYOffset.setValue(0);
+		mActiveWordFading = 0;
 		mCursorPulse = 1.f;
-		mCursorSubFlowWordIndex = 0;
+		mCursorSubWordIndex = 0;
 
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
@@ -85,47 +86,60 @@ namespace eyegui
 		// When there is no active word, there is no text
 		if (mupActiveWord != NULL)
 		{
-			// TODO: negative value
-			for (int i = 0; i < letterCount; i++)
+			// Decide direction
+			bool rightward = letterCount > 0;
+			for (int i = 0; i < glm::abs(letterCount); i++)
 			{
 				// Get index of current flow word
-				int flowWordIndex = mupActiveWord->first.at(mCursorSubFlowWordIndex).flowWordIndex;
+				int flowWordIndex = mupActiveWord->index;
 
 				// Get letter count of current subword
-				int letterCount = mupActiveWord->first.at(mCursorSubFlowWordIndex).lettersXOffsets.size();
+				int letterCount = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size();
 
-				// Try to increment letter index
-				mCursorSubFlowLetterIndex++;
+				// Try to in/decrement letter index
+				rightward ? mCursorLetterIndex++ : mCursorLetterIndex--;
 
 				// Check, whether letter index is still in range
-				if (mCursorSubFlowLetterIndex >= letterCount)
+				if (mCursorLetterIndex >= letterCount || mCursorLetterIndex < -1)
 				{
 					// Get sub word count of active word
-					int subWordCount = mupActiveWord->first.size();
+					int subWordCount = (int)mupActiveWord->subWords.size();
 
-					// Try to increment sub word index
-					mCursorSubFlowWordIndex++;
+					// Try to in/decrement sub word index
+					rightward ? mCursorSubWordIndex++ : mCursorSubWordIndex--;
 
-					// Reset letter to first index (assuming that every subword has at least one letter
-					mCursorSubFlowLetterIndex = 0;
+					// Reset letter before first index
+					mCursorLetterIndex = -1;
 
 					// Check, whether sub word index is still in range
-					if (mCursorSubFlowWordIndex >= subWordCount)
+					if (mCursorSubWordIndex >= subWordCount || mCursorSubWordIndex < 0)
 					{
 						// Reset index to first sub word
-						mCursorSubFlowWordIndex = 0;
+						mCursorSubWordIndex = 0;
 
-						// Try to get next word
-						auto nextFlowWord = mupTextFlow->getSubFlowWords(flowWordIndex + 1);
-						if (!nextFlowWord.empty())
+						// Try to get next word in flow
+						TextFlow::FlowWord newActiveWord;
+						if (mupTextFlow->getFlowWord(
+							rightward ? flowWordIndex + 1 : flowWordIndex - 1,
+							newActiveWord))
 						{
-							setActiveWord(nextFlowWord, false);
+							setActiveWord(newActiveWord, false);
+
+							// Next word found, so set cursor at last subword behind last letter
+							if (!rightward)
+							{
+								mCursorSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
+								mCursorLetterIndex = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size() - 1;
+							}
 						}
 						else
 						{
-							// Set to last word and last position
-							mCursorSubFlowWordIndex = mupActiveWord->first.size() - 1;
-							mCursorSubFlowLetterIndex = mupActiveWord->first.at(mCursorSubFlowWordIndex).lettersXOffsets.size() - 1;
+							// Set to last word and last position when rightwarded, otherwise it is leftwarded and already set to first subword and before first letter
+							if (rightward)
+							{
+								mCursorSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
+								mCursorLetterIndex = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size() - 1;
+							}
 						}
 					}
 				}
@@ -135,7 +149,38 @@ namespace eyegui
 
 	void TextEdit::moveCursorOverWords(int wordCount)
 	{
-		std::cout << "move cursor over words" << std::endl;
+		// When there is no active word, there is no text
+		if (mupActiveWord != NULL)
+		{
+			// Decide direction
+			bool rightward = wordCount > 0;
+			for (int i = 0; i < glm::abs(wordCount); i++)
+			{
+				// Count how many letters have to be skipped to get to next word
+				int letterCount = 0;
+				if (rightward)
+				{
+					// Collect left letters of all subwords
+					for (int j = mCursorSubWordIndex; j < mupActiveWord->subWords.size(); j++)
+					{
+						letterCount += (int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
+					}
+					letterCount -= mCursorLetterIndex; // even ok for -1 when cursor at front of word
+				}
+				else
+				{
+					// Collect letters of lefhand subwords
+					for (int j = 0; j < mCursorSubWordIndex; j++)
+					{
+						letterCount -= (int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
+					}
+					letterCount -= glm::abs(mCursorLetterIndex) + 1; // TODO: not correct, yet
+				}
+
+				// Delegate it to move by letters method
+				moveCursorOverLetters(letterCount);
+			}
+		}
 	}
 
     float TextEdit::specialUpdate(float tpf, Input* pInput)
@@ -157,10 +202,10 @@ namespace eyegui
 				[](const auto& i) { return i.second <= 0; }),
 			mPreviousActiveWords.end());
 
-		// Update active word
+		// Update active word's fading
 		if (mupActiveWord != NULL)
 		{
-			mupActiveWord->second = glm::min(mupActiveWord->second + tpf, mpLayout->getConfig()->animationDuration);
+			mActiveWordFading = glm::min(mActiveWordFading + tpf, mpLayout->getConfig()->animationDuration);
 		}
 
 		// Update pulsing of cursor
@@ -195,16 +240,15 @@ namespace eyegui
 			// *** ACTIVE WORD ***
 
 			// Get currently selected word
-			auto newActiveWord = mupTextFlow->getSubFlowWords(flowX, flowY + oldTextFlowYOffset);
+			TextFlow::FlowWord newActiveWord;
 
 			// Decide whether active word has changed
-			bool overwriteActiveWord = false;
-			if (!newActiveWord.empty())
+			if (mupTextFlow->getFlowWord(flowX, flowY + oldTextFlowYOffset, newActiveWord))
 			{
 				if (mupActiveWord != NULL)
 				{
 					// Compare flow word index
-					if (newActiveWord.at(0).flowWordIndex != mupActiveWord->first.at(0).flowWordIndex)
+					if (newActiveWord.index != mupActiveWord->index)
 					{
 						// Flow word index is different, use it!
 						setActiveWord(newActiveWord, true);
@@ -281,14 +325,14 @@ namespace eyegui
 		// Draw currently active one
 		if (mupActiveWord != NULL)
 		{
-			for (const auto& rSubFlowWord : mupActiveWord->first)
+			for (const auto& rSubFlowWord : mupActiveWord->subWords)
 			{
 				// Calculate draw matrix
 				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord.x, rSubFlowWord.y, rSubFlowWord.width);
 
 				// Draw active sub word's background
 				mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
-				mpActiveWordBackground->getShader()->fillValue("alpha", (mupActiveWord->second / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
+				mpActiveWordBackground->getShader()->fillValue("alpha", (mActiveWordFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
 
 				mpActiveWordBackground->draw();
 			}
@@ -309,9 +353,15 @@ namespace eyegui
 		// If there is a active word, get cursor position
 		if (mupActiveWord != NULL)
 		{
-			cursorX = mupActiveWord->first.at(mCursorSubFlowWordIndex).x
-				+ mupActiveWord->first.at(mCursorSubFlowWordIndex).lettersXOffsets.at(mCursorSubFlowLetterIndex);
-			cursorY = mupActiveWord->first.at(mCursorSubFlowWordIndex).y;
+			int letterOffsetX = 0;
+			if (mCursorLetterIndex >= 0)
+			{
+				letterOffsetX = mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.at(mCursorLetterIndex);
+			}
+
+			cursorX = mupActiveWord->subWords.at(mCursorSubWordIndex).x
+				+ letterOffsetX;
+			cursorY = mupActiveWord->subWords.at(mCursorSubWordIndex).y;
 		}
 
 		// Calculate matrix for cursor
@@ -378,27 +428,28 @@ namespace eyegui
 		return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getHeight() + mupTextFlow->getLineHeight()) - mHeight)));
 	}
 
-	void TextEdit::setActiveWord(const std::vector<TextFlow::SubFlowWord>& rSubFlowWords, bool setCursorToEnd)
+	void TextEdit::setActiveWord(const TextFlow::FlowWord& rFlowWord, bool setCursorToEnd)
 	{
 		if (mupActiveWord != NULL)
 		{
 			mPreviousActiveWords.push_back(
 				std::make_pair(
-					mupActiveWord->first,
-					mupActiveWord->second));
+					mupActiveWord->subWords,
+					mActiveWordFading));
 		}
 
 		// Save active word in memmber
-		mupActiveWord = std::unique_ptr<SubFlowWordAlphaPair>(new SubFlowWordAlphaPair(rSubFlowWords, 0.f));
+		mupActiveWord = std::unique_ptr<TextFlow::FlowWord>(new TextFlow::FlowWord(rFlowWord));
+		mActiveWordFading = 0.f;
 
 		// Set cursor
 		if (setCursorToEnd)
 		{
 			// Set cursor position to last subword of active word
-			mCursorSubFlowWordIndex = rSubFlowWords.size() - 1;
+			mCursorSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
 
 			// Set cursor position to last letter in subword
-			mCursorSubFlowLetterIndex = rSubFlowWords.at(mCursorSubFlowWordIndex).lettersXOffsets.size() - 1;
+			mCursorLetterIndex = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size() - 1;
 		}
 
 		// Reset cursor pulse to make it directly visible

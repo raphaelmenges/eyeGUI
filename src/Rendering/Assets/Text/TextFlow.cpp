@@ -148,21 +148,24 @@ namespace eyegui
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
 
-	std::vector<TextFlow::SubFlowWord> TextFlow::getSubFlowWords(int index) const
+	bool TextFlow::getFlowWord(int index, TextFlow::FlowWord& rFlowWord) const
 	{
-		std::vector<TextFlow::SubFlowWord> result;
 		if (index < mFlowWords.size())
 		{
-			result = mFlowWords.at(index).subWords;
+			rFlowWord = mFlowWords.at(index);
+			return true;
 		}
-		return result;
+		else
+		{
+			return false;
+		}
 	}
 
-	std::vector<TextFlow::SubFlowWord>TextFlow::getSubFlowWords(int x, int y) const
+	bool TextFlow::getFlowWord(int x, int y, FlowWord& rFlowWord) const
 	{
-		for (const auto& rFlowWord : mFlowWords)
+		for (const auto& rTestFlowWord : mFlowWords)
 		{
-			for (const auto& rSubFlowWord : rFlowWord.subWords)
+			for (const auto& rSubFlowWord : rTestFlowWord.subWords)
 			{
 				// Check whether coordinates inside sub word
 				if (x >= rSubFlowWord.x
@@ -170,12 +173,13 @@ namespace eyegui
 					&& y >= rSubFlowWord.y
 					&& y < rSubFlowWord.y + getLineHeight())
 				{
-					// If check is true, return sub words instantly
-					return rFlowWord.subWords;
+					// If check is true, return flow word
+					rFlowWord = rTestFlowWord;
+					return true;
 				}
 			}
 		}
-		return std::vector<TextFlow::SubFlowWord>();
+		return false;
 	}
 
     void TextFlow::specialCalculateMesh(
@@ -255,6 +259,9 @@ namespace eyegui
 				// Create as many sub flow words as fit words are added to global words vector
 				mFlowWords.back().subWords.resize(fitWords.size());
 
+				// Save index of flow word in vector for addressing by using class
+				mFlowWords.back().index = mFlowWords.size() - 1;
+
 				// Set content start index for next run
 				contentStartIndex = contentStartIndex + (int)pos + (int)wordDelimiter.length();
 
@@ -269,6 +276,7 @@ namespace eyegui
 			mFlowWords.back().contentStartIndex = contentStartIndex;
 			mFlowWords.back().contentEndIndex = contentStartIndex + (int)rPargraph.length();
 			mFlowWords.back().subWords.resize(fitWords.size());
+			mFlowWords.back().index = mFlowWords.size() - 1;
 			words.insert(words.end(), fitWords.begin(), fitWords.end());
 
             // Failure appeared, forget it
@@ -366,8 +374,6 @@ namespace eyegui
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).x = (int)xPixelPen;
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).y = std::ceil(abs(yPixelPen) - lineHeight);
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).width = (int)line.at(i)->pixelWidth;
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).flowWordIndex = flowWordsIndex;
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).subFlowWordIndex = subFlowWordsIndex;
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).lettersXOffsets = line.at(i)->lettersXOffsets;
 
 						// Increment indices

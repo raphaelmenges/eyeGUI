@@ -28,10 +28,6 @@ namespace eyegui
 			int width; // pixel width
 			// Height is given by line height
 
-			// Used to address back here in TextFlow after returning to using object
-			int flowWordIndex;
-			int subFlowWordIndex;
-
 			// Vector which saves the x offsets of single letters inside sub word
 			std::vector<int> lettersXOffsets; // position after letter
 		};
@@ -39,9 +35,10 @@ namespace eyegui
 		// Struct for word in flow which is used to get a word at given coordinate in text flow
 		struct FlowWord
 		{
-			int contentStartIndex; // End index in content
-			int contentEndIndex; // Start index in content
-			std::vector<SubFlowWord> subWords; // Can be divided into multiple sub words to fit into given space
+			int contentStartIndex; // end index in content
+			int contentEndIndex; // start index in content
+			std::vector<SubFlowWord> subWords; // can be divided into multiple sub words to fit into given space
+			int index; // index in text flow's vector for readdressing
 		};
 
         // Constructor
@@ -80,12 +77,12 @@ namespace eyegui
 		// Get pixel width of space letter in used font
 		float getPixelWidthOfSpace() const { return mPixelOfSpace; }
 
-		// Get data of certain word by index. Returns empty vector if not found.
+		// Get data of certain word by index. Returns false if not found.
 		// Position is given in flow coordinates
-		std::vector<SubFlowWord> getSubFlowWords(int index) const;
+		bool getFlowWord(int index, FlowWord& rFlowWord) const;
 
-		// Use position in flow coordinates to find a word. Returns empty vector if not found
-		std::vector<SubFlowWord> getSubFlowWords(int x, int y) const;
+		// Use position in flow coordinates to find a word. Returns false if not found
+		bool getFlowWord(int x, int y, FlowWord& rFlowWord) const;
 
     protected:
 

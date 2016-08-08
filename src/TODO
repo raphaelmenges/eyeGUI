@@ -2,13 +2,12 @@
 
 ## New features
 - TextEdit element for easy text editing
-  - Move cursor across complete content (maybe method in TextFlow to get previous word?) via interface
 	- Add letters / text at position of cursor
 	- Delete letters at position of cursor
 	- Initial text via method and maybe xml (interface would be then simple setter)
 	- Getter for active word (for word suggest etc)
 	- Delete active word function
-	- Somewhere i an illegal vector access
+	- Move cursor to end
 - Ring Container
 - InteractionLogging
   - What to do with Sensors and penetration?
