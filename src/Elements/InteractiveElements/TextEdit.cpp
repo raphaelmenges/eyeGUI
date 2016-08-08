@@ -219,7 +219,7 @@ namespace eyegui
 			std::remove_if(
 				mPreviousActiveWords.begin(),
 				mPreviousActiveWords.end(),
-				[](const auto& i) { return i.second <= 0; }),
+                [](const SubFlowWordAlphaPair& i) { return i.second <= 0; }),
 			mPreviousActiveWords.end());
 
 		// Update active word's fading
