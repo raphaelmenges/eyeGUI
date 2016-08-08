@@ -165,16 +165,16 @@ namespace eyegui
 					{
 						letterCount += (int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
 					}
-					letterCount -= mCursorLetterIndex; // even ok for -1 when cursor at front of word
+                    letterCount -= glm::max(0, mCursorLetterIndex);
 				}
 				else
 				{
 					// Collect letters of lefhand subwords
 					for (int j = 0; j < mCursorSubWordIndex; j++)
 					{
-						letterCount -= (int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
+                        letterCount = -(int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
 					}
-					letterCount -= glm::abs(mCursorLetterIndex) + 1; // TODO: not correct, yet
+                    letterCount -= glm::max(0, mCursorLetterIndex) + 1;
 				}
 
 				// Delegate it to move by letters method
