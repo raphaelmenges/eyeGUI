@@ -8,7 +8,7 @@
 	- Initial text via method and maybe xml (interface would be then simple setter)
 	- Getter for active word (for word suggest etc)
 	- Delete active word function
-	- New line symbol "\u21B5" and function to add new line (how to save it in content? just \n?)
+	- Somewhere i an illegal vector access
 - Ring Container
 - InteractionLogging
   - What to do with Sensors and penetration?

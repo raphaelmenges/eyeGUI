@@ -48,6 +48,9 @@ namespace eyegui
 
     // Tries to cast pointer, returns NULL if fails
     ProgressBar* toProgressBar(Element* pElement);
+
+	// Tries to cast pointer, returns NULL if fails
+	TextEdit* toTextEdit(Element* pElement);
 }
 
 #endif // ELEMENT_CASTING_H_

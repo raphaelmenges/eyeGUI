@@ -35,6 +35,14 @@ namespace eyegui
         // Destructor
         virtual ~TextEdit();
 
+		// Move cursor given count of letters. If content is exceeded, last valid position is set. Spaces are counted as one letter.
+		// Negative letter count indicates leftward movement, positive rightward movement
+		void moveCursorOverLetters(int letterCount);
+
+		// Move cursor given count of words. If content is exceeded, last valid position is set. Sets cursor always behind word
+		// Negative word count indicates leftward movement, positive rightward movement
+		void moveCursorOverWords(int wordCount);
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
@@ -60,18 +68,30 @@ namespace eyegui
 		// Calculate text flow y offset
 		int calculateTextFlowYOffset() const;
 
+		// Set new active word
+		void setActiveWord(const std::vector<TextFlow::SubFlowWord>& rSubFlowWords, bool setCursorToEnd);
+
+		// Typedef
+		typedef std::pair<std::vector<TextFlow::SubFlowWord>, float> SubFlowWordAlphaPair;
+
         // Members
         RenderItem const * mpBackground;
 		RenderItem const * mpCursor;
 		RenderItem const * mpActiveWordBackground;
-		FontSize mFontSize;
+
+		// Text flow
 		std::unique_ptr<TextFlow> mupTextFlow;
 		LerpValue mTextFlowYOffset;
+		FontSize mFontSize;
+
+		// Active word and cursor
+		std::unique_ptr<SubFlowWordAlphaPair> mupActiveWord; // unique pointer to active word
+		int mCursorSubFlowWordIndex; // inside active sub word
+		int mCursorSubFlowLetterIndex; // inside active sub word's letters
+		
+		// Animation related members
 		float mCursorPulse; // [0..2*Pi]
-		int mCursorX; // in text flow coordinates
-		int mCursorY; // in text flow coordinates
-		std::pair<std::vector<TextFlow::SubFlowWord>, float> mActiveWord; // float is initialized with zero
-		std::vector<std::pair<std::vector<TextFlow::SubFlowWord>, float> > mPreviousActiveWords; // float is initialized with animation
+		std::vector<SubFlowWordAlphaPair> mPreviousActiveWords; // float is initialized with animation
 																								 // duration and decremented at each update
     };
 }

@@ -202,6 +202,12 @@ namespace eyegui
         // Set progress in progress bar
         void setProgress(std::string id, float progress);
 
+		// Move cursor a certain amount of letters
+		void moveCursorOverLettersInTextEdit(std::string id, int letterCount);
+
+		// Move cursor a certain amount of words
+		void moveCursorOverWordsInTextEdit(std::string id, int wordCount);
+
         // Add brick to stack
         void addBrickToStack(
             std::string id,

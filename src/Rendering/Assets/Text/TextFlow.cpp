@@ -148,7 +148,7 @@ namespace eyegui
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
 
-	std::vector<TextFlow::SubFlowWord> TextFlow::getSubFlowWord(int index) const
+	std::vector<TextFlow::SubFlowWord> TextFlow::getSubFlowWords(int index) const
 	{
 		std::vector<TextFlow::SubFlowWord> result;
 		if (index < mFlowWords.size())
@@ -158,7 +158,7 @@ namespace eyegui
 		return result;
 	}
 
-	std::vector<TextFlow::SubFlowWord>TextFlow::getSubFlowWord(int x, int y) const
+	std::vector<TextFlow::SubFlowWord>TextFlow::getSubFlowWords(int x, int y) const
 	{
 		for (const auto& rFlowWord : mFlowWords)
 		{
@@ -366,8 +366,8 @@ namespace eyegui
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).x = (int)xPixelPen;
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).y = std::ceil(abs(yPixelPen) - lineHeight);
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).width = (int)line.at(i)->pixelWidth;
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).flowWordsIndex = flowWordsIndex;
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).subFlowWordsIndex = subFlowWordsIndex;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).flowWordIndex = flowWordsIndex;
+						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).subFlowWordIndex = subFlowWordsIndex;
 						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).lettersXOffsets = line.at(i)->lettersXOffsets;
 
 						// Increment indices
@@ -375,7 +375,7 @@ namespace eyegui
 						subFlowWordsIndex++;
 						if (subFlowWordsIndex >= subIndexCount)
 						{
-							flowWordsIndex++;
+							flowWordsIndex++; // next flow word should have at lease one sub word. Otherwise there must have been a failure and this code is not reached
 							subFlowWordsIndex = 0;
 						}
 

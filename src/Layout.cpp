@@ -708,6 +708,32 @@ namespace eyegui
         }
     }
 
+	void Layout::moveCursorOverLettersInTextEdit(std::string id, int letterCount)
+	{
+		TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+		if (pTextEdit != NULL)
+		{
+			pTextEdit->moveCursorOverLetters(letterCount);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+		}
+	}
+
+	void Layout::moveCursorOverWordsInTextEdit(std::string id, int wordCount)
+	{
+		TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+		if (pTextEdit != NULL)
+		{
+			pTextEdit->moveCursorOverWords(wordCount);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+		}
+	}
+
     void Layout::addBrickToStack(
         std::string id,
         std::string filepath,

@@ -29,11 +29,19 @@ namespace eyegui
 			// Height is given by line height
 
 			// Used to address back here in TextFlow after returning to using object
-			int flowWordsIndex;
-			int subFlowWordsIndex;
+			int flowWordIndex;
+			int subFlowWordIndex;
 
 			// Vector which saves the x offsets of single letters inside sub word
 			std::vector<int> lettersXOffsets; // position after letter
+		};
+
+		// Struct for word in flow which is used to get a word at given coordinate in text flow
+		struct FlowWord
+		{
+			int contentStartIndex; // End index in content
+			int contentEndIndex; // Start index in content
+			std::vector<SubFlowWord> subWords; // Can be divided into multiple sub words to fit into given space
 		};
 
         // Constructor
@@ -74,20 +82,12 @@ namespace eyegui
 
 		// Get data of certain word by index. Returns empty vector if not found.
 		// Position is given in flow coordinates
-		std::vector<SubFlowWord> getSubFlowWord(int index) const;
+		std::vector<SubFlowWord> getSubFlowWords(int index) const;
 
 		// Use position in flow coordinates to find a word. Returns empty vector if not found
-		std::vector<SubFlowWord> getSubFlowWord(int x, int y) const;
+		std::vector<SubFlowWord> getSubFlowWords(int x, int y) const;
 
     protected:
-
-		// Struct for word in flow which is used to get a word at given coordinate in text flow
-		struct FlowWord
-		{
-			int contentStartIndex; // End index in content
-			int contentEndIndex; // Start index in content
-			std::vector<SubFlowWord> subWords; // Can be divided into multiple sub words to fit into given space
-		};
 
         // Calculate mesh (in pixel coordinates)
         virtual void specialCalculateMesh(

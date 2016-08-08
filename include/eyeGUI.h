@@ -774,6 +774,22 @@ namespace eyegui
     */
     void setProgress(Layout* pLayout, std::string id, float progress);
 
+	//! Move cursor over given amount of letters in text edit element. If content is exceeded, cursor is placed at last valid position.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param letterCount indicates how far cursor is moved. Negative values result in a leftward movement.
+	*/
+	void moveCursorOverLettersInTextEdit(Layout* pLayout, std::string id, int letterCount);
+
+	//! Move cursor over given amount of words in text edit element. If content is exceeded, cursor is placed at last valid position.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param wordCount indicates how far cursor is moved. Negative values result in a leftward movement.
+	*/
+	void moveCursorOverWordsInTextEdit(Layout* pLayout, std::string id, int wordCount);
+
     //! Add brick to stack
     /*!
     \param pLayout pointer to layout.

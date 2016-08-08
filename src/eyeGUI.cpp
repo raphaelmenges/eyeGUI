@@ -401,6 +401,16 @@ namespace eyegui
         pLayout->setProgress(id, progress);
     }
 
+	void moveCursorOverLettersInTextEdit(Layout* pLayout, std::string id, int letterCount)
+	{
+		pLayout->moveCursorOverLettersInTextEdit(id, letterCount);
+	}
+
+	void moveCursorOverWordsInTextEdit(Layout* pLayout, std::string id, int wordCount)
+	{
+		pLayout->moveCursorOverWordsInTextEdit(id, wordCount);
+	}
+
     void addBrickToStack(
         Layout* pLayout,
         std::string id,

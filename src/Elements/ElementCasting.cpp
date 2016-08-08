@@ -71,7 +71,8 @@ namespace eyegui
                 Element::Type type = pElement->getType();
                 if (type == Element::Type::INTERACTIVE_ELEMENT
                     || type == Element::Type::WORD_SUGGEST
-                    || type == Element::Type::KEYBOARD)
+                    || type == Element::Type::KEYBOARD
+					|| type == Element::Type::TEXT_EDIT)
                 {
                     return static_cast<InteractiveElement*>(pElement);
                 }
@@ -198,4 +199,17 @@ namespace eyegui
         }
         return NULL;
     }
+
+	TextEdit* toTextEdit(Element* pElement)
+	{
+		if (pElement != NULL)
+		{
+			Element::Type type = pElement->getType();
+			if (type == Element::Type::TEXT_EDIT)
+			{
+				return static_cast<TextEdit*>(pElement);
+			}
+		}
+		return NULL;
+	}
 }
