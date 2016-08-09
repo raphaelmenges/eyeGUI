@@ -208,6 +208,12 @@ namespace eyegui
 		// Move cursor a certain amount of words
 		void moveCursorOverWordsInTextEdit(std::string id, int wordCount);
 
+        // Move cursor to start
+        void moveCursorToStartInTextEdit(std::string id);
+
+        // Move cursor to end
+        void moveCursorToEndInTextEdit(std::string id);
+
 		// Add content at cursor
 		void addContentAtCursorInTextEdit(std::string id, std::u16string content);
 

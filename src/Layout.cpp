@@ -734,6 +734,32 @@ namespace eyegui
 		}
 	}
 
+    void Layout::moveCursorToStartInTextEdit(std::string id)
+    {
+        TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+        if (pTextEdit != NULL)
+        {
+            pTextEdit->moveCursorToStart();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+        }
+    }
+
+    void Layout::moveCursorToEndInTextEdit(std::string id)
+    {
+        TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+        if (pTextEdit != NULL)
+        {
+            pTextEdit->moveCursorToEnd();
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+        }
+    }
+
 	void Layout::addContentAtCursorInTextEdit(std::string id, std::u16string content)
 	{
 		TextEdit* pTextEdit = toTextEdit(fetchElement(id));

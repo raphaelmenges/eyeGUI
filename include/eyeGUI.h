@@ -790,6 +790,20 @@ namespace eyegui
 	*/
 	void moveCursorOverWordsInTextEdit(Layout* pLayout, std::string id, int wordCount);
 
+    //! Move cursor to start of text in text edit element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    */
+    void moveCursorToStartInTextEdit(Layout* pLayout, std::string id);
+
+    //! Move cursor to end of text in text edit element.
+    /*!
+    \param pLayout pointer to layout.
+    \param id is the unique id of an element.
+    */
+    void moveCursorToEndInTextEdit(Layout* pLayout, std::string id);
+
 	//! Add text at cursor in text edit element.
 	/*!
 	\param pLayout pointer to layout.

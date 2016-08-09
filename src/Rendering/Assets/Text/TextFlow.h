@@ -123,6 +123,9 @@ namespace eyegui
 		// Get pixel width of space letter in used font
 		float getPixelWidthOfSpace() const { return mPixelOfSpace; }
 
+        // Get count of flow words
+        int getFlowWordCount() const { return (int)mFlowWords.size(); }
+
 		// Get data of certain word by index. Returns false if not found.
 		// Position is given in flow coordinates
 		bool getFlowWord(int index, FlowWord& rFlowWord) const;

@@ -129,6 +129,36 @@ namespace eyegui
 		}
 	}
 
+    void TextEdit::moveCursorToStart()
+    {
+        if (mupActiveWord != NULL)
+        {
+            TextFlow::FlowWord flowWord;
+            if (mupTextFlow->getFlowWord(
+                0, flowWord))
+            {
+                setActiveWord(flowWord, false);
+                mCursorSubWordIndex = 0;
+                mCursorLetterIndex = -1;
+            }
+        }
+    }
+
+    void TextEdit::moveCursorToEnd()
+    {
+        if (mupActiveWord != NULL)
+        {
+            TextFlow::FlowWord flowWord;
+            if (mupTextFlow->getFlowWord(
+                mupTextFlow->getFlowWordCount() - 1, flowWord))
+            {
+                setActiveWord(flowWord, false);
+                mCursorSubWordIndex = flowWord.getSubWordCount() - 1;
+                mCursorLetterIndex = flowWord.subWords.at(mCursorSubWordIndex).getLetterCount() - 1;
+            }
+        }
+    }
+
 	void TextEdit::addContentAtCursor(std::u16string content)
 	{
         // When there is already text and a active word, use that cursor position
@@ -475,6 +505,7 @@ namespace eyegui
                         }
                         else
                         {
+                            // Reset
                             mCursorSubWordIndex = subWordIndex;
                             mCursorLetterIndex = letterIndex;
                         }
@@ -519,6 +550,7 @@ namespace eyegui
                         }
                         else
                         {
+                            // Reset
                             mCursorSubWordIndex = subWordIndex;
                             mCursorLetterIndex = letterIndex;
                         }

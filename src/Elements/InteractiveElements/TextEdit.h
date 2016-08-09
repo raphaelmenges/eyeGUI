@@ -43,6 +43,12 @@ namespace eyegui
 		// Negative word count indicates leftward movement, positive rightward movement
 		void moveCursorOverWords(int wordCount);
 
+        // Move cursor to start of text
+        void moveCursorToStart();
+
+        // Move cursor to end of text
+        void moveCursorToEnd();
+
 		// Adds content behind cursor position
 		void addContentAtCursor(std::u16string content);
 

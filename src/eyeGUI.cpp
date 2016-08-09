@@ -411,6 +411,16 @@ namespace eyegui
 		pLayout->moveCursorOverWordsInTextEdit(id, wordCount);
 	}
 
+    void moveCursorToStartInTextEdit(Layout* pLayout, std::string id)
+    {
+        pLayout->moveCursorToStartInTextEdit(id);
+    }
+
+    void moveCursorToEndInTextEdit(Layout* pLayout, std::string id)
+    {
+        pLayout->moveCursorToEndInTextEdit(id);
+    }
+
 	void addContentAtCursorInTextEdit(Layout* pLayout, std::string id, std::u16string content)
 	{
 		pLayout->addContentAtCursorInTextEdit(id, content);
