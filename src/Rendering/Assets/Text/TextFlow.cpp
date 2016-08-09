@@ -14,6 +14,7 @@
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
 #include <cmath>
+#include <iostream> // TESTING TODO
 
 namespace eyegui
 {
@@ -165,16 +166,16 @@ namespace eyegui
 	{
 		for (const auto& rTestFlowWord : mFlowWords)
 		{
-			for (const auto& rSubFlowWord : rTestFlowWord.subWords)
+            for (const auto& rSubWord : rTestFlowWord.subWords)
 			{
 				// Check whether coordinates inside sub word
-				if (x >= rSubFlowWord.x
-					&& x < rSubFlowWord.x + rSubFlowWord.width
-					&& y >= rSubFlowWord.y
-					&& y < rSubFlowWord.y + getLineHeight())
+                if (x >= rSubWord.x
+                    && x < rSubWord.x + rSubWord.width
+                    && y >= rSubWord.y
+                    && y < rSubWord.y + getLineHeight())
 				{
 					// If check is true, return flow word
-					rFlowWord = rTestFlowWord;
+                    rFlowWord = rTestFlowWord;
 					return true;
 				}
 			}
@@ -193,12 +194,12 @@ namespace eyegui
 			return true;
 		}
 
-        // Go over flow words and search index
+        // Check, whether there are enough letters in content for that index
         if(contentIndex >= 0 && contentIndex < mContent.length())
         {
-            // Calculate flow index
+            // Go over flow words and search index
             int flowIndex = 0;
-			while ((flowIndex + 1 < (int)mFlowWords.size()) && (mFlowWords.at(flowIndex + 1).contentIndex < contentIndex))
+            while ((flowIndex + 1 < (int)mFlowWords.size()) && (mFlowWords.at(flowIndex + 1).contentIndex <= contentIndex))
 			{
 				flowIndex++;
 			}
@@ -207,44 +208,37 @@ namespace eyegui
             FlowWord flowWord = mFlowWords.at(flowIndex);
 
             // Fill sub word index and letter index
-            int innerIndex = contentIndex - flowWord.contentIndex;
-
-            // Go over subwords and search inner index
-            for(int subWordIndex = 0; subWordIndex < (int)flowWord.subWords.size(); subWordIndex++)
+            int subWordIndex = 0;
+            int letterIndex = 0;
+            if(flowWord.getIndices(contentIndex - flowWord.contentIndex, subWordIndex, letterIndex))
             {
-                // TODO: Replace call by method of upcoming FlowWord class
-
-                // Subtract letter count of sub words until correct sub word index is found
-                int subWordLetterCount = (int)flowWord.subWords.at(subWordIndex).lettersXOffsets.size();
-                if((innerIndex - subWordLetterCount) >= 0)
-                {
-                    // Subtract letters of subword from inner letter index and go on with loop
-                    innerIndex -= subWordLetterCount;
-                }
-                else
+                // Set references and return true
+                rFlowWord = flowWord;
+                rSubWordIndex = subWordIndex;
+                rLetterIndex = letterIndex;
+                return true;
+            }
+            else
+            {
+                // Index was not found within word, it is space behind that and position before next
+                if(flowIndex + 1 < (int)mFlowWords.size())
                 {
                     // Set references and return true
-                    rFlowWord = flowWord;
-                    rSubWordIndex = subWordIndex;
-                    rLetterIndex = innerIndex;
+                    rFlowWord = mFlowWords.at(flowIndex + 1);
+                    rSubWordIndex = 0;
+                    rLetterIndex = -1;
                     return true;
                 }
             }
-        }
-        else if(contentIndex == (int)mContent.size())
-        {
-            // TODO: Replace call by method of upcoming FlowWord class
-            rFlowWord = mFlowWords.back();
-            rSubWordIndex = (int)rFlowWord.subWords.size() - 1;
-            rLetterIndex = (int)rFlowWord.subWords.at(rSubWordIndex).lettersXOffsets.size();
-            return true;
         }
 
         return false;
     }
 
     bool TextFlow::insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
-	{
+    {
+        std::cout << index << std::endl;
+
         // Index has to be advanced by one to be insert after given index
         int contentIndex = index + 1;
         if (contentIndex < (int)mContent.size())
@@ -252,14 +246,17 @@ namespace eyegui
             // Insert at given index
             mContent.insert(contentIndex, content);
 			calculateMesh();
-            return getFlowWordAndIndices(glm::abs(index) + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+
+            std::cout << index + content.length() << std::endl;
+
+            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
         }
         else if(contentIndex == (int)mContent.size())
         {
             // Append to existing content
             mContent.append(content);
             calculateMesh();
-            return getFlowWordAndIndices(glm::abs(index) + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
         }
         return false;
 	}

@@ -52,7 +52,7 @@ namespace eyegui
             int getLetterCount() const
             {
                 int count = 0;
-                std::for_each(subWords.begin(), subWords.end(), [&count](const SubFlowWord& rSubWord) { count += rSubWord.getLetterCount() });
+                std::for_each(subWords.begin(), subWords.end(), [&count](const SubFlowWord& rSubWord) { count += rSubWord.getLetterCount(); });
                 return count;
             }
 
@@ -131,7 +131,7 @@ namespace eyegui
 		bool getFlowWord(int x, int y, FlowWord& rFlowWord) const;
 
         // Get flow word, sub word index and letter index by content index. Returns whether successfull.
-        // rLetterIndex of -1 symbolizes position int front of first letter
+        // rLetterIndex of -1 symbolizes position in front of first letter
         bool getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const;
 
         // Insert content after index of exisiting content.
