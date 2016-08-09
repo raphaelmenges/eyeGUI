@@ -328,8 +328,8 @@ namespace eyegui
 		std::function<glm::mat4(int, int, int)> calculateActiveWordBackgroundDrawMatrix = [&](int x, int y, int width)
 		{
 			// Calculate width and height for active word background
-			int activeBackgroundWidth = (int)(TEXT_EDIT_ACTIVE_WORD_BACKGROUND_SIZE * (float)width);
-			int activeBackgroundHeight = (int)(TEXT_EDIT_ACTIVE_WORD_BACKGROUND_SIZE * mupTextFlow->getLineHeight());
+            int activeBackgroundWidth = width + mupTextFlow->getPixelWidthOfSpace();
+            int activeBackgroundHeight = mupTextFlow->getLineHeight() + mupTextFlow->getPixelWidthOfSpace();
 
 			// Calculate draw matrix
 			return calculateDrawMatrix(

@@ -63,7 +63,6 @@ namespace eyegui
 	static const float GRID_FILL_EPSILON = 0.01f;  // since floating point precision does not sum everything to 100%
 	static const float TEXT_EDIT_CURSOR_PULSE_DURATION = 1.0f;
 	static const float TEXT_EDIT_CURSOR_RELATIVE_WIDTH = 0.2f;
-	static const float TEXT_EDIT_ACTIVE_WORD_BACKGROUND_SIZE = 1.1f;
 }
 
 #endif // DEFINES_H_

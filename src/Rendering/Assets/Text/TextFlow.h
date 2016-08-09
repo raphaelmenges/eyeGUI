@@ -139,6 +139,9 @@ namespace eyegui
         // Returns whether successull
         bool insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
 
+        // Erases content from index to end index, including index and excluding index + length. Returns whether succesfully
+        bool eraseContent(int index, int length);
+
     protected:
 
         // Calculate mesh (in pixel coordinates)

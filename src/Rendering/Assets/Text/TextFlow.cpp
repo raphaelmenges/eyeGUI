@@ -14,7 +14,6 @@
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 
 #include <cmath>
-#include <iostream> // TESTING TODO
 
 namespace eyegui
 {
@@ -237,8 +236,6 @@ namespace eyegui
 
     bool TextFlow::insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
     {
-        std::cout << index << std::endl;
-
         // Index has to be advanced by one to be insert after given index
         int contentIndex = index + 1;
         if (contentIndex < (int)mContent.size())
@@ -246,9 +243,6 @@ namespace eyegui
             // Insert at given index
             mContent.insert(contentIndex, content);
 			calculateMesh();
-
-            std::cout << index + content.length() << std::endl;
-
             return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
         }
         else if(contentIndex == (int)mContent.size())
@@ -260,6 +254,21 @@ namespace eyegui
         }
         return false;
 	}
+
+    bool TextFlow::eraseContent(int index, int length)
+    {
+        if((index + length) <= (int)mContent.size())
+        {
+            mContent.erase(index, length);
+            calculateMesh();
+            return false;
+            // TODO: what about flow word?
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
