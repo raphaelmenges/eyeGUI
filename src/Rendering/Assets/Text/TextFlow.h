@@ -14,15 +14,23 @@
 
 #include "src/Rendering/Assets/Text/Text.h"
 
+#include <algorithm>
+
 namespace eyegui
 {
     class TextFlow : public Text
     {
     public:
 
-		// Struct for sub flow word (if word is devided to fit into lines)
-		struct SubFlowWord
+        // Struct like class for sub flow word (if word is devided to fit into lines)
+        class SubFlowWord
 		{
+        public:
+
+            // Getter for letter count
+            int getLetterCount() const { return (int)lettersXOffsets.size(); }
+
+            // Members
 			int x; // relative in flow
 			int y; // relative in flow
 			int width; // pixel width
@@ -32,9 +40,48 @@ namespace eyegui
 			std::vector<int> lettersXOffsets; // position after letter
 		};
 
-		// Struct for word in flow which is used to get a word at given coordinate in text flow
-		struct FlowWord
+        // Struct like class for word in flow which is used to get a word at given coordinate in text flow
+        class FlowWord
 		{
+        public:
+
+            // Getter for sub word count
+            int getSubWordCount() const { return (int)subWords.size(); }
+
+            // Getter for letter count of complete flow word
+            int getLetterCount() const
+            {
+                int count = 0;
+                std::for_each(subWords.begin(), subWords.end(), [&count](const SubFlowWord& rSubWord) { count += rSubWord.getLetterCount() });
+                return count;
+            }
+
+            // Getter for subword and letter index for given letter offset. Returns whether successfull.
+            // Letter index is index inside of sub word
+            bool getIndices(int wordLetterIndex, int& rSubWordIndex, int& rLetterIndex) const
+            {
+                // Only continue when enough letters are available
+                if(wordLetterIndex < getLetterCount())
+                {
+                    int offset = wordLetterIndex;
+                    for(int i = 0; i < getSubWordCount(); i++)
+                    {
+                        if((offset - subWords.at(i).getLetterCount()) < 0)
+                        {
+                            rSubWordIndex = i;
+                            rLetterIndex = offset;
+                            return true;
+                        }
+                        else
+                        {
+                            offset -= subWords.at(i).getLetterCount();
+                        }
+                    }
+                }
+                return false;
+            }
+
+            // Members
 			int contentIndex; // index in content where flow word starts
 			std::vector<SubFlowWord> subWords; // can be divided into multiple sub words to fit into given space
 			int index; // index in text flow's vector for readdressing
