@@ -184,30 +184,24 @@ namespace eyegui
 
     bool TextFlow::getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const
     {
+		// Special case of front
+		if (contentIndex == -1 && !mFlowWords.empty())
+		{
+			rFlowWord = mFlowWords.front();
+			rSubWordIndex = 0;
+			rLetterIndex = -1;
+			return true;
+		}
+
         // Go over flow words and search index
         if(contentIndex >= 0 && contentIndex < mContent.length())
         {
-            // TODO: Not correct! Tends do crash here!
-
             // Calculate flow index
             int flowIndex = 0;
-            for(; flowIndex < (int)mFlowWords.size(); flowIndex++)
-            {
-                if(mFlowWords.at(flowIndex).contentIndex > contentIndex)
-                {
-                    // Found correct flow words index
-                    flowIndex--; // TODO: always in range?
-                    break;
-                }
-                else if(mFlowWords.at(flowIndex).contentIndex == contentIndex)
-                {
-                    // Special case where letter index is -1 because in front of flow word
-                    rFlowWord = mFlowWords.at(flowIndex);
-                    rSubWordIndex = 0;
-                    rLetterIndex = -1;
-                    return false;
-                }
-            }
+			while ((flowIndex + 1 < (int)mFlowWords.size()) && (mFlowWords.at(flowIndex + 1).contentIndex < contentIndex))
+			{
+				flowIndex++;
+			}
 
             // Found index, so assume it as searched flow word
             FlowWord flowWord = mFlowWords.at(flowIndex);
@@ -221,8 +215,8 @@ namespace eyegui
                 // TODO: Replace call by method of upcoming FlowWord class
 
                 // Subtract letter count of sub words until correct sub word index is found
-                int subWordLetterCount = flowWord.subWords.at(subWordIndex).lettersXOffsets.size();
-                if((innerIndex - subWordLetterCount) > 0)
+                int subWordLetterCount = (int)flowWord.subWords.at(subWordIndex).lettersXOffsets.size();
+                if((innerIndex - subWordLetterCount) >= 0)
                 {
                     // Subtract letters of subword from inner letter index and go on with loop
                     innerIndex -= subWordLetterCount;
@@ -258,14 +252,14 @@ namespace eyegui
             // Insert at given index
             mContent.insert(contentIndex, content);
 			calculateMesh();
-            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+            return getFlowWordAndIndices(glm::abs(index) + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
         }
         else if(contentIndex == (int)mContent.size())
         {
             // Append to existing content
             mContent.append(content);
             calculateMesh();
-            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+            return getFlowWordAndIndices(glm::abs(index) + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
         }
         return false;
 	}

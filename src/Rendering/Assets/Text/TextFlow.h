@@ -88,7 +88,7 @@ namespace eyegui
         bool getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const;
 
         // Insert content after index of exisiting content.
-        // Fills resulting information about flow word, sub word index and letter index at end of inseration.
+        // Fills resulting information about flow word, sub word index and letter index at end of insertion.
         // Returns whether successull
         bool insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
 
