@@ -74,6 +74,12 @@ namespace eyegui
 		// Set new active word
 		void setActiveWord(const TextFlow::FlowWord& rFlowWord, bool setCursorToEnd);
 
+        // Move cursor over letter rightward
+        void moveCursorOverLettersRightward(int letterCount);
+
+        // Move cursor over letter leftward
+        void moveCursorOverLettersLeftward(int letterCount);
+
 		// Typedef
 		typedef std::pair<std::vector<TextFlow::SubFlowWord>, float> SubFlowWordAlphaPair;
 

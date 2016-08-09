@@ -2,13 +2,12 @@
 
 ## New features
 - TextEdit element for easy text editing
-	- Add letters / text at position of cursor (see TODOs)
 	- Delete letters at position of cursor (function to delete letter before contentIndex)
     - Delete active word function (can be delegated also on delete method of textflow)
 	- Getter for active word (for word suggest etc
 	- Initial text via method and maybe xml (interface would be then simple setter)
 	- Move cursor to end of text function
-  - Instead of struct create class for FlowWord and SubFlowWord for nice methods like getSubWordCount or getLetterCount
+	- DEBUGGIN! Especially when there are sub words
 - Ring Container
 - InteractionLogging
   - What to do with Sensors and penetration?

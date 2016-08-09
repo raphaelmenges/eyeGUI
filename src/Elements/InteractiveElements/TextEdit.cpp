@@ -83,68 +83,14 @@ namespace eyegui
 
 	void TextEdit::moveCursorOverLetters(int letterCount)
 	{
-		// When there is no active word, there is no text
-		if (mupActiveWord != NULL)
-		{
-			// Decide direction
-			bool rightward = letterCount > 0;
-			for (int i = 0; i < glm::abs(letterCount); i++)
-			{
-				// Get index of current flow word
-				int flowWordIndex = mupActiveWord->index;
-
-				// Get letter count of current subword
-				int letterCount = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size();
-
-				// Try to in/decrement letter index
-				rightward ? mCursorLetterIndex++ : mCursorLetterIndex--;
-
-				// Check, whether letter index is still in range
-				if (mCursorLetterIndex >= letterCount || mCursorLetterIndex < -1)
-				{
-					// Get sub word count of active word
-					int subWordCount = (int)mupActiveWord->subWords.size();
-
-					// Try to in/decrement sub word index
-					rightward ? mCursorSubWordIndex++ : mCursorSubWordIndex--;
-
-					// Reset letter before first index
-					mCursorLetterIndex = -1;
-
-					// Check, whether sub word index is still in range
-					if (mCursorSubWordIndex >= subWordCount || mCursorSubWordIndex < 0)
-					{
-						// Reset index to first sub word
-						mCursorSubWordIndex = 0;
-
-						// Try to get next word in flow
-						TextFlow::FlowWord newActiveWord;
-						if (mupTextFlow->getFlowWord(
-							rightward ? flowWordIndex + 1 : flowWordIndex - 1,
-							newActiveWord))
-						{
-							setActiveWord(newActiveWord, false);
-
-							// Next word found, so set cursor at last subword behind last letter
-							if (!rightward)
-							{
-								mCursorSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
-								mCursorLetterIndex = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size() - 1;
-							}
-						}
-						else
-						{
-							// Set to last word and last position when rightwarded, otherwise it is leftwarded and already set to first subword and before first letter
-							if (rightward)
-							{
-								mCursorSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
-								mCursorLetterIndex = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size() - 1;
-							}
-						}
-					}
-				}
-			}
-		}
+        if(letterCount > 0)
+        {
+            moveCursorOverLettersRightward(letterCount);
+        }
+        else
+        {
+            moveCursorOverLettersLeftward(-letterCount);
+        }
 	}
 
 	void TextEdit::moveCursorOverWords(int wordCount)
@@ -493,4 +439,92 @@ namespace eyegui
 		// Reset cursor pulse to make it directly visible
 		mCursorPulse = 0.f;
 	}
+
+    void TextEdit::moveCursorOverLettersRightward(int letterCount)
+    {
+        // When there is no active word, there is no text
+        if (mupActiveWord != NULL)
+        {
+            // Save old values when no further word is found later on
+            int subWordIndex = mCursorSubWordIndex;
+            int letterIndex = mCursorLetterIndex;
+
+            // Repeat it as indicated
+            for (int i = 0; i < letterCount; i++)
+            {
+                // Try to increment just letter index
+                mCursorLetterIndex++;
+
+                // Check whether still in range of subword
+                if(mCursorLetterIndex >= mupActiveWord->subWords.at(mCursorSubWordIndex).getLetterCount())
+                {
+                    // No more within that sub word, try next
+                    mCursorSubWordIndex++;
+
+                    // Check whether still inside word
+                    if(mCursorSubWordIndex >= mupActiveWord->getSubWordCount())
+                    {
+                        // No more within that word, try next
+                        TextFlow::FlowWord nextWord;
+                        if (mupTextFlow->getFlowWord(
+                            mupActiveWord->index + 1, nextWord))
+                        {
+                            setActiveWord(nextWord, false);
+                            mCursorSubWordIndex = 0;
+                            mCursorLetterIndex = -1;
+                        }
+                        else
+                        {
+                            mCursorSubWordIndex = subWordIndex;
+                            mCursorLetterIndex = letterIndex;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void TextEdit::moveCursorOverLettersLeftward(int letterCount)
+    {
+        // When there is no active word, there is no text
+        if (mupActiveWord != NULL)
+        {
+            // Save old values when no further word is found later on
+            int subWordIndex = mCursorSubWordIndex;
+            int letterIndex = mCursorLetterIndex;
+
+            // Repeat it as indicated
+            for (int i = 0; i < letterCount; i++)
+            {
+                // Try to increment just letter index
+                mCursorLetterIndex--;
+
+                // Check whether still in range of subword
+                if(mCursorLetterIndex < -1)
+                {
+                    // No more within that sub word, try next
+                    mCursorSubWordIndex--;
+
+                    // Check whether still inside word
+                    if(mCursorSubWordIndex < 0 )
+                    {
+                        // No more within that word, try next
+                        TextFlow::FlowWord previousWord;
+                        if (mupTextFlow->getFlowWord(
+                            mupActiveWord->index - 1, previousWord))
+                        {
+                            setActiveWord(previousWord, false);
+                            mCursorSubWordIndex = previousWord.getSubWordCount() - 1;
+                            mCursorLetterIndex = previousWord.subWords.at(mCursorSubWordIndex).getLetterCount() - 1;
+                        }
+                        else
+                        {
+                            mCursorSubWordIndex = subWordIndex;
+                            mCursorLetterIndex = letterIndex;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
