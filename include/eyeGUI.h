@@ -1262,7 +1262,7 @@ namespace eyegui_helper
     /*!
     \param rInput is input string.
     \param rOutput is reference to output string.
-    \return TRUE if successful, FALSE otherwise
+    \return TRUE if successful, FALSE otherwise.
     */
     bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput);
 
@@ -1270,17 +1270,17 @@ namespace eyegui_helper
     /*!
     \param rInput is input string.
     \param rOutput is reference to output string.
-    \return TRUE if successful, FALSE otherwise
+    \return TRUE if successful, FALSE otherwise.
     */
     bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
 
 	//! Imports image and returns vector with data.
 	/*!
 	\param filepath to image file.
-	\param rData is output data as char.
+	\param rData is output data as vector of unsigned char.
 	\param rWidth is width of image.
-	\param rHeihgt is height of image.
-	\return TRUE if successful, FALSE otherwise
+	\param rHeight is height of image.
+	\return TRUE if successful, FALSE otherwise.
 	*/
 	bool loadImage(std::string filepath, std::vector<unsigned char>& rData, int& rWidth, int& rHeight, int& rChannelCount);
 }
