@@ -35,6 +35,16 @@ namespace eyegui
 
         // Destructor
         virtual ~PixelTexture();
+
+		// Wrapping of image loading library, also used independently from this class's objects.
+		// Returns success
+		static bool loadImageFile(
+			std::string filepath,
+			std::vector<unsigned char>& rData,
+			int& rWidth,
+			int& rHeight,
+			int& rChannelCount,
+			int suspectedChannels = 0);
     };
 }
 

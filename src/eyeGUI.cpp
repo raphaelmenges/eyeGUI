@@ -11,6 +11,7 @@
 #include "Layout.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/PathBuilder.h"
+#include "src/Rendering/Textures/PixelTexture.h"
 
 // Version
 static const std::string VERSION_STRING = "0.9";
@@ -711,4 +712,9 @@ namespace eyegui_helper
     {
         return eyegui::convertUTF16ToUTF8(rInput, rOutput);
     }
+
+	bool loadImage(std::string filepath, std::vector<unsigned char>& rData, int& rWidth, int& rHeight, int& rChannelCount)
+	{
+		return eyegui::PixelTexture::loadImageFile(filepath, rData, rWidth, rHeight, rChannelCount);
+	}
 }

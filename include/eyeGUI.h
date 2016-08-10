@@ -35,6 +35,7 @@
 #include <memory>
 #include <map>
 #include <functional>
+#include <vector>
 
 //! Namespace of eyeGUI interface.
 namespace eyegui
@@ -1272,6 +1273,16 @@ namespace eyegui_helper
     \return TRUE if successful, FALSE otherwise
     */
     bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput);
+
+	//! Imports image and returns vector with data.
+	/*!
+	\param filepath to image file.
+	\param rData is output data as char.
+	\param rWidth is width of image.
+	\param rHeihgt is height of image.
+	\return TRUE if successful, FALSE otherwise
+	*/
+	bool loadImage(std::string filepath, std::vector<unsigned char>& rData, int& rWidth, int& rHeight, int& rChannelCount);
 }
 
 #endif // EYE_GUI_H_

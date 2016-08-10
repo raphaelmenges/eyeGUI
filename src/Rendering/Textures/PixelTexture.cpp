@@ -24,23 +24,15 @@ namespace eyegui
 		Wrap wrap,
 		int suspectedChannels) : Texture()
     {
-        // Setup stb_image
-        stbi_set_flip_vertically_on_load(true);
-
         // Try to load image
+		std::vector<unsigned char> data;
         int width, height, channelCount;
-        unsigned char* data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, suspectedChannels);
-
-        // Check whether file was found and parsed
-        if (data == NULL)
-        {
-            throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or error at parsing", filepath);
-        }
+		loadImageFile(filepath, data, width, height, channelCount, suspectedChannels);
 
 		// Decide format
 		GLenum glFormat;
 		GLenum glInternalFormat;
-		switch (suspectedChannels)
+		switch (suspectedChannels) // TODO: why not using channel count extracted by stb?
 		{
 		case 1:
 			glFormat = GL_RED;
@@ -62,10 +54,7 @@ namespace eyegui
 		}
 
         // Create OpenGL texture
-        createOpenGLTexture(data, filtering, wrap, width, height, channelCount, glFormat, glInternalFormat, false, filepath);
-
-        // Delete raw image data
-        stbi_image_free(data);
+        createOpenGLTexture(data.data(), filtering, wrap, width, height, channelCount, glFormat, glInternalFormat, false, filepath);
     }
 
     PixelTexture::PixelTexture(
@@ -102,4 +91,41 @@ namespace eyegui
     {
         // Nothing to do
     }
+
+	bool PixelTexture::loadImageFile(
+		std::string filepath,
+		std::vector<unsigned char>& rData,
+		int& rWidth,
+		int& rHeight,
+		int& rChannelCount,
+		int suspectedChannels)
+	{
+		// Setup stb_image
+		stbi_set_flip_vertically_on_load(true);
+
+		// Load it
+		int width, height, channelCount;
+		unsigned char* data = stbi_load(buildPath(filepath).c_str(), &width, &height, &channelCount, suspectedChannels);
+	
+		// Check whether file was found and parsed
+		if (data == NULL)
+		{
+			throwError(OperationNotifier::Operation::IMAGE_LOADING, "Image file not found or error at parsing", filepath);
+			return false;
+		}
+		else
+		{
+			// Set references
+			rData = std::vector<unsigned char>(data, data + (width * height * channelCount));
+			rWidth = width;
+			rHeight = height;
+			rChannelCount = channelCount;
+
+			// Delete raw image data
+			stbi_image_free(data);
+
+			// Return success
+			return true;
+		}
+	}
 }
