@@ -44,6 +44,7 @@ namespace eyegui
 			int& rWidth,
 			int& rHeight,
 			int& rChannelCount,
+            bool flipY = true,
 			int suspectedChannels = 0);
     };
 }

@@ -713,8 +713,20 @@ namespace eyegui_helper
         return eyegui::convertUTF16ToUTF8(rInput, rOutput);
     }
 
-	bool loadImage(std::string filepath, std::vector<unsigned char>& rData, int& rWidth, int& rHeight, int& rChannelCount)
+    bool loadImage(
+        std::string filepath,
+        std::vector<unsigned char>& rData,
+        int& rWidth,
+        int& rHeight,
+        int& rChannelCount,
+        bool flipY)
 	{
-		return eyegui::PixelTexture::loadImageFile(filepath, rData, rWidth, rHeight, rChannelCount);
+        return eyegui::PixelTexture::loadImageFile(
+            filepath,
+            rData,
+            rWidth,
+            rHeight,
+            rChannelCount,
+            flipY);
 	}
 }

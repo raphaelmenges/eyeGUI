@@ -1282,7 +1282,13 @@ namespace eyegui_helper
 	\param rHeight is height of image.
 	\return TRUE if successful, FALSE otherwise.
 	*/
-	bool loadImage(std::string filepath, std::vector<unsigned char>& rData, int& rWidth, int& rHeight, int& rChannelCount);
+    bool loadImage(
+        std::string filepath,
+        std::vector<unsigned char>& rData,
+        int& rWidth,
+        int& rHeight,
+        int& rChannelCount,
+        bool flipY = false);
 }
 
 #endif // EYE_GUI_H_
