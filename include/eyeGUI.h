@@ -1280,6 +1280,8 @@ namespace eyegui_helper
 	\param rData is output data as vector of unsigned char.
 	\param rWidth is width of image.
 	\param rHeight is height of image.
+    \param rChannelCount is channel count of image.
+    \param flipY indicates whether image should be flipped in y-Direction at loading.
 	\return TRUE if successful, FALSE otherwise.
 	*/
     bool loadImage(
