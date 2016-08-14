@@ -49,8 +49,14 @@ namespace eyegui
         // Move cursor to end of text
         void moveCursorToEnd();
 
-		// Adds content behind cursor position
+		// Add content behind cursor position
 		void addContentAtCursor(std::u16string content);
+
+		// Set complete content and set cursor after end of content
+		void setContent(std::u16string content);
+
+		// Delete content at cursor. Positive value deletes rightward, negative leftward
+		void deleteContentAtCursor(int letterCount);
 
     protected:
 
@@ -99,7 +105,7 @@ namespace eyegui
 		LerpValue mTextFlowYOffset;
 		FontSize mFontSize;
 
-		// Active word and cursor
+		// Active word and cursor position
         std::unique_ptr<TextFlow::FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
 		int mCursorSubWordIndex; // inside active sub word
 		int mCursorLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word

@@ -81,6 +81,19 @@ namespace eyegui
                 return false;
             }
 
+			// Get content index by indices
+			int getContentIndex(int subWordIndex, int letterIndex) const
+			{
+				int index = 0;
+				for (int i = 0; i < subWordIndex; i++)
+				{
+					index += subWords.at(i).getLetterCount();
+				}
+				index += letterIndex;
+				index += contentIndex;
+				return index;
+			}
+
             // Members
 			int contentIndex; // index in content where flow word starts
 			std::vector<SubFlowWord> subWords; // can be divided into multiple sub words to fit into given space
@@ -143,7 +156,7 @@ namespace eyegui
         bool insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
 
         // Erases content from index to end index, including index and excluding index + length. Returns whether succesfully
-        bool eraseContent(int index, int length);
+        bool eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
 
     protected:
 

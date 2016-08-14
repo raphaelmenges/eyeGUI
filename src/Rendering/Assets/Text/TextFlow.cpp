@@ -255,19 +255,38 @@ namespace eyegui
         return false;
 	}
 
-    bool TextFlow::eraseContent(int index, int length)
+    bool TextFlow::eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
     {
-        if((index + length) <= (int)mContent.size())
-        {
-            mContent.erase(index, length);
-            calculateMesh();
-            return false;
-            // TODO: what about flow word?
-        }
-        else
-        {
-            return false;
-        }
+		if (letterCount < 0)
+		{
+			// Move index
+			index -= letterCount;
+
+			// Clamp index
+			int clampedIndex = glm::max(index, 0);
+
+			// New letter count
+			letterCount = index - clampedIndex;
+
+			// Overwrite index
+			index = clampedIndex;
+		}
+
+		// Clamp length
+		int endIndex = index + letterCount;
+		if (endIndex >= (int)mContent.size())
+		{
+			letterCount -= (endIndex - ((int)mContent.size() - 1));
+		}
+
+		// Apply it
+		mContent.erase(index, letterCount);
+
+		// Recalulate mesh
+		calculateMesh();
+
+		// Set indices
+		return getFlowWordAndIndices(index, rFlowWord, rSubWordIndex, rLetterIndex);
     }
 
     void TextFlow::specialCalculateMesh(

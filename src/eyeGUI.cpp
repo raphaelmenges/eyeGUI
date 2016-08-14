@@ -427,6 +427,16 @@ namespace eyegui
 		pLayout->addContentAtCursorInTextEdit(id, content);
 	}
 
+	void setContentOfTextEdit(Layout* pLayout, std::string id, std::u16string content)
+	{
+		pLayout->setContentOfTextEdit(id, content);
+	}
+
+	void deleteContentAtCursorInTextEdit(Layout* pLayout, std::string id, int letterCount)
+	{
+		pLayout->deleteContentAtCursorInTextEdit(id, letterCount);
+	}
+
     void addBrickToStack(
         Layout* pLayout,
         std::string id,

@@ -813,6 +813,22 @@ namespace eyegui
 	*/
 	void addContentAtCursorInTextEdit(Layout* pLayout, std::string id, std::u16string content);
 
+	//! Set content in text edit.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param content is the set text.
+	*/
+	void setContentOfTextEdit(Layout* pLayout, std::string id, std::u16string content);
+
+	//! Set content in text edit.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param letterCount is count of deleted letters. Positive values indicates leftward deletion, negative values rightward deletion.
+	*/
+	void deleteContentAtCursorInTextEdit(Layout* pLayout, std::string id, int letterCount);
+
     //! Add brick to stack
     /*!
     \param pLayout pointer to layout.

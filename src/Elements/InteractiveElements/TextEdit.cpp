@@ -72,7 +72,7 @@ namespace eyegui
 			TextFlowAlignment::LEFT,
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
-			u"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+			u"", // TODO: maybe later some content from xeyegui or localization for initial value
 			true));
 	}
 
@@ -131,31 +131,25 @@ namespace eyegui
 
     void TextEdit::moveCursorToStart()
     {
-        if (mupActiveWord != NULL)
+        TextFlow::FlowWord flowWord;
+        if (mupTextFlow->getFlowWord(
+            0, flowWord))
         {
-            TextFlow::FlowWord flowWord;
-            if (mupTextFlow->getFlowWord(
-                0, flowWord))
-            {
-                setActiveWord(flowWord, false);
-                mCursorSubWordIndex = 0;
-                mCursorLetterIndex = -1;
-            }
+            setActiveWord(flowWord, false);
+            mCursorSubWordIndex = 0;
+            mCursorLetterIndex = -1;
         }
     }
 
     void TextEdit::moveCursorToEnd()
     {
-        if (mupActiveWord != NULL)
+        TextFlow::FlowWord flowWord;
+        if (mupTextFlow->getFlowWord(
+            mupTextFlow->getFlowWordCount() - 1, flowWord))
         {
-            TextFlow::FlowWord flowWord;
-            if (mupTextFlow->getFlowWord(
-                mupTextFlow->getFlowWordCount() - 1, flowWord))
-            {
-                setActiveWord(flowWord, false);
-                mCursorSubWordIndex = flowWord.getSubWordCount() - 1;
-                mCursorLetterIndex = flowWord.subWords.at(mCursorSubWordIndex).getLetterCount() - 1;
-            }
+            setActiveWord(flowWord, false);
+            mCursorSubWordIndex = flowWord.getSubWordCount() - 1;
+            mCursorLetterIndex = flowWord.subWords.at(mCursorSubWordIndex).getLetterCount() - 1;
         }
     }
 
@@ -195,6 +189,34 @@ namespace eyegui
                 mCursorLetterIndex = letterIndex;
             }
         }
+	}
+
+	void TextEdit::setContent(std::u16string content)
+	{
+		mupTextFlow->setContent(content);
+		moveCursorToEnd();
+	}
+
+	void TextEdit::deleteContentAtCursor(int letterCount)
+	{
+		if (mupActiveWord != NULL)
+		{
+			TextFlow::FlowWord flowWord;
+			int subWordIndex = 0;
+			int letterIndex = 0;
+			if (mupTextFlow->eraseContent(
+				mupActiveWord->getContentIndex(mCursorSubWordIndex, mCursorLetterIndex),
+				letterCount,
+				flowWord,
+				subWordIndex,
+				letterIndex))
+			{
+				// Update active word and cursor indices stuff
+				setActiveWord(flowWord, false);
+				mCursorSubWordIndex = subWordIndex;
+				mCursorLetterIndex = letterIndex;
+			}
+		}
 	}
 
     float TextEdit::specialUpdate(float tpf, Input* pInput)

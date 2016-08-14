@@ -217,6 +217,12 @@ namespace eyegui
 		// Add content at cursor
 		void addContentAtCursorInTextEdit(std::string id, std::u16string content);
 
+		// Set content
+		void setContentOfTextEdit(std::string id, std::u16string content);
+
+		// Delete content
+		void deleteContentAtCursorInTextEdit(std::string id, int letterCount);
+
         // Add brick to stack
         void addBrickToStack(
             std::string id,

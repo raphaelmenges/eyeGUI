@@ -3,9 +3,7 @@
 ## New features
 - TextEdit element for easy text editing
 	- Delete letters at position of cursor (function to delete letter before contentIndex)
-    - Delete active word function (can be delegated also on delete method of textflow)
 	- Getter for active word (for word suggest etc)
-	- Initial text via method and maybe xml (interface would be then simple setter)
 	- DEBUGGING! Especially when there are sub words
 - Ring Container
 - InteractionLogging
