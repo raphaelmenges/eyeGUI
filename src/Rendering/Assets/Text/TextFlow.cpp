@@ -198,7 +198,7 @@ namespace eyegui
         {
             // Go over flow words and search index
             int flowIndex = 0;
-            while ((flowIndex + 1 < (int)mFlowWords.size()) && (mFlowWords.at(flowIndex + 1).contentIndex <= contentIndex))
+            while ((flowIndex + 1 < (int)mFlowWords.size()) && (mFlowWords.at(flowIndex + 1).contentStartIndex <= contentIndex))
 			{
 				flowIndex++;
 			}
@@ -209,7 +209,7 @@ namespace eyegui
             // Fill sub word index and letter index
             int subWordIndex = 0;
             int letterIndex = 0;
-            if(flowWord.getIndices(contentIndex - flowWord.contentIndex, subWordIndex, letterIndex))
+            if(flowWord.getIndices(contentIndex - flowWord.contentStartIndex, subWordIndex, letterIndex))
             {
                 // Set references and return true
                 rFlowWord = flowWord;
@@ -289,6 +289,12 @@ namespace eyegui
 		return getFlowWordAndIndices(index, rFlowWord, rSubWordIndex, rLetterIndex);
     }
 
+	std::u16string TextFlow::getContent(int index, int letterCount) const
+	{
+		// TODO: what if letter count is negative?
+		return mContent.substr(index, letterCount);
+	}
+
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
             float lineHeight, std::vector<glm::vec3>& rVertices,
@@ -350,7 +356,7 @@ namespace eyegui
             {
 				// Create structure which holds information about word
 				mFlowWords.push_back(FlowWord());
-				mFlowWords.back().contentIndex = contentStartIndex;
+				mFlowWords.back().contentStartIndex = contentStartIndex;
 
 				// Extract current token aka word
                 token = rPargraph.substr(0, pos);
@@ -379,7 +385,7 @@ namespace eyegui
 			std::vector<Word> fitWords;
             failure |= !insertFitWord(fitWords, rPargraph, mWidth, mScale);
 			mFlowWords.push_back(FlowWord());
-			mFlowWords.back().contentIndex = contentStartIndex;
+			mFlowWords.back().contentStartIndex = contentStartIndex;
 			mFlowWords.back().subWords.resize(fitWords.size());
 			mFlowWords.back().index = mFlowWords.size() - 1;
 			words.insert(words.end(), fitWords.begin(), fitWords.end());

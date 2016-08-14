@@ -58,6 +58,9 @@ namespace eyegui
 		// Delete content at cursor. Positive value deletes rightward, negative leftward
 		void deleteContentAtCursor(int letterCount);
 
+		// Getter for active word. Returns empty string if there is no
+		std::u16string getActiveWord() const;
+
     protected:
 
         // Updating filled by subclasses, returns adaptive scale
@@ -107,8 +110,8 @@ namespace eyegui
 
 		// Active word and cursor position
         std::unique_ptr<TextFlow::FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
-		int mCursorSubWordIndex; // inside active sub word
-		int mCursorLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word
+		int mSubWordIndex; // inside active sub word
+		int mLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word
 		
 		// Animation related members
 		float mCursorPulse; // [0..2*Pi]

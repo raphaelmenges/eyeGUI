@@ -90,12 +90,12 @@ namespace eyegui
 					index += subWords.at(i).getLetterCount();
 				}
 				index += letterIndex;
-				index += contentIndex;
+				index += contentStartIndex;
 				return index;
 			}
 
             // Members
-			int contentIndex; // index in content where flow word starts
+			int contentStartIndex; // index in content where flow word starts
 			std::vector<SubFlowWord> subWords; // can be divided into multiple sub words to fit into given space
 			int index; // index in text flow's vector for readdressing
 		};
@@ -157,6 +157,9 @@ namespace eyegui
 
         // Erases content from index to end index, including index and excluding index + length. Returns whether succesfully
         bool eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
+
+		// Get content at given index plus length
+		std::u16string getContent(int index, int letterCount) const;
 
     protected:
 

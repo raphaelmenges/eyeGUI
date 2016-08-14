@@ -799,6 +799,19 @@ namespace eyegui
 		}
 	}
 
+	std::u16string Layout::getActiveWordInTextEdit(std::string id) const
+	{
+		TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+		if (pTextEdit != NULL)
+		{
+			return pTextEdit->getActiveWord();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+		}
+	}
+
     void Layout::addBrickToStack(
         std::string id,
         std::string filepath,

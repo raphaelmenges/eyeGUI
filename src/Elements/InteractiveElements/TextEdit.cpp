@@ -49,7 +49,7 @@ namespace eyegui
 		mTextFlowYOffset.setValue(0);
 		mActiveWordFading = 0;
 		mCursorPulse = 1.f;
-		mCursorSubWordIndex = 0;
+		mSubWordIndex = 0;
 
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
@@ -107,20 +107,20 @@ namespace eyegui
 				if (rightward)
 				{
 					// Collect left letters of all subwords
-					for (int j = mCursorSubWordIndex; j < mupActiveWord->subWords.size(); j++)
+					for (int j = mSubWordIndex; j < mupActiveWord->subWords.size(); j++)
 					{
 						letterCount += (int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
 					}
-                    letterCount -= glm::max(0, mCursorLetterIndex);
+                    letterCount -= glm::max(0, mLetterIndex);
 				}
 				else
 				{
 					// Collect letters of lefhand subwords
-					for (int j = 0; j < mCursorSubWordIndex; j++)
+					for (int j = 0; j < mSubWordIndex; j++)
 					{
                         letterCount = -(int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
 					}
-                    letterCount -= glm::max(0, mCursorLetterIndex) + 1;
+                    letterCount -= glm::max(0, mLetterIndex) + 1;
 				}
 
 				// Delegate it to move by letters method
@@ -136,8 +136,8 @@ namespace eyegui
             0, flowWord))
         {
             setActiveWord(flowWord, false);
-            mCursorSubWordIndex = 0;
-            mCursorLetterIndex = -1;
+            mSubWordIndex = 0;
+            mLetterIndex = -1;
         }
     }
 
@@ -148,8 +148,8 @@ namespace eyegui
             mupTextFlow->getFlowWordCount() - 1, flowWord))
         {
             setActiveWord(flowWord, false);
-            mCursorSubWordIndex = flowWord.getSubWordCount() - 1;
-            mCursorLetterIndex = flowWord.subWords.at(mCursorSubWordIndex).getLetterCount() - 1;
+            mSubWordIndex = flowWord.getSubWordCount() - 1;
+            mLetterIndex = flowWord.subWords.at(mSubWordIndex).getLetterCount() - 1;
         }
     }
 
@@ -162,20 +162,20 @@ namespace eyegui
 		if (mupActiveWord != NULL)
 		{
 			// Find out, where the cursor is in content
-			int contentIndex = mupActiveWord->contentIndex;
-			for (int i = 0; i < mCursorSubWordIndex; i++)
+			int contentIndex = mupActiveWord->contentStartIndex;
+			for (int i = 0; i < mSubWordIndex; i++)
 			{
 				contentIndex += (int)mupActiveWord->subWords.at(i).lettersXOffsets.size();
 			}
-            contentIndex += mCursorLetterIndex; // -1 is ok here, since even at start of text, it should be inserted after -1 at 0
+            contentIndex += mLetterIndex; // -1 is ok here, since even at start of text, it should be inserted after -1 at 0
 
             // Tell text flow insert add content there
             if(mupTextFlow->insertContent(contentIndex, content, flowWord, subWordIndex, letterIndex))
             {
                 // Update active word and cursor indices stuff
                 setActiveWord(flowWord, false);
-                mCursorSubWordIndex = subWordIndex;
-                mCursorLetterIndex = letterIndex;
+                mSubWordIndex = subWordIndex;
+                mLetterIndex = letterIndex;
             }
 		}
         else
@@ -185,8 +185,8 @@ namespace eyegui
             {
                 // Update active word and cursor indices stuff
                 setActiveWord(flowWord, false);
-                mCursorSubWordIndex = subWordIndex;
-                mCursorLetterIndex = letterIndex;
+                mSubWordIndex = subWordIndex;
+                mLetterIndex = letterIndex;
             }
         }
 	}
@@ -205,7 +205,7 @@ namespace eyegui
 			int subWordIndex = 0;
 			int letterIndex = 0;
 			if (mupTextFlow->eraseContent(
-				mupActiveWord->getContentIndex(mCursorSubWordIndex, mCursorLetterIndex),
+				mupActiveWord->getContentIndex(mSubWordIndex, mLetterIndex),
 				letterCount,
 				flowWord,
 				subWordIndex,
@@ -213,9 +213,21 @@ namespace eyegui
 			{
 				// Update active word and cursor indices stuff
 				setActiveWord(flowWord, false);
-				mCursorSubWordIndex = subWordIndex;
-				mCursorLetterIndex = letterIndex;
+				mSubWordIndex = subWordIndex;
+				mLetterIndex = letterIndex;
 			}
+		}
+	}
+
+	std::u16string TextEdit::getActiveWord() const
+	{
+		if (mupActiveWord != NULL)
+		{
+			mupTextFlow->getContent(mupActiveWord->contentStartIndex, mupActiveWord->getLetterCount());
+		}
+		else
+		{
+			return std::u16string();
 		}
 	}
 
@@ -390,14 +402,14 @@ namespace eyegui
 		if (mupActiveWord != NULL)
 		{
 			int letterOffsetX = 0;
-			if (mCursorLetterIndex >= 0)
+			if (mLetterIndex >= 0)
 			{
-				letterOffsetX = mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.at(mCursorLetterIndex);
+				letterOffsetX = mupActiveWord->subWords.at(mSubWordIndex).lettersXOffsets.at(mLetterIndex);
 			}
 
-			cursorX = mupActiveWord->subWords.at(mCursorSubWordIndex).x
+			cursorX = mupActiveWord->subWords.at(mSubWordIndex).x
 				+ letterOffsetX;
-			cursorY = mupActiveWord->subWords.at(mCursorSubWordIndex).y;
+			cursorY = mupActiveWord->subWords.at(mSubWordIndex).y;
 		}
 
 		// Calculate matrix for cursor
@@ -454,7 +466,7 @@ namespace eyegui
         default:
             throwWarning(
                 OperationNotifier::Operation::BUG,
-                "Text edit got notification which is not thought for it.");
+                "Text Edit got notification which is not thought for it.");
             break;
         }
     }
@@ -482,10 +494,10 @@ namespace eyegui
 		if (setCursorToEnd)
 		{
 			// Set cursor position to last subword of active word
-			mCursorSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
+			mSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
 
 			// Set cursor position to last letter in subword
-			mCursorLetterIndex = (int)mupActiveWord->subWords.at(mCursorSubWordIndex).lettersXOffsets.size() - 1;
+			mLetterIndex = (int)mupActiveWord->subWords.at(mSubWordIndex).lettersXOffsets.size() - 1;
 		}
 
 		// Reset cursor pulse to make it directly visible
@@ -498,23 +510,23 @@ namespace eyegui
         if (mupActiveWord != NULL)
         {
             // Save old values when no further word is found later on
-            int subWordIndex = mCursorSubWordIndex;
-            int letterIndex = mCursorLetterIndex;
+            int subWordIndex = mSubWordIndex;
+            int letterIndex = mLetterIndex;
 
             // Repeat it as indicated
             for (int i = 0; i < letterCount; i++)
             {
                 // Try to increment just letter index
-                mCursorLetterIndex++;
+                mLetterIndex++;
 
                 // Check whether still in range of subword
-                if(mCursorLetterIndex >= mupActiveWord->subWords.at(mCursorSubWordIndex).getLetterCount())
+                if(mLetterIndex >= mupActiveWord->subWords.at(mSubWordIndex).getLetterCount())
                 {
                     // No more within that sub word, try next
-                    mCursorSubWordIndex++;
+                    mSubWordIndex++;
 
                     // Check whether still inside word
-                    if(mCursorSubWordIndex >= mupActiveWord->getSubWordCount())
+                    if(mSubWordIndex >= mupActiveWord->getSubWordCount())
                     {
                         // No more within that word, try next
                         TextFlow::FlowWord nextWord;
@@ -522,14 +534,14 @@ namespace eyegui
                             mupActiveWord->index + 1, nextWord))
                         {
                             setActiveWord(nextWord, false);
-                            mCursorSubWordIndex = 0;
-                            mCursorLetterIndex = -1;
+                            mSubWordIndex = 0;
+                            mLetterIndex = -1;
                         }
                         else
                         {
                             // Reset
-                            mCursorSubWordIndex = subWordIndex;
-                            mCursorLetterIndex = letterIndex;
+                            mSubWordIndex = subWordIndex;
+                            mLetterIndex = letterIndex;
                         }
                     }
                 }
@@ -543,23 +555,23 @@ namespace eyegui
         if (mupActiveWord != NULL)
         {
             // Save old values when no further word is found later on
-            int subWordIndex = mCursorSubWordIndex;
-            int letterIndex = mCursorLetterIndex;
+            int subWordIndex = mSubWordIndex;
+            int letterIndex = mLetterIndex;
 
             // Repeat it as indicated
             for (int i = 0; i < letterCount; i++)
             {
                 // Try to increment just letter index
-                mCursorLetterIndex--;
+                mLetterIndex--;
 
                 // Check whether still in range of subword
-                if(mCursorLetterIndex < -1)
+                if(mLetterIndex < -1)
                 {
                     // No more within that sub word, try next
-                    mCursorSubWordIndex--;
+                    mSubWordIndex--;
 
                     // Check whether still inside word
-                    if(mCursorSubWordIndex < 0 )
+                    if(mSubWordIndex < 0 )
                     {
                         // No more within that word, try next
                         TextFlow::FlowWord previousWord;
@@ -567,14 +579,14 @@ namespace eyegui
                             mupActiveWord->index - 1, previousWord))
                         {
                             setActiveWord(previousWord, false);
-                            mCursorSubWordIndex = previousWord.getSubWordCount() - 1;
-                            mCursorLetterIndex = previousWord.subWords.at(mCursorSubWordIndex).getLetterCount() - 1;
+                            mSubWordIndex = previousWord.getSubWordCount() - 1;
+                            mLetterIndex = previousWord.subWords.at(mSubWordIndex).getLetterCount() - 1;
                         }
                         else
                         {
                             // Reset
-                            mCursorSubWordIndex = subWordIndex;
-                            mCursorLetterIndex = letterIndex;
+                            mSubWordIndex = subWordIndex;
+                            mLetterIndex = letterIndex;
                         }
                     }
                 }

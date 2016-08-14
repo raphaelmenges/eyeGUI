@@ -437,6 +437,11 @@ namespace eyegui
 		pLayout->deleteContentAtCursorInTextEdit(id, letterCount);
 	}
 
+	std::u16string getActiveWordInTextEdit(Layout const * pLayout, std::string id)
+	{
+		return pLayout->getActiveWordInTextEdit(id);
+	}
+
     void addBrickToStack(
         Layout* pLayout,
         std::string id,
