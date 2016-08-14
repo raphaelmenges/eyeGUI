@@ -2,8 +2,6 @@
 
 ## New features
 - TextEdit element for easy text editing
-	- Delete letters at position of cursor (function to delete letter before contentIndex)
-	- Getter for active word (for word suggest etc)
 	- DEBUGGING! Especially when there are sub words
 - Ring Container
 - InteractionLogging
