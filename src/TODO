@@ -31,6 +31,9 @@
   - just for next letter, guide you through word
 - Optional: Somehow suggestions in letters <- think about other keyboard
 
+## Bugs
+- Ubuntu: Growing of pressed keys in keyboard not happening
+
 ## Wiki
 - Dictionary
   - UTF-8 (otherwise umlaute etc are wrong interpreted) -> everything should be in UTF8 encoding
