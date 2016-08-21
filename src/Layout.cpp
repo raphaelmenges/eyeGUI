@@ -810,6 +810,8 @@ namespace eyegui
 		{
 			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
 		}
+
+		return std::u16string();
 	}
 
     void Layout::addBrickToStack(

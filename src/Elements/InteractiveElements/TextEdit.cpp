@@ -223,7 +223,7 @@ namespace eyegui
 	{
 		if (mupActiveWord != NULL)
 		{
-			mupTextFlow->getContent(mupActiveWord->contentStartIndex, mupActiveWord->getLetterCount());
+			return mupTextFlow->getContent(mupActiveWord->contentStartIndex, mupActiveWord->getLetterCount());
 		}
 		else
 		{
