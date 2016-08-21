@@ -51,6 +51,11 @@ namespace eyegui
 
 	// Tries to cast pointer, returns NULL if fails
 	TextEdit* toTextEdit(Element* pElement);
+
+	// Experimental
+
+	// Tries to cast pointer, returns NULL if fails
+	FutureKeyboard* toFutureKeyboard(Element* pElement);
 }
 
 #endif // ELEMENT_CASTING_H_

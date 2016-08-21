@@ -63,7 +63,10 @@ namespace eyegui
             WORD_SUGGEST,
             FLOW,
             PROGRESS_BAR,
-			TEXT_EDIT
+			TEXT_EDIT,
+
+			// Experimental
+			FUTURE_KEYBOARD
         };
 
         // Enumeration of rendering masks

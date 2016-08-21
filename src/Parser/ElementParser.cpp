@@ -129,6 +129,11 @@ namespace eyegui
 			{
 				upElement = std::move(parseTextEdit(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
 			}
+			// Experimental
+			else if (value == "futurekeyboard")
+			{
+				upElement = std::move(parseFutureKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styleName, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+			}
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown element found: " + std::string(xmlElement->Value()), filepath);
@@ -824,6 +829,12 @@ namespace eyegui
 			// Create and return text edit
 			std::unique_ptr<TextEdit> upTextEdit = std::unique_ptr<TextEdit>(new TextEdit(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, fontSize));
 			return (std::move(upTextEdit));
+		}
+
+		std::unique_ptr<FutureKeyboard> parseFutureKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFutureKeyboard, Element* pParent, std::string filepath)
+		{
+			std::unique_ptr<FutureKeyboard> upFutureKeyboard = std::unique_ptr<FutureKeyboard>(new FutureKeyboard(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling));
+			return (std::move(upFutureKeyboard));
 		}
 
         void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder)

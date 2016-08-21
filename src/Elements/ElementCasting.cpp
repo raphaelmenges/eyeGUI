@@ -212,4 +212,17 @@ namespace eyegui
 		}
 		return NULL;
 	}
+
+	FutureKeyboard* toFutureKeyboard(Element* pElement)
+	{
+		if (pElement != NULL)
+		{
+			Element::Type type = pElement->getType();
+			if (type == Element::Type::FUTURE_KEYBOARD)
+			{
+				return static_cast<FutureKeyboard*>(pElement);
+			}
+		}
+		return NULL;
+	}
 }

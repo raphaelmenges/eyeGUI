@@ -29,4 +29,7 @@
 #include "src/Elements/Blocks/ProgressBar.h"
 #include "src/Elements/InteractiveElements/TextEdit.h"
 
+// Experimental
+#include "src/Experimental/FutureKeyboard/FutureKeyboard.h"
+
 #endif // ELEMENTS_H_
