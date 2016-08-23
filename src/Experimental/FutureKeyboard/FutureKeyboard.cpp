@@ -44,7 +44,18 @@ namespace eyegui
 			meshes::Type::QUAD);
 
 		// Initialize keys
-        mupFutureKey = std::unique_ptr<FutureKey>(new FutureKey(mpLayout, mpAssetManager, u"S"));
+        std::function<std::unique_ptr<FutureKey>(std::u16string)> createSuggestionKey =
+            [&](std::u16string letter)
+            {
+                return std::move(std::unique_ptr<FutureKey>(new FutureKey(mpLayout, mpAssetManager, letter)));
+            };
+
+        mupQKey = createSuggestionKey(u"Q");
+        mupWKey = createSuggestionKey(u"W");
+        mupEKey = createSuggestionKey(u"E");
+        mupRKey = createSuggestionKey(u"R");
+        mupTKey = createSuggestionKey(u"T");
+        mupYKey = createSuggestionKey(u"Y");
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -54,7 +65,12 @@ namespace eyegui
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
-        mupFutureKey->update(tpf, pInput);
+        mupQKey->update(tpf, pInput);
+        mupWKey->update(tpf, pInput);
+        mupEKey->update(tpf, pInput);
+        mupRKey->update(tpf, pInput);
+        mupTKey->update(tpf, pInput);
+        mupYKey->update(tpf, pInput);
 		return 0.f;
 	}
 
@@ -72,12 +88,25 @@ namespace eyegui
 		}
 
 		// *** KEYS ***
-		mupFutureKey->draw(getMultipliedDimmedAlpha());
+        mupQKey->draw(getMultipliedDimmedAlpha());
+        mupWKey->draw(getMultipliedDimmedAlpha());
+        mupEKey->draw(getMultipliedDimmedAlpha());
+        mupRKey->draw(getMultipliedDimmedAlpha());
+        mupTKey->draw(getMultipliedDimmedAlpha());
+        mupYKey->draw(getMultipliedDimmedAlpha());
 	}
 
 	void FutureKeyboard::specialTransformAndSize()
 	{
-        mupFutureKey->transformAndSize(mX + 0.2f * mWidth, mY + 0.3f * mHeight, 0.2f * mWidth, 0.3f * mHeight);
+        int keyWidth = 0.1f * mWidth;
+        int keyHeight = 0.2f * mHeight;
+        int keySpace = 0.02f * mWidth;
+        mupQKey->transformAndSize(mX, mY, keyWidth, keyHeight);
+        mupWKey->transformAndSize(mX + (1 * (keyWidth + keySpace)), mY, keyWidth, keyHeight);
+        mupEKey->transformAndSize(mX + (2 * (keyWidth + keySpace)), mY, keyWidth, keyHeight);
+        mupRKey->transformAndSize(mX + (3 * (keyWidth + keySpace)), mY, keyWidth, keyHeight);
+        mupTKey->transformAndSize(mX + (4 * (keyWidth + keySpace)), mY, keyWidth, keyHeight);
+        mupYKey->transformAndSize(mX + (5 * (keyWidth + keySpace)), mY, keyWidth, keyHeight);
 	}
 
 	void FutureKeyboard::specialReset()

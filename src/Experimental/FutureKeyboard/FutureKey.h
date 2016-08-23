@@ -28,7 +28,10 @@ namespace eyegui
 	public:
 
 		// Constructor
-        FutureKey(Layout const * pLayout, AssetManager* pAssetManager, std::u16string letter);
+        FutureKey(
+            Layout const * pLayout,
+            AssetManager* pAssetManager,
+            std::u16string letter);
 
 		// Destructor
 		virtual ~FutureKey();
@@ -47,6 +50,10 @@ namespace eyegui
 
 	private:
 
+        // Constants
+        const float SUGGESTION_HEIGHT = 0.2f;
+        const float LETTER_FADING_MULTIPLIER = 0.7f;
+
 		// Members
 		Layout const * mpLayout;
 		AssetManager* mpAssetManager;
@@ -58,11 +65,14 @@ namespace eyegui
         RenderItem const * mpKeyItem;
         RenderItem const * mpSuggestionBackgroundItem;
 		RenderItem const * mpThresholdItem;
+        glm::mat4 mSuggestionBackgroundDrawMatrix;
+        glm::mat4 mThresholdDrawMatrix;
         std::unique_ptr<TextSimple> mupLetter;
         std::unique_ptr<TextSimple> mupSuggestion;
         LerpValue mFirstThreshold;
-
-        const float SUGGESTION_HEIGHT = 0.2f;
+        LerpValue mSecondThreshold;
+        bool mDoingSecondThreshold;
+        LerpValue mLetterFading;
 	};
 }
 

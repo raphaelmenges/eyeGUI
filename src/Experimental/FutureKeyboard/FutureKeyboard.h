@@ -60,7 +60,13 @@ namespace eyegui
 
 		// Members
 		RenderItem const * mpBackground;
-		std::unique_ptr<FutureKey> mupFutureKey;
+
+        std::unique_ptr<FutureKey> mupQKey;
+        std::unique_ptr<FutureKey> mupWKey;
+        std::unique_ptr<FutureKey> mupEKey;
+        std::unique_ptr<FutureKey> mupRKey;
+        std::unique_ptr<FutureKey> mupTKey;
+        std::unique_ptr<FutureKey> mupYKey;
 	};
 }
 

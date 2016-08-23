@@ -22,6 +22,9 @@ namespace eyegui
 		mWidth = 0;
 		mHeight = 0;
         mFirstThreshold.setValue(0);
+        mSecondThreshold.setValue(0);
+        mDoingSecondThreshold = false;
+        mLetterFading.setValue(0);
 
 		// Save members
 		mpLayout = pLayout;
@@ -53,13 +56,18 @@ namespace eyegui
 		mHeight = height;
 
         // Letter
-        int letterX = ((mWidth - mupLetter->getWidth()) / 2.f) + mX;
-        mupLetter->setPosition(letterX, mY);
-        mupLetter->transform(); // does not depend on set position or other way round
+        mupLetter->transform(); // has to be called first to calculate width and height
+        int letterX = mX + ((mWidth - mupLetter->getWidth()) / 2);
+        int letterY = mY + ((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2);
+        mupLetter->setPosition(letterX, letterY);
 
         // Suggestion
-        mupSuggestion->setPosition(mX, mY);
-        mupSuggestion->transform();
+        mupSuggestion->transform(); // has to be called first to calculate width and height
+        int suggestionX = mX + (mWidth - mupSuggestion->getWidth()) / 2;
+        int suggestionY = mY + (mHeight * (1.f - SUGGESTION_HEIGHT)); // move to correct area
+        suggestionY += ((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getHeight()) / 2; // center in area
+        mupSuggestion->setPosition(suggestionX, suggestionY);
+
 	}
 
     void FutureKey::update(float tpf, Input const * pInput)
@@ -75,7 +83,43 @@ namespace eyegui
         }
 
         // Update threshold
-        mFirstThreshold.update(tpf, !penetrated);
+        if(!mDoingSecondThreshold)
+        {
+            // First threshold (TODO: adjust threshold time)
+            mFirstThreshold.update(tpf, !penetrated);
+
+            // Fading of letter when second threshold is active should be decreased since second threshold is not ongoing
+            mLetterFading.update(2.f * -tpf);
+        }
+        else
+        {
+            // Second threshold (TODO: adjust threshold time)
+            mSecondThreshold.update(tpf, !penetrated);
+
+            // Fading of letter when second threshold is ongoing
+            mLetterFading.update(2.f * tpf);
+        }
+
+        // Decide whether some threshold is reached
+        if(!mDoingSecondThreshold)
+        {
+            // First threshold
+            if(mFirstThreshold.getValue() >= 1.f)
+            {
+                mFirstThreshold.setValue(0.f);
+                mDoingSecondThreshold = true;
+            }
+        }
+        else
+        {
+            // Second threshold
+            if(mSecondThreshold.getValue() >= 1.f)
+            {
+                mSecondThreshold.setValue(0.f);
+                mDoingSecondThreshold = false;
+            }
+        }
+
 	}
 
 	void FutureKey::draw(float alpha) const
@@ -99,9 +143,10 @@ namespace eyegui
         mpKeyItem->draw();
 
         // *** DRAW LETTER ***
-        mupLetter->draw(glm::vec4(1,1,1,1), 1.f, false, 0, 0);
+        mupLetter->draw(glm::vec4(1,1,1,1), alpha * (1.f - (LETTER_FADING_MULTIPLIER * mLetterFading.getValue())), false, 0, 0);
 
         // *** DRAW SUGGESTION BACKGROUND ***
+        float suggestionHeight = glm::mix(SUGGESTION_HEIGHT, 1.f, mSecondThreshold.getValue());
         mpSuggestionBackgroundItem->bind();
         mpSuggestionBackgroundItem->getShader()->fillValue(
         "matrix",
@@ -109,15 +154,15 @@ namespace eyegui
             mpLayout->getLayoutWidth(),
             mpLayout->getLayoutHeight(),
             mX,
-            mY + ((1.f - SUGGESTION_HEIGHT) * mHeight),
+            mY + ((1.f - suggestionHeight) * mHeight),
             mWidth,
-            SUGGESTION_HEIGHT * mHeight));
+            suggestionHeight * mHeight));
         mpSuggestionBackgroundItem->getShader()->fillValue("color", glm::vec4(0.2f, 0.2f, 0.2f, 1.f));
         mpSuggestionBackgroundItem->getShader()->fillValue("alpha", alpha);
         mpSuggestionBackgroundItem->draw();
 
         // *** DRAW SUGGESTION ***
-        mupSuggestion->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), 1.f, false, 0, 0);
+        mupSuggestion->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), alpha, false, 0, 0);
 
         // *** DRAW THRESHOLD ***
 
@@ -136,7 +181,7 @@ namespace eyegui
 		// Draw threshold
 		mpThresholdItem->bind();
 		mpThresholdItem->getShader()->fillValue("matrix", thresholdDrawMatrix);
-		mpThresholdItem->getShader()->fillValue("thresholdColor", glm::vec4(1,0,0,1));
+        mpThresholdItem->getShader()->fillValue("thresholdColor", glm::vec4(0.f, 1.f, 1.f, 1.f));
         mpThresholdItem->getShader()->fillValue("threshold", mFirstThreshold.getValue());
         mpThresholdItem->getShader()->fillValue("alpha", 0.5f * alpha);
 		mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
@@ -149,5 +194,8 @@ namespace eyegui
 	void FutureKey::reset()
 	{
         mFirstThreshold.setValue(0);
+        mSecondThreshold.setValue(0);
+        mDoingSecondThreshold = false;
+        mLetterFading.setValue(0);
 	}
 }
