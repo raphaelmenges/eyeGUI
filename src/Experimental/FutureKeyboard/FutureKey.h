@@ -56,10 +56,13 @@ namespace eyegui
 		int mWidth;
 		int mHeight;
         RenderItem const * mpKeyItem;
+        RenderItem const * mpSuggestionBackgroundItem;
 		RenderItem const * mpThresholdItem;
         std::unique_ptr<TextSimple> mupLetter;
-
+        std::unique_ptr<TextSimple> mupSuggestion;
         LerpValue mFirstThreshold;
+
+        const float SUGGESTION_HEIGHT = 0.2f;
 	};
 }
 

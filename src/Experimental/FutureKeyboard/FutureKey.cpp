@@ -29,10 +29,14 @@ namespace eyegui
 
 		// Fetch render items
         mpKeyItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+        mpSuggestionBackgroundItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
 		mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
 
-        // Textflow for letter
+        // Simple text for letter
         mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, 1.f, letter);
+
+        // Simple text for suggestion
+        mupSuggestion = mpAssetManager->createTextSimple(FontSize::SMALL, 1.f, u"suggestion");
 	}
 
 	FutureKey::~FutureKey()
@@ -42,16 +46,20 @@ namespace eyegui
 
 	void FutureKey::transformAndSize(int x, int y, int width, int height)
 	{
-        // Transformation and sizing of key
+        // Key
 		mX = x;
 		mY = y;
 		mWidth = width;
 		mHeight = height;
 
-        // Transformation and sizing of letter
+        // Letter
         int letterX = ((mWidth - mupLetter->getWidth()) / 2.f) + mX;
         mupLetter->setPosition(letterX, mY);
         mupLetter->transform(); // does not depend on set position or other way round
+
+        // Suggestion
+        mupSuggestion->setPosition(mX, mY);
+        mupSuggestion->transform();
 	}
 
     void FutureKey::update(float tpf, Input const * pInput)
@@ -92,6 +100,24 @@ namespace eyegui
 
         // *** DRAW LETTER ***
         mupLetter->draw(glm::vec4(1,1,1,1), 1.f, false, 0, 0);
+
+        // *** DRAW SUGGESTION BACKGROUND ***
+        mpSuggestionBackgroundItem->bind();
+        mpSuggestionBackgroundItem->getShader()->fillValue(
+        "matrix",
+        calculateDrawMatrix(
+            mpLayout->getLayoutWidth(),
+            mpLayout->getLayoutHeight(),
+            mX,
+            mY + ((1.f - SUGGESTION_HEIGHT) * mHeight),
+            mWidth,
+            SUGGESTION_HEIGHT * mHeight));
+        mpSuggestionBackgroundItem->getShader()->fillValue("color", glm::vec4(0.2f, 0.2f, 0.2f, 1.f));
+        mpSuggestionBackgroundItem->getShader()->fillValue("alpha", alpha);
+        mpSuggestionBackgroundItem->draw();
+
+        // *** DRAW SUGGESTION ***
+        mupSuggestion->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), 1.f, false, 0, 0);
 
         // *** DRAW THRESHOLD ***
 
