@@ -14,20 +14,25 @@
 
 namespace eyegui
 {
-	FutureKey::FutureKey(Layout const * pLayout, AssetManager* pAssetManager)
+    FutureKey::FutureKey(Layout const * pLayout, AssetManager* pAssetManager, std::u16string letter)
 	{
 		// Initialize members
 		mX = 0;
 		mY = 0;
 		mWidth = 0;
 		mHeight = 0;
+        mFirstThreshold.setValue(0);
 
 		// Save members
 		mpLayout = pLayout;
 		mpAssetManager = pAssetManager;
 
 		// Fetch render items
+        mpKeyItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
 		mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
+
+        // Textflow for letter
+        mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, 1.f, letter);
 	}
 
 	FutureKey::~FutureKey()
@@ -37,15 +42,32 @@ namespace eyegui
 
 	void FutureKey::transformAndSize(int x, int y, int width, int height)
 	{
+        // Transformation and sizing of key
 		mX = x;
 		mY = y;
 		mWidth = width;
 		mHeight = height;
+
+        // Transformation and sizing of letter
+        int letterX = ((mWidth - mupLetter->getWidth()) / 2.f) + mX;
+        mupLetter->setPosition(letterX, mY);
+        mupLetter->transform(); // does not depend on set position or other way round
 	}
 
-	void FutureKey::update(float tpf)
+    void FutureKey::update(float tpf, Input const * pInput)
 	{
+        // Decide penetration
+        bool penetrated = false;
+        if(pInput != NULL)
+        {
+            penetrated = (pInput->gazeX >= mX
+                && pInput->gazeX < mX + mWidth
+                && pInput->gazeY >= mY
+                && pInput->gazeY < mY + mHeight);
+        }
 
+        // Update threshold
+        mFirstThreshold.update(tpf, !penetrated);
 	}
 
 	void FutureKey::draw(float alpha) const
@@ -53,25 +75,44 @@ namespace eyegui
 		// Push scissor to limit rendering to current key (especially threshold)
 		pushScissor(mX, mY, mWidth, mHeight);
 
+        // *** DRAW KEY ***
+        mpKeyItem->bind();
+        mpKeyItem->getShader()->fillValue(
+        "matrix",
+        calculateDrawMatrix(
+            mpLayout->getLayoutWidth(),
+            mpLayout->getLayoutHeight(),
+            mX,
+            mY,
+            mWidth,
+            mHeight));
+        mpKeyItem->getShader()->fillValue("color", glm::vec4(0.5f, 0.5f, 0.5f, 1.f));
+        mpKeyItem->getShader()->fillValue("alpha", alpha);
+        mpKeyItem->draw();
+
+        // *** DRAW LETTER ***
+        mupLetter->draw(glm::vec4(1,1,1,1), 1.f, false, 0, 0);
+
+        // *** DRAW THRESHOLD ***
+
 		// Calculate draw matrix for threshold
-		int thresholdWidth = mWidth * 2;
-		int thresholdHeight = mHeight * 3;
-		int thresholdX = mX;
-		int thresholdY = mX;
+        int thresholdSize = glm::sqrt((mWidth * mWidth) + (mHeight * mHeight));
+        int thresholdX = mX - (int)((thresholdSize - mWidth) / 2.f);
+        int thresholdY = mY - (int)((thresholdSize - mHeight) / 2.f);
 		glm::mat4 thresholdDrawMatrix = calculateDrawMatrix(
 			mpLayout->getLayoutWidth(),
 			mpLayout->getLayoutHeight(),
 			thresholdX,
 			thresholdY,
-			thresholdWidth,
-			thresholdHeight);
+            thresholdSize,
+            thresholdSize);
 
 		// Draw threshold
 		mpThresholdItem->bind();
 		mpThresholdItem->getShader()->fillValue("matrix", thresholdDrawMatrix);
 		mpThresholdItem->getShader()->fillValue("thresholdColor", glm::vec4(1,0,0,1));
-		mpThresholdItem->getShader()->fillValue("threshold", 0.5f);
-		mpThresholdItem->getShader()->fillValue("alpha", alpha);
+        mpThresholdItem->getShader()->fillValue("threshold", mFirstThreshold.getValue());
+        mpThresholdItem->getShader()->fillValue("alpha", 0.5f * alpha);
 		mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
 		mpThresholdItem->draw();
 
@@ -81,6 +122,6 @@ namespace eyegui
 
 	void FutureKey::reset()
 	{
-
+        mFirstThreshold.setValue(0);
 	}
 }

@@ -44,7 +44,7 @@ namespace eyegui
 			meshes::Type::QUAD);
 
 		// Initialize keys
-		mupFutureKey = std::unique_ptr<FutureKey>(new FutureKey(mpLayout, mpAssetManager));
+        mupFutureKey = std::unique_ptr<FutureKey>(new FutureKey(mpLayout, mpAssetManager, u"S"));
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -54,6 +54,7 @@ namespace eyegui
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
+        mupFutureKey->update(tpf, pInput);
 		return 0.f;
 	}
 
@@ -76,7 +77,7 @@ namespace eyegui
 
 	void FutureKeyboard::specialTransformAndSize()
 	{
-		mupFutureKey->transformAndSize(mX, mY, 0.2f * mWidth, 0.3f * mHeight);
+        mupFutureKey->transformAndSize(mX + 0.2f * mWidth, mY + 0.3f * mHeight, 0.2f * mWidth, 0.3f * mHeight);
 	}
 
 	void FutureKeyboard::specialReset()

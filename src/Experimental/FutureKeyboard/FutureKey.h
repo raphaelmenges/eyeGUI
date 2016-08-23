@@ -9,12 +9,18 @@
 #ifndef FUTURE_KEY_H_
 #define FUTURE_KEY_H_
 
+#include "src/Utilities/LerpValue.h"
+
+#include <memory>
+
 namespace eyegui
 {
 	// Forward declaration
 	class Layout;
 	class AssetManager;
 	class RenderItem;
+    class TextSimple;
+    class Input;
 
 	// Class for key
 	class FutureKey
@@ -22,7 +28,7 @@ namespace eyegui
 	public:
 
 		// Constructor
-		FutureKey(Layout const * pLayout, AssetManager* pAssetManager);
+        FutureKey(Layout const * pLayout, AssetManager* pAssetManager, std::u16string letter);
 
 		// Destructor
 		virtual ~FutureKey();
@@ -31,7 +37,7 @@ namespace eyegui
 		virtual void transformAndSize(int x, int y, int width, int height);
 
 		// Update
-		virtual void update(float tpf);
+        virtual void update(float tpf, Input const * pInput);
 
 		// Draw
 		virtual void draw(float alpha) const;
@@ -49,7 +55,11 @@ namespace eyegui
 		int mY;
 		int mWidth;
 		int mHeight;
+        RenderItem const * mpKeyItem;
 		RenderItem const * mpThresholdItem;
+        std::unique_ptr<TextSimple> mupLetter;
+
+        LerpValue mFirstThreshold;
 	};
 }
 
