@@ -38,7 +38,9 @@ namespace eyegui
             AssetManager* pAssetManager,
             std::u16string letter,
             float letterScale,
-            KeyboardCase keyCase = KeyboardCase::UPPER);
+            bool showSuggestion,
+            KeyboardCase keyCase = KeyboardCase::UPPER,
+            bool ignoreCase = false);
 
 		// Destructor
 		virtual ~FutureKey();
@@ -95,7 +97,9 @@ namespace eyegui
 		int mHeight;
         std::u16string mLetter;
         float mLetterScale;
+        bool mShowSuggestion;
         KeyboardCase mKeyCase;
+        bool mIgnoreCase;
         RenderItem const * mpKeyItem;
         RenderItem const * mpBackgroundItem; // that' REALLY hacky because background is bigger then elements extend
         RenderItem const * mpSuggestionBackgroundItem;

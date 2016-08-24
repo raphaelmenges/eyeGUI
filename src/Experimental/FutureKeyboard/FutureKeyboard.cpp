@@ -44,57 +44,66 @@ namespace eyegui
 			meshes::Type::QUAD);
 
 		// Initialize keys
-        std::function<std::shared_ptr<FutureKey>(std::string, std::u16string)> createSuggestionKey =
-            [&](std::string id, std::u16string letter)
+        std::function<std::shared_ptr<FutureKey>(std::string, std::u16string, bool, bool)> createFutureKey =
+            [&](std::string id, std::u16string letter, bool showSuggestion, bool ignoreCase)
             {
-                auto spNewKey = std::shared_ptr<FutureKey>(new FutureKey(id, mpLayout, mpAssetManager, letter, 0.8f)); // create new key
+                auto spNewKey = std::shared_ptr<FutureKey>(
+                    new FutureKey(
+                        id,
+                        mpLayout,
+                        mpAssetManager,
+                        letter,
+                        0.8f,
+                        showSuggestion,
+                        KeyboardCase::UPPER,
+                        ignoreCase)); // create new key
                 mKeyList.push_back(spNewKey); // save smart pointer to list
                 return spNewKey;
             };
 
         // First row
-        mspQKey = createSuggestionKey("q", u"Q");
-        mspWKey = createSuggestionKey("w", u"W");
-        mspEKey = createSuggestionKey("e", u"E");
-        mspRKey = createSuggestionKey("r", u"R");
-        mspTKey = createSuggestionKey("t", u"T");
-        mspYKey = createSuggestionKey("y", u"Y");
-        mspUKey = createSuggestionKey("u", u"U");
-        mspIKey = createSuggestionKey("i", u"I");
-        mspOKey = createSuggestionKey("o", u"O");
-        mspPKey = createSuggestionKey("p", u"P");
+        mspQKey = createFutureKey("q", u"Q", true, false);
+        mspWKey = createFutureKey("w", u"W", true, false);
+        mspEKey = createFutureKey("e", u"E", true, false);
+        mspRKey = createFutureKey("r", u"R", true, false);
+        mspTKey = createFutureKey("t", u"T", true, false);
+        mspYKey = createFutureKey("y", u"Y", true, false);
+        mspUKey = createFutureKey("u", u"U", true, false);
+        mspIKey = createFutureKey("i", u"I", true, false);
+        mspOKey = createFutureKey("o", u"O", true, false);
+        mspPKey = createFutureKey("p", u"P", true, false);
 
         // Second row
-        mspAKey = createSuggestionKey("a", u"A");
-        mspSKey = createSuggestionKey("s", u"S");
-        mspDKey = createSuggestionKey("d", u"D");
-        mspFKey = createSuggestionKey("f", u"F");
-        mspGKey = createSuggestionKey("g", u"G");
-        mspHKey = createSuggestionKey("h", u"H");
-        mspJKey = createSuggestionKey("j", u"J");
-        mspKKey = createSuggestionKey("k", u"K");
-        mspLKey = createSuggestionKey("l", u"L");
-        mspEnterKey = createSuggestionKey("Enter", u"\u23CE");
+        mspAKey = createFutureKey("a", u"A", true, false);
+        mspSKey = createFutureKey("s", u"S", true, false);
+        mspDKey = createFutureKey("d", u"D", true, false);
+        mspFKey = createFutureKey("f", u"F", true, false);
+        mspGKey = createFutureKey("g", u"G", true, false);
+        mspHKey = createFutureKey("h", u"H", true, false);
+        mspJKey = createFutureKey("j", u"J", true, false);
+        mspKKey = createFutureKey("k", u"K", true, false);
+        mspLKey = createFutureKey("l", u"L", true, false);
+        mspEnterKey = createFutureKey("return", u"\u21AA", false, true);
 
         // Third row
-        mspZKey = createSuggestionKey("z", u"Z");
-        mspXKey = createSuggestionKey("x", u"X");
-        mspCKey = createSuggestionKey("c", u"C");
-        mspVKey = createSuggestionKey("v", u"V");
-        mspBKey = createSuggestionKey("b", u"B");
-        mspNKey = createSuggestionKey("n", u"N");
-        mspMKey = createSuggestionKey("m", u"M");
-        mspBackspaceKey = createSuggestionKey("backspace", u"\u232B");
+        mspZKey = createFutureKey("z", u"Z", true, false);
+        mspXKey = createFutureKey("x", u"X", true, false);
+        mspCKey = createFutureKey("c", u"C", true, false);
+        mspVKey = createFutureKey("v", u"V", true, false);
+        mspBKey = createFutureKey("b", u"B", true, false);
+        mspNKey = createFutureKey("n", u"N", true, false);
+        mspMKey = createFutureKey("m", u"M", true, false);
+        mspBackspaceKey = createFutureKey("backspace", u"\u21A4", false, true);
 
         // Forth row
-        mspShiftKey = createSuggestionKey("shift", u"\u21E7");
-        mspRepeatKey = createSuggestionKey("repeat", u"\u25CE");
-        mspCommaKey = createSuggestionKey("comma", u",");
-        mspSpaceKey = createSuggestionKey("space", u"\u2423");
-        mspDotKey = createSuggestionKey("dot", u".");
-        mspQuestionKey = createSuggestionKey("question", u"?");
-        mspExclamationKey = createSuggestionKey("exclamation", u"!");
-        mspColonKey = createSuggestionKey("colon", u":");
+        mspShiftKey = createFutureKey("shift", u"\u2191", false, true);
+        mspRepeatKey = createFutureKey("repeat", u"\u21BA", false, true);
+        mspCommaKey = createFutureKey("comma", u",", false, true);
+        mspSpaceKey = createFutureKey("space", u"\u2423", false, true);
+        mspDotKey = createFutureKey("dot", u".", false, true);
+        mspQuestionKey = createFutureKey("question", u"?", false, true);
+        mspExclamationKey = createFutureKey("exclamation", u"!", false, true);
+        mspColonKey = createFutureKey("colon", u":", false, true);
 	}
 
 	FutureKeyboard::~FutureKeyboard()

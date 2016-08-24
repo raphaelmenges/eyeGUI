@@ -20,7 +20,9 @@ namespace eyegui
         AssetManager* pAssetManager,
         std::u16string letter,
         float letterScale,
-        KeyboardCase keyCase)
+        bool showSuggestion,
+        KeyboardCase keyCase,
+        bool ignoreCase)
 	{
 		// Initialize members
 		mX = 0;
@@ -31,6 +33,7 @@ namespace eyegui
         mSecondThreshold.setValue(0);
         mDoingSecondThreshold = false;
         mLetterFading.setValue(0);
+        mupSuggestion = NULL;
 
 		// Save members
         mId = id;
@@ -38,7 +41,9 @@ namespace eyegui
 		mpAssetManager = pAssetManager;
         mLetter = letter;
         mLetterScale = letterScale;
+        mShowSuggestion = showSuggestion;
         mKeyCase = keyCase;
+        mIgnoreCase = ignoreCase;
 
 		// Fetch render items
         mpKeyItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
@@ -47,20 +52,22 @@ namespace eyegui
 		mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
 
         // Simple text for letter
-        switch(mKeyCase)
+        if(!mIgnoreCase)
         {
-        case KeyboardCase::LOWER:
-            toLower(mLetter);
-            mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
-            break;
-        case KeyboardCase::UPPER:
-            toUpper(mLetter);
-            mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
-            break;
+            switch(mKeyCase)
+            {
+            case KeyboardCase::LOWER:
+                toLower(mLetter);
+                break;
+            case KeyboardCase::UPPER:
+                toUpper(mLetter);
+                break;
+            }
         }
+        mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
 
         // Simple text for suggestion
-        mupSuggestion = mpAssetManager->createTextSimple(FontSize::SMALL, 1.f, u"suggestion");
+        if(mShowSuggestion) { mupSuggestion = mpAssetManager->createTextSimple(FontSize::SMALL, 1.f, u"suggestion"); }
 	}
 
 	FutureKey::~FutureKey()
@@ -123,7 +130,7 @@ namespace eyegui
             if(mFirstThreshold.getValue() >= 1.f)
             {
                 mFirstThreshold.setValue(0.f);
-                mDoingSecondThreshold = true;
+                mDoingSecondThreshold = mShowSuggestion; // only start second threshold when suggestion is shown
                 value = HitType::LETTER;
             }
         }
@@ -183,24 +190,27 @@ namespace eyegui
         // *** DRAW LETTER ***
         mupLetter->draw(glm::vec4(1,1,1,1), alpha * (1.f - (LETTER_FADING_MULTIPLIER * mLetterFading.getValue())), false, 0, 0);
 
-        // *** DRAW SUGGESTION BACKGROUND ***
-        float suggestionHeight = glm::mix(SUGGESTION_HEIGHT, 1.f, mSecondThreshold.getValue());
-        mpSuggestionBackgroundItem->bind();
-        mpSuggestionBackgroundItem->getShader()->fillValue(
-            "matrix",
-            calculateDrawMatrix(
-                mpLayout->getLayoutWidth(),
-                mpLayout->getLayoutHeight(),
-                mX,
-                mY + ((1.f - suggestionHeight) * mHeight),
-                mWidth,
-                (suggestionHeight * mHeight) + 1));
-        mpSuggestionBackgroundItem->getShader()->fillValue("color", glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
-        mpSuggestionBackgroundItem->getShader()->fillValue("alpha", alpha);
-        mpSuggestionBackgroundItem->draw();
+        if(mShowSuggestion)
+        {
+            // *** DRAW SUGGESTION BACKGROUND ***
+            float suggestionHeight = glm::mix(SUGGESTION_HEIGHT, 1.f, mSecondThreshold.getValue());
+            mpSuggestionBackgroundItem->bind();
+            mpSuggestionBackgroundItem->getShader()->fillValue(
+                "matrix",
+                calculateDrawMatrix(
+                    mpLayout->getLayoutWidth(),
+                    mpLayout->getLayoutHeight(),
+                    mX,
+                    mY + ((1.f - suggestionHeight) * mHeight),
+                    mWidth,
+                    (suggestionHeight * mHeight) + 1));
+            mpSuggestionBackgroundItem->getShader()->fillValue("color", glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
+            mpSuggestionBackgroundItem->getShader()->fillValue("alpha", alpha);
+            mpSuggestionBackgroundItem->draw();
 
-        // *** DRAW SUGGESTION ***
-        mupSuggestion->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), alpha, false, 0, 0);
+            // *** DRAW SUGGESTION ***
+            mupSuggestion->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), alpha, false, 0, 0);
+        }
 
         // *** DRAW THRESHOLD ***
 
@@ -239,23 +249,26 @@ namespace eyegui
 
     void FutureKey::setCase(KeyboardCase keyCase)
     {
-        mKeyCase = keyCase;
-
-        // Load correct letter
-        switch(mKeyCase)
+        if(!mIgnoreCase)
         {
-        case KeyboardCase::LOWER:
-            toLower(mLetter);
-            mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
-            break;
-        case KeyboardCase::UPPER:
-            toUpper(mLetter);
-            mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
-            break;
-        }
+            mKeyCase = keyCase;
 
-        // Call transform of letter
-        transformLetter();
+            // Load correct letter
+            switch(mKeyCase)
+            {
+            case KeyboardCase::LOWER:
+                toLower(mLetter);
+                mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
+                break;
+            case KeyboardCase::UPPER:
+                toUpper(mLetter);
+                mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
+                break;
+            }
+
+            // Call transform of letter
+            transformLetter();
+        }
     }
 
     void FutureKey::transformLetter()
@@ -268,17 +281,20 @@ namespace eyegui
 
     void FutureKey::transformSuggestion()
     {
-        mupSuggestion->transform(); // has to be called first to calculate width and height
-        int suggestionX = mX + (mWidth - mupSuggestion->getWidth()) / 2;
+        if(mShowSuggestion)
+        {
+            mupSuggestion->transform(); // has to be called first to calculate width and height
+            int suggestionX = mX + (mWidth - mupSuggestion->getWidth()) / 2;
 
-        // Standard height of suggestion
-        int suggestionStandardY = mY + (mHeight * (1.f - SUGGESTION_HEIGHT)); // move to correct area
-        suggestionStandardY += ((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getHeight()) / 2; // center in area
+            // Standard height of suggestion
+            int suggestionStandardY = mY + (mHeight * (1.f - SUGGESTION_HEIGHT)); // move to correct area
+            suggestionStandardY += ((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getHeight()) / 2; // center in area
 
-        // Height of suggestion when in center of complete key
-        int suggestionCenterY = mY + (mHeight - mupSuggestion->getHeight()) / 2;
+            // Height of suggestion when in center of complete key
+            int suggestionCenterY = mY + (mHeight - mupSuggestion->getHeight()) / 2;
 
-        // Set position
-        mupSuggestion->setPosition(suggestionX, glm::mix(suggestionStandardY, suggestionCenterY, mSecondThreshold.getValue()));
+            // Set position
+            mupSuggestion->setPosition(suggestionX, glm::mix(suggestionStandardY, suggestionCenterY, mSecondThreshold.getValue()));
+        }
     }
 }

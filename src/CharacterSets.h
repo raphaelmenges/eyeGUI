@@ -27,11 +27,11 @@ namespace eyegui
             u'\u00A7', // paragraph
 
             // Experimental
-            u'\u23CE', // return symbol
-            u'\u232B', // erase symbol
+            u'\u21AA', // return symbol
+            u'\u21A4', // backspace symbol
             u'\u2423', // space symbol
-            u'\u21E7', // shift symbol
-            u'\u25CE' // repeat symbol
+            u'\u2191', // shift symbol
+            u'\u21BA' // repeat symbol
         };
 
         static const std::set<char16_t> GERMANY_GERMAN
