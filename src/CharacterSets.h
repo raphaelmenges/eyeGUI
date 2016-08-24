@@ -24,7 +24,14 @@ namespace eyegui
             'U', 'V', 'W', 'X', 'Y', 'Z', '-', '_', ',', ';', '.', ':', '+', '*',
             '~', '#', '/', '?', '!', '%', '#', ' ', '<', '>', '|', '$', '@', '^',
             '"', '=', '&', '(', ')', '[', ']', '{', '}', '\\',
-            u'\u00A7' // Paragraph
+            u'\u00A7', // paragraph
+
+            // Experimental
+            u'\u23CE', // return symbol
+            u'\u232B', // erase symbol
+            u'\u2423', // space symbol
+            u'\u21E7', // shift symbol
+            u'\u25CE' // repeat symbol
         };
 
         static const std::set<char16_t> GERMANY_GERMAN

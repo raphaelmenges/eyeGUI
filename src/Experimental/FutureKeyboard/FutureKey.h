@@ -82,6 +82,7 @@ namespace eyegui
         const float SUGGESTION_HEIGHT = 0.2f;
         const float LETTER_FADING_MULTIPLIER = 0.7f;
         const float LETTER_Y_OFFSET_MULTIPLIER = 0.125f;
+        const int BACKGROUND_PIXEL_BULGE = 1;
 
 		// Members
 		Layout const * mpLayout;
@@ -96,6 +97,7 @@ namespace eyegui
         float mLetterScale;
         KeyboardCase mKeyCase;
         RenderItem const * mpKeyItem;
+        RenderItem const * mpBackgroundItem; // that' REALLY hacky because background is bigger then elements extend
         RenderItem const * mpSuggestionBackgroundItem;
 		RenderItem const * mpThresholdItem;
         glm::mat4 mSuggestionBackgroundDrawMatrix;

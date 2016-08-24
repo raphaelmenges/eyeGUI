@@ -42,6 +42,7 @@ namespace eyegui
 
 		// Fetch render items
         mpKeyItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+        mpBackgroundItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
         mpSuggestionBackgroundItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
 		mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
 
@@ -146,20 +147,35 @@ namespace eyegui
 
 	void FutureKey::draw(float alpha) const
 	{
+        // *** DRAW BACKGROUND ***
+        mpBackgroundItem->bind();
+        mpBackgroundItem->getShader()->fillValue(
+            "matrix",
+            calculateDrawMatrix(
+                mpLayout->getLayoutWidth(),
+                mpLayout->getLayoutHeight(),
+                mX - BACKGROUND_PIXEL_BULGE,
+                mY - BACKGROUND_PIXEL_BULGE,
+                mWidth + (BACKGROUND_PIXEL_BULGE * 2),
+                mHeight + (BACKGROUND_PIXEL_BULGE * 2)));
+        mpBackgroundItem->getShader()->fillValue("color", glm::vec4(0.6f, 0.6f, 0.6f, 1.f));
+        mpBackgroundItem->getShader()->fillValue("alpha", alpha);
+        mpBackgroundItem->draw();
+
 		// Push scissor to limit rendering to current key (especially threshold)
 		pushScissor(mX, mY, mWidth, mHeight);
 
         // *** DRAW KEY ***
         mpKeyItem->bind();
         mpKeyItem->getShader()->fillValue(
-        "matrix",
-        calculateDrawMatrix(
-            mpLayout->getLayoutWidth(),
-            mpLayout->getLayoutHeight(),
-            mX,
-            mY,
-            mWidth,
-            mHeight));
+            "matrix",
+            calculateDrawMatrix(
+                mpLayout->getLayoutWidth(),
+                mpLayout->getLayoutHeight(),
+                mX,
+                mY,
+                mWidth,
+                mHeight));
         mpKeyItem->getShader()->fillValue("color", glm::vec4(0.5f, 0.5f, 0.5f, 1.f));
         mpKeyItem->getShader()->fillValue("alpha", alpha);
         mpKeyItem->draw();
@@ -171,14 +187,14 @@ namespace eyegui
         float suggestionHeight = glm::mix(SUGGESTION_HEIGHT, 1.f, mSecondThreshold.getValue());
         mpSuggestionBackgroundItem->bind();
         mpSuggestionBackgroundItem->getShader()->fillValue(
-        "matrix",
-        calculateDrawMatrix(
-            mpLayout->getLayoutWidth(),
-            mpLayout->getLayoutHeight(),
-            mX,
-            mY + ((1.f - suggestionHeight) * mHeight),
-            mWidth,
-            (suggestionHeight * mHeight) + 1));
+            "matrix",
+            calculateDrawMatrix(
+                mpLayout->getLayoutWidth(),
+                mpLayout->getLayoutHeight(),
+                mX,
+                mY + ((1.f - suggestionHeight) * mHeight),
+                mWidth,
+                (suggestionHeight * mHeight) + 1));
         mpSuggestionBackgroundItem->getShader()->fillValue("color", glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
         mpSuggestionBackgroundItem->getShader()->fillValue("alpha", alpha);
         mpSuggestionBackgroundItem->draw();

@@ -74,7 +74,7 @@ namespace eyegui
         mspJKey = createSuggestionKey("j", u"J");
         mspKKey = createSuggestionKey("k", u"K");
         mspLKey = createSuggestionKey("l", u"L");
-        mspEnterKey = createSuggestionKey("Enter", u"Enter");
+        mspEnterKey = createSuggestionKey("Enter", u"\u23CE");
 
         // Third row
         mspZKey = createSuggestionKey("z", u"Z");
@@ -84,13 +84,13 @@ namespace eyegui
         mspBKey = createSuggestionKey("b", u"B");
         mspNKey = createSuggestionKey("n", u"N");
         mspMKey = createSuggestionKey("m", u"M");
-        mspBackspaceKey = createSuggestionKey("back", u"Back");
+        mspBackspaceKey = createSuggestionKey("backspace", u"\u232B");
 
         // Forth row
-        mspShiftKey = createSuggestionKey("shift", u"Shift");
-        mspRepeatKey = createSuggestionKey("repeat", u"Repeat");
+        mspShiftKey = createSuggestionKey("shift", u"\u21E7");
+        mspRepeatKey = createSuggestionKey("repeat", u"\u25CE");
         mspCommaKey = createSuggestionKey("comma", u",");
-        mspSpaceKey = createSuggestionKey("space", u"Space");
+        mspSpaceKey = createSuggestionKey("space", u"\u2423");
         mspDotKey = createSuggestionKey("dot", u".");
         mspQuestionKey = createSuggestionKey("question", u"?");
         mspExclamationKey = createSuggestionKey("exclamation", u"!");
