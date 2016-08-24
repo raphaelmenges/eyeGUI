@@ -39,7 +39,6 @@ namespace eyegui
         mId = id;
 		mpLayout = pLayout;
 		mpAssetManager = pAssetManager;
-        mLetter = letter;
         mLetterScale = letterScale;
         mShowSuggestion = showSuggestion;
         mKeyCase = keyCase;
@@ -57,14 +56,14 @@ namespace eyegui
             switch(mKeyCase)
             {
             case KeyboardCase::LOWER:
-                toLower(mLetter);
+                toLower(letter);
                 break;
             case KeyboardCase::UPPER:
-                toUpper(mLetter);
+                toUpper(letter);
                 break;
             }
         }
-        mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
+        mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, letter);
 
         // Simple text for suggestion
         if(mShowSuggestion) { mupSuggestion = mpAssetManager->createTextSimple(FontSize::SMALL, 1.f, u"suggestion"); }
@@ -254,21 +253,32 @@ namespace eyegui
             mKeyCase = keyCase;
 
             // Load correct letter
+            std::u16string letter = mupLetter->getContent();
             switch(mKeyCase)
             {
             case KeyboardCase::LOWER:
-                toLower(mLetter);
-                mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
+                toLower(letter);
+                mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, letter);
                 break;
             case KeyboardCase::UPPER:
-                toUpper(mLetter);
-                mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, mLetter);
+                toUpper(letter);
+                mupLetter = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mLetterScale, letter);
                 break;
             }
 
             // Call transform of letter
             transformLetter();
         }
+    }
+
+    std::u16string FutureKey::getLetter()
+    {
+        return mupLetter->getContent();
+    }
+
+    std::u16string FutureKey::getSuggestion()
+    {
+        if(mupSuggestion != NULL) { return mupSuggestion->getContent(); } else { return std::u16string(); };
     }
 
     void FutureKey::transformLetter()

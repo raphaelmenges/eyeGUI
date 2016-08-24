@@ -67,10 +67,10 @@ namespace eyegui
         void toggleCase() { setCase((mKeyCase == KeyboardCase::LOWER) ? KeyboardCase::UPPER : KeyboardCase::LOWER); }
 
         // Get letter
-        std::u16string getLetter() { return mLetter; }
+        std::u16string getLetter();
 
         // Get suggestion
-        // TODO
+        std::u16string getSuggestion();
 
 	private:
 
@@ -95,7 +95,6 @@ namespace eyegui
 		int mY;
 		int mWidth;
 		int mHeight;
-        std::u16string mLetter;
         float mLetterScale;
         bool mShowSuggestion;
         KeyboardCase mKeyCase;
