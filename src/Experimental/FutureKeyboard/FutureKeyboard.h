@@ -18,6 +18,9 @@ namespace eyegui
 	{
 	public:
 
+        // Modes
+        enum class Mode { ONE_SUGGESTION_LINE, MANY_SUGGESTION_LINES, SUGGESTION_PER_KEY };
+
 		// Constructor
 		FutureKeyboard(
 			std::string id,
@@ -57,9 +60,14 @@ namespace eyegui
 
 	private:
 
+        // Update display
+        void updateDisplay();
+
 		// Members
 		RenderItem const * mpBackground;
+        Mode mMode;
 
+        // List of all keys
         std::vector<std::shared_ptr<FutureKey> > mKeyList;
 
         // First row
@@ -105,6 +113,11 @@ namespace eyegui
         std::shared_ptr<FutureKey> mspQuestionKey;
         std::shared_ptr<FutureKey> mspExclamationKey;
         std::shared_ptr<FutureKey> mspColonKey;
+
+        // Display for text
+        std::u16string mContent;
+        std::unique_ptr<TextFlow> mupDisplay;
+        std::unique_ptr<TextFlow> mupPreDisplay;
 	};
 }
 

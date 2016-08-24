@@ -38,6 +38,10 @@ namespace eyegui
 	{
 		mType = Type::FUTURE_KEYBOARD;
 
+        // Initialize members
+        mMode = Mode::SUGGESTION_PER_KEY;
+        mContent = u"";
+
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
 			shaders::Type::COLOR,
@@ -62,37 +66,37 @@ namespace eyegui
             };
 
         // First row
-        mspQKey = createFutureKey("q", u"Q", true, false);
-        mspWKey = createFutureKey("w", u"W", true, false);
-        mspEKey = createFutureKey("e", u"E", true, false);
-        mspRKey = createFutureKey("r", u"R", true, false);
-        mspTKey = createFutureKey("t", u"T", true, false);
-        mspYKey = createFutureKey("y", u"Y", true, false);
-        mspUKey = createFutureKey("u", u"U", true, false);
-        mspIKey = createFutureKey("i", u"I", true, false);
-        mspOKey = createFutureKey("o", u"O", true, false);
-        mspPKey = createFutureKey("p", u"P", true, false);
+        mspQKey = createFutureKey("q", u"Q", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspWKey = createFutureKey("w", u"W", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspEKey = createFutureKey("e", u"E", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspRKey = createFutureKey("r", u"R", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspTKey = createFutureKey("t", u"T", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspYKey = createFutureKey("y", u"Y", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspUKey = createFutureKey("u", u"U", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspIKey = createFutureKey("i", u"I", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspOKey = createFutureKey("o", u"O", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspPKey = createFutureKey("p", u"P", mMode == Mode::SUGGESTION_PER_KEY, false);
 
         // Second row
-        mspAKey = createFutureKey("a", u"A", true, false);
-        mspSKey = createFutureKey("s", u"S", true, false);
-        mspDKey = createFutureKey("d", u"D", true, false);
-        mspFKey = createFutureKey("f", u"F", true, false);
-        mspGKey = createFutureKey("g", u"G", true, false);
-        mspHKey = createFutureKey("h", u"H", true, false);
-        mspJKey = createFutureKey("j", u"J", true, false);
-        mspKKey = createFutureKey("k", u"K", true, false);
-        mspLKey = createFutureKey("l", u"L", true, false);
+        mspAKey = createFutureKey("a", u"A", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspSKey = createFutureKey("s", u"S", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspDKey = createFutureKey("d", u"D", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspFKey = createFutureKey("f", u"F", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspGKey = createFutureKey("g", u"G", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspHKey = createFutureKey("h", u"H", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspJKey = createFutureKey("j", u"J", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspKKey = createFutureKey("k", u"K", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspLKey = createFutureKey("l", u"L", mMode == Mode::SUGGESTION_PER_KEY, false);
         mspEnterKey = createFutureKey("return", u"\u21AA", false, true);
 
         // Third row
-        mspZKey = createFutureKey("z", u"Z", true, false);
-        mspXKey = createFutureKey("x", u"X", true, false);
-        mspCKey = createFutureKey("c", u"C", true, false);
-        mspVKey = createFutureKey("v", u"V", true, false);
-        mspBKey = createFutureKey("b", u"B", true, false);
-        mspNKey = createFutureKey("n", u"N", true, false);
-        mspMKey = createFutureKey("m", u"M", true, false);
+        mspZKey = createFutureKey("z", u"Z", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspXKey = createFutureKey("x", u"X", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspCKey = createFutureKey("c", u"C", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspVKey = createFutureKey("v", u"V", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspBKey = createFutureKey("b", u"B", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspNKey = createFutureKey("n", u"N", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspMKey = createFutureKey("m", u"M", mMode == Mode::SUGGESTION_PER_KEY, false);
         mspBackspaceKey = createFutureKey("backspace", u"\u21A4", false, true);
 
         // Forth row
@@ -104,6 +108,13 @@ namespace eyegui
         mspQuestionKey = createFutureKey("question", u"?", false, true);
         mspExclamationKey = createFutureKey("exclamation", u"!", false, true);
         mspColonKey = createFutureKey("colon", u":", false, true);
+
+        // Diplay
+        mupDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
+        updateDisplay();
+
+        // Pre display
+        mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP, 1.f, u"Lorem ipsum.");
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -123,10 +134,32 @@ namespace eyegui
             // Record whether hit
             FutureKey::HitType type = rspKey->update(tpf, pInput);
 
+            // *** TASKS ***
+
             // Toggle case
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
             {
                 tasks.push_back(KeyTask::TOGGLE_CASE);
+            }
+
+            // *** LETTERS ***
+            if(type == FutureKey::HitType::LETTER
+            && rspKey->getId() != "return"
+            && rspKey->getId() != "backspace"
+            && rspKey->getId() != "shift"
+            && rspKey->getId() != "repeat"
+            && rspKey->getId() != "space")
+            {
+                // Seems to be standard letter, just add it to content
+                mContent.append(rspKey->getLetter());
+                updateDisplay();
+            }
+
+            // *** SUGGESTIONS ***
+            if(type == FutureKey::HitType::SUGGESTION)
+            {
+                mContent.append(rspKey->getSuggestion());
+                updateDisplay();
             }
 
         }
@@ -166,6 +199,11 @@ namespace eyegui
         {
             rspKey->draw(getMultipliedDimmedAlpha());
         }
+
+        // *** DISPLAY ***
+        mupPreDisplay->draw(glm::vec4(0.3f,0.3f,0.3f,1), getMultipliedDimmedAlpha());;
+        mupDisplay->draw(glm::vec4(1,1,1,1), getMultipliedDimmedAlpha());
+
 	}
 
 	void FutureKeyboard::specialTransformAndSize()
@@ -219,6 +257,12 @@ namespace eyegui
         mspQuestionKey   ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
         mspExclamationKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
         mspColonKey      ->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+
+        // Display
+        mupDisplay->transformAndSize(mX, mY, mWidth, 0.2f * mHeight);
+
+        // Pre display
+        mupPreDisplay->transformAndSize(mX, mY, mWidth, 0.2f * mHeight);
 	}
 
 	void FutureKeyboard::specialReset()
@@ -235,4 +279,9 @@ namespace eyegui
 	{
 
 	}
+
+    void FutureKeyboard::updateDisplay()
+    {
+        mupDisplay->setContent(mContent + u"_");
+    }
 }
