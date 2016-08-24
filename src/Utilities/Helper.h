@@ -47,6 +47,12 @@ namespace eyegui
     // Returns whether change in case was successful
     bool toLower(char16_t& rCharacter);
 
+    // Returns whether change in case was successful
+    bool toUpper(std::u16string& rString);
+
+    // Returns whether change in case was successful
+    bool toUpper(char16_t& rCharacter);
+
     // Returns whether change in case of first character was successful
     bool firstCharacterToUpper(std::u16string& rString);
 

@@ -44,57 +44,57 @@ namespace eyegui
 			meshes::Type::QUAD);
 
 		// Initialize keys
-        std::function<std::shared_ptr<FutureKey>(std::u16string)> createSuggestionKey =
-            [&](std::u16string letter)
+        std::function<std::shared_ptr<FutureKey>(std::string, std::u16string)> createSuggestionKey =
+            [&](std::string id, std::u16string letter)
             {
-                auto spNewKey = std::shared_ptr<FutureKey>(new FutureKey(mpLayout, mpAssetManager, letter)); // create new key
+                auto spNewKey = std::shared_ptr<FutureKey>(new FutureKey(id, mpLayout, mpAssetManager, letter, 0.8f)); // create new key
                 mKeyList.push_back(spNewKey); // save smart pointer to list
                 return spNewKey;
             };
 
         // First row
-        mspQKey = createSuggestionKey(u"Q");
-        mspWKey = createSuggestionKey(u"W");
-        mspEKey = createSuggestionKey(u"E");
-        mspRKey = createSuggestionKey(u"R");
-        mspTKey = createSuggestionKey(u"T");
-        mspYKey = createSuggestionKey(u"Y");
-        mspUKey = createSuggestionKey(u"U");
-        mspIKey = createSuggestionKey(u"I");
-        mspOKey = createSuggestionKey(u"O");
-        mspPKey = createSuggestionKey(u"P");
+        mspQKey = createSuggestionKey("q", u"Q");
+        mspWKey = createSuggestionKey("w", u"W");
+        mspEKey = createSuggestionKey("e", u"E");
+        mspRKey = createSuggestionKey("r", u"R");
+        mspTKey = createSuggestionKey("t", u"T");
+        mspYKey = createSuggestionKey("y", u"Y");
+        mspUKey = createSuggestionKey("u", u"U");
+        mspIKey = createSuggestionKey("i", u"I");
+        mspOKey = createSuggestionKey("o", u"O");
+        mspPKey = createSuggestionKey("p", u"P");
 
         // Second row
-        mspAKey = createSuggestionKey(u"A");
-        mspSKey = createSuggestionKey(u"S");
-        mspDKey = createSuggestionKey(u"D");
-        mspFKey = createSuggestionKey(u"F");
-        mspGKey = createSuggestionKey(u"G");
-        mspHKey = createSuggestionKey(u"H");
-        mspJKey = createSuggestionKey(u"J");
-        mspKKey = createSuggestionKey(u"K");
-        mspLKey = createSuggestionKey(u"L");
-        mspEnterKey = createSuggestionKey(u"Enter");
+        mspAKey = createSuggestionKey("a", u"A");
+        mspSKey = createSuggestionKey("s", u"S");
+        mspDKey = createSuggestionKey("d", u"D");
+        mspFKey = createSuggestionKey("f", u"F");
+        mspGKey = createSuggestionKey("g", u"G");
+        mspHKey = createSuggestionKey("h", u"H");
+        mspJKey = createSuggestionKey("j", u"J");
+        mspKKey = createSuggestionKey("k", u"K");
+        mspLKey = createSuggestionKey("l", u"L");
+        mspEnterKey = createSuggestionKey("Enter", u"Enter");
 
         // Third row
-        mspZKey = createSuggestionKey(u"Z");
-        mspXKey = createSuggestionKey(u"X");
-        mspCKey = createSuggestionKey(u"C");
-        mspVKey = createSuggestionKey(u"V");
-        mspBKey = createSuggestionKey(u"B");
-        mspNKey = createSuggestionKey(u"N");
-        mspMKey = createSuggestionKey(u"M");
-        mspBackspaceKey = createSuggestionKey(u"Back");
+        mspZKey = createSuggestionKey("z", u"Z");
+        mspXKey = createSuggestionKey("x", u"X");
+        mspCKey = createSuggestionKey("c", u"C");
+        mspVKey = createSuggestionKey("v", u"V");
+        mspBKey = createSuggestionKey("b", u"B");
+        mspNKey = createSuggestionKey("n", u"N");
+        mspMKey = createSuggestionKey("m", u"M");
+        mspBackspaceKey = createSuggestionKey("back", u"Back");
 
         // Forth row
-        mspShiftKey = createSuggestionKey(u"Shift");
-        mspRepeatKey = createSuggestionKey(u"Repeat");
-        mspCommaKey = createSuggestionKey(u",");
-        mspSpaceKey = createSuggestionKey(u"Space");
-        mspDotKey = createSuggestionKey(u".");
-        mspQuestionKey = createSuggestionKey(u"?");
-        mspExclamationKey = createSuggestionKey(u"!");
-        mspColonKey = createSuggestionKey(u":");
+        mspShiftKey = createSuggestionKey("shift", u"Shift");
+        mspRepeatKey = createSuggestionKey("repeat", u"Repeat");
+        mspCommaKey = createSuggestionKey("comma", u",");
+        mspSpaceKey = createSuggestionKey("space", u"Space");
+        mspDotKey = createSuggestionKey("dot", u".");
+        mspQuestionKey = createSuggestionKey("question", u"?");
+        mspExclamationKey = createSuggestionKey("exclamation", u"!");
+        mspColonKey = createSuggestionKey("colon", u":");
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -104,10 +104,38 @@ namespace eyegui
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
+        // Prepare tasks
+        enum class KeyTask { TOGGLE_CASE };
+        std::vector<KeyTask> tasks;
+
+        // Go over keys and update them
         for(auto& rspKey : mKeyList)
         {
-            rspKey->update(tpf, pInput);
+            // Record whether hit
+            FutureKey::HitType type = rspKey->update(tpf, pInput);
+
+            // Toggle case
+            if(type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
+            {
+                tasks.push_back(KeyTask::TOGGLE_CASE);
+            }
+
         }
+
+        // Execute task after updating all keys
+        for(auto task : tasks)
+        {
+            switch(task)
+            {
+                case KeyTask::TOGGLE_CASE:
+                    for(auto& rspKey : mKeyList)
+                    {
+                        rspKey->toggleCase();
+                    }
+                    break;
+            }
+        }
+
 		return 0.f;
 	}
 
@@ -119,7 +147,7 @@ namespace eyegui
 			// Bind, fill and draw background
 			mpBackground->bind();
 			mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-			mpBackground->getShader()->fillValue("color", glm::vec4(0,1,0,1)); // mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
+            mpBackground->getShader()->fillValue("color", glm::vec4(0.1f, 0.1f, 0.1f, 1));
 			mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
 			mpBackground->draw();
 		}
@@ -134,9 +162,9 @@ namespace eyegui
 	void FutureKeyboard::specialTransformAndSize()
 	{
         int xOffset = 0.01f * mWidth;
-        int yOffset = 0.01f * mHeight;
+        int yOffset = 0.4f * mHeight;
         int keyWidth = 0.09f * mWidth;
-        int keyHeight = 0.15f * mHeight;
+        int keyHeight = 0.125f * mHeight;
         int keySpace = 0.01f * mWidth;
 
         // First row

@@ -9,6 +9,7 @@
 #ifndef FUTURE_KEY_H_
 #define FUTURE_KEY_H_
 
+#include "include/eyeGUI.h"
 #include "src/Utilities/LerpValue.h"
 
 #include <memory>
@@ -27,11 +28,17 @@ namespace eyegui
 	{
 	public:
 
+        // Enumeration of values which are returned
+        enum class HitType { NONE, LETTER, SUGGESTION };
+
 		// Constructor
         FutureKey(
+            std::string id,
             Layout const * pLayout,
             AssetManager* pAssetManager,
-            std::u16string letter);
+            std::u16string letter,
+            float letterScale,
+            KeyboardCase keyCase = KeyboardCase::UPPER);
 
 		// Destructor
 		virtual ~FutureKey();
@@ -39,8 +46,8 @@ namespace eyegui
 		// Simple transform and size to fit layout size
 		virtual void transformAndSize(int x, int y, int width, int height);
 
-		// Update
-        virtual void update(float tpf, Input const * pInput);
+        // Update, returns whether hit
+        virtual HitType update(float tpf, Input const * pInput);
 
 		// Draw
 		virtual void draw(float alpha) const;
@@ -48,7 +55,28 @@ namespace eyegui
 		// Reset
 		virtual void reset();
 
+        // Get id
+        std::string getId() const { return mId; }
+
+        // Set case
+        void setCase(KeyboardCase keyCase);
+
+        // Toggle case
+        void toggleCase() { setCase((mKeyCase == KeyboardCase::LOWER) ? KeyboardCase::UPPER : KeyboardCase::LOWER); }
+
+        // Get letter
+        std::u16string getLetter() { return mLetter; }
+
+        // Get suggestion
+        // TODO
+
 	private:
+
+        // Update letter position
+        void transformLetter();
+
+        // Update suggestion position
+        void transformSuggestion();
 
         // Constants
         const float SUGGESTION_HEIGHT = 0.2f;
@@ -59,10 +87,14 @@ namespace eyegui
 		Layout const * mpLayout;
 		AssetManager* mpAssetManager;
 
+        std::string mId;
 		int mX;
 		int mY;
 		int mWidth;
 		int mHeight;
+        std::u16string mLetter;
+        float mLetterScale;
+        KeyboardCase mKeyCase;
         RenderItem const * mpKeyItem;
         RenderItem const * mpSuggestionBackgroundItem;
 		RenderItem const * mpThresholdItem;

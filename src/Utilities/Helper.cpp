@@ -379,6 +379,64 @@ namespace eyegui
         return changeCase(rCharacter, utf8tolower);
     }
 
+    bool toUpper(std::u16string& rString)
+    {
+        // Variables which will be filled
+        int32_t errors;
+
+        // *** UTF16 -> UTF8 ***
+
+        // Change to UTF-8
+        std::string string8;
+        bool check = convertUTF16ToUTF8(rString, string8);
+
+        // Check for errors
+        if (!check)
+        {
+            return false;
+        }
+
+        // *** UPPER CASE ***
+
+        // Determine necessary space for lower chars
+        size_t size = utf8toupper(
+            string8.c_str(), string8.size(),
+            NULL, 0,
+            &errors);
+
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            return false;
+        }
+
+        // Reserve space for chars
+        char* space = (char*)malloc(size);
+
+        // Convert to low
+        size_t newSize = utf8toupper(
+            string8.c_str(), string8.size(),
+            space, size,
+            &errors);
+
+        // Check for errors
+        if (errors != UTF8_ERR_NONE)
+        {
+            free(space);
+            return false;
+        }
+
+        // *** UTF8 -> UTF16 ***
+        check = convertUTF8ToUTF16(std::string(space, (size / sizeof(char))), rString);
+
+        return check;
+    }
+
+    bool toUpper(char16_t& rCharacter)
+    {
+        return changeCase(rCharacter, utf8toupper);
+    }
+
     bool firstCharacterToUpper(std::u16string& rString)
     {
         // Check whether there is a first character
