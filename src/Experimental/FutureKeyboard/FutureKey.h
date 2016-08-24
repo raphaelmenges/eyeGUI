@@ -85,6 +85,9 @@ namespace eyegui
         const float LETTER_FADING_MULTIPLIER = 0.7f;
         const float LETTER_Y_OFFSET_MULTIPLIER = 0.125f;
         const int BACKGROUND_PIXEL_BULGE = 1;
+        const float PRESS_DURATION = 0.5f;
+        const float SUGGESTION_ANIMATION_DURATION = 0.5f;
+        const float RETRIGGER_DELAY = 1.f;
 
 		// Members
 		Layout const * mpLayout;
@@ -111,6 +114,8 @@ namespace eyegui
         LerpValue mSecondThreshold;
         bool mDoingSecondThreshold;
         LerpValue mLetterFading;
+        LerpValue mPressing;
+        std::pair<float, std::unique_ptr<TextSimple> > mSuggestionAnimation;
 	};
 }
 

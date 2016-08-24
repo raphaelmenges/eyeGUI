@@ -29,11 +29,13 @@ namespace eyegui
 		mY = 0;
 		mWidth = 0;
 		mHeight = 0;
-        mFirstThreshold.setValue(0);
-        mSecondThreshold.setValue(0);
+        mFirstThreshold.setValue(0.f);
+        mSecondThreshold.setValue(0.f);
         mDoingSecondThreshold = false;
-        mLetterFading.setValue(0);
+        mLetterFading.setValue(0.f);
         mupSuggestion = NULL;
+        mPressing.setValue(0.f);
+        mSuggestionAnimation = std::make_pair(0.f, nullptr);
 
 		// Save members
         mId = id;
@@ -94,6 +96,16 @@ namespace eyegui
         // Return value
         HitType value = HitType::NONE;
 
+        // Update pressing
+        mPressing.update(-tpf / PRESS_DURATION);
+
+        // Update animation of suggestion which was chosen
+        if(mSuggestionAnimation.first > 0)
+        {
+            mSuggestionAnimation.first -= tpf;
+            mSuggestionAnimation.first = std::max(0.f, mSuggestionAnimation.first);
+        }
+
         // Decide penetration
         bool penetrated = false;
         if(pInput != NULL)
@@ -111,7 +123,7 @@ namespace eyegui
             mFirstThreshold.update(tpf, !penetrated);
 
             // Fading of letter when second threshold is active should be decreased since second threshold is not ongoing
-            mLetterFading.update(2.f * -tpf);
+            mLetterFading.update(-tpf / RETRIGGER_DELAY);
         }
         else
         {
@@ -119,7 +131,7 @@ namespace eyegui
             mSecondThreshold.update(tpf, !penetrated || (mLetterFading.getValue() < 1.f));
 
             // Fading of letter when second threshold is ongoing
-            mLetterFading.update(2.f * tpf);
+            mLetterFading.update(tpf / RETRIGGER_DELAY);
         }
 
         // Decide whether some threshold is reached
@@ -131,6 +143,7 @@ namespace eyegui
                 mFirstThreshold.setValue(0.f);
                 mDoingSecondThreshold = mShowSuggestion; // only start second threshold when suggestion is shown
                 value = HitType::LETTER;
+                mPressing.setValue(1.f);
             }
         }
         else
@@ -141,10 +154,17 @@ namespace eyegui
                 mSecondThreshold.setValue(0.f);
                 mDoingSecondThreshold = false;
                 value = HitType::SUGGESTION;
+
+                // Copy suggestion for animation
+                mSuggestionAnimation = std::make_pair(
+                    SUGGESTION_ANIMATION_DURATION,
+                    mpAssetManager->createTextSimple(
+                        FontSize::SMALL, 1.f, mupSuggestion->getContent())
+                    );
             }
         }
 
-        // Just update suggestion transformation each frame
+        // Just update suggestion transformation each frame, inclusive the animation
         transformSuggestion();
 
         // Return value
@@ -164,6 +184,7 @@ namespace eyegui
                 mY - BACKGROUND_PIXEL_BULGE,
                 mWidth + (BACKGROUND_PIXEL_BULGE * 2),
                 mHeight + (BACKGROUND_PIXEL_BULGE * 2)));
+
         mpBackgroundItem->getShader()->fillValue("color", glm::vec4(0.6f, 0.6f, 0.6f, 1.f));
         mpBackgroundItem->getShader()->fillValue("alpha", alpha);
         mpBackgroundItem->draw();
@@ -182,7 +203,8 @@ namespace eyegui
                 mY,
                 mWidth,
                 mHeight));
-        mpKeyItem->getShader()->fillValue("color", glm::vec4(0.5f, 0.5f, 0.5f, 1.f));
+        float keyBrightness = 0.5f * (1.f - (glm::sin(mPressing.getValue() * 3.14f)));
+        mpKeyItem->getShader()->fillValue("color", glm::vec4(keyBrightness, keyBrightness, keyBrightness, 1.f));
         mpKeyItem->getShader()->fillValue("alpha", alpha);
         mpKeyItem->draw();
 
@@ -209,6 +231,12 @@ namespace eyegui
 
             // *** DRAW SUGGESTION ***
             mupSuggestion->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), alpha, false, 0, 0);
+
+            // *** DRAW ANIMATION OF CHOSEN SUGGESTION ***
+            if(mSuggestionAnimation.first > 0 && mSuggestionAnimation.second != NULL)
+            {
+                mSuggestionAnimation.second->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), (mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION) * alpha, false, 0, 0);
+            }
         }
 
         // *** DRAW THRESHOLD ***
@@ -240,10 +268,11 @@ namespace eyegui
 
 	void FutureKey::reset()
 	{
-        mFirstThreshold.setValue(0);
-        mSecondThreshold.setValue(0);
+        mFirstThreshold.setValue(0.f);
+        mSecondThreshold.setValue(0.f);
         mDoingSecondThreshold = false;
-        mLetterFading.setValue(0);
+        mLetterFading.setValue(0.f);
+        mPressing.setValue(0.f);
 	}
 
     void FutureKey::setCase(KeyboardCase keyCase)
@@ -305,6 +334,12 @@ namespace eyegui
 
             // Set position
             mupSuggestion->setPosition(suggestionX, glm::mix(suggestionStandardY, suggestionCenterY, mSecondThreshold.getValue()));
+
+            // Animation update
+            if(mSuggestionAnimation.first > 0 && mSuggestionAnimation.second != NULL)
+            {
+                mSuggestionAnimation.second->setPosition(suggestionX, glm::mix(mY, suggestionCenterY, mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION));
+            }
         }
     }
 }
