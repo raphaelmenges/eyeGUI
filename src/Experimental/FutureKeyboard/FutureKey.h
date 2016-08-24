@@ -53,6 +53,7 @@ namespace eyegui
         // Constants
         const float SUGGESTION_HEIGHT = 0.2f;
         const float LETTER_FADING_MULTIPLIER = 0.7f;
+        const float LETTER_Y_OFFSET_MULTIPLIER = 0.125f;
 
 		// Members
 		Layout const * mpLayout;

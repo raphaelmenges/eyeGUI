@@ -58,7 +58,7 @@ namespace eyegui
         // Letter
         mupLetter->transform(); // has to be called first to calculate width and height
         int letterX = mX + ((mWidth - mupLetter->getWidth()) / 2);
-        int letterY = mY + ((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2);
+        int letterY = mY + (LETTER_Y_OFFSET_MULTIPLIER * ((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2));
         mupLetter->setPosition(letterX, letterY);
 
         // Suggestion
@@ -67,7 +67,6 @@ namespace eyegui
         int suggestionY = mY + (mHeight * (1.f - SUGGESTION_HEIGHT)); // move to correct area
         suggestionY += ((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getHeight()) / 2; // center in area
         mupSuggestion->setPosition(suggestionX, suggestionY);
-
 	}
 
     void FutureKey::update(float tpf, Input const * pInput)
