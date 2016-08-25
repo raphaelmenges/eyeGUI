@@ -178,7 +178,12 @@ namespace eyegui
         return value;
 	}
 
-	void FutureKey::draw(float alpha) const
+    void FutureKey::draw(
+        glm::vec4 keyColor,
+        glm::vec4 fontColor,
+        glm::vec4 suggestionBackgroundColor,
+        glm::vec4 thresholdColor,
+        float alpha) const
 	{
         // *** DRAW BACKGROUND ***
         mpBackgroundItem->bind();
@@ -191,8 +196,8 @@ namespace eyegui
                 mY - BACKGROUND_PIXEL_BULGE,
                 mWidth + (BACKGROUND_PIXEL_BULGE * 2),
                 mHeight + (BACKGROUND_PIXEL_BULGE * 2)));
-
-        mpBackgroundItem->getShader()->fillValue("color", glm::vec4(0.6f, 0.6f, 0.6f, 1.f));
+        glm::vec3 compositeBackgroundColor = glm::min(glm::vec3(1,1,1), 0.1f + glm::vec3(keyColor.r, keyColor.g, keyColor.b));
+        mpBackgroundItem->getShader()->fillValue("color", glm::vec4(compositeBackgroundColor, 1.f));
         mpBackgroundItem->getShader()->fillValue("alpha", alpha);
         mpBackgroundItem->draw();
 
@@ -210,13 +215,14 @@ namespace eyegui
                 mY,
                 mWidth,
                 mHeight));
-        float keyBrightness = 0.5f * (1.f - (glm::sin(mPressing.getValue() * 3.14f)));
-        mpKeyItem->getShader()->fillValue("color", glm::vec4(keyBrightness, keyBrightness, keyBrightness, 1.f));
+        float keyColorMultiplier = (1.f - (glm::sin(mPressing.getValue() * 3.14f)));
+        glm::vec3 compositeKeyColor = keyColorMultiplier * glm::vec3(keyColor.r, keyColor.g, keyColor.b);
+        mpKeyItem->getShader()->fillValue("color", glm::vec4(compositeKeyColor, 1.f));
         mpKeyItem->getShader()->fillValue("alpha", alpha);
         mpKeyItem->draw();
 
         // *** DRAW LETTER ***
-        mupLetter->draw(glm::vec4(1,1,1,1), alpha * (1.f - (LETTER_FADING_MULTIPLIER * mLetterFading.getValue())), false, 0, 0);
+        mupLetter->draw(fontColor, alpha * (1.f - (LETTER_FADING_MULTIPLIER * mLetterFading.getValue())), false, 0, 0);
 
         if(mShowSuggestion)
         {
@@ -232,17 +238,17 @@ namespace eyegui
                     mY + ((1.f - suggestionHeight) * mHeight),
                     mWidth,
                     (suggestionHeight * mHeight) + 1));
-            mpSuggestionBackgroundItem->getShader()->fillValue("color", glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
+            mpSuggestionBackgroundItem->getShader()->fillValue("color", suggestionBackgroundColor);
             mpSuggestionBackgroundItem->getShader()->fillValue("alpha", alpha);
             mpSuggestionBackgroundItem->draw();
 
             // *** DRAW SUGGESTION ***
-            mupSuggestion->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), alpha, false, 0, 0);
+            mupSuggestion->draw(fontColor, alpha, false, 0, 0);
 
             // *** DRAW ANIMATION OF CHOSEN SUGGESTION ***
             if(mSuggestionAnimation.first > 0 && mSuggestionAnimation.second != NULL)
             {
-                mSuggestionAnimation.second->draw(glm::vec4(0.8f, 0.8f, 0.8f, 1.f), (mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION) * alpha, false, 0, 0);
+                mSuggestionAnimation.second->draw(fontColor, (mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION) * alpha, false, 0, 0);
             }
         }
 
@@ -263,7 +269,7 @@ namespace eyegui
 		// Draw threshold
 		mpThresholdItem->bind();
 		mpThresholdItem->getShader()->fillValue("matrix", thresholdDrawMatrix);
-        mpThresholdItem->getShader()->fillValue("thresholdColor", glm::vec4(0.f, 1.f, 1.f, 1.f));
+        mpThresholdItem->getShader()->fillValue("thresholdColor", thresholdColor);
         mpThresholdItem->getShader()->fillValue("threshold", mFirstThreshold.getValue());
         mpThresholdItem->getShader()->fillValue("alpha", 0.5f * alpha);
 		mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0

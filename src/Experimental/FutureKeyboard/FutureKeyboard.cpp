@@ -197,7 +197,7 @@ namespace eyegui
 			// Bind, fill and draw background
 			mpBackground->bind();
 			mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", glm::vec4(0.1f, 0.1f, 0.1f, 1));
+            mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
 			mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
 			mpBackground->draw();
 		}
@@ -205,7 +205,12 @@ namespace eyegui
 		// *** KEYS ***
         for(auto& rspKey : mKeyList)
         {
-            rspKey->draw(getMultipliedDimmedAlpha());
+            rspKey->draw(
+                getStyle()->color,
+                getStyle()->fontColor,
+                getStyle()->backgroundColor,
+                getStyle()->thresholdColor,
+                getMultipliedDimmedAlpha());
         }
 
         // *** DISPLAY ***

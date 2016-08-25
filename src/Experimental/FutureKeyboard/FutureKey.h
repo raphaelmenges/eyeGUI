@@ -52,7 +52,12 @@ namespace eyegui
         virtual HitType update(float tpf, Input const * pInput);
 
 		// Draw
-		virtual void draw(float alpha) const;
+        virtual void draw(
+            glm::vec4 keyColor,
+            glm::vec4 fontColor,
+            glm::vec4 suggestionBackgroundColor,
+            glm::vec4 thresholdColor,
+            float alpha) const;
 
 		// Reset
 		virtual void reset();
