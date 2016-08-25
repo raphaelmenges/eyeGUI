@@ -1317,4 +1317,52 @@ namespace eyegui_helper
 		bool flipY = false);
 }
 
+//! Namespace for experiments.
+namespace eyegui_experimental
+{
+    //! Abstract callback class for suggestions in future key of future keyboard.
+    class FutureKeySuggestionListener
+    {
+    public:
+
+        //! Constructor.
+        FutureKeySuggestionListener();
+
+        //! Destructor.
+        virtual ~FutureKeySuggestionListener() = 0;
+
+        //! Callback from key which needs new suggestion.
+        /*!
+          \param pLayout pointer to layout from which callback is coming.
+          \param id is the unique id of the sensor which causes the callback.
+          \param amount is the value of penetration at time of callback.
+        */
+        void virtual needSuggestion(eyegui::Layout* pLayout, std::string id, std::string keyId, std::u16string word) = 0;
+    };
+
+    //! Register callback for future key. Used for all keys within keyboard.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param wpListener is weak pointer to callback that should be registered.
+    */
+    void registerFutureKeySuggestionListener(
+        eyegui::Layout* pLayout,
+        std::string id,
+        std::weak_ptr<FutureKeySuggestionListener> wpListener);
+
+    //! Set suggestion on future key.
+    /*!
+      \param pLayout pointer to layout.
+      \param id is the unique id of an element.
+      \param keyId is id of key in keyboard.
+      \param suggestion is the suggestion which should be displayed by key.
+    */
+    void setFutureKeySuggestion(
+        eyegui::Layout* pLayout,
+        std::string id,
+        std::string keyId,
+        std::u16string suggestion);
+}
+
 #endif // EYE_GUI_H_

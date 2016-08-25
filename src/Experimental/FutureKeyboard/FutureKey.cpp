@@ -338,6 +338,12 @@ namespace eyegui
         if(mupSuggestion != NULL) { return mupSuggestion->getContent(); } else { return std::u16string(); };
     }
 
+    void FutureKey::setSuggestion(std::u16string suggestion)
+    {
+        if(mShowSuggestion && mupSuggestion != nullptr) { mupSuggestion->setContent(suggestion); };
+        transformSuggestion();
+    }
+
     void FutureKey::backToFirstThreshold()
     {
         mSecondThreshold.setValue(0.f);
@@ -348,7 +354,7 @@ namespace eyegui
     {
         mupLetter->transform(); // has to be called first to calculate width and height
         int letterX = mX + ((mWidth - mupLetter->getWidth()) / 2);
-        int letterY = mY + (LETTER_Y_OFFSET_MULTIPLIER * ((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2));
+        int letterY = mY + ((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2) + (LETTER_Y_OFFSET * mHeight);
         mupLetter->setPosition(letterX, letterY);
     }
 

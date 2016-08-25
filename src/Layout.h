@@ -365,6 +365,17 @@ namespace eyegui
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
 
+        // Experimental
+
+        // Register future key suggestion listener
+        void registerFutureKeySuggestionListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeySuggestionListener> wpListener);
+
+        // Set suggestion in future key
+        void setFutureKeySuggestion(
+            std::string id,
+            std::string keyId,
+            std::u16string suggestion);
+
     private:
 
         // Resize function

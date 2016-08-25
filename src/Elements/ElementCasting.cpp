@@ -72,7 +72,9 @@ namespace eyegui
                 if (type == Element::Type::INTERACTIVE_ELEMENT
                     || type == Element::Type::WORD_SUGGEST
                     || type == Element::Type::KEYBOARD
-					|| type == Element::Type::TEXT_EDIT)
+                    || type == Element::Type::TEXT_EDIT
+                    // Experimental
+                    || type == Element::Type::FUTURE_KEYBOARD)
                 {
                     return static_cast<InteractiveElement*>(pElement);
                 }

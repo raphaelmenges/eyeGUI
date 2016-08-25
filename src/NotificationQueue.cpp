@@ -30,7 +30,7 @@ namespace eyegui
         // Ignore elements without id
         if(notifierId != EMPTY_STRING_ATTRIBUTE)
         {
-          mupNotificatons->push_back(NotificationPair(notifierId, notification));
+            mupNotificatons->push_back(NotificationPair(notifierId, notification));
         }
     }
 

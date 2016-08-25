@@ -745,3 +745,23 @@ namespace eyegui_helper
             flipY);
 	}
 }
+
+namespace eyegui_experimental
+{
+    void registerFutureKeySuggestionListener(
+        eyegui::Layout* pLayout,
+        std::string id,
+        std::weak_ptr<FutureKeySuggestionListener> wpListener)
+    {
+        pLayout->registerFutureKeySuggestionListener(id, wpListener);
+    }
+
+    void setFutureKeySuggestion(
+        eyegui::Layout* pLayout,
+        std::string id,
+        std::string keyId,
+        std::u16string suggestion)
+    {
+        pLayout->setFutureKeySuggestion(id, keyId, suggestion);
+    }
+}

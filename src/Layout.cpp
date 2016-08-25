@@ -1657,6 +1657,35 @@ namespace eyegui
         return mpGUI->getDescriptionFontSize();
     }
 
+    void Layout::registerFutureKeySuggestionListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeySuggestionListener> wpListener)
+    {
+        FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
+        if (pFutureKeyboard != NULL)
+        {
+            pFutureKeyboard->registerListener(wpListener);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
+        }
+    }
+
+    void Layout::setFutureKeySuggestion(
+        std::string id,
+        std::string keyId,
+        std::u16string suggestion)
+    {
+        FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
+        if (pFutureKeyboard != NULL)
+        {
+            pFutureKeyboard->setKeySuggestion(keyId, suggestion);
+        }
+        else
+        {
+            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
+        }
+    }
+
     void Layout::internalResizing(bool force, bool instant)
     {
         if (force || (mResizeNecessary && mAlpha.getValue() > 0))

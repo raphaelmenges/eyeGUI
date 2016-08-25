@@ -14,7 +14,7 @@
 
 namespace eyegui
 {
-	class FutureKeyboard : public InteractiveElement
+    class FutureKeyboard : public InteractiveElement, public NotifierTemplate<eyegui_experimental::FutureKeySuggestionListener>
 	{
 	public:
 
@@ -38,6 +38,9 @@ namespace eyegui
 		// Destructor
 		virtual ~FutureKeyboard();
 
+        // Setter for suggestion on key
+        void setKeySuggestion(std::string keyId, std::u16string suggestion);
+
 	protected:
 
 		// Updating filled by subclasses, returns adaptive scale
@@ -60,8 +63,8 @@ namespace eyegui
 
 	private:
 
-        // Update display
-        void updateDisplay();
+        // Update display and suggestions
+        void updateDisplayAndSuggestions();
 
 		// Members
 		RenderItem const * mpBackground;

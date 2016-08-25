@@ -21,7 +21,16 @@
 namespace eyegui
 {
     // Ugly enumeration, but somehow layout must remember to call correct notification
-    enum class NotificationType { BUTTON_HIT, BUTTON_DOWN, BUTTON_UP, SENSOR_PENETRATED, KEYBOARD_KEY_PRESSED, WORD_SUGGEST_CHOSEN };
+    enum class NotificationType {
+    BUTTON_HIT,
+    BUTTON_DOWN,
+    BUTTON_UP,
+    SENSOR_PENETRATED,
+    KEYBOARD_KEY_PRESSED,
+    WORD_SUGGEST_CHOSEN,
+
+    // Experimental
+    FUTURE_KEY_NEEDS_SUGGESTION };
 
     template <class T>
     class NotifierTemplate
@@ -120,6 +129,18 @@ namespace eyegui
             for (std::shared_ptr<T>& spListener : getListener())
             {
                 (spListener.get()->*method)(pLayout, id, value);
+            }
+        }
+
+        // Notify listener about something (one need to know which method to call from listener)
+        void notifyListener(
+            void (T::*method) (Layout*, std::string, std::string, std::u16string),
+            Layout* pLayout, std::string id, std::string keyId, std::u16string word)
+        {
+            // Inform listener
+            for (std::shared_ptr<T>& spListener : getListener())
+            {
+                (spListener.get()->*method)(pLayout, id, keyId, word);
             }
         }
 

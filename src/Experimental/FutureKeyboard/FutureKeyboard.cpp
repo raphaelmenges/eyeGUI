@@ -8,6 +8,7 @@
 
 #include "src/Layout.h"
 #include "src/Utilities/Helper.h"
+#include "src/Utilities/OperationNotifier.h"
 
 namespace eyegui
 {
@@ -120,7 +121,7 @@ namespace eyegui
 
         // Diplay
         mupDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
-        updateDisplay();
+        updateDisplayAndSuggestions();
 
         // Pre display
         mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP, 1.f, u"The quick brown fox jumps over the lazy dog.");
@@ -130,6 +131,19 @@ namespace eyegui
 	{
 
 	}
+
+    void FutureKeyboard::setKeySuggestion(std::string keyId, std::u16string suggestion)
+    {
+        // Search for key
+        for(auto& rspKey : mKeyList)
+        {
+            if(rspKey->getId() == keyId)
+            {
+                rspKey->setSuggestion(suggestion);
+                break;
+            }
+        }
+    }
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
@@ -165,14 +179,14 @@ namespace eyegui
                 mCurrentWord.append(rspKey->getLetter());
                 keyHit = true;
                 mLastLetter = rspKey->getLetter();
-                updateDisplay();
+                updateDisplayAndSuggestions();
             }
 
             // *** SUGGESTIONS ***
             if(type == FutureKey::HitType::SUGGESTION)
             {
                 mCurrentWord.append(rspKey->getSuggestion());
-                updateDisplay();
+                updateDisplayAndSuggestions();
                 keyHit = true;
             }
 
@@ -184,7 +198,7 @@ namespace eyegui
                 mCurrentWord.append(u" ");
                 mCollectedWords.append(mCurrentWord);
                 mCurrentWord = u"";
-                updateDisplay();
+                updateDisplayAndSuggestions();
             }
 
             // Dot
@@ -194,7 +208,7 @@ namespace eyegui
                 mCollectedWords.append(mCurrentWord);
                 mCurrentWord = u"";
                 firstLetterOfSentence = true;
-                updateDisplay();
+                updateDisplayAndSuggestions();
             }
 
             // Backspace
@@ -216,7 +230,7 @@ namespace eyegui
                     firstLetterOfSentence = true;
                 }
 
-                updateDisplay();
+                updateDisplayAndSuggestions();
             }
 
             // Repeat
@@ -225,7 +239,7 @@ namespace eyegui
                 std::u16string lowerLastLetter = mLastLetter;
                 toLower(lowerLastLetter);
                 mCurrentWord.append(lowerLastLetter);
-                updateDisplay();
+                updateDisplayAndSuggestions();
             }
 
             // *** RESET SECOND THRESHOLD OF ALL KEYS BUT CURRENT ONE ***
@@ -381,11 +395,39 @@ namespace eyegui
 
 	void FutureKeyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
 	{
+        // Pipe notifications to notifier template including own data
+        switch (notification)
+        {
+        case NotificationType::FUTURE_KEY_NEEDS_SUGGESTION:
+        {
+            // Go over all keys which need suggestions and ask for one
+            for(auto& rspKey : mKeyList)
+            {
+                // Only do so for keys which want a suggestion
+                if(rspKey->suggestionShown())
+                {
+                    notifyListener(
+                        &eyegui_experimental::FutureKeySuggestionListener::needSuggestion,
+                        pLayout,
+                        getId(),
+                        rspKey->getId(),
+                        mCurrentWord + rspKey->getLetter());
+                }
+            }
 
+            break;
+        }
+        default:
+            throwWarning(
+                OperationNotifier::Operation::BUG,
+                "Future keyboard got notification which is not thought for it.");
+            break;
+        }
 	}
 
-    void FutureKeyboard::updateDisplay()
+    void FutureKeyboard::updateDisplayAndSuggestions()
     {
+        // *** DISPLAY ***
         if(mCollectedWords.empty())
         {
             mupDisplay->setContent(mCurrentWord + u"_");
@@ -394,5 +436,8 @@ namespace eyegui
         {
             mupDisplay->setContent(mCollectedWords + u" " + mCurrentWord + u"_");
         }
+
+        // *** SUGGESTIONS ***
+        mpNotificationQueue->enqueue(getId(), NotificationType::FUTURE_KEY_NEEDS_SUGGESTION);
     }
 }
