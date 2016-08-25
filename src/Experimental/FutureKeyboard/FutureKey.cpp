@@ -37,6 +37,7 @@ namespace eyegui
         mPressing.setValue(0.f);
         mSuggestionAnimation = std::make_pair(0.f, nullptr);
         mRetriggerTime = 0;
+        mGazeDistanze = 0;
 
 		// Save members
         mId = id;
@@ -111,14 +112,21 @@ namespace eyegui
             mSuggestionAnimation.first = std::max(0.f, mSuggestionAnimation.first);
         }
 
-        // Decide penetration
+        // Process input
         bool penetrated = false;
         if(pInput != NULL)
         {
+            // Decide penetration
             penetrated = (pInput->gazeX >= mX
                 && pInput->gazeX < mX + mWidth
                 && pInput->gazeY >= mY
                 && pInput->gazeY < mY + mHeight);
+
+            // Determine distance to gaze
+            float centerX = mX + (mWidth / 2);
+            float centerY = mY + (mHeight / 2);
+            mGazeDistanze = glm::distance(glm::vec2(centerX, centerY), glm::vec2(pInput->gazeX, pInput->gazeY));
+            mGazeDistanze /= mpLayout->getLayoutWidth(); // some random normalization
         }
 
         // Update threshold
@@ -243,7 +251,8 @@ namespace eyegui
             mpSuggestionBackgroundItem->draw();
 
             // *** DRAW SUGGESTION ***
-            mupSuggestion->draw(fontColor, alpha, false, 0, 0);
+            float suggestionAlpha = (1.f - glm::clamp(GAZE_DISTANCE_MULTIPLIER * mGazeDistanze, 0.f, 1.f)) * alpha;
+            mupSuggestion->draw(fontColor, suggestionAlpha, false, 0, 0);
 
             // *** DRAW ANIMATION OF CHOSEN SUGGESTION ***
             if(mSuggestionAnimation.first > 0 && mSuggestionAnimation.second != NULL)
@@ -287,6 +296,7 @@ namespace eyegui
         mLetterFading.setValue(0.f);
         mPressing.setValue(0.f);
         mRetriggerTime = 0;
+        mGazeDistanze = 0;
 	}
 
     void FutureKey::setCase(KeyboardCase keyCase)

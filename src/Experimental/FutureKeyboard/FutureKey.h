@@ -93,6 +93,7 @@ namespace eyegui
         const float PRESS_DURATION = 0.5f;
         const float SUGGESTION_ANIMATION_DURATION = 0.5f;
         const float RETRIGGER_DELAY = 1.f;
+        const float GAZE_DISTANCE_MULTIPLIER = 0.f;
 
 		// Members
 		Layout const * mpLayout;
@@ -122,6 +123,7 @@ namespace eyegui
         LerpValue mLetterFading;
         LerpValue mPressing;
         std::pair<float, std::unique_ptr<TextSimple> > mSuggestionAnimation;
+        float mGazeDistanze;
 	};
 }
 
