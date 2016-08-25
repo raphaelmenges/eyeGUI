@@ -42,6 +42,7 @@ namespace eyegui
         mMode = Mode::SUGGESTION_PER_KEY;
         mCurrentWord = u"";
         mCollectedWords = u"";
+        mLastLetter = u"";
 
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
@@ -110,12 +111,19 @@ namespace eyegui
         mspExclamationKey = createFutureKey("exclamation", u"!", false, true);
         mspColonKey = createFutureKey("colon", u":", false, true);
 
+        // For first letter, use upper case
+        mFirstLetterOfSentence = true;
+        for(auto& rspKey : mKeyList)
+        {
+            rspKey->setCase(KeyboardCase::UPPER);
+        }
+
         // Diplay
         mupDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
         updateDisplay();
 
         // Pre display
-        mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP, 1.f, u"Lorem ipsum.");
+        mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP, 1.f, u"The quick brown fox jumps over the lazy dog.");
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -128,6 +136,8 @@ namespace eyegui
         // Prepare tasks
         enum class KeyTask { TOGGLE_CASE };
         std::vector<KeyTask> tasks;
+        bool firstLetterOfSentence = false;
+        bool keyHit = false;
 
         // Go over keys and update them
         for(auto& rspKey : mKeyList)
@@ -153,6 +163,8 @@ namespace eyegui
             {
                 // Seems to be standard letter, just add it to content
                 mCurrentWord.append(rspKey->getLetter());
+                keyHit = true;
+                mLastLetter = rspKey->getLetter();
                 updateDisplay();
             }
 
@@ -161,14 +173,94 @@ namespace eyegui
             {
                 mCurrentWord.append(rspKey->getSuggestion());
                 updateDisplay();
+                keyHit = true;
             }
 
             // *** SPECIAL LETTERS ***
+
+            // Space
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
             {
+                mCurrentWord.append(u" ");
                 mCollectedWords.append(mCurrentWord);
                 mCurrentWord = u"";
                 updateDisplay();
+            }
+
+            // Dot
+            if(type == FutureKey::HitType::LETTER && rspKey->getId() == "dot")
+            {
+                mCurrentWord.append(u" ");
+                mCollectedWords.append(mCurrentWord);
+                mCurrentWord = u"";
+                firstLetterOfSentence = true;
+                updateDisplay();
+            }
+
+            // Backspace
+            if(type == FutureKey::HitType::LETTER && rspKey->getId() == "backspace")
+            {
+                // Try to delete something from current word
+                if(!mCurrentWord.empty())
+                {
+                    mCurrentWord.pop_back();
+                }
+                else if(!mCollectedWords.empty())
+                {
+                    mCollectedWords.pop_back();
+                }
+
+                // Handle upper case at first letter of sentence
+                if(mCollectedWords.empty())
+                {
+                    firstLetterOfSentence = true;
+                }
+
+                updateDisplay();
+            }
+
+            // Repeat
+            if(type == FutureKey::HitType::LETTER && rspKey->getId() == "repeat")
+            {
+                std::u16string lowerLastLetter = mLastLetter;
+                toLower(lowerLastLetter);
+                mCurrentWord.append(lowerLastLetter);
+                updateDisplay();
+            }
+
+            // *** RESET SECOND THRESHOLD OF ALL KEYS BUT CURRENT ONE ***
+            if(type != FutureKey::HitType::NONE)
+            {
+                for(auto& rspOtherKey : mKeyList)
+                {
+                    if(rspOtherKey->getId() != rspKey->getId())
+                    {
+                        rspOtherKey->backToFirstThreshold();
+                    }
+                }
+            }
+        }
+
+        // Handle "UPPER" letters for every sentence beginnging
+        if(firstLetterOfSentence)
+        {
+            // Prepare for next first letter
+            mFirstLetterOfSentence = true;
+            for(auto& rspKey : mKeyList) // maybe move out of loop...
+            {
+                rspKey->setCase(KeyboardCase::UPPER);
+            }
+        }
+        else if(keyHit)
+        {
+            // Check whether that letter was first of a sentence
+            if(mFirstLetterOfSentence)
+            {
+                mFirstLetterOfSentence = false;
+                for(auto& rspKey : mKeyList)
+                {
+                    rspKey->setCase(KeyboardCase::LOWER);
+                }
             }
         }
 
@@ -214,9 +306,8 @@ namespace eyegui
         }
 
         // *** DISPLAY ***
-        mupPreDisplay->draw(glm::vec4(0.3f,0.3f,0.3f,1), getMultipliedDimmedAlpha());;
+        mupPreDisplay->draw(glm::vec4(0.4f,0.4f,0.4f,1), getMultipliedDimmedAlpha());;
         mupDisplay->draw(glm::vec4(1,1,1,1), getMultipliedDimmedAlpha());
-
 	}
 
 	void FutureKeyboard::specialTransformAndSize()
@@ -272,10 +363,10 @@ namespace eyegui
         mspColonKey      ->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
 
         // Display
-        mupDisplay->transformAndSize(mX, mY, mWidth, 0.2f * mHeight);
+        mupDisplay->transformAndSize(mX + 0.05f * mWidth, mY + 0.05f * mHeight, mWidth, 0.2f * mHeight);
 
         // Pre display
-        mupPreDisplay->transformAndSize(mX, mY, mWidth, 0.2f * mHeight);
+        mupPreDisplay->transformAndSize(mX + 0.05f * mWidth, mY + 0.05f * mHeight, mWidth, 0.2f * mHeight);
 	}
 
 	void FutureKeyboard::specialReset()

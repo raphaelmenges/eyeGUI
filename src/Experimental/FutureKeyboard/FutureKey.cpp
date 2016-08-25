@@ -251,7 +251,11 @@ namespace eyegui
             mpSuggestionBackgroundItem->draw();
 
             // *** DRAW SUGGESTION ***
-            float suggestionAlpha = (1.f - glm::clamp(GAZE_DISTANCE_MULTIPLIER * mGazeDistanze, 0.f, 1.f)) * alpha;
+            float suggestionAlpha =
+                (1.f - glm::clamp(GAZE_DISTANCE_MULTIPLIER * mGazeDistanze, 0.f, 1.f))
+                * ((1.f - LETTER_FADING_MULTIPLIER)
+                    + (LETTER_FADING_MULTIPLIER * mLetterFading.getValue()))
+                * alpha;
             mupSuggestion->draw(fontColor, suggestionAlpha, false, 0, 0);
 
             // *** DRAW ANIMATION OF CHOSEN SUGGESTION ***
@@ -280,7 +284,7 @@ namespace eyegui
 		mpThresholdItem->getShader()->fillValue("matrix", thresholdDrawMatrix);
         mpThresholdItem->getShader()->fillValue("thresholdColor", thresholdColor);
         mpThresholdItem->getShader()->fillValue("threshold", mFirstThreshold.getValue());
-        mpThresholdItem->getShader()->fillValue("alpha", 0.5f * alpha);
+        mpThresholdItem->getShader()->fillValue("alpha", alpha);
 		mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
 		mpThresholdItem->draw();
 
@@ -332,6 +336,12 @@ namespace eyegui
     std::u16string FutureKey::getSuggestion()
     {
         if(mupSuggestion != NULL) { return mupSuggestion->getContent(); } else { return std::u16string(); };
+    }
+
+    void FutureKey::backToFirstThreshold()
+    {
+        mSecondThreshold.setValue(0.f);
+        mDoingSecondThreshold = false;
     }
 
     void FutureKey::transformLetter()

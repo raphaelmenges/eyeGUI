@@ -77,6 +77,9 @@ namespace eyegui
         // Get suggestion
         std::u16string getSuggestion();
 
+        // Reset to first threshold if second is available and active
+        void backToFirstThreshold();
+
 	private:
 
         // Update letter position
@@ -87,12 +90,12 @@ namespace eyegui
 
         // Constants
         const float SUGGESTION_HEIGHT = 0.2f;
-        const float LETTER_FADING_MULTIPLIER = 0.7f;
+        const float LETTER_FADING_MULTIPLIER = 0.55f;
         const float LETTER_Y_OFFSET_MULTIPLIER = 0.125f;
         const int BACKGROUND_PIXEL_BULGE = 1;
         const float PRESS_DURATION = 0.5f;
         const float SUGGESTION_ANIMATION_DURATION = 0.5f;
-        const float RETRIGGER_DELAY = 1.f;
+        const float RETRIGGER_DELAY = 0.5f;
         const float GAZE_DISTANCE_MULTIPLIER = 0.f;
 
 		// Members

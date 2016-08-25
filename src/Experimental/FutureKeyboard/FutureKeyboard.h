@@ -66,6 +66,8 @@ namespace eyegui
 		// Members
 		RenderItem const * mpBackground;
         Mode mMode;
+        bool mFirstLetterOfSentence;
+        std::u16string mLastLetter;
 
         // List of all keys
         std::vector<std::shared_ptr<FutureKey> > mKeyList;
