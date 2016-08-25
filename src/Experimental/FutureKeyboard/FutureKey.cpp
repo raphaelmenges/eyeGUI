@@ -36,6 +36,7 @@ namespace eyegui
         mupSuggestion = NULL;
         mPressing.setValue(0.f);
         mSuggestionAnimation = std::make_pair(0.f, nullptr);
+        mRetriggerTime = 0;
 
 		// Save members
         mId = id;
@@ -99,6 +100,10 @@ namespace eyegui
         // Update pressing
         mPressing.update(-tpf / PRESS_DURATION);
 
+        // Update retrigger time
+        mRetriggerTime -= tpf;
+        mRetriggerTime = glm::max(0.f, mRetriggerTime);
+
         // Update animation of suggestion which was chosen
         if(mSuggestionAnimation.first > 0)
         {
@@ -120,7 +125,7 @@ namespace eyegui
         if(!mDoingSecondThreshold)
         {
             // First threshold (TODO: adjust threshold time)
-            mFirstThreshold.update(tpf, !penetrated);
+            mFirstThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is active should be decreased since second threshold is not ongoing
             mLetterFading.update(-tpf / RETRIGGER_DELAY);
@@ -128,7 +133,7 @@ namespace eyegui
         else
         {
             // Second threshold. But wait for fading of letter! (TODO: adjust threshold time)
-            mSecondThreshold.update(tpf, !penetrated || (mLetterFading.getValue() < 1.f));
+            mSecondThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is ongoing
             mLetterFading.update(tpf / RETRIGGER_DELAY);
@@ -137,13 +142,14 @@ namespace eyegui
         // Decide whether some threshold is reached
         if(!mDoingSecondThreshold)
         {
-            // First threshold
+            // Retrigger delay
             if(mFirstThreshold.getValue() >= 1.f)
             {
                 mFirstThreshold.setValue(0.f);
                 mDoingSecondThreshold = mShowSuggestion; // only start second threshold when suggestion is shown
                 value = HitType::LETTER;
                 mPressing.setValue(1.f);
+                mRetriggerTime = RETRIGGER_DELAY;
             }
         }
         else
@@ -154,6 +160,7 @@ namespace eyegui
                 mSecondThreshold.setValue(0.f);
                 mDoingSecondThreshold = false;
                 value = HitType::SUGGESTION;
+                mRetriggerTime = RETRIGGER_DELAY;
 
                 // Copy suggestion for animation
                 mSuggestionAnimation = std::make_pair(
@@ -273,6 +280,7 @@ namespace eyegui
         mDoingSecondThreshold = false;
         mLetterFading.setValue(0.f);
         mPressing.setValue(0.f);
+        mRetriggerTime = 0;
 	}
 
     void FutureKey::setCase(KeyboardCase keyCase)

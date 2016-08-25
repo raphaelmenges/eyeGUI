@@ -115,7 +115,8 @@ namespace eyegui
         std::shared_ptr<FutureKey> mspColonKey;
 
         // Display for text
-        std::u16string mContent;
+        std::u16string mCurrentWord;
+        std::u16string mCollectedWords;
         std::unique_ptr<TextFlow> mupDisplay;
         std::unique_ptr<TextFlow> mupPreDisplay;
 	};

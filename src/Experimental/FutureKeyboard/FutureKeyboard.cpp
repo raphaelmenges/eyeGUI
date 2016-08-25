@@ -40,7 +40,8 @@ namespace eyegui
 
         // Initialize members
         mMode = Mode::SUGGESTION_PER_KEY;
-        mContent = u"";
+        mCurrentWord = u"";
+        mCollectedWords = u"";
 
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
@@ -151,17 +152,24 @@ namespace eyegui
             && rspKey->getId() != "space")
             {
                 // Seems to be standard letter, just add it to content
-                mContent.append(rspKey->getLetter());
+                mCurrentWord.append(rspKey->getLetter());
                 updateDisplay();
             }
 
             // *** SUGGESTIONS ***
             if(type == FutureKey::HitType::SUGGESTION)
             {
-                mContent.append(rspKey->getSuggestion());
+                mCurrentWord.append(rspKey->getSuggestion());
                 updateDisplay();
             }
 
+            // *** SPECIAL LETTERS ***
+            if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
+            {
+                mCollectedWords.append(mCurrentWord);
+                mCurrentWord = u"";
+                updateDisplay();
+            }
         }
 
         // Execute task after updating all keys
@@ -282,6 +290,13 @@ namespace eyegui
 
     void FutureKeyboard::updateDisplay()
     {
-        mupDisplay->setContent(mContent + u"_");
+        if(mCollectedWords.empty())
+        {
+            mupDisplay->setContent(mCurrentWord + u"_");
+        }
+        else
+        {
+            mupDisplay->setContent(mCollectedWords + u" " + mCurrentWord + u"_");
+        }
     }
 }

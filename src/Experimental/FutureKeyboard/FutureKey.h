@@ -112,6 +112,7 @@ namespace eyegui
         std::unique_ptr<TextSimple> mupSuggestion;
         LerpValue mFirstThreshold;
         LerpValue mSecondThreshold;
+        float mRetriggerTime;
         bool mDoingSecondThreshold;
         LerpValue mLetterFading;
         LerpValue mPressing;
