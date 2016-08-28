@@ -44,6 +44,9 @@ namespace eyegui
 		// Get content
 		std::u16string getContent() const;
 
+		// Set next sentence
+		void nextSentence(std::u16string sentence);
+
 	protected:
 
 		// Updating filled by subclasses, returns adaptive scale

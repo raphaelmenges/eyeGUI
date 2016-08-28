@@ -771,4 +771,12 @@ namespace eyegui_experimental
 	{
 		return pLayout->getFutureKeyboardContent(id);
 	}
+
+	void nextFutureKeyboardSentence(
+		eyegui::Layout* pLayout,
+		std::string id,
+		std::u16string sentence)
+	{
+		pLayout->nextFutureKeyboardSentence(id, sentence);
+	}
 }

@@ -1374,6 +1374,17 @@ namespace eyegui_experimental
 	std::u16string getFutureKeyboardContent(
 		eyegui::Layout const * pLayout,
 		std::string id);
+
+	//! Clears current input and set next sentence.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param sentence is sentence which is predisplayed.
+	*/
+	void nextFutureKeyboardSentence(
+		eyegui::Layout* pLayout,
+		std::string id,
+		std::u16string sentence);
 }
 
 #endif // EYE_GUI_H_

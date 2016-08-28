@@ -126,7 +126,7 @@ namespace eyegui
         updateDisplayAndSuggestions();
 
         // Pre display
-        mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP, 1.f, u"The quick brown fox jumps over the lazy dog.");
+        mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -150,6 +150,20 @@ namespace eyegui
 	std::u16string FutureKeyboard::getContent() const
 	{
 		return buildContent();
+	}
+
+	void FutureKeyboard::nextSentence(std::u16string sentence)
+	{
+		// Setup display
+		mCurrentWord.clear();
+		mCollectedWords.clear();
+		mupPreDisplay->setContent(sentence);
+
+		// Setup keys
+		for (auto& rspKey : mKeyList)
+		{
+			rspKey->clearSuggestion();
+		}
 	}
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
@@ -190,19 +204,6 @@ namespace eyegui
             // *** SUGGESTIONS ***
             if(type == FutureKey::HitType::SUGGESTION)
             {
-				/*
-				// Take educational guess that before that suggestion the letter on that key was typed in
-				int letterLength = rspKey->getLetter().size();
-				if (mCurrentWord.size() < letterLength)
-				{
-					mCurrentWord.clear();
-				}
-				else
-				{
-					mCurrentWord.substr(0, mCurrentWord.size() - letterLength);
-				}
-				*/
-
 				// Replace current word with suggestion and display it
                 mCurrentWord = rspKey->getSuggestion();
                 updateDisplayAndSuggestions();
@@ -278,6 +279,7 @@ namespace eyegui
             }
         }
 
+		/* NOT NECESSARY AT THE MOMENT
         // Handle "UPPER" letters for every sentence beginnging
         if(firstLetterOfSentence)
         {
@@ -300,6 +302,7 @@ namespace eyegui
                 }
             }
         }
+		*/
 
         // Execute task after updating all keys
         for(auto task : tasks)
