@@ -118,7 +118,8 @@ namespace eyegui
         mFirstLetterOfSentence = true;
         for(auto& rspKey : mKeyList)
         {
-            rspKey->setCase(KeyboardCase::UPPER);
+			// TODO: ok, one should use upper case in standard scenario but for now we need lower
+            rspKey->setCase(KeyboardCase::LOWER);
         }
 
         // Diplay
@@ -245,7 +246,7 @@ namespace eyegui
                 }
                 else if(!mCollectedWords.empty())
                 {
-					mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
+					mCollectedWords = mCollectedWords.substr(0, mCollectedWords.size() - 1);
                 }
 
                 // Handle upper case at first letter of sentence
