@@ -346,49 +346,56 @@ namespace eyegui
 
         // Go over paragraphs (pens are in local pixel coordinate system with origin in lower left corner of element)
         float yPixelPen = -lineHeight; // First line should be also inside flow
-        for (std::u16string& rPargraph : paragraphs)
-        {
-            // Get words out of paragraph
-            std::vector<Word> words;
-            std::u16string wordDelimiter = u" ";
+		for (std::u16string& rPargraph : paragraphs)
+		{
+			// Get words out of paragraph
+			std::vector<Word> words;
+			std::u16string wordDelimiter = u" ";
 			int contentStartIndex = 0;
-            while ((pos = rPargraph.find(wordDelimiter)) != std::u16string::npos)
-            {
-				// Create structure which holds information about word
-				mFlowWords.push_back(FlowWord());
-				mFlowWords.back().contentStartIndex = contentStartIndex;
-
+			while ((pos = rPargraph.find(wordDelimiter)) != std::u16string::npos)
+			{
 				// Extract current token aka word
-                token = rPargraph.substr(0, pos);
+				token = rPargraph.substr(0, pos);
 
 				// Erase token from paragraph
-                rPargraph.erase(0, pos + wordDelimiter.length());
+				rPargraph.erase(0, pos + wordDelimiter.length());
 
 				// Create vector of fitting words
 				std::vector<Word> fitWords;
-                failure |= !insertFitWord(fitWords, token, mWidth, mScale);
+				failure |= !insertFitWord(fitWords, token, mWidth, mScale);
 
-				// Create as many sub flow words as fit words are added to global words vector
+				// TODO: Check whether this fix to prohibit extra spaces is correct
+				if (!fitWords.empty())
+				{
+					// Create structure which holds information about word
+					mFlowWords.push_back(FlowWord());
+					mFlowWords.back().contentStartIndex = contentStartIndex;
+
+					// Create as many sub flow words as fit words are added to global words vector
+					mFlowWords.back().subWords.resize(fitWords.size());
+
+					// Save index of flow word in vector for addressing by using class
+					mFlowWords.back().index = mFlowWords.size() - 1;
+
+					// Set content start index for next run
+					contentStartIndex = contentStartIndex + (int)pos + (int)wordDelimiter.length();
+
+					// Insert fitting words to global words vector
+					words.insert(words.end(), fitWords.begin(), fitWords.end());
+				}
+			}
+
+			// Add last token from paragraph as well (if it was not just some space)
+			if (!rPargraph.empty())
+			{
+				std::vector<Word> fitWords;
+				failure |= !insertFitWord(fitWords, rPargraph, mWidth, mScale);
+				mFlowWords.push_back(FlowWord());
+				mFlowWords.back().contentStartIndex = contentStartIndex;
 				mFlowWords.back().subWords.resize(fitWords.size());
-
-				// Save index of flow word in vector for addressing by using class
 				mFlowWords.back().index = mFlowWords.size() - 1;
-
-				// Set content start index for next run
-				contentStartIndex = contentStartIndex + (int)pos + (int)wordDelimiter.length();
-
-				// Insert fitting words to global words vector
 				words.insert(words.end(), fitWords.begin(), fitWords.end());
-            }
-
-            // Add last token from paragraph as well
-			std::vector<Word> fitWords;
-            failure |= !insertFitWord(fitWords, rPargraph, mWidth, mScale);
-			mFlowWords.push_back(FlowWord());
-			mFlowWords.back().contentStartIndex = contentStartIndex;
-			mFlowWords.back().subWords.resize(glm::max(1, (int)fitWords.size())); // when at end of text just space, subword is added here. TODO: good way to fix this issue?
-			mFlowWords.back().index = mFlowWords.size() - 1;
-			words.insert(words.end(), fitWords.begin(), fitWords.end());
+			}
 
             // Failure appeared, forget it
             if (!failure)
