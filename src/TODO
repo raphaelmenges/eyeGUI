@@ -30,6 +30,7 @@
 - Coloring letters corresponding to suggestions
   - just for next letter, guide you through word
 - Optional: Somehow suggestions in letters <- think about other keyboard
+- FutureKeyboard: Since only one listener is possible, give it a better name.
 
 ## Bugs
 - Ubuntu: Growing of pressed keys in keyboard not happening

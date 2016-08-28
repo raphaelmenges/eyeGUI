@@ -764,4 +764,11 @@ namespace eyegui_experimental
     {
         pLayout->setFutureKeySuggestion(id, keyId, suggestion);
     }
+
+	std::u16string getFutureKeyboardContent(
+		eyegui::Layout const * pLayout,
+		std::string id)
+	{
+		return pLayout->getFutureKeyboardContent(id);
+	}
 }

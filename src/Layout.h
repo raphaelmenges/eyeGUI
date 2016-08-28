@@ -376,6 +376,9 @@ namespace eyegui
             std::string keyId,
             std::u16string suggestion);
 
+		// Get content of future keyboard
+		std::u16string getFutureKeyboardContent(std::string id) const;
+
     private:
 
         // Resize function

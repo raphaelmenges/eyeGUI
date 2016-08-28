@@ -1334,8 +1334,9 @@ namespace eyegui_experimental
         //! Callback from key which needs new suggestion.
         /*!
           \param pLayout pointer to layout from which callback is coming.
-          \param id is the unique id of the sensor which causes the callback.
-          \param amount is the value of penetration at time of callback.
+          \param id is the unique id of the future keyboard which causes the callback.
+          \param keyId is the id of the future key which causes the callback.
+		  \param word is the currently typed in word.
         */
         void virtual needSuggestion(eyegui::Layout* pLayout, std::string id, std::string keyId, std::u16string word) = 0;
     };
@@ -1353,7 +1354,7 @@ namespace eyegui_experimental
 
     //! Set suggestion on future key.
     /*!
-      \param pLayout pointer to layout.
+	  \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param keyId is id of key in keyboard.
       \param suggestion is the suggestion which should be displayed by key.
@@ -1363,6 +1364,16 @@ namespace eyegui_experimental
         std::string id,
         std::string keyId,
         std::u16string suggestion);
+
+	//! Getter for content of future keyboard.
+	/*!
+	  \param pLayout pointer to layout.
+	  \param id is the unique id of an element.
+	  \return content or empty string if keyboard not found.
+	*/
+	std::u16string getFutureKeyboardContent(
+		eyegui::Layout const * pLayout,
+		std::string id);
 }
 
 #endif // EYE_GUI_H_

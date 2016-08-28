@@ -41,6 +41,9 @@ namespace eyegui
         // Setter for suggestion on key
         void setKeySuggestion(std::string keyId, std::u16string suggestion);
 
+		// Get content
+		std::u16string getContent() const;
+
 	protected:
 
 		// Updating filled by subclasses, returns adaptive scale
@@ -65,6 +68,9 @@ namespace eyegui
 
         // Update display and suggestions
         void updateDisplayAndSuggestions();
+
+		// Build content
+		std::u16string buildContent() const;
 
 		// Members
 		RenderItem const * mpBackground;

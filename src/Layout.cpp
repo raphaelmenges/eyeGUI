@@ -1686,6 +1686,20 @@ namespace eyegui
         }
     }
 
+	std::u16string Layout::getFutureKeyboardContent(std::string id) const
+	{
+		FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
+		if (pFutureKeyboard != NULL)
+		{
+			return pFutureKeyboard->getContent();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
+		}
+		return std::u16string();
+	}
+
     void Layout::internalResizing(bool force, bool instant)
     {
         if (force || (mResizeNecessary && mAlpha.getValue() > 0))

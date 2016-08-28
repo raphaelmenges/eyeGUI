@@ -145,6 +145,11 @@ namespace eyegui
         }
     }
 
+	std::u16string FutureKeyboard::getContent() const
+	{
+		return buildContent();
+	}
+
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
         // Prepare tasks
@@ -385,7 +390,11 @@ namespace eyegui
 
 	void FutureKeyboard::specialReset()
 	{
-
+		// Go over keys and reset them
+		for (auto& rspKey : mKeyList)
+		{
+			rspKey->reset();
+		}
 	}
 
 	void FutureKeyboard::specialInteract()
@@ -428,16 +437,21 @@ namespace eyegui
     void FutureKeyboard::updateDisplayAndSuggestions()
     {
         // *** DISPLAY ***
-        if(mCollectedWords.empty())
-        {
-            mupDisplay->setContent(mCurrentWord + u"_");
-        }
-        else
-        {
-            mupDisplay->setContent(mCollectedWords + u" " + mCurrentWord + u"_");
-        }
+        mupDisplay->setContent(buildContent() + u"_");
 
         // *** SUGGESTIONS ***
         mpNotificationQueue->enqueue(getId(), NotificationType::FUTURE_KEY_NEEDS_SUGGESTION);
     }
+
+	std::u16string FutureKeyboard::buildContent() const
+	{
+		if (mCollectedWords.empty())
+		{
+			return mCurrentWord;
+		}
+		else
+		{
+			return mCollectedWords + u" " + mCurrentWord;
+		}
+	}
 }
