@@ -10,6 +10,8 @@
 #include "src/Utilities/Helper.h"
 #include "src/Utilities/OperationNotifier.h"
 
+#include <string>
+
 namespace eyegui
 {
 	FutureKeyboard::FutureKeyboard(
