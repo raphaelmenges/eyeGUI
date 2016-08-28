@@ -1657,7 +1657,7 @@ namespace eyegui
         return mpGUI->getDescriptionFontSize();
     }
 
-    void Layout::registerFutureKeySuggestionListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeySuggestionListener> wpListener)
+    void Layout::registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener)
     {
         FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
         if (pFutureKeyboard != NULL)

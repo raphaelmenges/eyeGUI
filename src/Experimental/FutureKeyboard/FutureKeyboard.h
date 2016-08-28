@@ -14,7 +14,7 @@
 
 namespace eyegui
 {
-    class FutureKeyboard : public InteractiveElement, public NotifierTemplate<eyegui_experimental::FutureKeySuggestionListener>
+    class FutureKeyboard : public InteractiveElement, public NotifierTemplate<eyegui_experimental::FutureKeyboardListener>
 	{
 	public:
 

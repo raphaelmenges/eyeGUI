@@ -9,12 +9,12 @@
 
 namespace eyegui_experimental
 {
-    FutureKeySuggestionListener::FutureKeySuggestionListener()
+	FutureKeyboardListener::FutureKeyboardListener()
     {
         // Nothing to do
     }
 
-    FutureKeySuggestionListener::~FutureKeySuggestionListener()
+	FutureKeyboardListener::~FutureKeyboardListener()
     {
         // Nothing to do
     }

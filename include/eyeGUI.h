@@ -1320,37 +1320,37 @@ namespace eyegui_helper
 //! Namespace for experiments.
 namespace eyegui_experimental
 {
-    //! Abstract callback class for suggestions in future key of future keyboard.
-    class FutureKeySuggestionListener
+    //! Abstract callback class for future keyboard.
+    class FutureKeyboardListener
     {
     public:
 
         //! Constructor.
-        FutureKeySuggestionListener();
+		FutureKeyboardListener();
 
         //! Destructor.
-        virtual ~FutureKeySuggestionListener() = 0;
+        virtual ~FutureKeyboardListener() = 0;
 
         //! Callback from key which needs new suggestion.
         /*!
           \param pLayout pointer to layout from which callback is coming.
           \param id is the unique id of the future keyboard which causes the callback.
           \param keyId is the id of the future key which causes the callback.
-		  \param word is the currently typed in word.
+		  \param letter is letter(s) which would be added by key.
         */
-        void virtual needSuggestion(eyegui::Layout* pLayout, std::string id, std::string keyId, std::u16string word) = 0;
+        void virtual keySuggestion(eyegui::Layout* pLayout, std::string id, std::string keyId, std::u16string letter) = 0;
     };
 
-    //! Register callback for future key. Used for all keys within keyboard.
+    //! Register callback for future keyboard.
     /*!
       \param pLayout pointer to layout.
       \param id is the unique id of an element.
       \param wpListener is weak pointer to callback that should be registered.
     */
-    void registerFutureKeySuggestionListener(
+    void registerFutureKeyboardListener(
         eyegui::Layout* pLayout,
         std::string id,
-        std::weak_ptr<FutureKeySuggestionListener> wpListener);
+        std::weak_ptr<FutureKeyboardListener> wpListener);
 
     //! Set suggestion on future key.
     /*!

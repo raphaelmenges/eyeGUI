@@ -413,14 +413,14 @@ namespace eyegui
             for(auto& rspKey : mKeyList)
             {
                 // Only do so for keys which want a suggestion
-                if(rspKey->suggestionShown())
+				if(rspKey->suggestionShown() && rspKey->atFirstThreshold())
                 {
                     notifyListener(
-                        &eyegui_experimental::FutureKeySuggestionListener::needSuggestion,
+                        &eyegui_experimental::FutureKeyboardListener::keySuggestion,
                         pLayout,
                         getId(),
                         rspKey->getId(),
-                        mCurrentWord + rspKey->getLetter());
+                        rspKey->getLetter());
                 }
             }
 
