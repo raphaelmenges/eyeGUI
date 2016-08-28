@@ -155,7 +155,7 @@ namespace eyegui
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
         // Prepare tasks
-        enum class KeyTask { TOGGLE_CASE };
+		enum class KeyTask { TOGGLE_CASE, CLEAR_SUGGESTION };
         std::vector<KeyTask> tasks;
         bool firstLetterOfSentence = false;
         bool keyHit = false;
@@ -165,8 +165,6 @@ namespace eyegui
         {
             // Record whether hit
             FutureKey::HitType type = rspKey->update(tpf, pInput);
-
-            // *** TASKS ***
 
             // Toggle case
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
@@ -192,6 +190,18 @@ namespace eyegui
             // *** SUGGESTIONS ***
             if(type == FutureKey::HitType::SUGGESTION)
             {
+				// Take educational guess that before that suggestion the letter on that key was typed in
+				int letterLength = rspKey->getLetter().size();
+				if (mCurrentWord.size() < letterLength)
+				{
+					mCurrentWord.clear();
+				}
+				else
+				{
+					mCurrentWord.substr(0, mCurrentWord.size() - letterLength);
+				}
+
+				// Append suggestion and display it
                 mCurrentWord.append(rspKey->getSuggestion());
                 updateDisplayAndSuggestions();
                 keyHit = true;
@@ -202,6 +212,10 @@ namespace eyegui
             // Space
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
             {
+				// Clear all suggestions
+				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
+
+				// Append space to content
                 mCurrentWord.append(u" ");
                 mCollectedWords.append(mCurrentWord);
                 mCurrentWord = u"";
@@ -296,6 +310,12 @@ namespace eyegui
                         rspKey->toggleCase();
                     }
                     break;
+				case KeyTask::CLEAR_SUGGESTION:
+					for (auto& rspKey : mKeyList)
+					{
+						rspKey->clearSuggestion();
+					}
+					break;
             }
         }
 

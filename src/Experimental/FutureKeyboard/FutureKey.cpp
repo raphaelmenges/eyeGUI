@@ -346,6 +346,11 @@ namespace eyegui
         transformSuggestion();
     }
 
+	void FutureKey::clearSuggestion()
+	{
+		setSuggestion(u"");
+	}
+
     void FutureKey::backToFirstThreshold()
     {
         mSecondThreshold.setValue(0.f);

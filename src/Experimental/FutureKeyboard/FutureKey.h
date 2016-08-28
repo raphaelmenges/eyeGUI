@@ -80,6 +80,9 @@ namespace eyegui
         // Set suggestion
         void setSuggestion(std::u16string suggestion);
 
+		// Clear suggestion
+		void clearSuggestion();
+
         // Reset to first threshold if second is available and active
         void backToFirstThreshold();
 
