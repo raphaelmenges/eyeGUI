@@ -190,6 +190,7 @@ namespace eyegui
             // *** SUGGESTIONS ***
             if(type == FutureKey::HitType::SUGGESTION)
             {
+				/*
 				// Take educational guess that before that suggestion the letter on that key was typed in
 				int letterLength = rspKey->getLetter().size();
 				if (mCurrentWord.size() < letterLength)
@@ -200,6 +201,10 @@ namespace eyegui
 				{
 					mCurrentWord.substr(0, mCurrentWord.size() - letterLength);
 				}
+				*/
+
+				// Just replace current word
+				mCurrentWord.clear();
 
 				// Append suggestion and display it
                 mCurrentWord.append(rspKey->getSuggestion());
