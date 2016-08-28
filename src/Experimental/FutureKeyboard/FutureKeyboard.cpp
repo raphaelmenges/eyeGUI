@@ -181,12 +181,6 @@ namespace eyegui
             // Record whether hit
             FutureKey::HitType type = rspKey->update(tpf, pInput);
 
-            // Toggle case
-            if(type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
-            {
-                tasks.push_back(KeyTask::TOGGLE_CASE);
-            }
-
             // *** LETTERS ***
             if(type == FutureKey::HitType::LETTER
             && rspKey->getId() != "return"
@@ -212,6 +206,12 @@ namespace eyegui
             }
 
             // *** SPECIAL LETTERS ***
+
+			// Shift
+			if (type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
+			{
+				tasks.push_back(KeyTask::TOGGLE_CASE);
+			}
 
             // Space
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
@@ -304,6 +304,13 @@ namespace eyegui
             }
         }
 		*/
+		if (keyHit)
+		{
+			for (auto& rspKey : mKeyList)
+			{
+				rspKey->setCase(KeyboardCase::LOWER);
+			}
+		}
 
         // Execute task after updating all keys
         for(auto task : tasks)
