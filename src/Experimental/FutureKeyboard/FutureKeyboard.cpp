@@ -165,6 +165,9 @@ namespace eyegui
 		{
 			rspKey->clearSuggestion();
 		}
+
+		// Update display
+		updateDisplayAndSuggestions();
 	}
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
@@ -200,9 +203,17 @@ namespace eyegui
             if(type == FutureKey::HitType::SUGGESTION)
             {
 				// Replace current word with suggestion and display it
-                mCurrentWord = rspKey->getSuggestion();
-                updateDisplayAndSuggestions();
-                keyHit = true;
+                mCurrentWord = rspKey->getSuggestion();                
+
+				// Clear all suggestions
+				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
+
+				// Append space to content
+				mCurrentWord.append(u" ");
+				mCollectedWords.append(mCurrentWord);
+				mCurrentWord = u"";
+				updateDisplayAndSuggestions();
+				keyHit = true;
             }
 
             // *** SPECIAL LETTERS ***
