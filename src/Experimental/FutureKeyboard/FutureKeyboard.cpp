@@ -203,11 +203,8 @@ namespace eyegui
 				}
 				*/
 
-				// Just replace current word
-				mCurrentWord.clear();
-
-				// Append suggestion and display it
-                mCurrentWord.append(rspKey->getSuggestion());
+				// Replace current word with suggestion and display it
+                mCurrentWord = rspKey->getSuggestion();
                 updateDisplayAndSuggestions();
                 keyHit = true;
             }
