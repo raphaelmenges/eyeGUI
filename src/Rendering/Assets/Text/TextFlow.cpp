@@ -386,7 +386,7 @@ namespace eyegui
             failure |= !insertFitWord(fitWords, rPargraph, mWidth, mScale);
 			mFlowWords.push_back(FlowWord());
 			mFlowWords.back().contentStartIndex = contentStartIndex;
-			mFlowWords.back().subWords.resize(fitWords.size());
+			mFlowWords.back().subWords.resize(glm::max(1, (int)fitWords.size())); // when at end of text just space, subword is added here. TODO: good way to fix this issue?
 			mFlowWords.back().index = mFlowWords.size() - 1;
 			words.insert(words.end(), fitWords.begin(), fitWords.end());
 

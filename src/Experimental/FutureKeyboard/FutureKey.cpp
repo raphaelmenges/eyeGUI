@@ -154,7 +154,10 @@ namespace eyegui
             if(mFirstThreshold.getValue() >= 1.f)
             {
                 mFirstThreshold.setValue(0.f);
-                mDoingSecondThreshold = mShowSuggestion; // only start second threshold when suggestion is shown
+                mDoingSecondThreshold = 
+					mShowSuggestion
+					&& mupSuggestion != nullptr
+					&& !mupSuggestion->getContent().empty(); // only start second threshold when suggestion is shown and available
                 value = HitType::LETTER;
                 mPressing.setValue(1.f);
                 mRetriggerTime = RETRIGGER_DELAY;
@@ -174,8 +177,7 @@ namespace eyegui
                 mSuggestionAnimation = std::make_pair(
                     SUGGESTION_ANIMATION_DURATION,
                     mpAssetManager->createTextSimple(
-                        FontSize::SMALL, 1.f, mupSuggestion->getContent())
-                    );
+                        FontSize::SMALL, 1.f, mupSuggestion->getContent()));
             }
         }
 
