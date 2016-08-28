@@ -241,11 +241,11 @@ namespace eyegui
                 // Try to delete something from current word
                 if(!mCurrentWord.empty())
                 {
-					mCurrentWord.substr(0, mCurrentWord.size() - 1);
+					mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
                 }
                 else if(!mCollectedWords.empty())
                 {
-					mCurrentWord.substr(0, mCurrentWord.size() - 1);
+					mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
                 }
 
                 // Handle upper case at first letter of sentence
