@@ -227,13 +227,19 @@ namespace eyegui
             // Space
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
             {
-				// Clear all suggestions
-				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
+				// Since TextFlow is at the moment not capable to display more than one space in a row,
+				// only allow one in a row
+				std::u16string content = buildContent();
+				if (!content.empty() && (*content.end != u" "))
+				{
+					// Clear all suggestions
+					tasks.push_back(KeyTask::CLEAR_SUGGESTION);
 
-				// Append space to content
-                mCollectedWords.append(mCurrentWord + u" ");
-                mCurrentWord = u"";
-                updateDisplayAndSuggestions();
+					// Append space to content
+					mCollectedWords.append(mCurrentWord + u" ");
+					mCurrentWord = u"";
+					updateDisplayAndSuggestions();
+				}
             }
 
             // Dot
