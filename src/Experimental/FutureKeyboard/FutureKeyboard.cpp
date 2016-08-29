@@ -230,7 +230,8 @@ namespace eyegui
 				// Since TextFlow is at the moment not capable to display more than one space in a row,
 				// only allow one in a row
 				std::u16string content = buildContent();
-				if (!content.empty() && (*content.end != u" "))
+				char16_t compareValue = u' ';
+				if (!content.empty() && (content.back() != compareValue))
 				{
 					// Clear all suggestions
 					tasks.push_back(KeyTask::CLEAR_SUGGESTION);
