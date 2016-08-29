@@ -130,7 +130,7 @@ namespace eyegui
                 mHeight));
 		float colorMultiplier = (1.f - (glm::sin(mPressing.getValue() * 3.14f)));
 		glm::vec3 compositeColor = colorMultiplier * glm::vec3(color.r, color.g, color.b);
-		mpItem->getShader()->fillValue("color", compositeColor);
+		mpItem->getShader()->fillValue("color", glm::vec4(compositeColor, 1));
 		mpItem->getShader()->fillValue("alpha", alpha);
 		mpItem->draw();
 
@@ -206,7 +206,7 @@ namespace eyegui
         if(mSuggestionAnimation.first > 0 && mSuggestionAnimation.second != NULL)
         {
 			// TODO: animation end depending on height of element
-            mSuggestionAnimation.second->setPosition(suggestionX, glm::mix(suggestionY, suggestionY - mHeight, mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION));
+            mSuggestionAnimation.second->setPosition(suggestionX, glm::mix(suggestionY - mHeight, suggestionY, mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION));
         }
     }
 }
