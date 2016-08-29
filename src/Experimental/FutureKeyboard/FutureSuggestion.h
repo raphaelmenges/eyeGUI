@@ -45,7 +45,7 @@ namespace eyegui
 
 		// Draw
         virtual void draw(
-			glm::vec4 backgroundColor,
+			glm::vec4 color,
             glm::vec4 fontColor,
             glm::vec4 thresholdColor,
             float alpha) const;
@@ -81,7 +81,7 @@ namespace eyegui
 		int mWidth;
 		int mHeight;
         float mFontScale;
-        RenderItem const * mpBackgroundItem;
+        RenderItem const * mpItem;
 		RenderItem const * mpThresholdItem;
         std::unique_ptr<TextSimple> mupSuggestion;
         LerpValue mThreshold;

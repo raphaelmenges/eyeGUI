@@ -34,11 +34,11 @@ namespace eyegui
         mFontScale = fontScale;
 
 		// Fetch render items
-        mpBackgroundItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+		mpItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
 		mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
 
         // Create suggestion text
-		mupSuggestion = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mFontScale, u"Hello World");
+		mupSuggestion = mpAssetManager->createTextSimple(FontSize::MEDIUM, mFontScale, u"Hello World");
 	}
 
 	FutureSuggestion::~FutureSuggestion()
@@ -93,6 +93,12 @@ namespace eyegui
             hit = true;
             mPressing.setValue(1.f);
             mRetriggerTime = RETRIGGER_DELAY;
+
+			// Copy suggestion for animation
+			mSuggestionAnimation = std::make_pair(
+				SUGGESTION_ANIMATION_DURATION,
+				mpAssetManager->createTextSimple(
+					FontSize::MEDIUM, 1.f, mupSuggestion->getContent()));
         }
 
         // Just update suggestion transformation each frame, inclusive the animation
@@ -103,7 +109,7 @@ namespace eyegui
 	}
 
     void FutureSuggestion::draw(
-		glm::vec4 backgroundColor,
+		glm::vec4 color,
 		glm::vec4 fontColor,
 		glm::vec4 thresholdColor,
 		float alpha) const
@@ -111,9 +117,9 @@ namespace eyegui
 		// Push scissor to limit rendering to current key (especially threshold)
 		pushScissor(mX, mY, mWidth, mHeight);
 
-        // *** DRAW BACKGROUND ***
-        mpBackgroundItem->bind();
-        mpBackgroundItem->getShader()->fillValue(
+        // *** DRAW ITEM ***
+		mpItem->bind();
+		mpItem->getShader()->fillValue(
             "matrix",
             calculateDrawMatrix(
                 mpLayout->getLayoutWidth(),
@@ -122,9 +128,11 @@ namespace eyegui
                 mY,
                 mWidth,
                 mHeight));
-        mpBackgroundItem->getShader()->fillValue("color", backgroundColor);
-        mpBackgroundItem->getShader()->fillValue("alpha", alpha);
-        mpBackgroundItem->draw();
+		float colorMultiplier = (1.f - (glm::sin(mPressing.getValue() * 3.14f)));
+		glm::vec3 compositeColor = colorMultiplier * glm::vec3(color.r, color.g, color.b);
+		mpItem->getShader()->fillValue("color", compositeColor);
+		mpItem->getShader()->fillValue("alpha", alpha);
+		mpItem->draw();
 
         // *** DRAW SUGGESTION ***
         mupSuggestion->draw(fontColor, 1.f, false, 0, 0);
