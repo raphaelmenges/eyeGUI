@@ -231,8 +231,7 @@ namespace eyegui
 				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
 
 				// Append space to content
-                mCurrentWord.append(u" ");
-                mCollectedWords.append(mCurrentWord);
+                mCollectedWords.append(mCurrentWord + u" ");
                 mCurrentWord = u"";
                 updateDisplayAndSuggestions();
             }
