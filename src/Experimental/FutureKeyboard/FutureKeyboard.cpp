@@ -227,17 +227,17 @@ namespace eyegui
             // Space
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
             {
-				// Since TextFlow is at the moment not capable to display more than one space in a row,
-				// only allow one in a row
+				// Since TextFlow is at the moment not capable to display more
+				// than one space in a row, only allow one in a row
 				std::u16string content = buildContent();
-				char16_t compareValue = u'-';
+				char16_t compareValue = u' ';
 				if ((!content.empty() && (content.back() != compareValue)) || content.empty())
 				{
 					// Clear all suggestions
 					tasks.push_back(KeyTask::CLEAR_SUGGESTION);
 
 					// Append space to content
-					mCollectedWords.append(mCurrentWord + u"-");
+					mCollectedWords.append(mCurrentWord + u" ");
 					mCurrentWord = u"";
 					updateDisplayAndSuggestions();
 				}
@@ -496,21 +496,6 @@ namespace eyegui
 
 	std::u16string FutureKeyboard::buildContent() const
 	{
-		if (mCollectedWords.empty() && mCurrentWord.empty())
-		{
-			return u"";
-		}
-		else if (mCollectedWords.empty())
-		{
-			return mCurrentWord;
-		}
-		else if (mCurrentWord.empty())
-		{
-			return mCollectedWords;
-		}
-		else
-		{
-			return mCollectedWords + u" " + mCurrentWord;
-		}
+		return mCollectedWords + mCurrentWord;
 	}
 }
