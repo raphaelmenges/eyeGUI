@@ -190,12 +190,13 @@ namespace eyegui
             && rspKey->getId() != "backspace"
             && rspKey->getId() != "shift"
             && rspKey->getId() != "repeat"
-            && rspKey->getId() != "space")
+            && rspKey->getId() != "space"
+			&& rspKey->getId() != "dot")
             {
                 // Seems to be standard letter, just add it to content
                 mCurrentWord.append(rspKey->getLetter());
                 keyHit = true;
-                mLastLetter = rspKey->getLetter();
+                mLastLetter = rspKey->getLetter(); // remember last letter for repeating
                 updateDisplayAndSuggestions();
             }
 
@@ -208,9 +209,8 @@ namespace eyegui
 				// Clear all suggestions
 				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
 
-				// Append space to content
-				mCurrentWord.append(u" ");
-				mCollectedWords.append(mCurrentWord);
+				// Append space to collected and clear current word
+				mCollectedWords.append(mCurrentWord + u" ");
 				mCurrentWord = u"";
 				updateDisplayAndSuggestions();
 				keyHit = true;
@@ -240,8 +240,7 @@ namespace eyegui
             // Dot
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "dot")
             {
-                mCurrentWord.append(u" ");
-                mCollectedWords.append(mCurrentWord);
+                mCollectedWords.append(mCurrentWord + u". ");
                 mCurrentWord = u"";
                 firstLetterOfSentence = true;
                 updateDisplayAndSuggestions();
@@ -323,7 +322,7 @@ namespace eyegui
 			}
 		}
 
-        // Execute task after updating all keys
+        // Execute tasks after updating all keys
         for(auto task : tasks)
         {
             switch(task)

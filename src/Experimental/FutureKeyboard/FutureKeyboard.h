@@ -129,8 +129,8 @@ namespace eyegui
         std::shared_ptr<FutureKey> mspColonKey;
 
         // Display for text
-        std::u16string mCurrentWord;
-        std::u16string mCollectedWords;
+        std::u16string mCurrentWord; // current word, no spaces included
+        std::u16string mCollectedWords; // collected words, included spaces
         std::unique_ptr<TextFlow> mupDisplay;
         std::unique_ptr<TextFlow> mupPreDisplay;
 	};
