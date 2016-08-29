@@ -490,9 +490,17 @@ namespace eyegui
 
 	std::u16string FutureKeyboard::buildContent() const
 	{
-		if (mCollectedWords.empty())
+		if (mCollectedWords.empty() && mCurrentWord.empty())
+		{
+			return u"";
+		}
+		else if (mCollectedWords.empty())
 		{
 			return mCurrentWord;
+		}
+		else if (mCurrentWord.empty())
+		{
+			return mCollectedWords;
 		}
 		else
 		{
