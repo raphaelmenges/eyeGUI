@@ -230,14 +230,14 @@ namespace eyegui
 				// Since TextFlow is at the moment not capable to display more than one space in a row,
 				// only allow one in a row
 				std::u16string content = buildContent();
-				char16_t compareValue = u' ';
-				if (!content.empty() && (content.back() != compareValue))
+				char16_t compareValue = u'-';
+				if ((!content.empty() && (content.back() != compareValue)) || content.empty())
 				{
 					// Clear all suggestions
 					tasks.push_back(KeyTask::CLEAR_SUGGESTION);
 
 					// Append space to content
-					mCollectedWords.append(mCurrentWord + u" ");
+					mCollectedWords.append(mCurrentWord + u"-");
 					mCurrentWord = u"";
 					updateDisplayAndSuggestions();
 				}
@@ -254,7 +254,7 @@ namespace eyegui
 
             // Backspace
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "backspace")
-            {
+			{
                 // Try to delete something from current word
                 if(!mCurrentWord.empty())
                 {
