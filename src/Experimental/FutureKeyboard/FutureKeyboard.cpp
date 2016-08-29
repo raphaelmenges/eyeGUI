@@ -382,11 +382,11 @@ namespace eyegui
 
 	void FutureKeyboard::specialTransformAndSize()
 	{
-        int xOffset = 0.01f * mWidth;
-        int yOffset = 0.4f * mHeight;
-        int keyWidth = 0.09f * mWidth;
-        int keyHeight = 0.125f * mHeight;
-        int keySpace = 0.01f * mWidth;
+        int xOffset = (int)(0.01f * mWidth);
+        int yOffset = (int)(0.4f * mHeight);
+        int keyWidth = (int)(0.09f * mWidth);
+        int keyHeight = (int)(0.125f * mHeight);
+        int keySpace = (int)(0.01f * mWidth);
 
         // First row
         mspQKey->transformAndSize(xOffset + mX,                               yOffset + mY, keyWidth, keyHeight);
@@ -433,10 +433,10 @@ namespace eyegui
         mspColonKey      ->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
 
         // Display
-        mupDisplay->transformAndSize(mX + 0.05f * mWidth, mY + 0.05f * mHeight, mWidth, 0.2f * mHeight);
+        mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
 
         // Pre display
-        mupPreDisplay->transformAndSize(mX + 0.05f * mWidth, mY + 0.05f * mHeight, mWidth, 0.2f * mHeight);
+        mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
 	}
 
 	void FutureKeyboard::specialReset()
