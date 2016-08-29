@@ -11,6 +11,7 @@
 
 #include "src/Elements/InteractiveElements/InteractiveElement.h"
 #include "src/Experimental/FutureKeyboard/FutureKey.h"
+#include "src/Experimental/FutureKeyboard/FutureSuggestion.h"
 
 namespace eyegui
 {
@@ -80,6 +81,11 @@ namespace eyegui
         Mode mMode;
         bool mFirstLetterOfSentence;
         std::u16string mLastLetter;
+
+		// Suggestions in suggestion line
+		std::unique_ptr<FutureSuggestion> mupSuggestionA;
+		std::unique_ptr<FutureSuggestion> mupSuggestionB;
+		std::unique_ptr<FutureSuggestion> mupSuggestionC;
 
         // List of all keys
         std::vector<std::shared_ptr<FutureKey> > mKeyList;

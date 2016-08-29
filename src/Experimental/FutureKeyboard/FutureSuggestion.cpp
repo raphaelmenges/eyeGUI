@@ -15,7 +15,6 @@
 namespace eyegui
 {
 	FutureSuggestion::FutureSuggestion(
-        std::string id,
         Layout const * pLayout,
         AssetManager* pAssetManager,
         float fontScale)
@@ -39,7 +38,7 @@ namespace eyegui
 		mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
 
         // Create suggestion text
-		mupSuggestion = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mFontScale, u"");
+		mupSuggestion = mpAssetManager->createTextSimple(FontSize::KEYBOARD, mFontScale, u"Hello World");
 	}
 
 	FutureSuggestion::~FutureSuggestion()

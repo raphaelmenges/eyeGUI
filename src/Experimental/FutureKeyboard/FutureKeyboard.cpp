@@ -52,6 +52,12 @@ namespace eyegui
 			shaders::Type::COLOR,
 			meshes::Type::QUAD);
 
+		// Initialize suggestion line
+		mupSuggestionA = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		mupSuggestionB = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		mupSuggestionC = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		// TODO: handle those
+
 		// Initialize keys
         std::function<std::shared_ptr<FutureKey>(std::string, std::u16string, bool, bool)> createFutureKey =
             [&](std::string id, std::u16string letter, bool showSuggestion, bool ignoreCase)

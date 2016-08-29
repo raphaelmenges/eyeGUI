@@ -30,7 +30,6 @@ namespace eyegui
 
 		// Constructor
 		FutureSuggestion(
-            std::string id,
             Layout const * pLayout,
             AssetManager* pAssetManager,
             float fontScale);
