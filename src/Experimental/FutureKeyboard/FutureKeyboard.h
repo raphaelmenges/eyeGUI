@@ -34,7 +34,8 @@ namespace eyegui
 			float relativeScale,
 			float border,
 			bool dimming,
-			bool adaptiveScaling);
+			bool adaptiveScaling,
+			Mode mode);
 
 		// Destructor
 		virtual ~FutureKeyboard();

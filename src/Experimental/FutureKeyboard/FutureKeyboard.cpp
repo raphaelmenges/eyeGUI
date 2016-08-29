@@ -25,7 +25,8 @@ namespace eyegui
 		float relativeScale,
 		float border,
 		bool dimming,
-		bool adaptiveScaling) : InteractiveElement(
+		bool adaptiveScaling,
+		Mode mode) : InteractiveElement(
 			id,
 			styleName,
 			pParent,
@@ -42,7 +43,7 @@ namespace eyegui
 		mType = Type::FUTURE_KEYBOARD;
 
         // Initialize members
-        mMode = Mode::SUGGESTION_PER_KEY;
+        mMode = mode;
         mCurrentWord = u"";
         mCollectedWords = u"";
         mLastLetter = u"";

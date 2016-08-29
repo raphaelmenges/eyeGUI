@@ -833,7 +833,28 @@ namespace eyegui
 
 		std::unique_ptr<FutureKeyboard> parseFutureKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFutureKeyboard, Element* pParent, std::string filepath)
 		{
-			std::unique_ptr<FutureKeyboard> upFutureKeyboard = std::unique_ptr<FutureKeyboard>(new FutureKeyboard(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling));
+			// Decide mode
+			std::string modeValue = parseStringAttribute("mode", xmlFutureKeyboard);
+			FutureKeyboard::Mode mode = FutureKeyboard::Mode::ONE_SUGGESTION_LINE;
+			if (modeValue == EMPTY_STRING_ATTRIBUTE || modeValue == "onesuggestionline")
+			{
+				mode = FutureKeyboard::Mode::ONE_SUGGESTION_LINE;
+			}
+			else if (modeValue == "manysuggestionlines")
+			{
+				mode = FutureKeyboard::Mode::MANY_SUGGESTION_LINES;
+			}
+			else if (modeValue == "suggestionsperkey")
+			{
+				mode = FutureKeyboard::Mode::SUGGESTION_PER_KEY;
+			}
+			else
+			{
+				throwError(OperationNotifier::Operation::PARSING, "Unknown mode used in future keyboard: " + modeValue, filepath);
+			}
+
+			// Create future keyboard
+			std::unique_ptr<FutureKeyboard> upFutureKeyboard = std::unique_ptr<FutureKeyboard>(new FutureKeyboard(id, styleName, pParent, pLayout, pFrame, pAssetManager, pNotificationQueue, relativeScale, border, dimming, adaptiveScaling, mode));
 			return (std::move(upFutureKeyboard));
 		}
 
