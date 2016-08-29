@@ -378,17 +378,17 @@ namespace eyegui
 
 		// *** SUGGESTIONS ***
 		mupSuggestionA->draw(
-			getStyle()->backgroundColor,
+			getStyle()->color,
 			getStyle()->fontColor,
 			getStyle()->thresholdColor,
 			getMultipliedDimmedAlpha());
 		mupSuggestionB->draw(
-			getStyle()->backgroundColor,
+			getStyle()->color,
 			getStyle()->fontColor,
 			getStyle()->thresholdColor,
 			getMultipliedDimmedAlpha());
 		mupSuggestionC->draw(
-			getStyle()->backgroundColor,
+			getStyle()->color,
 			getStyle()->fontColor,
 			getStyle()->thresholdColor,
 			getMultipliedDimmedAlpha());
@@ -412,6 +412,11 @@ namespace eyegui
 	void FutureKeyboard::specialTransformAndSize()
 	{
 		int xOffset = (int)(0.01f * mWidth);
+		int suggestionWidth = (int)((mWidth - (2.f * xOffset)) / 3.f);
+		int keyOffsetY = (int)(0.4f * mHeight);
+		int keyWidth = (int)(0.09f * mWidth);
+		int keyHeight = (int)(0.125f * mHeight);
+		int keySpace = (int)(0.01f * mWidth);
 
 		// Display
 		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
@@ -420,16 +425,11 @@ namespace eyegui
 		mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
 
 		// Transform and size suggestions
-		int suggestionWidth = (int)((mWidth - (2.f * xOffset)) / 3.f);
-		mupSuggestionA->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY, suggestionWidth, (int)(0.1f * mHeight));
-		mupSuggestionB->transformAndSize(xOffset + mX + suggestionWidth, (int)(0.3f * mHeight) + mY, suggestionWidth, (int)(0.1f * mHeight));
-		mupSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth), (int)(0.3f * mHeight) + mY, suggestionWidth, (int)(0.1f * mHeight));
+		mupSuggestionA->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mupSuggestionB->transformAndSize(xOffset + mX + suggestionWidth, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mupSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth), (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
 
 		// Transform and size keys
-		int keyOffsetY = (int)(0.4f * mHeight);
-        int keyWidth = (int)(0.09f * mWidth);
-        int keyHeight = (int)(0.125f * mHeight);
-        int keySpace = (int)(0.01f * mWidth);
 
         // First row
         mspQKey->transformAndSize(xOffset + mX,                               keyOffsetY + mY, keyWidth, keyHeight);
