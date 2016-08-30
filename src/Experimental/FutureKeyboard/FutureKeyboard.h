@@ -11,10 +11,11 @@
 
 #include "src/Elements/InteractiveElements/InteractiveElement.h"
 #include "src/Experimental/FutureKeyboard/FutureKey.h"
+#include "src/Experimental/FutureKeyboard/FutureSuggestion.h"
 
 namespace eyegui
 {
-    class FutureKeyboard : public InteractiveElement, public NotifierTemplate<eyegui_experimental::FutureKeySuggestionListener>
+    class FutureKeyboard : public InteractiveElement, public NotifierTemplate<eyegui_experimental::FutureKeyboardListener>
 	{
 	public:
 
@@ -33,13 +34,20 @@ namespace eyegui
 			float relativeScale,
 			float border,
 			bool dimming,
-			bool adaptiveScaling);
+			bool adaptiveScaling,
+			Mode mode);
 
 		// Destructor
 		virtual ~FutureKeyboard();
 
         // Setter for suggestion on key
         void setKeySuggestion(std::string keyId, std::u16string suggestion);
+
+		// Get content
+		std::u16string getContent() const;
+
+		// Set next sentence
+		void nextSentence(std::u16string sentence);
 
 	protected:
 
@@ -66,11 +74,19 @@ namespace eyegui
         // Update display and suggestions
         void updateDisplayAndSuggestions();
 
+		// Build content
+		std::u16string buildContent() const;
+
 		// Members
 		RenderItem const * mpBackground;
         Mode mMode;
         bool mFirstLetterOfSentence;
         std::u16string mLastLetter;
+
+		// Suggestions in suggestion line
+		std::unique_ptr<FutureSuggestion> mupSuggestionA;
+		std::unique_ptr<FutureSuggestion> mupSuggestionB;
+		std::unique_ptr<FutureSuggestion> mupSuggestionC;
 
         // List of all keys
         std::vector<std::shared_ptr<FutureKey> > mKeyList;
@@ -120,8 +136,8 @@ namespace eyegui
         std::shared_ptr<FutureKey> mspColonKey;
 
         // Display for text
-        std::u16string mCurrentWord;
-        std::u16string mCollectedWords;
+        std::u16string mCurrentWord; // current word, no spaces included
+        std::u16string mCollectedWords; // collected words, included spaces
         std::unique_ptr<TextFlow> mupDisplay;
         std::unique_ptr<TextFlow> mupPreDisplay;
 	};

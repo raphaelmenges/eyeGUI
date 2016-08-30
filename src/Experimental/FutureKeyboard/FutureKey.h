@@ -21,7 +21,7 @@ namespace eyegui
 	class AssetManager;
 	class RenderItem;
     class TextSimple;
-    class Input;
+    struct Input;
 
 	// Class for key
 	class FutureKey
@@ -80,12 +80,18 @@ namespace eyegui
         // Set suggestion
         void setSuggestion(std::u16string suggestion);
 
+		// Clear suggestion
+		void clearSuggestion();
+
         // Reset to first threshold if second is available and active
         void backToFirstThreshold();
 
         // Get whether suggestion is shown
         bool suggestionShown() const { return mShowSuggestion; }
 
+		// Get whether key is at first threshold and not during second
+		bool atFirstThreshold() const {	return !mDoingSecondThreshold; }
+		
 	private:
 
         // Update letter position

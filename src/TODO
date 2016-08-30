@@ -30,9 +30,12 @@
 - Coloring letters corresponding to suggestions
   - just for next letter, guide you through word
 - Optional: Somehow suggestions in letters <- think about other keyboard
+- FutureKeyboard: Since only one listener is possible, give it a better name.
 
 ## Bugs
 - Ubuntu: Growing of pressed keys in keyboard not happening
+- HelloWorld project crashes on my desktop computer (somewhere at pixel texture creation)
+- Ubuntu: Debug NanoSVG
 
 ## Wiki
 - Dictionary
@@ -70,6 +73,7 @@
 - What about "GazeSnap"? Snapping to focused element and exit it with blink or so
 - Reset with bit masks (what to reset)
 - Maybe make possible to limit adaptive scaling to certain elements or tell it: do not make that elements smaller, only bigger is allowed
+- Control call like "calculateMesh" in TextFlow: Seems to be two times instead of one time
 
 ### VERSION 1.0
 - Code review!

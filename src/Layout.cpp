@@ -1657,7 +1657,7 @@ namespace eyegui
         return mpGUI->getDescriptionFontSize();
     }
 
-    void Layout::registerFutureKeySuggestionListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeySuggestionListener> wpListener)
+    void Layout::registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener)
     {
         FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
         if (pFutureKeyboard != NULL)
@@ -1685,6 +1685,35 @@ namespace eyegui
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
         }
     }
+
+	std::u16string Layout::getFutureKeyboardContent(std::string id) const
+	{
+		FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
+		if (pFutureKeyboard != NULL)
+		{
+			return pFutureKeyboard->getContent();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
+		}
+		return std::u16string();
+	}
+
+	void Layout::nextFutureKeyboardSentence(
+		std::string id,
+		std::u16string sentence)
+	{
+		FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
+		if (pFutureKeyboard != NULL)
+		{
+			pFutureKeyboard->nextSentence(sentence);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
+		}
+	}
 
     void Layout::internalResizing(bool force, bool instant)
     {

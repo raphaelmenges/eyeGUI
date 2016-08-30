@@ -748,12 +748,12 @@ namespace eyegui_helper
 
 namespace eyegui_experimental
 {
-    void registerFutureKeySuggestionListener(
+    void registerFutureKeyboardListener(
         eyegui::Layout* pLayout,
         std::string id,
-        std::weak_ptr<FutureKeySuggestionListener> wpListener)
+        std::weak_ptr<FutureKeyboardListener> wpListener)
     {
-        pLayout->registerFutureKeySuggestionListener(id, wpListener);
+        pLayout->registerFutureKeyboardListener(id, wpListener);
     }
 
     void setFutureKeySuggestion(
@@ -764,4 +764,19 @@ namespace eyegui_experimental
     {
         pLayout->setFutureKeySuggestion(id, keyId, suggestion);
     }
+
+	std::u16string getFutureKeyboardContent(
+		eyegui::Layout const * pLayout,
+		std::string id)
+	{
+		return pLayout->getFutureKeyboardContent(id);
+	}
+
+	void nextFutureKeyboardSentence(
+		eyegui::Layout* pLayout,
+		std::string id,
+		std::u16string sentence)
+	{
+		pLayout->nextFutureKeyboardSentence(id, sentence);
+	}
 }

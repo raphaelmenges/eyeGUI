@@ -123,8 +123,8 @@ namespace eyegui
                 && pInput->gazeY < mY + mHeight);
 
             // Determine distance to gaze
-            float centerX = mX + (mWidth / 2);
-            float centerY = mY + (mHeight / 2);
+            float centerX = mX + (mWidth / 2.f);
+            float centerY = mY + (mHeight / 2.f);
             mGazeDistanze = glm::distance(glm::vec2(centerX, centerY), glm::vec2(pInput->gazeX, pInput->gazeY));
             mGazeDistanze /= mpLayout->getLayoutWidth(); // some random normalization
         }
@@ -150,11 +150,14 @@ namespace eyegui
         // Decide whether some threshold is reached
         if(!mDoingSecondThreshold)
         {
-            // Retrigger delay
+			// First threshold
             if(mFirstThreshold.getValue() >= 1.f)
             {
                 mFirstThreshold.setValue(0.f);
-                mDoingSecondThreshold = mShowSuggestion; // only start second threshold when suggestion is shown
+                mDoingSecondThreshold = 
+					mShowSuggestion
+					&& mupSuggestion != nullptr
+					&& !mupSuggestion->getContent().empty(); // only start second threshold when suggestion is shown and available
                 value = HitType::LETTER;
                 mPressing.setValue(1.f);
                 mRetriggerTime = RETRIGGER_DELAY;
@@ -174,8 +177,7 @@ namespace eyegui
                 mSuggestionAnimation = std::make_pair(
                     SUGGESTION_ANIMATION_DURATION,
                     mpAssetManager->createTextSimple(
-                        FontSize::SMALL, 1.f, mupSuggestion->getContent())
-                    );
+                        FontSize::SMALL, 1.f, mupSuggestion->getContent()));
             }
         }
 
@@ -243,9 +245,9 @@ namespace eyegui
                     mpLayout->getLayoutWidth(),
                     mpLayout->getLayoutHeight(),
                     mX,
-                    mY + ((1.f - suggestionHeight) * mHeight),
+                    mY + (int)(((1.f - suggestionHeight) * mHeight)),
                     mWidth,
-                    (suggestionHeight * mHeight) + 1));
+                    (int)((suggestionHeight * (float)mHeight) + 1.f)));
             mpSuggestionBackgroundItem->getShader()->fillValue("color", suggestionBackgroundColor);
             mpSuggestionBackgroundItem->getShader()->fillValue("alpha", alpha);
             mpSuggestionBackgroundItem->draw();
@@ -268,7 +270,7 @@ namespace eyegui
         // *** DRAW THRESHOLD ***
 
 		// Calculate draw matrix for threshold
-        int thresholdSize = glm::sqrt((mWidth * mWidth) + (mHeight * mHeight));
+        int thresholdSize = (int)glm::sqrt((mWidth * mWidth) + (mHeight * mHeight));
         int thresholdX = mX - (int)((thresholdSize - mWidth) / 2.f);
         int thresholdY = mY - (int)((thresholdSize - mHeight) / 2.f);
 		glm::mat4 thresholdDrawMatrix = calculateDrawMatrix(
@@ -344,6 +346,11 @@ namespace eyegui
         transformSuggestion();
     }
 
+	void FutureKey::clearSuggestion()
+	{
+		setSuggestion(u"");
+	}
+
     void FutureKey::backToFirstThreshold()
     {
         mSecondThreshold.setValue(0.f);
@@ -354,7 +361,7 @@ namespace eyegui
     {
         mupLetter->transform(); // has to be called first to calculate width and height
         int letterX = mX + ((mWidth - mupLetter->getWidth()) / 2);
-        int letterY = mY + ((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2) + (LETTER_Y_OFFSET * mHeight);
+        int letterY = mY + (int)(((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2.f) + (LETTER_Y_OFFSET * mHeight));
         mupLetter->setPosition(letterX, letterY);
     }
 
@@ -366,8 +373,8 @@ namespace eyegui
             int suggestionX = mX + (mWidth - mupSuggestion->getWidth()) / 2;
 
             // Standard height of suggestion
-            int suggestionStandardY = mY + (mHeight * (1.f - SUGGESTION_HEIGHT)); // move to correct area
-            suggestionStandardY += ((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getHeight()) / 2; // center in area
+            int suggestionStandardY = mY + (int)(mHeight * (1.f - SUGGESTION_HEIGHT)); // move to correct area
+            suggestionStandardY += (int)(((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getHeight()) / 2.f); // center in area
 
             // Height of suggestion when in center of complete key
             int suggestionCenterY = mY + (mHeight - mupSuggestion->getHeight()) / 2;

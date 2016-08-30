@@ -10,6 +10,8 @@
 #include "src/Utilities/Helper.h"
 #include "src/Utilities/OperationNotifier.h"
 
+#include <string>
+
 namespace eyegui
 {
 	FutureKeyboard::FutureKeyboard(
@@ -23,7 +25,8 @@ namespace eyegui
 		float relativeScale,
 		float border,
 		bool dimming,
-		bool adaptiveScaling) : InteractiveElement(
+		bool adaptiveScaling,
+		Mode mode) : InteractiveElement(
 			id,
 			styleName,
 			pParent,
@@ -40,7 +43,7 @@ namespace eyegui
 		mType = Type::FUTURE_KEYBOARD;
 
         // Initialize members
-        mMode = Mode::SUGGESTION_PER_KEY;
+        mMode = mode;
         mCurrentWord = u"";
         mCollectedWords = u"";
         mLastLetter = u"";
@@ -49,6 +52,12 @@ namespace eyegui
 		mpBackground = mpAssetManager->fetchRenderItem(
 			shaders::Type::COLOR,
 			meshes::Type::QUAD);
+
+		// Initialize suggestion line
+		mupSuggestionA = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		mupSuggestionB = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		mupSuggestionC = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		// TODO: handle those
 
 		// Initialize keys
         std::function<std::shared_ptr<FutureKey>(std::string, std::u16string, bool, bool)> createFutureKey =
@@ -116,7 +125,8 @@ namespace eyegui
         mFirstLetterOfSentence = true;
         for(auto& rspKey : mKeyList)
         {
-            rspKey->setCase(KeyboardCase::UPPER);
+			// TODO: ok, one should use upper case in standard scenario but for now we need lower
+            rspKey->setCase(KeyboardCase::LOWER);
         }
 
         // Diplay
@@ -124,7 +134,7 @@ namespace eyegui
         updateDisplayAndSuggestions();
 
         // Pre display
-        mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP, 1.f, u"The quick brown fox jumps over the lazy dog.");
+        mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -145,13 +155,40 @@ namespace eyegui
         }
     }
 
+	std::u16string FutureKeyboard::getContent() const
+	{
+		return buildContent();
+	}
+
+	void FutureKeyboard::nextSentence(std::u16string sentence)
+	{
+		// Setup display
+		mCurrentWord.clear();
+		mCollectedWords.clear();
+		mupPreDisplay->setContent(sentence);
+
+		// Setup keys
+		for (auto& rspKey : mKeyList)
+		{
+			rspKey->clearSuggestion();
+		}
+
+		// Update display
+		updateDisplayAndSuggestions();
+	}
+
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
         // Prepare tasks
-        enum class KeyTask { TOGGLE_CASE };
+		enum class KeyTask { TOGGLE_CASE, CLEAR_SUGGESTION };
         std::vector<KeyTask> tasks;
         bool firstLetterOfSentence = false;
         bool keyHit = false;
+
+		// Update suggestions
+		mupSuggestionA->update(tpf, pInput);
+		mupSuggestionB->update(tpf, pInput);
+		mupSuggestionC->update(tpf, pInput);
 
         // Go over keys and update them
         for(auto& rspKey : mKeyList)
@@ -159,53 +196,69 @@ namespace eyegui
             // Record whether hit
             FutureKey::HitType type = rspKey->update(tpf, pInput);
 
-            // *** TASKS ***
-
-            // Toggle case
-            if(type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
-            {
-                tasks.push_back(KeyTask::TOGGLE_CASE);
-            }
-
             // *** LETTERS ***
             if(type == FutureKey::HitType::LETTER
             && rspKey->getId() != "return"
             && rspKey->getId() != "backspace"
             && rspKey->getId() != "shift"
             && rspKey->getId() != "repeat"
-            && rspKey->getId() != "space")
+            && rspKey->getId() != "space"
+			&& rspKey->getId() != "dot")
             {
                 // Seems to be standard letter, just add it to content
                 mCurrentWord.append(rspKey->getLetter());
                 keyHit = true;
-                mLastLetter = rspKey->getLetter();
+                mLastLetter = rspKey->getLetter(); // remember last letter for repeating
                 updateDisplayAndSuggestions();
             }
 
             // *** SUGGESTIONS ***
             if(type == FutureKey::HitType::SUGGESTION)
             {
-                mCurrentWord.append(rspKey->getSuggestion());
-                updateDisplayAndSuggestions();
-                keyHit = true;
+				// Replace current word with suggestion and display it
+                mCurrentWord = rspKey->getSuggestion();                
+
+				// Clear all suggestions
+				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
+
+				// Append space to collected and clear current word
+				mCollectedWords.append(mCurrentWord + u" ");
+				mCurrentWord = u"";
+				updateDisplayAndSuggestions();
+				keyHit = true;
             }
 
             // *** SPECIAL LETTERS ***
 
+			// Shift
+			if (type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
+			{
+				tasks.push_back(KeyTask::TOGGLE_CASE);
+			}
+
             // Space
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
             {
-                mCurrentWord.append(u" ");
-                mCollectedWords.append(mCurrentWord);
-                mCurrentWord = u"";
-                updateDisplayAndSuggestions();
+				// Since TextFlow is at the moment not capable to display more
+				// than one space in a row, only allow one in a row
+				std::u16string content = buildContent();
+				char16_t compareValue = u' ';
+				if ((!content.empty() && (content.back() != compareValue)) || content.empty())
+				{
+					// Clear all suggestions
+					tasks.push_back(KeyTask::CLEAR_SUGGESTION);
+
+					// Append space to content
+					mCollectedWords.append(mCurrentWord + u" ");
+					mCurrentWord = u"";
+					updateDisplayAndSuggestions();
+				}
             }
 
             // Dot
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "dot")
             {
-                mCurrentWord.append(u" ");
-                mCollectedWords.append(mCurrentWord);
+                mCollectedWords.append(mCurrentWord + u". ");
                 mCurrentWord = u"";
                 firstLetterOfSentence = true;
                 updateDisplayAndSuggestions();
@@ -213,15 +266,15 @@ namespace eyegui
 
             // Backspace
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "backspace")
-            {
+			{
                 // Try to delete something from current word
                 if(!mCurrentWord.empty())
                 {
-                    mCurrentWord.pop_back();
+					mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
                 }
                 else if(!mCollectedWords.empty())
                 {
-                    mCollectedWords.pop_back();
+					mCollectedWords = mCollectedWords.substr(0, mCollectedWords.size() - 1);
                 }
 
                 // Handle upper case at first letter of sentence
@@ -255,6 +308,7 @@ namespace eyegui
             }
         }
 
+		/* NOT NECESSARY AT THE MOMENT
         // Handle "UPPER" letters for every sentence beginnging
         if(firstLetterOfSentence)
         {
@@ -277,8 +331,16 @@ namespace eyegui
                 }
             }
         }
+		*/
+		if (keyHit)
+		{
+			for (auto& rspKey : mKeyList)
+			{
+				rspKey->setCase(KeyboardCase::LOWER);
+			}
+		}
 
-        // Execute task after updating all keys
+        // Execute tasks after updating all keys
         for(auto task : tasks)
         {
             switch(task)
@@ -289,6 +351,12 @@ namespace eyegui
                         rspKey->toggleCase();
                     }
                     break;
+				case KeyTask::CLEAR_SUGGESTION:
+					for (auto& rspKey : mKeyList)
+					{
+						rspKey->clearSuggestion();
+					}
+					break;
             }
         }
 
@@ -308,6 +376,23 @@ namespace eyegui
 			mpBackground->draw();
 		}
 
+		// *** SUGGESTIONS ***
+		mupSuggestionA->draw(
+			getStyle()->color,
+			getStyle()->fontColor,
+			getStyle()->thresholdColor,
+			getMultipliedDimmedAlpha());
+		mupSuggestionB->draw(
+			getStyle()->color,
+			getStyle()->fontColor,
+			getStyle()->thresholdColor,
+			getMultipliedDimmedAlpha());
+		mupSuggestionC->draw(
+			getStyle()->color,
+			getStyle()->fontColor,
+			getStyle()->thresholdColor,
+			getMultipliedDimmedAlpha());
+
 		// *** KEYS ***
         for(auto& rspKey : mKeyList)
         {
@@ -326,66 +411,78 @@ namespace eyegui
 
 	void FutureKeyboard::specialTransformAndSize()
 	{
-        int xOffset = 0.01f * mWidth;
-        int yOffset = 0.4f * mHeight;
-        int keyWidth = 0.09f * mWidth;
-        int keyHeight = 0.125f * mHeight;
-        int keySpace = 0.01f * mWidth;
+		int xOffset = (int)(0.01f * mWidth);
+		int suggestionWidth = (int)((mWidth - (2.f * xOffset)) / 3.f);
+		int keyOffsetY = (int)(0.4f * mHeight);
+		int keyWidth = (int)(0.09f * mWidth);
+		int keyHeight = (int)(0.125f * mHeight);
+		int keySpace = (int)(0.01f * mWidth);
+
+		// Display
+		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
+
+		// Pre display
+		mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
+
+		// Transform and size suggestions
+		mupSuggestionA->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mupSuggestionB->transformAndSize(xOffset + mX + suggestionWidth, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mupSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth), (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+
+		// Transform and size keys
 
         // First row
-        mspQKey->transformAndSize(xOffset + mX,                               yOffset + mY, keyWidth, keyHeight);
-        mspWKey->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspEKey->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspRKey->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspTKey->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspYKey->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspUKey->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspIKey->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspOKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
-        mspPKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), yOffset + mY, keyWidth, keyHeight);
+        mspQKey->transformAndSize(xOffset + mX,                               keyOffsetY + mY, keyWidth, keyHeight);
+        mspWKey->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspEKey->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspRKey->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspTKey->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspYKey->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspUKey->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspIKey->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspOKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspPKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
 
         // Second row
-        mspAKey    ->transformAndSize(xOffset + mX,                               yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspSKey    ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspDKey    ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspFKey    ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspGKey    ->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspHKey    ->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspJKey    ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspKKey    ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspLKey    ->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspEnterKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), yOffset + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspAKey    ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspSKey    ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspDKey    ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspFKey    ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspGKey    ->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspHKey    ->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspJKey    ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspKKey    ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspLKey    ->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspEnterKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
 
         // Third row
-        mspZKey        ->transformAndSize(xOffset + mX,                               yOffset + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspXKey        ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), yOffset + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspCKey        ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), yOffset + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspVKey        ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), yOffset + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspBKey        ->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), yOffset + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspNKey        ->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), yOffset + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspMKey        ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), yOffset + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspBackspaceKey->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), yOffset + mY + (2 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
+        mspZKey        ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspXKey        ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspCKey        ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspVKey        ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspBKey        ->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspNKey        ->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspMKey        ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspBackspaceKey->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
 
         // Forth row
-        mspShiftKey      ->transformAndSize(xOffset + mX,                               yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspRepeatKey     ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspCommaKey      ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspSpaceKey      ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
-        mspDotKey        ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspQuestionKey   ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspExclamationKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspColonKey      ->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), yOffset + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-
-        // Display
-        mupDisplay->transformAndSize(mX + 0.05f * mWidth, mY + 0.05f * mHeight, mWidth, 0.2f * mHeight);
-
-        // Pre display
-        mupPreDisplay->transformAndSize(mX + 0.05f * mWidth, mY + 0.05f * mHeight, mWidth, 0.2f * mHeight);
+        mspShiftKey      ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspRepeatKey     ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspCommaKey      ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspSpaceKey      ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
+        mspDotKey        ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspQuestionKey   ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspExclamationKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspColonKey      ->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
 	}
 
 	void FutureKeyboard::specialReset()
 	{
-
+		// Go over keys and reset them
+		for (auto& rspKey : mKeyList)
+		{
+			rspKey->reset();
+		}
 	}
 
 	void FutureKeyboard::specialInteract()
@@ -404,14 +501,14 @@ namespace eyegui
             for(auto& rspKey : mKeyList)
             {
                 // Only do so for keys which want a suggestion
-                if(rspKey->suggestionShown())
+				if(rspKey->suggestionShown() && rspKey->atFirstThreshold())
                 {
                     notifyListener(
-                        &eyegui_experimental::FutureKeySuggestionListener::needSuggestion,
+                        &eyegui_experimental::FutureKeyboardListener::keySuggestion,
                         pLayout,
                         getId(),
                         rspKey->getId(),
-                        mCurrentWord + rspKey->getLetter());
+                        rspKey->getLetter());
                 }
             }
 
@@ -428,16 +525,15 @@ namespace eyegui
     void FutureKeyboard::updateDisplayAndSuggestions()
     {
         // *** DISPLAY ***
-        if(mCollectedWords.empty())
-        {
-            mupDisplay->setContent(mCurrentWord + u"_");
-        }
-        else
-        {
-            mupDisplay->setContent(mCollectedWords + u" " + mCurrentWord + u"_");
-        }
+        mupDisplay->setContent(buildContent() + u"_");
 
         // *** SUGGESTIONS ***
+		// TODO: suggestions in line
         mpNotificationQueue->enqueue(getId(), NotificationType::FUTURE_KEY_NEEDS_SUGGESTION);
     }
+
+	std::u16string FutureKeyboard::buildContent() const
+	{
+		return mCollectedWords + mCurrentWord;
+	}
 }

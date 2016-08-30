@@ -367,14 +367,22 @@ namespace eyegui
 
         // Experimental
 
-        // Register future key suggestion listener
-        void registerFutureKeySuggestionListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeySuggestionListener> wpListener);
+        // Register future keyboard listener
+        void registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener);
 
         // Set suggestion in future key
         void setFutureKeySuggestion(
             std::string id,
             std::string keyId,
             std::u16string suggestion);
+
+		// Get content of future keyboard
+		std::u16string getFutureKeyboardContent(std::string id) const;
+
+		// Set next future keyboard sentence
+		void nextFutureKeyboardSentence(
+			std::string id,
+			std::u16string sentence);
 
     private:
 
