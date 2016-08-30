@@ -378,7 +378,9 @@ namespace eyegui
             // Animation update
             if(mSuggestionAnimation.first > 0 && mSuggestionAnimation.second != NULL)
             {
-                mSuggestionAnimation.second->setPosition(suggestionX, glm::mix(mY, suggestionCenterY, mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION));
+				int suggestionSuggestionX = mX + (mWidth - mSuggestionAnimation.second->getWidth()) / 2;
+				int suggestionAnimationCenterY = mY + (mHeight - mSuggestionAnimation.second->getHeight()) / 2;
+                mSuggestionAnimation.second->setPosition(suggestionSuggestionX, glm::mix(mY, suggestionAnimationCenterY, mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION));
             }
         }
     }
