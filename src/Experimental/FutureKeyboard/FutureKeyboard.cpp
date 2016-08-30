@@ -48,11 +48,6 @@ namespace eyegui
         mCollectedWords = u"";
         mLastLetter = u"";
 
-		// Fetch render item for background
-		mpBackground = mpAssetManager->fetchRenderItem(
-			shaders::Type::COLOR,
-			meshes::Type::QUAD);
-
 		// Initialize suggestion line
 		mupSuggestionA = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
 		mupSuggestionB = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
@@ -365,17 +360,6 @@ namespace eyegui
 
 	void FutureKeyboard::specialDraw() const
 	{
-		// *** BACKGROUND ***
-		if (getStyle()->backgroundColor.a > 0)
-		{
-			// Bind, fill and draw background
-			mpBackground->bind();
-			mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
-			mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
-			mpBackground->draw();
-		}
-
 		// *** SUGGESTIONS ***
 		mupSuggestionA->draw(
 			getStyle()->color,
