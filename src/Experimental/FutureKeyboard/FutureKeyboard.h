@@ -78,7 +78,6 @@ namespace eyegui
 		std::u16string buildContent() const;
 
 		// Members
-		RenderItem const * mpBackground;
         Mode mMode;
         bool mFirstLetterOfSentence;
         std::u16string mLastLetter;
