@@ -499,7 +499,7 @@ namespace eyegui
 		// Transform and size suggestions (put a in the middle)
 		mspSuggestionB->transformAndSize(xOffset + mX, suggestionOffsetY, suggestionWidth, suggestionHeight);
 		mspSuggestionA->transformAndSize(xOffset + mX + suggestionWidth + keySpace, suggestionOffsetY, suggestionWidth, suggestionHeight);
-		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth) + (3 * keySpace), suggestionOffsetY, suggestionWidth, suggestionHeight);
+		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth) + (2 * keySpace), suggestionOffsetY, suggestionWidth, suggestionHeight);
 
         // First row
         mspQKey->transformAndSize(xOffset + mX,                               keyOffsetY + mY, keyWidth, keyHeight);
