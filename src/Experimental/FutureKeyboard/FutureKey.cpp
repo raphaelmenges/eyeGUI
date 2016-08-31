@@ -138,8 +138,8 @@ namespace eyegui
         // Update threshold
         if(!mDoingSecondThreshold)
         {
-            // First threshold (TODO: adjust threshold time)
-            mFirstThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f));
+            // First threshold
+            mFirstThreshold.update(tpf / mpLayout->getConfig()->futureKeyboardThresholdDuration, !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is active should be decreased since second threshold is not ongoing
             mLetterFading.update(-tpf / mpLayout->getConfig()->futureKeyboardRetriggerDelay);
@@ -147,7 +147,7 @@ namespace eyegui
         else
         {
             // Second threshold. But wait for fading of letter! (TODO: adjust threshold time)
-            mSecondThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f));
+            mSecondThreshold.update(tpf / mpLayout->getConfig()->futureKeyboardThresholdDuration, !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is ongoing
             mLetterFading.update(tpf / mpLayout->getConfig()->futureKeyboardRetriggerDelay);

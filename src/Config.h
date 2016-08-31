@@ -43,6 +43,7 @@ namespace eyegui
         // Experimental
         float futureKeyboardPressDuration = 0.5f;
         float futureKeyboardRetriggerDelay = 0.5f;
+        float futureKeyboardThresholdDuration = 1.f;
 
     };
 }

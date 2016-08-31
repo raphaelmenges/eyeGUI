@@ -197,6 +197,10 @@ namespace eyegui
             {
                 rConfig.futureKeyboardRetriggerDelay = stringToFloat(value);
             }
+            else if (attribute == "future-keyboard-threshold-duration")
+            {
+                rConfig.futureKeyboardThresholdDuration = stringToFloat(value);
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);
