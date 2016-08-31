@@ -499,7 +499,7 @@ namespace eyegui
 		// Transform and size suggestions (put a in the middle)
 		mspSuggestionB->transformAndSize(xOffset + mX, suggestionOffsetY, suggestionWidth, suggestionHeight);
 		mspSuggestionA->transformAndSize(xOffset + mX + suggestionWidth + keySpace, suggestionOffsetY, suggestionWidth, suggestionHeight);
-		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth) + (2 * keySpace), suggestionOffsetY, suggestionWidth, suggestionHeight);
+		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth) + (3 * keySpace), suggestionOffsetY, suggestionWidth, suggestionHeight);
 
         // First row
         mspQKey->transformAndSize(xOffset + mX,                               keyOffsetY + mY, keyWidth, keyHeight);
@@ -514,7 +514,7 @@ namespace eyegui
         mspPKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
 
 		// Adapt key offset
-		if (mMode == Mode::MANY_SUGGESTION_LINES) { keyOffsetY += (int)(suggestionHeight + (2.f * keySpace)); }
+		if (mMode == Mode::MANY_SUGGESTION_LINES) { keyOffsetY += suggestionHeight + keySpace; }
 
         // Second row
         mspAKey    ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
@@ -529,7 +529,7 @@ namespace eyegui
         mspEnterKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
 
 		// Adapt key offset
-		if (mMode == Mode::MANY_SUGGESTION_LINES) { keyOffsetY += (int)(suggestionHeight + (2.f * keySpace)); }
+		if (mMode == Mode::MANY_SUGGESTION_LINES) { keyOffsetY += suggestionHeight + keySpace; }
 
         // Third row
         mspZKey        ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
