@@ -357,7 +357,7 @@ namespace eyegui
 
 	void FutureKey::clearSuggestion()
 	{
-		setSuggestion(u"");
+		if (!mDoingSecondThreshold) { setSuggestion(u""); }
 	}
 
     void FutureKey::backToFirstThreshold()

@@ -80,7 +80,7 @@ namespace eyegui
         // Set suggestion
         void setSuggestion(std::u16string suggestion);
 
-		// Clear suggestion
+		// Clear suggestion, but only when not in second threshold phase
 		void clearSuggestion();
 
         // Reset to first threshold if second is available and active

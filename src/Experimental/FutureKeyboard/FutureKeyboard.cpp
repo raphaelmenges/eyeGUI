@@ -538,7 +538,7 @@ namespace eyegui
 				// Suggestions in suggestion line
 				// TODO
 
-                // Only do so for keys which want a suggestion
+                // Only do so for keys which want a suggestion and which are currently not at second threshold
 				if(rspKey->suggestionShown() && rspKey->atFirstThreshold())
                 {
                     notifyListener(
