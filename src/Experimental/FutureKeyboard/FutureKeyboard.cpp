@@ -117,7 +117,6 @@ namespace eyegui
         mspColonKey = createFutureKey("colon", u":", false, true);
 
         // For first letter, use upper case
-        mFirstLetterOfSentence = true;
         for(auto& rspKey : mKeyList)
         {
 			// TODO: ok, one should use upper case in standard scenario but for now we need lower
@@ -270,6 +269,22 @@ namespace eyegui
                 else if(!mCollectedWords.empty())
                 {
 					mCollectedWords = mCollectedWords.substr(0, mCollectedWords.size() - 1);
+
+					// Try to get last word from collected words and set it as current word
+					if (!mCollectedWords.empty())
+					{
+						// Go through words in collected
+						std::u16string delimiter = u" ";
+						size_t pos = 0;
+						std::u16string copyCollectedWords = mCollectedWords;
+						mCollectedWords = u"";
+						while ((pos = copyCollectedWords.find(delimiter)) != std::u16string::npos)
+						{
+							mCollectedWords.append(copyCollectedWords.substr(0, pos) + u" "); // would have probably problems with mutliple spaces
+							copyCollectedWords.erase(0, pos + delimiter.length());
+						}
+						mCurrentWord = copyCollectedWords;
+					}
                 }
 
                 // Handle upper case at first letter of sentence
@@ -303,30 +318,7 @@ namespace eyegui
             }
         }
 
-		/* NOT NECESSARY AT THE MOMENT
-        // Handle "UPPER" letters for every sentence beginnging
-        if(firstLetterOfSentence)
-        {
-            // Prepare for next first letter
-            mFirstLetterOfSentence = true;
-            for(auto& rspKey : mKeyList) // maybe move out of loop...
-            {
-                rspKey->setCase(KeyboardCase::UPPER);
-            }
-        }
-        else if(keyHit)
-        {
-            // Check whether that letter was first of a sentence
-            if(mFirstLetterOfSentence)
-            {
-                mFirstLetterOfSentence = false;
-                for(auto& rspKey : mKeyList)
-                {
-                    rspKey->setCase(KeyboardCase::LOWER);
-                }
-            }
-        }
-		*/
+		// When some key was hit, return to lower case
 		if (keyHit)
 		{
 			for (auto& rspKey : mKeyList)

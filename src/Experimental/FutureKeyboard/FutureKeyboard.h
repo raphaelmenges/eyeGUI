@@ -79,7 +79,6 @@ namespace eyegui
 
 		// Members
         Mode mMode;
-        bool mFirstLetterOfSentence;
         std::u16string mLastLetter;
 
 		// Suggestions in suggestion line
