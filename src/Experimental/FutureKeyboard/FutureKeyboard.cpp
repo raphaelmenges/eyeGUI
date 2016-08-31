@@ -48,6 +48,7 @@ namespace eyegui
         mCurrentWord = u"";
         mCollectedWords = u"";
         mLastLetter = u"";
+		mLastLine = 0;
 
 		// Initialize suggestion line
 		mspSuggestionA = std::shared_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
@@ -390,6 +391,8 @@ namespace eyegui
 				}
 				break;
 			case Task::UPDATE_SUGGESTIONS:
+				
+				// Update suggestions
 				for (auto& rspKey : mKeyList)
 				{
 					rspKey->clearSuggestion();
@@ -399,6 +402,27 @@ namespace eyegui
 					rspSuggestion->clearSuggestion();
 				}
 				updateSuggestions();
+
+				// Determine line of last letter
+				for (int i = 0; i < (int)mKeyList.size(); i++)
+				{
+					if (mKeyList.at(i)->getLetter() == mLastLetter)
+					{
+						if (i < 10)
+						{
+							mLastLine = 0;
+						}
+						else if (i < 20)
+						{
+							mLastLine = 1;
+						}
+						else
+						{
+							mLastLine = 2;
+						}
+					}
+				}
+
 				break;
 			}
 		}
@@ -447,17 +471,22 @@ namespace eyegui
 		int suggestionWidth = (int)((mWidth - ((2.f * xOffset) + (2.f * keySpace))) / 3.f);
 		int suggestionHeight = (int)(0.1f * mHeight);
 		int displayHeight = (int)(0.175f * mHeight);
-
-		// Mode dependent variables
+		int displayX = (int)(mX + 0.05f * mWidth);
 		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.03f * mHeight)  : (int)(mY + 0.1f * mHeight);
 		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.225f * mHeight) : (int)(0.4f * mHeight);
 		int suggestionOffsetY = keyOffsetY - keySpace - suggestionHeight;
 
+		// Move suggestion to the correct line
+		if (mMode == Mode::MANY_SUGGESTION_LINES)
+		{
+			suggestionOffsetY += mLastLine * (suggestionHeight + (2 * keySpace));
+		}
+
 		// Display
-		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), displayY, mWidth, displayHeight);
+		mupDisplay->transformAndSize(displayX, displayY, mWidth, displayHeight);
 
 		// Pre display
-		mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), displayY, mWidth, displayHeight);
+		mupPreDisplay->transformAndSize(displayX, displayY, mWidth, displayHeight);
 
 		// Transform and size suggestions (put a in the middle)
 		mspSuggestionB->transformAndSize(xOffset + mX, suggestionOffsetY, suggestionWidth, suggestionHeight);
@@ -526,6 +555,9 @@ namespace eyegui
 		// Reset last letter
 		mLastLetter = u"";
 		mspRepeatKey->setInfo(mLastLetter);
+
+		// Reset last line
+		mLastLine = 0;
 	}
 
 	void FutureKeyboard::specialInteract()
