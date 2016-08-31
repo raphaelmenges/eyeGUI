@@ -105,7 +105,7 @@ namespace eyegui
         HitType value = HitType::NONE;
 
         // Update pressing
-        mPressing.update(-tpf / PRESS_DURATION);
+        mPressing.update(-tpf / mpLayout->getConfig()->futureKeyboardPressDuration);
 
         // Update retrigger time
         mRetriggerTime -= tpf;
@@ -142,7 +142,7 @@ namespace eyegui
             mFirstThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is active should be decreased since second threshold is not ongoing
-            mLetterFading.update(-tpf / RETRIGGER_DELAY);
+            mLetterFading.update(-tpf / mpLayout->getConfig()->futureKeyboardRetriggerDelay);
         }
         else
         {
@@ -150,7 +150,7 @@ namespace eyegui
             mSecondThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is ongoing
-            mLetterFading.update(tpf / RETRIGGER_DELAY);
+            mLetterFading.update(tpf / mpLayout->getConfig()->futureKeyboardRetriggerDelay);
         }
 
         // Decide whether some threshold is reached
@@ -166,7 +166,7 @@ namespace eyegui
 					&& !mupSuggestion->getContent().empty(); // only start second threshold when suggestion is shown and available
                 value = HitType::LETTER;
                 mPressing.setValue(1.f);
-                mRetriggerTime = RETRIGGER_DELAY;
+                mRetriggerTime = mpLayout->getConfig()->futureKeyboardRetriggerDelay;
             }
         }
         else
@@ -177,7 +177,7 @@ namespace eyegui
                 mSecondThreshold.setValue(0.f);
                 mDoingSecondThreshold = false;
                 value = HitType::SUGGESTION;
-                mRetriggerTime = RETRIGGER_DELAY;
+                mRetriggerTime = mpLayout->getConfig()->futureKeyboardRetriggerDelay;
 
                 // Copy suggestion for animation
                 mSuggestionAnimation = std::make_pair(

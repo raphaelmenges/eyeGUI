@@ -68,8 +68,6 @@ namespace eyegui
         void transformSuggestion();
 
         // Constants
-        const float PRESS_DURATION = 0.5f;
-        const float RETRIGGER_DELAY = 0.5f;
 		const float SUGGESTION_ANIMATION_DURATION = 0.5f;
 
 		// Members

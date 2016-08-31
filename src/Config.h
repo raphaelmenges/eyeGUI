@@ -39,6 +39,11 @@ namespace eyegui
         float keyboardSpeedMultiplier = 1.0f;
         float flowSpeedMultiplier = 1.0f;
 		float textEditScrollSpeedMultiplier = 1.0f;
+
+        // Experimental
+        float futureKeyboardPressDuration = 0.5f;
+        float futureKeyboardRetriggerDelay = 0.5f;
+
     };
 }
 

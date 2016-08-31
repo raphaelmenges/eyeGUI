@@ -61,7 +61,7 @@ namespace eyegui
 		bool hit = false;
 
 		// Update pressing
-		mPressing.update(-tpf / PRESS_DURATION);
+        mPressing.update(-tpf / mpLayout->getConfig()->futureKeyboardPressDuration);
 
 		// Update retrigger time
 		mRetriggerTime -= tpf;
@@ -92,7 +92,7 @@ namespace eyegui
 			mThreshold.setValue(0.f);
             hit = true;
             mPressing.setValue(1.f);
-            mRetriggerTime = RETRIGGER_DELAY;
+            mRetriggerTime = mpLayout->getConfig()->futureKeyboardRetriggerDelay;
 
 			// Copy suggestion for animation
 			mSuggestionAnimation = std::make_pair(

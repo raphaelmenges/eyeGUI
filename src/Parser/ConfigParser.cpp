@@ -189,6 +189,14 @@ namespace eyegui
 			{
 				rConfig.textEditScrollSpeedMultiplier = stringToFloat(value);
 			}
+            else if (attribute == "future-keyboard-press-duration")
+            {
+                rConfig.futureKeyboardPressDuration = stringToFloat(value);
+            }
+            else if (attribute == "future-keyboard-retrigger-delay")
+            {
+                rConfig.futureKeyboardRetriggerDelay = stringToFloat(value);
+            }
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);
