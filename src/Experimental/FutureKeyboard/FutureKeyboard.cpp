@@ -421,7 +421,7 @@ namespace eyegui
 							mLastLine = 2;
 						}
 
-						// FILTHY! hack that transformation of suggestion line is triggered
+						// TODO FILTHY! hack that transformation of suggestion line is triggered
 						if (mMode == Mode::MANY_SUGGESTION_LINES)
 						{
 							specialTransformAndSize();
@@ -487,7 +487,7 @@ namespace eyegui
 		// Move suggestion to the correct line
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
 		{
-			suggestionOffsetY += mLastLine * (suggestionHeight + (2 * keySpace));
+			suggestionOffsetY += mLastLine * (suggestionHeight + (2 * keySpace) + keyHeight);
 		}
 
 		// Display
