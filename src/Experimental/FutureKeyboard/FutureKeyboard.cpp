@@ -554,6 +554,10 @@ namespace eyegui
 
 	void FutureKeyboard::specialReset()
 	{
+		// Reset content
+		mCollectedWords = u"";
+		mCollectedWords = u"";
+
 		// Go over keys and reset them
 		for (auto& rspKey : mKeyList)
 		{
