@@ -355,6 +355,18 @@ namespace eyegui
 		{
 			// Update word on space key
 			mspSpaceKey->setInfo(mCurrentWord);
+
+			// Update word on backspace key
+			if (mCurrentWord.empty())
+			{
+				mspBackspaceKey->setInfo(u"");
+			}
+			else
+			{
+				std::u16string backWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
+				backWord.append(u"_");
+				mspBackspaceKey->setInfo(backWord);
+			}
 		}
 
 		return 0.f;
