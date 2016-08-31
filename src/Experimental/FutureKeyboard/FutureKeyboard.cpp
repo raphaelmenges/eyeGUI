@@ -442,7 +442,7 @@ namespace eyegui
 		// Pure madness is following
 		int keyWidth = (int)(0.09f * mWidth);
 		int keyHeight = (int)(0.125f * mHeight);
-		int keySpace = (int)(0.01f * mWidth);
+		int keySpace = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.005f * mWidth) : (int)(0.01f * mWidth);
 		int xOffset = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
 		int suggestionWidth = (int)((mWidth - ((2.f * xOffset) + (2.f * keySpace))) / 3.f);
 		int suggestionHeight = (int)(0.1f * mHeight);
