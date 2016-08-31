@@ -49,10 +49,15 @@ namespace eyegui
         mLastLetter = u"";
 
 		// Initialize suggestion line
-		mupSuggestionA = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
-		mupSuggestionB = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
-		mupSuggestionC = std::unique_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
-		// TODO: handle those
+		mspSuggestionA = std::shared_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		mspSuggestionB = std::shared_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		mspSuggestionC = std::shared_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
+		mSuggestionList.push_back(mspSuggestionA);
+		mSuggestionList.push_back(mspSuggestionB);
+		mSuggestionList.push_back(mspSuggestionC);
+
+		// TODO: Test
+		mspSuggestionB->setSuggestion(u"hallo");
 
 		// Initialize keys
         std::function<std::shared_ptr<FutureKey>(std::string, std::u16string, bool, bool)> createFutureKey =
@@ -174,15 +179,32 @@ namespace eyegui
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
         // Prepare tasks
-		enum class KeyTask { TOGGLE_CASE, CLEAR_SUGGESTION };
+		enum class KeyTask { TOGGLE_CASE, LOWER_CASE, CLEAR_SUGGESTION };
         std::vector<KeyTask> tasks;
         bool firstLetterOfSentence = false;
-        bool keyHit = false;
+
+		// *** UPDATE OF SUGGESTIONS ***
 
 		// Update suggestions
-		mupSuggestionA->update(tpf, pInput);
-		mupSuggestionB->update(tpf, pInput);
-		mupSuggestionC->update(tpf, pInput);
+		for (auto& rspSuggestion : mSuggestionList)
+		{
+			if(rspSuggestion->update(tpf, pInput))
+			{
+				// Replace current word with suggestion and display it
+				mCurrentWord = rspSuggestion->getSuggestion();
+
+				// Clear all suggestions
+				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
+
+				// Append space to collected and clear current word
+				mCollectedWords.append(mCurrentWord + u" ");
+				mCurrentWord = u"";
+				updateDisplayAndSuggestions();
+				tasks.push_back(KeyTask::LOWER_CASE);
+			}	
+		}
+
+		// *** UPDATE OF KEYS ***
 
         // Go over keys and update them
         for(auto& rspKey : mKeyList)
@@ -201,7 +223,7 @@ namespace eyegui
             {
                 // Seems to be standard letter, just add it to content
                 mCurrentWord.append(rspKey->getLetter());
-                keyHit = true;
+				tasks.push_back(KeyTask::LOWER_CASE);
                 mLastLetter = rspKey->getLetter(); // remember last letter for repeating
                 updateDisplayAndSuggestions();
             }
@@ -219,7 +241,7 @@ namespace eyegui
 				mCollectedWords.append(mCurrentWord + u" ");
 				mCurrentWord = u"";
 				updateDisplayAndSuggestions();
-				keyHit = true;
+				tasks.push_back(KeyTask::LOWER_CASE);
             }
 
             // *** SPECIAL LETTERS ***
@@ -305,7 +327,7 @@ namespace eyegui
                 updateDisplayAndSuggestions();
             }
 
-            // *** RESET SECOND THRESHOLD OF ALL KEYS BUT CURRENT ONE ***
+            // Reset second threshold of all but current one
             if(type != FutureKey::HitType::NONE)
             {
                 for(auto& rspOtherKey : mKeyList)
@@ -316,16 +338,7 @@ namespace eyegui
                     }
                 }
             }
-        }
-
-		// When some key was hit, return to lower case
-		if (keyHit)
-		{
-			for (auto& rspKey : mKeyList)
-			{
-				rspKey->setCase(KeyboardCase::LOWER);
-			}
-		}
+        } // end of loop over all keys
 
         // Execute tasks after updating all keys
         for(auto task : tasks)
@@ -338,6 +351,12 @@ namespace eyegui
                         rspKey->toggleCase();
                     }
                     break;
+				case KeyTask::LOWER_CASE:
+					for (auto& rspKey : mKeyList)
+					{
+						rspKey->setCase(eyegui::KeyboardCase::LOWER);
+					}
+					break;
 				case KeyTask::CLEAR_SUGGESTION:
 					for (auto& rspKey : mKeyList)
 					{
@@ -375,24 +394,17 @@ namespace eyegui
 	void FutureKeyboard::specialDraw() const
 	{
 		// *** SUGGESTIONS ***
-		mupSuggestionA->draw(
-			getStyle()->color,
-			getStyle()->fontColor,
-			getStyle()->thresholdColor,
-			getMultipliedDimmedAlpha());
-		mupSuggestionB->draw(
-			getStyle()->color,
-			getStyle()->fontColor,
-			getStyle()->thresholdColor,
-			getMultipliedDimmedAlpha());
-		mupSuggestionC->draw(
-			getStyle()->color,
-			getStyle()->fontColor,
-			getStyle()->thresholdColor,
-			getMultipliedDimmedAlpha());
+		for (const auto& rspSuggestion : mSuggestionList)
+		{
+			rspSuggestion->draw(
+				getStyle()->color,
+				getStyle()->fontColor,
+				getStyle()->thresholdColor,
+				getMultipliedDimmedAlpha());
+		}
 
 		// *** KEYS ***
-        for(auto& rspKey : mKeyList)
+        for(const auto& rspKey : mKeyList)
         {
             rspKey->draw(
                 getStyle()->color,
@@ -423,9 +435,9 @@ namespace eyegui
 		mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
 
 		// Transform and size suggestions
-		mupSuggestionA->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
-		mupSuggestionB->transformAndSize(xOffset + mX + suggestionWidth, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
-		mupSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth), (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mspSuggestionA->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mspSuggestionB->transformAndSize(xOffset + mX + suggestionWidth, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth), (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
 
 		// Transform and size keys
 

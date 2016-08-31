@@ -81,10 +81,13 @@ namespace eyegui
         Mode mMode;
         std::u16string mLastLetter;
 
+		// List of all suggestions
+		std::vector<std::shared_ptr<FutureSuggestion> > mSuggestionList;
+
 		// Suggestions in suggestion line
-		std::unique_ptr<FutureSuggestion> mupSuggestionA;
-		std::unique_ptr<FutureSuggestion> mupSuggestionB;
-		std::unique_ptr<FutureSuggestion> mupSuggestionC;
+		std::shared_ptr<FutureSuggestion> mspSuggestionA;
+		std::shared_ptr<FutureSuggestion> mspSuggestionB;
+		std::shared_ptr<FutureSuggestion> mspSuggestionC;
 
         // List of all keys
         std::vector<std::shared_ptr<FutureKey> > mKeyList;

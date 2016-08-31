@@ -38,7 +38,7 @@ namespace eyegui
 		mpThresholdItem = mpAssetManager->fetchRenderItem(shaders::Type::CIRCLE_THRESHOLD, meshes::Type::QUAD);
 
         // Create suggestion text
-		mupSuggestion = mpAssetManager->createTextSimple(FontSize::MEDIUM, mFontScale, u"Hello World");
+		mupSuggestion = mpAssetManager->createTextSimple(FontSize::MEDIUM, mFontScale);
 	}
 
 	FutureSuggestion::~FutureSuggestion()
@@ -57,36 +57,36 @@ namespace eyegui
 
 	bool FutureSuggestion::update(float tpf, Input const * pInput)
 	{
-        // Return value
+		// Return value
 		bool hit = false;
 
-        // Update pressing
-        mPressing.update(-tpf / PRESS_DURATION);
+		// Update pressing
+		mPressing.update(-tpf / PRESS_DURATION);
 
-        // Update retrigger time
-        mRetriggerTime -= tpf;
-        mRetriggerTime = glm::max(0.f, mRetriggerTime);
+		// Update retrigger time
+		mRetriggerTime -= tpf;
+		mRetriggerTime = glm::max(0.f, mRetriggerTime);
 
-        // Update animation of suggestion which was chosen
-        if(mSuggestionAnimation.first > 0)
-        {
-            mSuggestionAnimation.first -= tpf;
-            mSuggestionAnimation.first = std::max(0.f, mSuggestionAnimation.first);
-        }
+		// Update animation of suggestion which was chosen
+		if (mSuggestionAnimation.first > 0)
+		{
+			mSuggestionAnimation.first -= tpf;
+			mSuggestionAnimation.first = std::max(0.f, mSuggestionAnimation.first);
+		}
 
-        // Process input
-        bool penetrated = false;
-        if(pInput != NULL)
-        {
-            // Decide penetration
+		// Process input
+		bool penetrated = false;
+		if (pInput != NULL)
+		{
+			// Decide penetration
 			penetrated = (pInput->gazeX >= mX
 				&& pInput->gazeX < mX + mWidth
 				&& pInput->gazeY >= mY
 				&& pInput->gazeY < mY + mHeight);
-        }
+		}
 
-        // Update threshold
-		mThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f));
+		// Update threshold but only when penetrated, after retrigger delay and non empty suggestion
+		mThreshold.update(tpf, !penetrated || (mRetriggerTime > 0.f) || mupSuggestion->getContent().empty());
         if(mThreshold.getValue() >= 1.f)
         {
 			mThreshold.setValue(0.f);
