@@ -57,9 +57,6 @@ namespace eyegui
 		mSuggestionList.push_back(mspSuggestionB);
 		mSuggestionList.push_back(mspSuggestionC);
 
-		// TODO: Test
-		mspSuggestionB->setSuggestion(u"hallo");
-
 		// Initialize keys
         std::function<std::shared_ptr<FutureKey>(std::string, std::u16string, bool, bool)> createFutureKey =
             [&](std::string id, std::u16string letter, bool showSuggestion, bool ignoreCase)
@@ -442,12 +439,12 @@ namespace eyegui
 
 	void FutureKeyboard::specialTransformAndSize()
 	{
-		int xOffset = (int)(0.01f * mWidth);
-		int suggestionWidth = (int)((mWidth - (2.f * xOffset)) / 3.f);
 		int keyOffsetY = (int)(0.4f * mHeight);
 		int keyWidth = (int)(0.09f * mWidth);
 		int keyHeight = (int)(0.125f * mHeight);
 		int keySpace = (int)(0.01f * mWidth);
+		int xOffset = (10.f * keyWidth + 9.f * keySpace) / 2.f;
+		int suggestionWidth = (int)(((mWidth - (2.f * xOffset)) / 3.f) - (2.f * keySpace));
 
 		// Display
 		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
@@ -457,8 +454,8 @@ namespace eyegui
 
 		// Transform and size suggestions
 		mspSuggestionA->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
-		mspSuggestionB->transformAndSize(xOffset + mX + suggestionWidth, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
-		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth), (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mspSuggestionB->transformAndSize(xOffset + mX + suggestionWidth + keySpace, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth) + (2 * keySpace), (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
 
 		// Transform and size keys
 
