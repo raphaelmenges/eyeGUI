@@ -420,6 +420,14 @@ namespace eyegui
 						{
 							mLastLine = 2;
 						}
+
+						// FILTHY! hack that transformation of suggestion line is triggered
+						if (mMode == Mode::MANY_SUGGESTION_LINES)
+						{
+							specialTransformAndSize();
+						}
+
+						break;
 					}
 				}
 
