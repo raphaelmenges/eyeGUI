@@ -443,7 +443,7 @@ namespace eyegui
 		int keyWidth = (int)(0.09f * mWidth);
 		int keyHeight = (int)(0.125f * mHeight);
 		int keySpace = (int)(0.01f * mWidth);
-		int xOffset = (10.f * keyWidth + 9.f * keySpace) / 2.f;
+		int xOffset = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
 		int suggestionWidth = (int)(((mWidth - (2.f * xOffset)) / 3.f) - (2.f * keySpace));
 
 		// Display
