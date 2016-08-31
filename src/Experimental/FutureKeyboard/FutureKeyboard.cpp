@@ -555,8 +555,14 @@ namespace eyegui
 	void FutureKeyboard::specialReset()
 	{
 		// Reset content
-		mCollectedWords = u"";
-		mCollectedWords = u"";
+		mCurrentWord.clear();
+		mCollectedWords.clear();
+
+		// Go over suggestions and reset them
+		for (const auto& rspSuggestion : mSuggestionList)
+		{
+			rspSuggestion->reset();
+		}
 
 		// Go over keys and reset them
 		for (auto& rspKey : mKeyList)
