@@ -175,6 +175,12 @@ namespace eyegui
 		mCollectedWords.clear();
 		mupPreDisplay->setContent(sentence);
 
+		// Setup suggestion line
+		for (auto& rspSuggestion : mSuggestionList)
+		{
+			rspSuggestion->clearSuggestion();
+		}
+
 		// Setup keys
 		for (auto& rspKey : mKeyList)
 		{
