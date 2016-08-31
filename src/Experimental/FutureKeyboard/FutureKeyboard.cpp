@@ -439,18 +439,21 @@ namespace eyegui
 
 	void FutureKeyboard::specialTransformAndSize()
 	{
-		int keyOffsetY = (int)(0.4f * mHeight);
 		int keyWidth = (int)(0.09f * mWidth);
 		int keyHeight = (int)(0.125f * mHeight);
 		int keySpace = (int)(0.01f * mWidth);
 		int xOffset = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
 		int suggestionWidth = (int)((mWidth - ((2.f * xOffset) + (2.f * keySpace))) / 3.f);
 
+		// Mode dependent variables
+		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.05f * mHeight)  : (int)(mY + 0.1f * mHeight);
+		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.2f * mHeight) : (int)(0.4f * mHeight);
+
 		// Display
-		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
+		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), displayY, mWidth, (int)(0.2f * mHeight));
 
 		// Pre display
-		mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
+		mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), displayY, mWidth, (int)(0.2f * mHeight));
 
 		// Transform and size suggestions (put a in the middle)
 		mspSuggestionB->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
