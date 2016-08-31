@@ -452,9 +452,9 @@ namespace eyegui
 		// Pre display
 		mupPreDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
 
-		// Transform and size suggestions
-		mspSuggestionA->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
-		mspSuggestionB->transformAndSize(xOffset + mX + suggestionWidth + keySpace, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		// Transform and size suggestions (put a in the middle)
+		mspSuggestionB->transformAndSize(xOffset + mX, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
+		mspSuggestionA->transformAndSize(xOffset + mX + suggestionWidth + keySpace, (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
 		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth) + (2 * keySpace), (int)(0.3f * mHeight) + mY - keySpace, suggestionWidth, (int)(0.1f * mHeight));
 
 		// Transform and size keys
