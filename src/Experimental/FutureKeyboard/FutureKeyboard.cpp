@@ -355,6 +355,16 @@ namespace eyegui
             }
         }
 
+		// Update last letter on repeat key
+		mspRepeatKey->setInfo(mLastLetter);
+
+		// Some information should be only in new mode available
+		if (mMode == Mode::SUGGESTION_PER_KEY)
+		{
+			// Update word on space key
+			mspSpaceKey->setInfo(mCurrentWord);
+		}
+
 		return 0.f;
 	}
 
@@ -467,6 +477,10 @@ namespace eyegui
 		{
 			rspKey->reset();
 		}
+
+		// Reset last letter
+		mLastLetter = u"";
+		mspRepeatKey->setInfo(mLastLetter);
 	}
 
 	void FutureKeyboard::specialInteract()

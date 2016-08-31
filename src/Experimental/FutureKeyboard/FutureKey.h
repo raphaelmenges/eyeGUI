@@ -87,10 +87,13 @@ namespace eyegui
         void backToFirstThreshold();
 
         // Get whether suggestion is shown
-        bool suggestionShown() const { return mShowSuggestion; }
+		bool suggestionShown() const;
 
 		// Get whether key is at first threshold and not during second
-		bool atFirstThreshold() const {	return !mDoingSecondThreshold; }
+		bool atFirstThreshold() const;
+
+		// Set info text at bottom
+		void setInfo(std::u16string content);
 		
 	private:
 
@@ -99,6 +102,9 @@ namespace eyegui
 
         // Update suggestion position
         void transformSuggestion();
+
+		// Updtae info position
+		void transformInfo();
 
         // Constants
         const float SUGGESTION_HEIGHT = 0.3f;
@@ -131,6 +137,7 @@ namespace eyegui
         glm::mat4 mThresholdDrawMatrix;
         std::unique_ptr<TextSimple> mupLetter;
         std::unique_ptr<TextSimple> mupSuggestion;
+		std::unique_ptr<TextSimple> mupInfo;
         LerpValue mFirstThreshold;
         LerpValue mSecondThreshold;
         float mRetriggerTime;

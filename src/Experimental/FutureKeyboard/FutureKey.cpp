@@ -71,6 +71,9 @@ namespace eyegui
 
         // Simple text for suggestion
         if(mShowSuggestion) { mupSuggestion = mpAssetManager->createTextSimple(FontSize::SMALL, 1.f, u"suggestion"); }
+
+		// Simple text for info
+		mupInfo = mpAssetManager->createTextSimple(FontSize::SMALL, 1.f);
 	}
 
 	FutureKey::~FutureKey()
@@ -91,6 +94,9 @@ namespace eyegui
 
         // Suggestion
         transformSuggestion();
+
+		// Info
+		transformInfo();
 	}
 
     FutureKey::HitType FutureKey::update(float tpf, Input const * pInput)
@@ -267,6 +273,9 @@ namespace eyegui
             }
         }
 
+		// *** DRAW INFO ***
+		mupInfo->draw(fontColor, alpha);
+
         // *** DRAW THRESHOLD ***
 
 		// Calculate draw matrix for threshold
@@ -357,6 +366,22 @@ namespace eyegui
         mDoingSecondThreshold = false;
     }
 
+	bool FutureKey::suggestionShown() const
+	{
+		return mShowSuggestion;
+	}
+
+	bool FutureKey::atFirstThreshold() const
+	{
+		return !mDoingSecondThreshold;
+	}
+
+	void FutureKey::setInfo(std::u16string content)
+	{
+		mupInfo->setContent(content);
+		transformInfo();
+	}
+	
     void FutureKey::transformLetter()
     {
         mupLetter->transform(); // has to be called first to calculate width and height
@@ -391,4 +416,11 @@ namespace eyegui
             }
         }
     }
+
+	void FutureKey::transformInfo()
+	{
+		mupInfo->transform();
+		int infoY = mY + (int)(mHeight * (1.f - SUGGESTION_HEIGHT)); // use suggestion position also for information
+		mupInfo->setPosition(mX + ((mWidth - mupInfo->getWidth()) / 2), infoY);
+	}
 }
