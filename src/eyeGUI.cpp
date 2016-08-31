@@ -756,6 +756,16 @@ namespace eyegui_experimental
         pLayout->registerFutureKeyboardListener(id, wpListener);
     }
 
+	void setFutureKeyboardLineSuggestions(
+		eyegui::Layout* pLayout,
+		std::string id,
+		std::u16string suggestionA,
+		std::u16string suggestionB,
+		std::u16string suggestionC)
+	{
+		pLayout->setFutureKeyboardLineSuggestions(id, suggestionA, suggestionB, suggestionC);
+	}
+
     void setFutureKeySuggestion(
         eyegui::Layout* pLayout,
         std::string id,

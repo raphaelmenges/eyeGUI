@@ -1670,6 +1670,23 @@ namespace eyegui
         }
     }
 
+	void Layout::setFutureKeyboardLineSuggestions(
+		std::string id,
+		std::u16string suggestionA,
+		std::u16string suggestionB,
+		std::u16string suggestionC)
+	{
+		FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
+		if (pFutureKeyboard != NULL)
+		{
+			pFutureKeyboard->setSuggestionLine(suggestionA, suggestionB, suggestionC);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
+		}
+	}
+
     void Layout::setFutureKeySuggestion(
         std::string id,
         std::string keyId,

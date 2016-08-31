@@ -370,6 +370,13 @@ namespace eyegui
         // Register future keyboard listener
         void registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener);
 
+		// Set suggestions of line
+		void setFutureKeyboardLineSuggestions(
+			std::string id,
+			std::u16string suggestionA,
+			std::u16string suggestionB,
+			std::u16string suggestionC);
+
         // Set suggestion in future key
         void setFutureKeySuggestion(
             std::string id,

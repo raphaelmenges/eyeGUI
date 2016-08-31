@@ -532,12 +532,15 @@ namespace eyegui
         {
         case NotificationType::FUTURE_KEYBOARD_NEEDS_SUGGESTIONS:
         {
+			// Suggestions in suggestion line
+			notifyListener(
+				&eyegui_experimental::FutureKeyboardListener::lineSuggestions,
+				pLayout,
+				getId());
+
             // Go over all keys which need suggestions and ask for one
             for(auto& rspKey : mKeyList)
             {
-				// Suggestions in suggestion line
-				// TODO
-
                 // Only do so for keys which want a suggestion and which are currently not at second threshold
 				if(rspKey->suggestionShown() && rspKey->atFirstThreshold())
                 {

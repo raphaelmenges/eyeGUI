@@ -1331,14 +1331,21 @@ namespace eyegui_experimental
         //! Destructor.
         virtual ~FutureKeyboardListener() = 0;
 
-        //! Callback from key which needs new suggestion.
+        //! Callback from suggestion line which needs new suggestions.
         /*!
           \param pLayout pointer to layout from which callback is coming.
           \param id is the unique id of the future keyboard which causes the callback.
-          \param keyId is the id of the future key which causes the callback.
-		  \param letter is letter(s) which would be added by key.
         */
-        void virtual keySuggestion(eyegui::Layout* pLayout, std::string id, std::string keyId, std::u16string letter) = 0;
+        void virtual lineSuggestions(eyegui::Layout* pLayout, std::string id) = 0;
+
+		//! Callback from key which needs new suggestion.
+		/*!
+		\param pLayout pointer to layout from which callback is coming.
+		\param id is the unique id of the future keyboard which causes the callback.
+		\param keyId is the id of the future key which causes the callback.
+		\param letter is letter(s) which would be added by key.
+		*/
+		void virtual keySuggestion(eyegui::Layout* pLayout, std::string id, std::string keyId, std::u16string letter) = 0;
     };
 
     //! Register callback for future keyboard.
@@ -1351,6 +1358,21 @@ namespace eyegui_experimental
         eyegui::Layout* pLayout,
         std::string id,
         std::weak_ptr<FutureKeyboardListener> wpListener);
+
+	//! Set suggestions in line.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param suggestionA is the first suggestion which should be displayed.
+	\param suggestionB is the second suggestion which should be displayed.
+	\param suggestionC is the third suggestion which should be displayed.
+	*/
+	void setFutureKeyboardLineSuggestions(
+		eyegui::Layout* pLayout,
+		std::string id,
+		std::u16string suggestionA,
+		std::u16string suggestionB,
+		std::u16string suggestionC);
 
     //! Set suggestion on future key.
     /*!
