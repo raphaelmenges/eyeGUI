@@ -446,12 +446,12 @@ namespace eyegui
 		int xOffset = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
 		int suggestionWidth = (int)((mWidth - ((2.f * xOffset) + (2.f * keySpace))) / 3.f);
 		int suggestionHeight = (int)(0.1f * mHeight);
-		int displayHeight = (int)(0.2f * mHeight);
+		int displayHeight = (int)(0.15f * mHeight);
 
 		// Mode dependent variables
-		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.05f * mHeight)  : (int)(mY + 0.1f * mHeight);
-		int suggestionOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.3f * mHeight) : (int)(0.3f * mHeight) + mY - keySpace;
+		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.025f * mHeight)  : (int)(mY + 0.1f * mHeight);
 		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.2f * mHeight) : (int)(0.4f * mHeight);
+		int suggestionOffsetY = keyOffsetY - keySpace - suggestionHeight;
 
 		// Display
 		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), displayY, mWidth, displayHeight);
