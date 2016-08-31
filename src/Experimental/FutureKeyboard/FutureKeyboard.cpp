@@ -444,7 +444,7 @@ namespace eyegui
 		int keyHeight = (int)(0.125f * mHeight);
 		int keySpace = (int)(0.01f * mWidth);
 		int xOffset = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
-		int suggestionWidth = (int)(((mWidth - (2.f * xOffset)) / 3.f) - (2.f * keySpace));
+		int suggestionWidth = (int)((mWidth - ((2.f * xOffset) + (2.f * keySpace))) / 3.f);
 
 		// Display
 		mupDisplay->transformAndSize((int)(mX + 0.05f * mWidth), (int)(mY + 0.05f * mHeight), mWidth, (int)(0.2f * mHeight));
