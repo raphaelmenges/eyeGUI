@@ -40,6 +40,9 @@ namespace eyegui
 		// Destructor
 		virtual ~FutureKeyboard();
 
+		// Setter for suggestions in line
+		void setSuggestionLine(std::u16string suggestionA, std::u16string suggestionB, std::u16string suggestionC);
+
         // Setter for suggestion on key
         void setKeySuggestion(std::string keyId, std::u16string suggestion);
 
@@ -71,8 +74,11 @@ namespace eyegui
 
 	private:
 
-        // Update display and suggestions
-        void updateDisplayAndSuggestions();
+        // Update display
+        void updateDisplay();
+
+		// Update suggestions
+		void updateSuggestions();
 
 		// Build content
 		std::u16string buildContent() const;

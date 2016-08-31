@@ -11,6 +11,7 @@
 #include "src/Utilities/OperationNotifier.h"
 
 #include <string>
+#include <set>
 
 namespace eyegui
 {
@@ -130,15 +131,25 @@ namespace eyegui
 
         // Diplay
         mupDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
-        updateDisplayAndSuggestions();
+		updateDisplay();
 
         // Pre display
         mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
+
+		// Ask initially for suggestions
+		updateSuggestions();
 	}
 
 	FutureKeyboard::~FutureKeyboard()
 	{
+		// Nothing to do
+	}
 
+	void FutureKeyboard::setSuggestionLine(std::u16string suggestionA, std::u16string suggestionB, std::u16string suggestionC)
+	{
+		mspSuggestionA->setSuggestion(suggestionA);
+		mspSuggestionB->setSuggestion(suggestionB);
+		mspSuggestionC->setSuggestion(suggestionC);
 	}
 
     void FutureKeyboard::setKeySuggestion(std::string keyId, std::u16string suggestion)
@@ -173,15 +184,17 @@ namespace eyegui
 		}
 
 		// Update display
-		updateDisplayAndSuggestions();
+		updateDisplay();
+
+		// Update suggestions
+		updateSuggestions();
 	}
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
         // Prepare tasks
-		enum class KeyTask { TOGGLE_CASE, LOWER_CASE, CLEAR_SUGGESTION };
-        std::vector<KeyTask> tasks;
-        bool firstLetterOfSentence = false;
+		enum class Task { TOGGLE_CASE, LOWER_CASE, UPDATE_SUGGESTIONS };
+        std::set<Task> tasks;
 
 		// *** UPDATE OF SUGGESTIONS ***
 
@@ -190,17 +203,16 @@ namespace eyegui
 		{
 			if(rspSuggestion->update(tpf, pInput))
 			{
-				// Replace current word with suggestion and display it
+				// Replace current word with suggestion
 				mCurrentWord = rspSuggestion->getSuggestion();
-
-				// Clear all suggestions
-				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
 
 				// Append space to collected and clear current word
 				mCollectedWords.append(mCurrentWord + u" ");
 				mCurrentWord = u"";
-				updateDisplayAndSuggestions();
-				tasks.push_back(KeyTask::LOWER_CASE);
+
+				// Tasks
+				tasks.insert(Task::UPDATE_SUGGESTIONS);
+				tasks.insert(Task::LOWER_CASE);
 			}	
 		}
 
@@ -223,9 +235,14 @@ namespace eyegui
             {
                 // Seems to be standard letter, just add it to content
                 mCurrentWord.append(rspKey->getLetter());
-				tasks.push_back(KeyTask::LOWER_CASE);
-                mLastLetter = rspKey->getLetter(); // remember last letter for repeating
-                updateDisplayAndSuggestions();
+
+				// Remember last letter in lower case
+				std::u16string lowerLastLetter = rspKey->getLetter();
+				toLower(lowerLastLetter);
+                mLastLetter = lowerLastLetter; // remember last letter for repeating
+
+				// Make new suggestions
+				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
 
             // *** SUGGESTIONS ***
@@ -234,14 +251,12 @@ namespace eyegui
 				// Replace current word with suggestion and display it
                 mCurrentWord = rspKey->getSuggestion();                
 
-				// Clear all suggestions
-				tasks.push_back(KeyTask::CLEAR_SUGGESTION);
-
 				// Append space to collected and clear current word
 				mCollectedWords.append(mCurrentWord + u" ");
 				mCurrentWord = u"";
-				updateDisplayAndSuggestions();
-				tasks.push_back(KeyTask::LOWER_CASE);
+
+				// Update all suggestions
+				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
 
             // *** SPECIAL LETTERS ***
@@ -249,7 +264,7 @@ namespace eyegui
 			// Shift
 			if (type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
 			{
-				tasks.push_back(KeyTask::TOGGLE_CASE);
+				tasks.insert(Task::TOGGLE_CASE);
 			}
 
             // Space
@@ -261,13 +276,12 @@ namespace eyegui
 				char16_t compareValue = u' ';
 				if ((!content.empty() && (content.back() != compareValue)) || content.empty())
 				{
-					// Clear all suggestions
-					tasks.push_back(KeyTask::CLEAR_SUGGESTION);
-
 					// Append space to content
 					mCollectedWords.append(mCurrentWord + u" ");
 					mCurrentWord = u"";
-					updateDisplayAndSuggestions();
+
+					// Update all suggestions
+					tasks.insert(Task::UPDATE_SUGGESTIONS);
 				}
             }
 
@@ -276,8 +290,9 @@ namespace eyegui
             {
                 mCollectedWords.append(mCurrentWord + u". ");
                 mCurrentWord = u"";
-                firstLetterOfSentence = true;
-                updateDisplayAndSuggestions();
+
+				// Update all suggestions
+				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
 
             // Backspace
@@ -309,22 +324,17 @@ namespace eyegui
 					}
                 }
 
-                // Handle upper case at first letter of sentence
-                if(mCollectedWords.empty())
-                {
-                    firstLetterOfSentence = true;
-                }
-
-                updateDisplayAndSuggestions();
+				// Update all suggestions
+				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
 
             // Repeat
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "repeat")
             {
-                std::u16string lowerLastLetter = mLastLetter;
-                toLower(lowerLastLetter);
-                mCurrentWord.append(lowerLastLetter);
-                updateDisplayAndSuggestions();
+                mCurrentWord.append(mLastLetter);
+
+				// Update all suggestions
+				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
 
             // Reset second threshold of all but current one
@@ -337,34 +347,11 @@ namespace eyegui
                         rspOtherKey->backToFirstThreshold();
                     }
                 }
+
+				// Set all letters to lower case
+				tasks.insert(Task::LOWER_CASE);
             }
         } // end of loop over all keys
-
-        // Execute tasks after updating all keys
-        for(auto task : tasks)
-        {
-            switch(task)
-            {
-                case KeyTask::TOGGLE_CASE:
-                    for(auto& rspKey : mKeyList)
-                    {
-                        rspKey->toggleCase();
-                    }
-                    break;
-				case KeyTask::LOWER_CASE:
-					for (auto& rspKey : mKeyList)
-					{
-						rspKey->setCase(eyegui::KeyboardCase::LOWER);
-					}
-					break;
-				case KeyTask::CLEAR_SUGGESTION:
-					for (auto& rspKey : mKeyList)
-					{
-						rspKey->clearSuggestion();
-					}
-					break;
-            }
-        }
 
 		// Update last letter on repeat key
 		mspRepeatKey->setInfo(mLastLetter);
@@ -387,6 +374,40 @@ namespace eyegui
 				mspBackspaceKey->setInfo(backWord);
 			}
 		}
+
+		// Execute tasks after updating
+		for (auto task : tasks)
+		{
+			switch (task)
+			{
+			case Task::TOGGLE_CASE:
+				for (auto& rspKey : mKeyList)
+				{
+					rspKey->toggleCase();
+				}
+				break;
+			case Task::LOWER_CASE:
+				for (auto& rspKey : mKeyList)
+				{
+					rspKey->setCase(eyegui::KeyboardCase::LOWER);
+				}
+				break;
+			case Task::UPDATE_SUGGESTIONS:
+				for (auto& rspKey : mKeyList)
+				{
+					rspKey->clearSuggestion();
+				}
+				for (auto& rspSuggestion : mSuggestionList)
+				{
+					rspSuggestion->clearSuggestion();
+				}
+				updateSuggestions();
+				break;
+			}
+		}
+
+		// Update display
+		updateDisplay();
 
 		return 0.f;
 	}
@@ -509,11 +530,14 @@ namespace eyegui
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
-        case NotificationType::FUTURE_KEY_NEEDS_SUGGESTION:
+        case NotificationType::FUTURE_KEYBOARD_NEEDS_SUGGESTIONS:
         {
             // Go over all keys which need suggestions and ask for one
             for(auto& rspKey : mKeyList)
             {
+				// Suggestions in suggestion line
+				// TODO
+
                 // Only do so for keys which want a suggestion
 				if(rspKey->suggestionShown() && rspKey->atFirstThreshold())
                 {
@@ -536,15 +560,15 @@ namespace eyegui
         }
 	}
 
-    void FutureKeyboard::updateDisplayAndSuggestions()
+    void FutureKeyboard::updateDisplay()
     {
-        // *** DISPLAY ***
-        mupDisplay->setContent(buildContent() + u"_");
-
-        // *** SUGGESTIONS ***
-		// TODO: suggestions in line
-        mpNotificationQueue->enqueue(getId(), NotificationType::FUTURE_KEY_NEEDS_SUGGESTION);
+        mupDisplay->setContent(buildContent() + u"_");        
     }
+
+	void FutureKeyboard::updateSuggestions()
+	{
+		mpNotificationQueue->enqueue(getId(), NotificationType::FUTURE_KEYBOARD_NEEDS_SUGGESTIONS);
+	}
 
 	std::u16string FutureKeyboard::buildContent() const
 	{

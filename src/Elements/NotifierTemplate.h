@@ -30,7 +30,7 @@ namespace eyegui
     WORD_SUGGEST_CHOSEN,
 
     // Experimental
-    FUTURE_KEY_NEEDS_SUGGESTION };
+    FUTURE_KEYBOARD_NEEDS_SUGGESTIONS };
 
     template <class T>
     class NotifierTemplate
