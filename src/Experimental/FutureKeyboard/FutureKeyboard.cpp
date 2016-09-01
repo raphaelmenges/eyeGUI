@@ -560,6 +560,42 @@ namespace eyegui
 			suggestionOffsetY += mLastLine * (suggestionHeight + (2 * keySpace) + keyHeight);
 		}
 
+		// Position empty suggestion placeholders
+		if (mMode == Mode::MANY_SUGGESTION_LINES)
+		{
+			// Prepare some values
+			int lW = mpLayout->getLayoutWidth();
+			int lH = mpLayout->getLayoutHeight();
+			int x1 = xOffset + mX;
+			int x2 = xOffset + mX + suggestionWidth + keySpace;
+			int x3 = xOffset + mX + (2 * suggestionWidth) + (2 * keySpace);
+			int initialY = keyOffsetY - keySpace - suggestionHeight;
+			int firstY, secondY;
+
+			if (mLastLine == 0)
+			{
+				firstY = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
+				secondY = initialY + 2 * (suggestionHeight + (2 * keySpace) + keyHeight);
+			}
+			else if (mLastLine == 1)
+			{
+				firstY = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
+				secondY = initialY + 2 * (suggestionHeight + (2 * keySpace) + keyHeight);
+			}
+			else
+			{
+				firstY = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
+				secondY = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
+			}
+
+			mEmptySuggestionADrawMatrix = calculateDrawMatrix(lW, lH, x1, firstY, suggestionWidth, suggestionHeight);
+			mEmptySuggestionBDrawMatrix = calculateDrawMatrix(lW, lH, x2, firstY, suggestionWidth, suggestionHeight);
+			mEmptySuggestionCDrawMatrix = calculateDrawMatrix(lW, lH, x3, firstY, suggestionWidth, suggestionHeight);
+			mEmptySuggestionDDrawMatrix = calculateDrawMatrix(lW, lH, x1, secondY, suggestionWidth, suggestionHeight);
+			mEmptySuggestionEDrawMatrix = calculateDrawMatrix(lW, lH, x2, secondY, suggestionWidth, suggestionHeight);
+			mEmptySuggestionFDrawMatrix = calculateDrawMatrix(lW, lH, x3, secondY, suggestionWidth, suggestionHeight);
+		}
+
 		// Display
 		mupDisplay->transformAndSize(displayX, displayY, mWidth, displayHeight);
 
@@ -620,42 +656,6 @@ namespace eyegui
         mspQuestionKey   ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
         mspExclamationKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
         mspColonKey      ->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-
-		// Position empty suggestion placeholders
-		if (mMode == Mode::MANY_SUGGESTION_LINES)
-		{
-			// Prepare some values
-			int lW = mpLayout->getLayoutWidth();
-			int lH = mpLayout->getLayoutHeight();
-			int x1 = xOffset + mX;
-			int x2 = xOffset + mX + suggestionWidth + keySpace;
-			int x3 = xOffset + mX + (2 * suggestionWidth) + (2 * keySpace);
-			int initialY = keyOffsetY - keySpace - suggestionHeight;
-			int firstY, secondY;
-
-			if (mLastLine == 0)
-			{
-				firstY  = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
-				secondY = initialY + 2 * (suggestionHeight + (2 * keySpace) + keyHeight);
-			}
-			else if (mLastLine == 1)
-			{
-				firstY = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
-				secondY = initialY + 2 * (suggestionHeight + (2 * keySpace) + keyHeight);
-			}
-			else
-			{
-				firstY = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
-				secondY = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
-			}
-
-			mEmptySuggestionADrawMatrix = calculateDrawMatrix(lW, lH, x1, firstY, suggestionWidth, suggestionHeight);
-			mEmptySuggestionBDrawMatrix = calculateDrawMatrix(lW, lH, x2, firstY, suggestionWidth, suggestionHeight);
-			mEmptySuggestionCDrawMatrix = calculateDrawMatrix(lW, lH, x3, firstY, suggestionWidth, suggestionHeight);
-			mEmptySuggestionDDrawMatrix = calculateDrawMatrix(lW, lH, x1, secondY, suggestionWidth, suggestionHeight);
-			mEmptySuggestionEDrawMatrix = calculateDrawMatrix(lW, lH, x2, secondY, suggestionWidth, suggestionHeight);
-			mEmptySuggestionFDrawMatrix = calculateDrawMatrix(lW, lH, x3, secondY, suggestionWidth, suggestionHeight);
-		}
 	}
 
 	void FutureKeyboard::specialReset()
