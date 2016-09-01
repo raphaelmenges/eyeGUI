@@ -87,6 +87,7 @@ namespace eyegui
         Mode mMode;
         std::u16string mLastLetter;
 		int mLastLine;
+		std::u16string mLastWord;
 
 		// List of all suggestions
 		std::vector<std::shared_ptr<FutureSuggestion> > mSuggestionList;
