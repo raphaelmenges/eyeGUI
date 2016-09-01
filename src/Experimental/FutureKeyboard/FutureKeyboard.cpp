@@ -225,17 +225,17 @@ namespace eyegui
 				std::string suggestionField;
 				if (rspSuggestion.get() == mspSuggestionA.get())
 				{
-					suggestionField = "middle";
+					suggestionField = "MIDDLE";
 				}
 				else if(rspSuggestion.get() == mspSuggestionB.get())
 				{
-					suggestionField = "left";
+					suggestionField = "LEFT";
 				}
 				else
 				{
-					suggestionField = "right";
+					suggestionField = "RIGHT";
 				}
-				notifyInteraction("HIT_SUGGESTION", suggestionField + "_" + convertUTF16ToUTF8(rspSuggestion->getSuggestion()));
+				notifyInteraction("HIT_SUGGESTION_" + suggestionField, convertUTF16ToUTF8(rspSuggestion->getSuggestion()));
 			}
 		}
 
@@ -376,13 +376,16 @@ namespace eyegui
             }
 
 			// Notify about interaction
+			std::u16string upperId16 = convertUTF8ToUTF16(rspKey->getId());
+			toUpper(upperId16);
+			std::string upperId = convertUTF16ToUTF8(upperId16);
 			if (type == FutureKey::HitType::LETTER)
 			{
-				notifyInteraction("HIT_LETTER", rspKey->getId());
+				notifyInteraction("HIT_LETTER_ON_KEY_" + upperId, "");
 			}
 			if (type == FutureKey::HitType::SUGGESTION)
 			{
-				notifyInteraction("HIT_SUGGESTION_ON_KEY", rspKey->getId() + "_" + convertUTF16ToUTF8(rspKey->getSuggestion()));
+				notifyInteraction("HIT_SUGGESTION_ON_KEY_" + upperId, convertUTF16ToUTF8(rspKey->getSuggestion()));
 			}
 
         } // end of loop over all keys
