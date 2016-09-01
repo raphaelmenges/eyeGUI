@@ -95,6 +95,15 @@ namespace eyegui
 		std::shared_ptr<FutureSuggestion> mspSuggestionA;
 		std::shared_ptr<FutureSuggestion> mspSuggestionB;
 		std::shared_ptr<FutureSuggestion> mspSuggestionC;
+		
+		// Placeholder for lines without suggestions
+		RenderItem const * mpEmptySuggestion;
+		glm::mat4 mEmptySuggestionADrawMatrix;
+		glm::mat4 mEmptySuggestionBDrawMatrix;
+		glm::mat4 mEmptySuggestionCDrawMatrix;
+		glm::mat4 mEmptySuggestionDDrawMatrix;
+		glm::mat4 mEmptySuggestionEDrawMatrix;
+		glm::mat4 mEmptySuggestionFDrawMatrix;
 
         // List of all keys
         std::vector<std::shared_ptr<FutureKey> > mKeyList;
