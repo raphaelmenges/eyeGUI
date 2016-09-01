@@ -220,7 +220,23 @@ namespace eyegui
 				// Tasks
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
 				tasks.insert(Task::LOWER_CASE);
-			}	
+
+				// Notify about interaction
+				std::string suggestionField;
+				if (rspSuggestion.get() == mspSuggestionA.get())
+				{
+					suggestionField = "middle";
+				}
+				else if(rspSuggestion.get() == mspSuggestionB.get())
+				{
+					suggestionField = "left";
+				}
+				else
+				{
+					suggestionField = "right";
+				}
+				notifyInteraction("HIT_SUGGESTION", suggestionField, rspSuggestion->getSuggestion());
+			}
 		}
 
 		// *** UPDATE OF KEYS ***
@@ -358,6 +374,17 @@ namespace eyegui
 				// Set all letters to lower case
 				tasks.insert(Task::LOWER_CASE);
             }
+
+			// Notify about interaction
+			if (type == FutureKey::HitType::LETTER)
+			{
+				notifyInteraction("HIT_LETTER", rspKey->getId());
+			}
+			if (type == FutureKey::HitType::SUGGESTION)
+			{
+				notifyInteraction("HIT_SUGGESTION_ON_KEY", rspKey->getId() + "_" + convertUTF16ToUTF8(rspKey->getSuggestion()));
+			}
+
         } // end of loop over all keys
 
 		// Update last letter on repeat key
@@ -446,6 +473,12 @@ namespace eyegui
 
 		// Update display
 		updateDisplay();
+
+		// Notify about other interactions
+
+		// User enters / leaves display area
+		// User enters / leave key
+		// User enters / leaves suggestion
 
 		return 0.f;
 	}
