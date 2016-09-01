@@ -235,7 +235,7 @@ namespace eyegui
 				{
 					suggestionField = "right";
 				}
-				notifyInteraction("HIT_SUGGESTION", suggestionField, rspSuggestion->getSuggestion());
+				notifyInteraction("HIT_SUGGESTION", suggestionField + "_" + convertUTF16ToUTF8(rspSuggestion->getSuggestion()));
 			}
 		}
 
