@@ -201,6 +201,22 @@ namespace eyegui
             {
                 rConfig.futureKeyboardThresholdDuration = stringToFloat(value);
             }
+			else if (attribute == "future-keyboard-repeat-key-threshold-multiplier")
+			{
+				rConfig.futureKeyboardRepeatKeyThresholdMultiplier = stringToFloat(value);
+			}
+			else if (attribute == "future-keyboard-space-key-threshold-multiplier")
+			{
+				rConfig.futureKeyboardSpaceKeyThresholdMultiplier = stringToFloat(value);
+			}
+			else if (attribute == "future-keyboard-backspace-threshold-multiplier")
+			{
+				rConfig.futureKeyboardBackspaceThresholdMultiplier = stringToFloat(value);
+			}
+			else if (attribute == "future-keyboard-suggestion-line-threshold-multiplier")
+			{
+				rConfig.futureKeyboardSuggestionLineThresholdMultiplier = stringToFloat(value);
+			}
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);

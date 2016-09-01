@@ -59,8 +59,8 @@ namespace eyegui
 		mSuggestionList.push_back(mspSuggestionC);
 
 		// Initialize keys
-        std::function<std::shared_ptr<FutureKey>(std::string, std::u16string, bool, bool)> createFutureKey =
-            [&](std::string id, std::u16string letter, bool showSuggestion, bool ignoreCase)
+        std::function<std::shared_ptr<FutureKey>(std::string, std::u16string, bool, bool, float)> createFutureKey =
+            [&](std::string id, std::u16string letter, bool showSuggestion, bool ignoreCase, float thresholdMultiplier)
             {
                 auto spNewKey = std::shared_ptr<FutureKey>(
                     new FutureKey(
@@ -71,54 +71,55 @@ namespace eyegui
                         0.8f,
                         showSuggestion,
                         KeyboardCase::UPPER,
-                        ignoreCase)); // create new key
+                        ignoreCase,
+						thresholdMultiplier)); // create new key
                 mKeyList.push_back(spNewKey); // save smart pointer to list
                 return spNewKey;
             };
 
         // First row
-        mspQKey = createFutureKey("q", u"Q", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspWKey = createFutureKey("w", u"W", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspEKey = createFutureKey("e", u"E", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspRKey = createFutureKey("r", u"R", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspTKey = createFutureKey("t", u"T", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspYKey = createFutureKey("y", u"Y", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspUKey = createFutureKey("u", u"U", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspIKey = createFutureKey("i", u"I", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspOKey = createFutureKey("o", u"O", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspPKey = createFutureKey("p", u"P", mMode == Mode::SUGGESTION_PER_KEY, false);
+        mspQKey = createFutureKey("q", u"Q", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspWKey = createFutureKey("w", u"W", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspEKey = createFutureKey("e", u"E", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspRKey = createFutureKey("r", u"R", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspTKey = createFutureKey("t", u"T", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspYKey = createFutureKey("y", u"Y", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspUKey = createFutureKey("u", u"U", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspIKey = createFutureKey("i", u"I", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspOKey = createFutureKey("o", u"O", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspPKey = createFutureKey("p", u"P", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
 
         // Second row
-        mspAKey = createFutureKey("a", u"A", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspSKey = createFutureKey("s", u"S", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspDKey = createFutureKey("d", u"D", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspFKey = createFutureKey("f", u"F", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspGKey = createFutureKey("g", u"G", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspHKey = createFutureKey("h", u"H", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspJKey = createFutureKey("j", u"J", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspKKey = createFutureKey("k", u"K", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspLKey = createFutureKey("l", u"L", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspEnterKey = createFutureKey("return", u"\u21AA", false, true);
+        mspAKey = createFutureKey("a", u"A", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspSKey = createFutureKey("s", u"S", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspDKey = createFutureKey("d", u"D", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspFKey = createFutureKey("f", u"F", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspGKey = createFutureKey("g", u"G", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspHKey = createFutureKey("h", u"H", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspJKey = createFutureKey("j", u"J", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspKKey = createFutureKey("k", u"K", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspLKey = createFutureKey("l", u"L", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspEnterKey = createFutureKey("return", u"\u21AA", false, true, 1.f);
 
         // Third row
-        mspZKey = createFutureKey("z", u"Z", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspXKey = createFutureKey("x", u"X", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspCKey = createFutureKey("c", u"C", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspVKey = createFutureKey("v", u"V", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspBKey = createFutureKey("b", u"B", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspNKey = createFutureKey("n", u"N", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspMKey = createFutureKey("m", u"M", mMode == Mode::SUGGESTION_PER_KEY, false);
-        mspBackspaceKey = createFutureKey("backspace", u"\u21A4", false, true);
+        mspZKey = createFutureKey("z", u"Z", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspXKey = createFutureKey("x", u"X", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspCKey = createFutureKey("c", u"C", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspVKey = createFutureKey("v", u"V", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspBKey = createFutureKey("b", u"B", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspNKey = createFutureKey("n", u"N", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspMKey = createFutureKey("m", u"M", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
+        mspBackspaceKey = createFutureKey("backspace", u"\u21A4", false, true, mpLayout->getConfig()->futureKeyboardBackspaceThresholdMultiplier);
 
         // Forth row
-        mspShiftKey = createFutureKey("shift", u"\u2191", false, true);
-        mspRepeatKey = createFutureKey("repeat", u"\u21BA", false, true);
-        mspCommaKey = createFutureKey("comma", u",", false, true);
-        mspSpaceKey = createFutureKey("space", u"\u2423", false, true);
-        mspDotKey = createFutureKey("dot", u".", false, true);
-        mspQuestionKey = createFutureKey("question", u"?", false, true);
-        mspExclamationKey = createFutureKey("exclamation", u"!", false, true);
-        mspColonKey = createFutureKey("colon", u":", false, true);
+        mspShiftKey = createFutureKey("shift", u"\u2191", false, true, 1.f);
+        mspRepeatKey = createFutureKey("repeat", u"\u21BA", false, true, mpLayout->getConfig()->futureKeyboardRepeatKeyThresholdMultiplier);
+        mspCommaKey = createFutureKey("comma", u",", false, true, 1.f);
+        mspSpaceKey = createFutureKey("space", u"\u2423", false, true, mpLayout->getConfig()->futureKeyboardSpaceKeyThresholdMultiplier);
+        mspDotKey = createFutureKey("dot", u".", false, true, 1.f);
+        mspQuestionKey = createFutureKey("question", u"?", false, true, 1.f);
+        mspExclamationKey = createFutureKey("exclamation", u"!", false, true, 1.f);
+        mspColonKey = createFutureKey("colon", u":", false, true, 1.f);
 
         // For first letter, use upper case
         for(auto& rspKey : mKeyList)
