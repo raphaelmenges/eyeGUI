@@ -225,8 +225,8 @@ namespace eyegui
 			if(rspSuggestion->update(tpf, pInput))
 			{
 				// Remember suggestion
-				mCurrentWord = mCurrentWord;
-				mCollectedWords = mCollectedWords;
+				mWordBeforeSuggestion = mCurrentWord;
+				mCollectedWordsBeforeSuggestion = mCollectedWords;
 				mLastWasSuggestion = true;
 
 				// Replace current word with suggestion
@@ -291,8 +291,8 @@ namespace eyegui
             if(type == FutureKey::HitType::SUGGESTION)
             {
 				// Remember suggestion
-				mCurrentWord = mCurrentWord;
-				mCollectedWords = mCollectedWords;
+				mWordBeforeSuggestion = mCurrentWord;
+				mCollectedWordsBeforeSuggestion = mCollectedWords;
 				mLastWasSuggestion = true;
 
 				// Replace current word with suggestion and display it
