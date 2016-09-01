@@ -49,7 +49,6 @@ namespace eyegui
         mCollectedWords = u"";
         mLastLetter = u"";
 		mLastLine = 0;
-		mLastWord = u"";
 
 		// Initialize suggestion line
 		mspSuggestionA = std::shared_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
@@ -215,9 +214,11 @@ namespace eyegui
 		{
 			if(rspSuggestion->update(tpf, pInput))
 			{
-				// Update content
-				mLastWord = mCurrentWord;
-				mCollectedWords.append(rspSuggestion->getSuggestion() + u" ");
+				// Replace current word with suggestion
+				mCurrentWord = rspSuggestion->getSuggestion();
+
+				// Append space to collected and clear current word
+				mCollectedWords.append(mCurrentWord + u" ");
 				mCurrentWord = u"";
 
 				// Tasks
@@ -260,7 +261,6 @@ namespace eyegui
 			&& rspKey->getId() != "dot")
             {
                 // Seems to be standard letter, just add it to content
-				mLastWord = mCurrentWord;
                 mCurrentWord.append(rspKey->getLetter());
 
 				// Remember last letter in lower case
@@ -276,8 +276,10 @@ namespace eyegui
             if(type == FutureKey::HitType::SUGGESTION)
             {
 				// Replace current word with suggestion and display it
-				mLastWord = mCurrentWord;             
-				mCollectedWords.append(rspKey->getSuggestion() + u" ");
+                mCurrentWord = rspKey->getSuggestion();                
+
+				// Append space to collected and clear current word
+				mCollectedWords.append(mCurrentWord + u" ");
 				mCurrentWord = u"";
 
 				// Update all suggestions
@@ -302,7 +304,6 @@ namespace eyegui
 				if ((!content.empty() && (content.back() != compareValue)) || content.empty())
 				{
 					// Append space to content
-					mLastWord = mCurrentWord;
 					mCollectedWords.append(mCurrentWord + u" ");
 					mCurrentWord = u"";
 
@@ -314,11 +315,8 @@ namespace eyegui
             // Dot
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "dot")
             {
-				mLastWord = mCurrentWord;
-                mCollectedWords.append(mCurrentWord + u".");
+                mCollectedWords.append(mCurrentWord + u". ");
                 mCurrentWord = u"";
-
-				// TODO: maybe add space but then how to update last word?
 
 				// Update all suggestions
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
@@ -328,10 +326,9 @@ namespace eyegui
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "backspace")
 			{
                 // Try to delete something from current word
-				mLastWord = mCurrentWord;
                 if(!mCurrentWord.empty())
                 {
-					mCurrentWord = mLastWord;
+					mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
                 }
                 else if(!mCollectedWords.empty())
                 {
@@ -407,7 +404,16 @@ namespace eyegui
 			mspSpaceKey->setInfo(mCurrentWord);
 
 			// Update word on backspace key
-			mspBackspaceKey->setInfo(mLastWord + u"_");
+			if (mCurrentWord.empty())
+			{
+				mspBackspaceKey->setInfo(u"");
+			}
+			else
+			{
+				std::u16string backWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
+				backWord.append(u"_");
+				mspBackspaceKey->setInfo(backWord);
+			}
 		}
 
 		// Execute tasks after updating
@@ -677,9 +683,6 @@ namespace eyegui
 
 		// Reset last line
 		mLastLine = 0;
-
-		// Reset last word
-		mLastWord = u"";
 	}
 
 	void FutureKeyboard::specialInteract()
