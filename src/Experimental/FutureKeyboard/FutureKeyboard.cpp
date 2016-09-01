@@ -112,7 +112,7 @@ namespace eyegui
         mspBKey = createFutureKey("b", u"B", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
         mspNKey = createFutureKey("n", u"N", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
         mspMKey = createFutureKey("m", u"M", mMode == Mode::SUGGESTION_PER_KEY, false, 1.f);
-        mspBackspaceKey = createFutureKey("backspace", u"\u21A4", false, true, mpLayout->getConfig()->futureKeyboardBackspaceThresholdMultiplier);
+		mspBackspaceKey = createFutureKey("backspace", u"\u21A4", false, true, 0.1f); // mpLayout->getConfig()->futureKeyboardBackspaceThresholdMultiplier);
 
         // Forth row
         mspShiftKey = createFutureKey("shift", u"\u2191", false, true, 1.f);
