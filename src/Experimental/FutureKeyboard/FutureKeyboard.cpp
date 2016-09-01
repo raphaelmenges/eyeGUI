@@ -304,12 +304,7 @@ namespace eyegui
 
 				// Update all suggestions
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
-            }
-			else if (type == FutureKey::HitType::LETTER)
-			{
-				// Normal letter typed in, no suggestion
-				mLastWasSuggestion = false;
-			}
+            } 
 
             // *** SPECIAL LETTERS ***
 
@@ -412,6 +407,13 @@ namespace eyegui
 				// Set all letters to lower case
 				if (rspKey->getId() != "shift") { tasks.insert(Task::LOWER_CASE); }
             }
+
+			// When any letter was typed in, forget about undoing last suggestion
+			if (type == FutureKey::HitType::LETTER)
+			{
+				// Normal letter typed in, no suggestion
+				mLastWasSuggestion = false;
+			}
 
 			// Notify about interaction
 			std::u16string upperId16 = convertUTF8ToUTF16(rspKey->getId());
