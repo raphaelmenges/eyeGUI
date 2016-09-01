@@ -40,8 +40,7 @@ namespace eyegui
             float letterScale,
             bool showSuggestion,
             KeyboardCase keyCase = KeyboardCase::UPPER,
-            bool ignoreCase = false,
-			float thresholdMultiplier = 1.f);
+            bool ignoreCase = false);
 
 		// Destructor
 		virtual ~FutureKey();
@@ -52,7 +51,8 @@ namespace eyegui
         // Update, returns whether hit
         virtual HitType update(
 			float tpf,
-			Input const * pInput);
+			Input const * pInput,
+			float thresholdMultiplier = 1.f);
 
 		// Draw
         virtual void draw(
@@ -147,7 +147,6 @@ namespace eyegui
         LerpValue mPressing;
         std::pair<float, std::unique_ptr<TextSimple> > mSuggestionAnimation;
         float mGazeDistanze;
-		float mThresholdMultiplier;
 	};
 }
 

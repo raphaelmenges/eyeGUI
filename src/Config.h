@@ -46,7 +46,7 @@ namespace eyegui
         float futureKeyboardThresholdDuration = 1.f;
 		float futureKeyboardRepeatKeyThresholdMultiplier = 1.f;
 		float futureKeyboardSpaceKeyThresholdMultiplier = 1.f;
-		float futureKeyboardBackspaceThresholdMultiplier = 1.f;
+		float futureKeyboardBackspaceKeyThresholdMultiplier = 1.f;
 		float futureKeyboardSuggestionLineThresholdMultiplier = 1.f;
     };
 }

@@ -209,9 +209,9 @@ namespace eyegui
 			{
 				rConfig.futureKeyboardSpaceKeyThresholdMultiplier = stringToFloat(value);
 			}
-			else if (attribute == "future-keyboard-backspace-threshold-multiplier")
+			else if (attribute == "future-keyboard-backspace-key-threshold-multiplier")
 			{
-				rConfig.futureKeyboardBackspaceThresholdMultiplier = stringToFloat(value);
+				rConfig.futureKeyboardBackspaceKeyThresholdMultiplier = stringToFloat(value);
 			}
 			else if (attribute == "future-keyboard-suggestion-line-threshold-multiplier")
 			{

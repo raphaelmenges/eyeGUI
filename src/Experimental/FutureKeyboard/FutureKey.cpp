@@ -22,8 +22,7 @@ namespace eyegui
         float letterScale,
         bool showSuggestion,
         KeyboardCase keyCase,
-        bool ignoreCase,
-		float thresholdMultiplier)
+        bool ignoreCase)
 	{
 		// Initialize members
 		mX = 0;
@@ -48,7 +47,6 @@ namespace eyegui
         mShowSuggestion = showSuggestion;
         mKeyCase = keyCase;
         mIgnoreCase = ignoreCase;
-		mThresholdMultiplier = thresholdMultiplier;
 
 		// Fetch render items
         mpKeyItem = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
@@ -103,7 +101,8 @@ namespace eyegui
 
     FutureKey::HitType FutureKey::update(
 		float tpf,
-		Input const * pInput)
+		Input const * pInput,
+		float thresholdMultiplier)
 	{
         // Return value
         HitType value = HitType::NONE;
@@ -143,7 +142,7 @@ namespace eyegui
         if(!mDoingSecondThreshold)
         {
             // First threshold
-            mFirstThreshold.update(mThresholdMultiplier * (tpf / mpLayout->getConfig()->futureKeyboardThresholdDuration), !penetrated || (mRetriggerTime > 0.f));
+            mFirstThreshold.update(thresholdMultiplier * (tpf / mpLayout->getConfig()->futureKeyboardThresholdDuration), !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is active should be decreased since second threshold is not ongoing
             mLetterFading.update(-tpf / mpLayout->getConfig()->futureKeyboardRetriggerDelay);
@@ -151,7 +150,7 @@ namespace eyegui
         else
         {
             // Second threshold. But wait for fading of letter! (TODO: adjust threshold time)
-            mSecondThreshold.update(mThresholdMultiplier * (tpf / mpLayout->getConfig()->futureKeyboardThresholdDuration), !penetrated || (mRetriggerTime > 0.f));
+            mSecondThreshold.update(thresholdMultiplier * (tpf / mpLayout->getConfig()->futureKeyboardThresholdDuration), !penetrated || (mRetriggerTime > 0.f));
 
             // Fading of letter when second threshold is ongoing
             mLetterFading.update(tpf / mpLayout->getConfig()->futureKeyboardRetriggerDelay);
