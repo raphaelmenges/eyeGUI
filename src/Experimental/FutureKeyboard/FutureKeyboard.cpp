@@ -511,6 +511,7 @@ namespace eyegui
 				{
 					if (mKeyList.at(i)->getLetter() == mLastLetter)
 					{
+						int oldLastLine = mLastLine;
 						if (i < 10)
 						{
 							mLastLine = 0;
@@ -525,9 +526,12 @@ namespace eyegui
 						}
 
 						// TODO FILTHY! hack that transformation of suggestion line is triggered
-						if (mMode == Mode::MANY_SUGGESTION_LINES)
+						if (mMode == Mode::MANY_SUGGESTION_LINES && oldLastLine != mLastLine)
 						{
 							specialTransformAndSize();
+
+							// Notify about change
+							notifyInteraction("SUGGESTION_LINE_POSITION", std::to_string(mLastLine));
 						}
 
 						break;
@@ -595,10 +599,10 @@ namespace eyegui
 			if (focusCandidate != mLastFocused)
 			{
 				// Tell that something was left
-				if (mLastFocused != "") { notifyInteraction(mLastFocused, "GAZE_LEFT"); }
+				if (mLastFocused != "") { notifyInteraction("GAZE_LEFT", mLastFocused); }
 
 				//  Tell that something was entered
-				if (focusCandidate != "") { notifyInteraction(focusCandidate, "GAZE_ENTERED"); }
+				if (focusCandidate != "") { notifyInteraction("GAZE_ENTERED", focusCandidate); }
 
 				// Save candiate
 				mLastFocused = focusCandidate;
