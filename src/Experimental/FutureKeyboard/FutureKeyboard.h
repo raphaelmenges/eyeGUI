@@ -160,6 +160,10 @@ namespace eyegui
         std::u16string mCollectedWords; // collected words, included spaces
         std::unique_ptr<TextFlow> mupDisplay;
         std::unique_ptr<TextFlow> mupPreDisplay;
+
+		// Interaction logging
+		std::string mLastFocused;
+		int mDisplayLowerBound;
 	};
 }
 

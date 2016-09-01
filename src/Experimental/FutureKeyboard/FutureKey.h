@@ -97,6 +97,12 @@ namespace eyegui
 
 		// Set info text at bottom
 		void setInfo(std::u16string content);
+
+		// Getter
+		int getX() const;
+		int getY() const;
+		int getWidth() const;
+		int getHeight() const;
 		
 	private:
 

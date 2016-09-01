@@ -384,6 +384,26 @@ namespace eyegui
 		mupInfo->setContent(content);
 		transformInfo();
 	}
+
+	int FutureKey::getX() const
+	{
+		return mX;
+	}
+
+	int FutureKey::getY() const
+	{
+		return mY;
+	}
+
+	int FutureKey::getWidth() const
+	{
+		return mWidth;
+	}
+
+	int FutureKey::getHeight() const
+	{
+		return mHeight;
+	}
 	
     void FutureKey::transformLetter()
     {

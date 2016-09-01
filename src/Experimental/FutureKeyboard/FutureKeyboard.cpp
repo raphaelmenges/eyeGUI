@@ -142,6 +142,9 @@ namespace eyegui
 
 		// Placeholder for empty suggestion
 		mpEmptySuggestion = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+
+		// Interaction logging
+		mLastFocused.clear();
 	}
 
 	FutureKeyboard::~FutureKeyboard()
@@ -493,13 +496,13 @@ namespace eyegui
 			case Task::UPDATE_SUGGESTIONS:
 				
 				// Update suggestions
-				for (auto& rspKey : mKeyList)
-				{
-					rspKey->clearSuggestion();
-				}
 				for (auto& rspSuggestion : mSuggestionList)
 				{
 					rspSuggestion->clearSuggestion();
+				}
+				for (auto& rspKey : mKeyList)
+				{
+					rspKey->clearSuggestion();
 				}
 				updateSuggestions();
 
@@ -538,11 +541,69 @@ namespace eyegui
 		// Update display
 		updateDisplay();
 
-		// Notify about other interactions
+		// *** INTERACTION LOGGING ***
+		if (pInput != NULL) // TODO gaze used?
+		{
+			// Candiate
+			std::string focusCandidate = "";
 
-		// User enters / leaves display area
-		// User enters / leave key
-		// User enters / leaves suggestion
+			// Go over suggestion line
+			if (pInput->gazeX >= mspSuggestionA->getX()
+				&& pInput->gazeX < mspSuggestionA->getX() + mspSuggestionA->getWidth()
+				&& pInput->gazeY >= mspSuggestionA->getY()
+				&& pInput->gazeY < mspSuggestionA->getY() + mspSuggestionA->getHeight())
+			{
+				focusCandidate = "SUGGESTION_A";
+			}
+			if (pInput->gazeX >= mspSuggestionB->getX()
+				&& pInput->gazeX < mspSuggestionB->getX() + mspSuggestionB->getWidth()
+				&& pInput->gazeY >= mspSuggestionB->getY()
+				&& pInput->gazeY < mspSuggestionB->getY() + mspSuggestionB->getHeight())
+			{
+				focusCandidate = "SUGGESTION_B";
+			}
+			if (pInput->gazeX >= mspSuggestionC->getX()
+				&& pInput->gazeX < mspSuggestionC->getX() + mspSuggestionC->getWidth()
+				&& pInput->gazeY >= mspSuggestionC->getY()
+				&& pInput->gazeY < mspSuggestionC->getY() + mspSuggestionC->getHeight())
+			{
+				focusCandidate = "SUGGESTION_C";
+			}
+
+			// Go over keys
+			for (const auto& rspKey : mKeyList)
+			{
+				if (pInput->gazeX >= rspKey->getX()
+					&& pInput->gazeX < rspKey->getX() + rspKey->getWidth()
+					&& pInput->gazeY >= rspKey->getY()
+					&& pInput->gazeY < rspKey->getY() + rspKey->getHeight())
+				{
+					std::u16string upperId16 = convertUTF8ToUTF16(rspKey->getId());
+					toUpper(upperId16);
+					std::string upperId = convertUTF16ToUTF8(upperId16);
+					focusCandidate = "KEY_" + upperId;
+				}
+			}
+
+			// Check for focus over display
+			if (pInput->gazeY < mDisplayLowerBound)
+			{
+				focusCandidate = "DISPLAY";
+			}
+
+			// Check, whether focus has changed
+			if (focusCandidate != mLastFocused)
+			{
+				// Tell that something was left
+				if (mLastFocused != "") { notifyInteraction(mLastFocused, "GAZE_LEFT"); }
+
+				//  Tell that something was entered
+				if (focusCandidate != "") { notifyInteraction(focusCandidate, "GAZE_ENTERED"); }
+
+				// Save candiate
+				mLastFocused = focusCandidate;
+			}
+		}
 
 		return 0.f;
 	}
@@ -611,6 +672,9 @@ namespace eyegui
 		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.03f * mHeight)  : (int)(mY + 0.1f * mHeight);
 		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.225f * mHeight) : (int)(0.4f * mHeight);
 		int suggestionOffsetY = keyOffsetY - keySpace - suggestionHeight;
+
+		// Save lower bound of display to determine at interaction logging when gaze is upon it
+		mDisplayLowerBound = displayY + displayHeight;
 
 		// Move suggestion to the correct line
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
@@ -745,6 +809,9 @@ namespace eyegui
 		mLastWasSuggestion = false;
 		mWordBeforeSuggestion = u"";
 		mCollectedWordsBeforeSuggestion = u"";
+
+		// Interaction logging
+		mLastFocused.clear();
 	}
 
 	void FutureKeyboard::specialInteract()

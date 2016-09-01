@@ -196,6 +196,26 @@ namespace eyegui
 		setSuggestion(u"");
 	}
 
+	int FutureSuggestion::getX() const
+	{
+		return mX;
+	}
+
+	int FutureSuggestion::getY() const
+	{
+		return mY;
+	}
+
+	int FutureSuggestion::getWidth() const
+	{
+		return mWidth;
+	}
+
+	int FutureSuggestion::getHeight() const
+	{
+		return mHeight;
+	}
+
     void FutureSuggestion::transformSuggestion()
     {
         mupSuggestion->transform(); // has to be called first to calculate width and height

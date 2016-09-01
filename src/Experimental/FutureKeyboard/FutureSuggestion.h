@@ -62,6 +62,12 @@ namespace eyegui
 		// Clear suggestion
 		void clearSuggestion();
 		
+		// Getter
+		int getX() const;
+		int getY() const;
+		int getWidth() const;
+		int getHeight() const;
+
 	private:
 
         // Update suggestion position
