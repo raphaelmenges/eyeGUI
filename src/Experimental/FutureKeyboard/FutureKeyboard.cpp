@@ -492,7 +492,11 @@ namespace eyegui
 		for (const auto& rspSuggestion : mSuggestionList)
 		{
 			rspSuggestion->draw(
-				getStyle()->color,
+				glm::vec4(
+					getStyle()->color.r * 0.5f,
+					getStyle()->color.g * 0.5f,
+					getStyle()->color.b * 0.5f,
+					getStyle()->color.a), // just made suggestions darker than keys
 				getStyle()->fontColor,
 				getStyle()->thresholdColor,
 				getMultipliedDimmedAlpha());
