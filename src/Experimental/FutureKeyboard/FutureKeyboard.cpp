@@ -372,7 +372,7 @@ namespace eyegui
                 }
 
 				// Set all letters to lower case
-				tasks.insert(Task::LOWER_CASE);
+				if (rspKey->getId() != "shift") { tasks.insert(Task::LOWER_CASE); }
             }
 
 			// Notify about interaction
