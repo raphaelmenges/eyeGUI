@@ -192,6 +192,9 @@ namespace eyegui
 
 		// Update suggestions
 		updateSuggestions();
+
+		// Notify about interaction
+		notifyInteraction("NEXT_SENTENCE", convertUTF16ToUTF8(sentence));
 	}
 
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)

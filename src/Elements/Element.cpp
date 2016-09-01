@@ -183,6 +183,9 @@ namespace eyegui
             return "PROGRESS_BAR"; break;
 		case Type::TEXT_EDIT:
 			return "TEXT_EDIT"; break;
+		// Experimental
+		case Type::FUTURE_KEYBOARD:
+			return "FUTURE_KEYBOARD"; break;
         default:
             OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::BUG, "Element type to string not available.");
             return "UNDEFINED";
@@ -544,7 +547,9 @@ namespace eyegui
         || mType == Type::KEYBOARD
         || mType == Type::WORD_SUGGEST
         || mType == Type::PICTURE
-		|| mType == Type::TEXT_EDIT))
+		|| mType == Type::TEXT_EDIT
+		// Experimentals
+		|| mType == Type::FUTURE_KEYBOARD))
         {
             this->notifyInteraction(
                 penetrated ? "ENTER_ELEMENT" : "LEAVE_ELEMENT");
