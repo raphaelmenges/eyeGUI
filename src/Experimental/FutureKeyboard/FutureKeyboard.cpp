@@ -49,6 +49,9 @@ namespace eyegui
         mCollectedWords = u"";
         mLastLetter = u"";
 		mLastLine = 0;
+		mLastWasSuggestion = false;
+		mWordBeforeSuggestion = u"";
+		mCollectedWordsBeforeSuggestion = u"";
 
 		// Initialize suggestion line
 		mspSuggestionA = std::shared_ptr<FutureSuggestion>(new FutureSuggestion(mpLayout, mpAssetManager, 1.f));
@@ -174,10 +177,17 @@ namespace eyegui
 
 	void FutureKeyboard::nextSentence(std::u16string sentence)
 	{
+		// TODO: why cannot be called reset here?
+
 		// Setup display
 		mCurrentWord.clear();
 		mCollectedWords.clear();
 		mupPreDisplay->setContent(sentence);
+
+		// Reset undo stuff
+		mLastWasSuggestion = false;
+		mWordBeforeSuggestion = u"";
+		mCollectedWordsBeforeSuggestion = u"";
 
 		// Setup suggestion line
 		for (auto& rspSuggestion : mSuggestionList)
@@ -214,6 +224,11 @@ namespace eyegui
 		{
 			if(rspSuggestion->update(tpf, pInput))
 			{
+				// Remember suggestion
+				mCurrentWord = mCurrentWord;
+				mCollectedWords = mCollectedWords;
+				mLastWasSuggestion = true;
+
 				// Replace current word with suggestion
 				mCurrentWord = rspSuggestion->getSuggestion();
 
@@ -275,6 +290,11 @@ namespace eyegui
             // *** SUGGESTIONS ***
             if(type == FutureKey::HitType::SUGGESTION)
             {
+				// Remember suggestion
+				mCurrentWord = mCurrentWord;
+				mCollectedWords = mCollectedWords;
+				mLastWasSuggestion = true;
+
 				// Replace current word with suggestion and display it
                 mCurrentWord = rspKey->getSuggestion();                
 
@@ -285,6 +305,11 @@ namespace eyegui
 				// Update all suggestions
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
+			else if (type == FutureKey::HitType::LETTER)
+			{
+				// Normal letter typed in, no suggestion
+				mLastWasSuggestion = false;
+			}
 
             // *** SPECIAL LETTERS ***
 
@@ -325,31 +350,40 @@ namespace eyegui
             // Backspace
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "backspace")
 			{
-                // Try to delete something from current word
-                if(!mCurrentWord.empty())
-                {
-					mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
-                }
-                else if(!mCollectedWords.empty())
-                {
-					mCollectedWords = mCollectedWords.substr(0, mCollectedWords.size() - 1);
-
-					// Try to get last word from collected words and set it as current word
-					if (!mCollectedWords.empty())
+				// When last was suggestion, try to undo it
+				if (mLastWasSuggestion)
+				{
+					mCurrentWord = mWordBeforeSuggestion;
+					mCollectedWords = mCollectedWordsBeforeSuggestion;
+				}
+				else
+				{
+					// Try to delete something from current word
+					if(!mCurrentWord.empty())
 					{
-						// Go through words in collected
-						std::u16string delimiter = u" ";
-						size_t pos = 0;
-						std::u16string copyCollectedWords = mCollectedWords;
-						mCollectedWords = u"";
-						while ((pos = copyCollectedWords.find(delimiter)) != std::u16string::npos)
-						{
-							mCollectedWords.append(copyCollectedWords.substr(0, pos) + u" "); // would have probably problems with mutliple spaces
-							copyCollectedWords.erase(0, pos + delimiter.length());
-						}
-						mCurrentWord = copyCollectedWords;
+						mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
 					}
-                }
+					else if(!mCollectedWords.empty())
+					{
+						mCollectedWords = mCollectedWords.substr(0, mCollectedWords.size() - 1);
+
+						// Try to get last word from collected words and set it as current word
+						if (!mCollectedWords.empty())
+						{
+							// Go through words in collected
+							std::u16string delimiter = u" ";
+							size_t pos = 0;
+							std::u16string copyCollectedWords = mCollectedWords;
+							mCollectedWords = u"";
+							while ((pos = copyCollectedWords.find(delimiter)) != std::u16string::npos)
+							{
+								mCollectedWords.append(copyCollectedWords.substr(0, pos) + u" "); // would have probably problems with mutliple spaces
+								copyCollectedWords.erase(0, pos + delimiter.length());
+							}
+							mCurrentWord = copyCollectedWords;
+						}
+					}
+				}
 
 				// Update all suggestions
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
@@ -404,15 +438,22 @@ namespace eyegui
 			mspSpaceKey->setInfo(mCurrentWord);
 
 			// Update word on backspace key
-			if (mCurrentWord.empty())
+			if (mLastWasSuggestion)
 			{
-				mspBackspaceKey->setInfo(u"");
+				mspBackspaceKey->setInfo(mWordBeforeSuggestion + u"_");
 			}
 			else
 			{
-				std::u16string backWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
-				backWord.append(u"_");
-				mspBackspaceKey->setInfo(backWord);
+				if (mCurrentWord.empty())
+				{
+					mspBackspaceKey->setInfo(u"");
+				}
+				else
+				{
+					std::u16string backWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
+					backWord.append(u"_");
+					mspBackspaceKey->setInfo(backWord);
+				}
 			}
 		}
 
@@ -683,6 +724,11 @@ namespace eyegui
 
 		// Reset last line
 		mLastLine = 0;
+
+		// Undo of suggestions
+		mLastWasSuggestion = false;
+		mWordBeforeSuggestion = u"";
+		mCollectedWordsBeforeSuggestion = u"";
 	}
 
 	void FutureKeyboard::specialInteract()
