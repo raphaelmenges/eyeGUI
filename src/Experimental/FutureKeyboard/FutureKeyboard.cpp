@@ -417,16 +417,16 @@ namespace eyegui
 		{
 			switch (task)
 			{
-			case Task::TOGGLE_CASE:
-				for (auto& rspKey : mKeyList)
-				{
-					rspKey->toggleCase();
-				}
-				break;
 			case Task::LOWER_CASE:
 				for (auto& rspKey : mKeyList)
 				{
 					rspKey->setCase(eyegui::KeyboardCase::LOWER);
+				}
+				break;
+			case Task::TOGGLE_CASE: // executing toggle case after lower case does the trick with shift being a key but also toggling case
+				for (auto& rspKey : mKeyList)
+				{
+					rspKey->toggleCase();
 				}
 				break;
 			case Task::UPDATE_SUGGESTIONS:
