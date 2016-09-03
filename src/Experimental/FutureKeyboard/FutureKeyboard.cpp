@@ -450,7 +450,7 @@ namespace eyegui
 			// Update word on backspace key
 			if (mCurrentWord.empty())
 			{
-				mspBackspaceKey->setInfo(u"");
+				mspBackspaceKey->setInfo(u"_");
 			}
 			else
 			{
@@ -648,26 +648,36 @@ namespace eyegui
 
 	void FutureKeyboard::specialTransformAndSize()
 	{
-		// Pure madness is following
+		// Display is independend from everything else
+		int displayX = (int)(mX + 0.05f * mWidth);
+		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.03f * mHeight) : (int)(mY + 0.1f * mHeight);
+		int displayHeight = (int)(0.175f * mHeight);
+		mDisplayLowerBound = displayY + displayHeight; // save lower bound of display to determine at interaction logging when gaze is upon it
+
+		// Values for keys
 		int keyWidth = (int)(0.09f * mWidth);
 		int keyHeight = (int)(0.125f * mHeight);
 		int keySpace = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.005f * mWidth) : (int)(0.01f * mWidth);
-		int xOffset = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
-		int suggestionWidth = (int)((mWidth - ((2.f * xOffset) + (2.f * keySpace))) / 3.f);
-		int suggestionHeight = (int)(0.1f * mHeight);
-		int displayHeight = (int)(0.175f * mHeight);
-		int displayX = (int)(mX + 0.05f * mWidth);
-		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.03f * mHeight)  : (int)(mY + 0.1f * mHeight);
-		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.225f * mHeight) : (int)(0.4f * mHeight);
-		int suggestionOffsetY = keyOffsetY - keySpace - suggestionHeight;
+		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.225f * mHeight) : (int)(0.4f * mHeight); // defines where keys star
 
-		// Save lower bound of display to determine at interaction logging when gaze is upon it
-		mDisplayLowerBound = displayY + displayHeight;
+		// Offset for suggestions and keys to start
+		int xMargin = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
+
+		// Values for suggestion line
+		int suggestionWidth = (int)((mWidth - ((2.f * xMargin) + (2.f * keySpace))) / 3.f);
+		int suggestionHeight = (int)(0.1f * mHeight);
+		int suggestionOffsetY = keyOffsetY - keySpace - suggestionHeight;
 
 		// Move suggestion to the correct line
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
 		{
+			// Move it depending from last line
 			suggestionOffsetY += mLastLine * (suggestionHeight + (2 * keySpace) + keyHeight);
+		}
+		else
+		{
+			// Move suggestion line a little bit up to improve selection by user
+			suggestionOffsetY -= mHeight * 0.025f;
 		}
 
 		// Position empty suggestion placeholders
@@ -676,25 +686,25 @@ namespace eyegui
 			// Prepare some values
 			int lW = mpLayout->getLayoutWidth();
 			int lH = mpLayout->getLayoutHeight();
-			int x1 = xOffset + mX;
-			int x2 = xOffset + mX + suggestionWidth + keySpace;
-			int x3 = xOffset + mX + (2 * suggestionWidth) + (2 * keySpace);
+			int x1 = xMargin + mX;
+			int x2 = xMargin + mX + suggestionWidth + keySpace;
+			int x3 = xMargin + mX + (2 * suggestionWidth) + (2 * keySpace);
 			int initialY = keyOffsetY - keySpace - suggestionHeight;
 			int firstY, secondY;
 
 			if (mLastLine == 0)
 			{
-				firstY = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
+				firstY  = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
 				secondY = initialY + 2 * (suggestionHeight + (2 * keySpace) + keyHeight);
 			}
 			else if (mLastLine == 1)
 			{
-				firstY = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
+				firstY  = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
 				secondY = initialY + 2 * (suggestionHeight + (2 * keySpace) + keyHeight);
 			}
 			else
 			{
-				firstY = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
+				firstY  = initialY + 0 * (suggestionHeight + (2 * keySpace) + keyHeight);
 				secondY = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
 			}
 
@@ -713,59 +723,59 @@ namespace eyegui
 		mupPreDisplay->transformAndSize(displayX, displayY, mWidth, displayHeight);
 
 		// Transform and size suggestions (put a in the middle)
-		mspSuggestionB->transformAndSize(xOffset + mX, suggestionOffsetY, suggestionWidth, suggestionHeight);
-		mspSuggestionA->transformAndSize(xOffset + mX + suggestionWidth + keySpace, suggestionOffsetY, suggestionWidth, suggestionHeight);
-		mspSuggestionC->transformAndSize(xOffset + mX + (2 * suggestionWidth) + (2 * keySpace), suggestionOffsetY, suggestionWidth, suggestionHeight);
+		mspSuggestionB->transformAndSize(xMargin + mX, suggestionOffsetY, suggestionWidth, suggestionHeight);
+		mspSuggestionA->transformAndSize(xMargin + mX + suggestionWidth + keySpace, suggestionOffsetY, suggestionWidth, suggestionHeight);
+		mspSuggestionC->transformAndSize(xMargin + mX + (2 * suggestionWidth) + (2 * keySpace), suggestionOffsetY, suggestionWidth, suggestionHeight);
 
         // First row
-        mspQKey->transformAndSize(xOffset + mX,                               keyOffsetY + mY, keyWidth, keyHeight);
-        mspWKey->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspEKey->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspRKey->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspTKey->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspYKey->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspUKey->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspIKey->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspOKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
-        mspPKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspQKey->transformAndSize(xMargin + mX,                               keyOffsetY + mY, keyWidth, keyHeight);
+        mspWKey->transformAndSize(xMargin + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspEKey->transformAndSize(xMargin + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspRKey->transformAndSize(xMargin + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspTKey->transformAndSize(xMargin + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspYKey->transformAndSize(xMargin + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspUKey->transformAndSize(xMargin + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspIKey->transformAndSize(xMargin + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspOKey->transformAndSize(xMargin + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
+        mspPKey->transformAndSize(xMargin + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY, keyWidth, keyHeight);
 
 		// Adapt key offset
 		if (mMode == Mode::MANY_SUGGESTION_LINES) { keyOffsetY += suggestionHeight + keySpace; }
 
         // Second row
-        mspAKey    ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspSKey    ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspDKey    ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspFKey    ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspGKey    ->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspHKey    ->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspJKey    ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspKKey    ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspLKey    ->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
-        mspEnterKey->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspAKey    ->transformAndSize(xMargin + mX,                               keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspSKey    ->transformAndSize(xMargin + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspDKey    ->transformAndSize(xMargin + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspFKey    ->transformAndSize(xMargin + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspGKey    ->transformAndSize(xMargin + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspHKey    ->transformAndSize(xMargin + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspJKey    ->transformAndSize(xMargin + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspKKey    ->transformAndSize(xMargin + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspLKey    ->transformAndSize(xMargin + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
+        mspEnterKey->transformAndSize(xMargin + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + keyHeight + keySpace, keyWidth, keyHeight);
 
 		// Adapt key offset
 		if (mMode == Mode::MANY_SUGGESTION_LINES) { keyOffsetY += suggestionHeight + keySpace; }
 
         // Third row
-        mspZKey        ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspXKey        ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspCKey        ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspVKey        ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspBKey        ->transformAndSize(xOffset + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspNKey        ->transformAndSize(xOffset + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspMKey        ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspBackspaceKey->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
+        mspZKey        ->transformAndSize(xMargin + mX,                               keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspXKey        ->transformAndSize(xMargin + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspCKey        ->transformAndSize(xMargin + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspVKey        ->transformAndSize(xMargin + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspBKey        ->transformAndSize(xMargin + mX + (4 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspNKey        ->transformAndSize(xMargin + mX + (5 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspMKey        ->transformAndSize(xMargin + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspBackspaceKey->transformAndSize(xMargin + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + (2 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
 
         // Forth row
-        mspShiftKey      ->transformAndSize(xOffset + mX,                               keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspRepeatKey     ->transformAndSize(xOffset + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspCommaKey      ->transformAndSize(xOffset + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspSpaceKey      ->transformAndSize(xOffset + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
-        mspDotKey        ->transformAndSize(xOffset + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspQuestionKey   ->transformAndSize(xOffset + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspExclamationKey->transformAndSize(xOffset + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
-        mspColonKey      ->transformAndSize(xOffset + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspShiftKey      ->transformAndSize(xMargin + mX,                               keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspRepeatKey     ->transformAndSize(xMargin + mX + (1 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspCommaKey      ->transformAndSize(xMargin + mX + (2 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspSpaceKey      ->transformAndSize(xMargin + mX + (3 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), (3 * keyWidth) + (2 * keySpace), keyHeight);
+        mspDotKey        ->transformAndSize(xMargin + mX + (6 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspQuestionKey   ->transformAndSize(xMargin + mX + (7 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspExclamationKey->transformAndSize(xMargin + mX + (8 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
+        mspColonKey      ->transformAndSize(xMargin + mX + (9 * (keyWidth + keySpace)), keyOffsetY + mY + (3 * (keyHeight + keySpace)), keyWidth,                        keyHeight);
 	}
 
 	void FutureKeyboard::specialReset()
