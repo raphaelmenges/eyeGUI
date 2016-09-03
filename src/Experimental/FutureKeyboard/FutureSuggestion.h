@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Simple suggestion block.
 
 #ifndef FUTURE_SUGGESTION_H_
 #define FUTURE_SUGGESTION_H_

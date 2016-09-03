@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Implementation of different keyboard approaches.
 
 #ifndef FUTURE_KEYBOARD_H_
 #define FUTURE_KEYBOARD_H_
@@ -83,6 +83,9 @@ namespace eyegui
 		// Build content
 		std::u16string buildContent() const;
 
+		// Clear which is used by reset and nextSentence method
+		void clear();
+
 		// Members
         Mode mMode;
         std::u16string mLastLetter;
@@ -157,12 +160,12 @@ namespace eyegui
 
         // Display for text
         std::u16string mCurrentWord; // current word, no spaces included
-        std::u16string mCollectedWords; // collected words, included spaces
+        std::u16string mCollectedWords; // collected words, includes spaces
         std::unique_ptr<TextFlow> mupDisplay;
         std::unique_ptr<TextFlow> mupPreDisplay;
 
 		// Interaction logging
-		std::string mLastFocused;
+		std::string mLastFocused; // encode last focused as string
 		int mDisplayLowerBound;
 	};
 }

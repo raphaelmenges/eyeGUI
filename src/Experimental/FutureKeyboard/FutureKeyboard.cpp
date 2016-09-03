@@ -134,7 +134,7 @@ namespace eyegui
         mupDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
 		updateDisplay();
 
-        // Pre display
+        // Pre display which previews words which should be typed in by subject
         mupPreDisplay = mpAssetManager->createTextFlow(FontSize::MEDIUM, TextFlowAlignment::LEFT, TextFlowVerticalAlignment::TOP);
 
 		// Ask initially for suggestions
@@ -161,7 +161,7 @@ namespace eyegui
 
     void FutureKeyboard::setKeySuggestion(std::string keyId, std::u16string suggestion)
     {
-        // Search for key
+        // Search for key with linear search. Map would be nice but performance is no problem here
         for(auto& rspKey : mKeyList)
         {
             if(rspKey->getId() == keyId)
@@ -179,17 +179,8 @@ namespace eyegui
 
 	void FutureKeyboard::nextSentence(std::u16string sentence)
 	{
-		// TODO: why cannot be called reset here?
-
-		// Setup display
-		mCurrentWord.clear();
-		mCollectedWords.clear();
-		mupPreDisplay->setContent(sentence);
-
-		// Reset undo stuff
-		mLastWasSuggestion = false;
-		mWordBeforeSuggestion = u"";
-		mCollectedWordsBeforeSuggestion = u"";
+		// Clear
+		clear();
 
 		// Setup suggestion line
 		for (auto& rspSuggestion : mSuggestionList)
@@ -204,6 +195,7 @@ namespace eyegui
 		}
 
 		// Update display
+		mupPreDisplay->setContent(sentence);
 		updateDisplay();
 
 		// Update suggestions
@@ -224,6 +216,7 @@ namespace eyegui
 		// Update suggestions
 		for (auto& rspSuggestion : mSuggestionList)
 		{
+			// Check whether suggestion was hit
 			if(rspSuggestion->update(tpf, pInput))
 			{
 				// Remember suggestion
@@ -231,11 +224,8 @@ namespace eyegui
 				mCollectedWordsBeforeSuggestion = mCollectedWords;
 				mLastWasSuggestion = true;
 
-				// Replace current word with suggestion
-				mCurrentWord = rspSuggestion->getSuggestion();
-
-				// Append space to collected and clear current word
-				mCollectedWords.append(mCurrentWord + u" ");
+				// Update collected words
+				mCollectedWords.append(rspSuggestion->getSuggestion() + u" ");
 				mCurrentWord = u"";
 
 				// Tasks
@@ -298,7 +288,7 @@ namespace eyegui
 				// Remember last letter in lower case
 				std::u16string lowerLastLetter = rspKey->getLetter();
 				toLower(lowerLastLetter);
-                mLastLetter = lowerLastLetter; // remember last letter for repeating
+                mLastLetter = lowerLastLetter; // remember last letter for repeat key
 
 				// Make new suggestions
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
@@ -312,11 +302,8 @@ namespace eyegui
 				mCollectedWordsBeforeSuggestion = mCollectedWords;
 				mLastWasSuggestion = true;
 
-				// Replace current word with suggestion and display it
-                mCurrentWord = rspKey->getSuggestion();                
-
-				// Append space to collected and clear current word
-				mCollectedWords.append(mCurrentWord + u" ");
+				// Update collected words
+				mCollectedWords.append(rspKey->getSuggestion() + u" ");
 				mCurrentWord = u"";
 
 				// Update all suggestions
@@ -325,13 +312,13 @@ namespace eyegui
 
             // *** SPECIAL LETTERS ***
 
-			// Shift
+			// ### Shift
 			if (type == FutureKey::HitType::LETTER && rspKey->getId() == "shift")
 			{
 				tasks.insert(Task::TOGGLE_CASE);
 			}
 
-            // Space
+            // ### Space
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "space")
             {
 				// Since TextFlow is at the moment not capable to display more
@@ -349,7 +336,7 @@ namespace eyegui
 				}
             }
 
-            // Dot
+            // ### Dot
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "dot")
             {
                 mCollectedWords.append(mCurrentWord + u". ");
@@ -359,7 +346,7 @@ namespace eyegui
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
 
-            // Backspace
+            // ### Backspace
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "backspace")
 			{
 				// Try to delete something from current word
@@ -392,7 +379,7 @@ namespace eyegui
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
 
-            // Repeat
+            // ### Repeat
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "repeat")
             {
                 mCurrentWord.append(mLastLetter);
@@ -400,6 +387,8 @@ namespace eyegui
 				// Update all suggestions
 				tasks.insert(Task::UPDATE_SUGGESTIONS);
             }
+
+			// *** OTHER ***
 
             // Reset second threshold of all but current one
             if(type != FutureKey::HitType::NONE)
@@ -412,7 +401,7 @@ namespace eyegui
                     }
                 }
 
-				// Set all letters to lower case
+				// (Re-)set all letters to lower case
 				if (rspKey->getId() != "shift") { tasks.insert(Task::LOWER_CASE); }
             }
 
@@ -438,6 +427,8 @@ namespace eyegui
 
         } // end of loop over all keys
 
+		// *** SET INFORMATION ***
+
 		// Update last letter on repeat key
 		mspRepeatKey->setInfo(mLastLetter);
 
@@ -460,6 +451,8 @@ namespace eyegui
 			}
 		}
 
+		// *** TASKS ***
+
 		// Execute tasks after updating
 		for (auto task : tasks)
 		{
@@ -471,7 +464,7 @@ namespace eyegui
 					rspKey->setCase(eyegui::KeyboardCase::LOWER);
 				}
 				break;
-			case Task::TOGGLE_CASE: // executing toggle case after lower case does the trick with shift being a key but also toggling case
+			case Task::TOGGLE_CASE:
 				for (auto& rspKey : mKeyList)
 				{
 					rspKey->toggleCase();
@@ -526,11 +519,13 @@ namespace eyegui
 			}
 		}
 
+		// *** OTHER UPDATES ***
+
 		// Update display
 		updateDisplay();
 
 		// *** INTERACTION LOGGING ***
-		if (pInput != NULL) // TODO gaze used?
+		if (pInput != NULL && !pInput->gazeUsed)
 		{
 			// Candiate
 			std::string focusCandidate = "";
@@ -583,10 +578,10 @@ namespace eyegui
 			if (focusCandidate != mLastFocused)
 			{
 				// Tell that something was left
-				if (mLastFocused != "") { notifyInteraction("GAZE_LEFT", mLastFocused); }
+				if (!mLastFocused.empty()) { notifyInteraction("GAZE_LEFT", mLastFocused); }
 
 				//  Tell that something was entered
-				if (focusCandidate != "") { notifyInteraction("GAZE_ENTERED", focusCandidate); }
+				if (!focusCandidate.empty()) { notifyInteraction("GAZE_ENTERED", focusCandidate); }
 
 				// Save candiate
 				mLastFocused = focusCandidate;
@@ -707,9 +702,9 @@ namespace eyegui
 				secondY = initialY + 1 * (suggestionHeight + (2 * keySpace) + keyHeight);
 			}
 
-			mEmptySuggestionADrawMatrix = calculateDrawMatrix(lW, lH, x1, firstY, suggestionWidth, suggestionHeight);
-			mEmptySuggestionBDrawMatrix = calculateDrawMatrix(lW, lH, x2, firstY, suggestionWidth, suggestionHeight);
-			mEmptySuggestionCDrawMatrix = calculateDrawMatrix(lW, lH, x3, firstY, suggestionWidth, suggestionHeight);
+			mEmptySuggestionADrawMatrix = calculateDrawMatrix(lW, lH, x1, firstY,  suggestionWidth, suggestionHeight);
+			mEmptySuggestionBDrawMatrix = calculateDrawMatrix(lW, lH, x2, firstY,  suggestionWidth, suggestionHeight);
+			mEmptySuggestionCDrawMatrix = calculateDrawMatrix(lW, lH, x3, firstY,  suggestionWidth, suggestionHeight);
 			mEmptySuggestionDDrawMatrix = calculateDrawMatrix(lW, lH, x1, secondY, suggestionWidth, suggestionHeight);
 			mEmptySuggestionEDrawMatrix = calculateDrawMatrix(lW, lH, x2, secondY, suggestionWidth, suggestionHeight);
 			mEmptySuggestionFDrawMatrix = calculateDrawMatrix(lW, lH, x3, secondY, suggestionWidth, suggestionHeight);
@@ -779,9 +774,8 @@ namespace eyegui
 
 	void FutureKeyboard::specialReset()
 	{
-		// Reset content
-		mCurrentWord.clear();
-		mCollectedWords.clear();
+		// Clear
+		clear();
 
 		// Go over suggestions and reset them
 		for (const auto& rspSuggestion : mSuggestionList)
@@ -799,21 +793,13 @@ namespace eyegui
 		mLastLetter = u"";
 		mspRepeatKey->setInfo(mLastLetter);
 
-		// Reset last line
-		mLastLine = 0;
-
-		// Undo of suggestions
-		mLastWasSuggestion = false;
-		mWordBeforeSuggestion = u"";
-		mCollectedWordsBeforeSuggestion = u"";
-
 		// Interaction logging
 		mLastFocused.clear();
 	}
 
 	void FutureKeyboard::specialInteract()
 	{
-
+		// TODO but not necessary since experimental
 	}
 
 	void FutureKeyboard::specialPipeNotification(NotificationType notification, Layout* pLayout)
@@ -867,5 +853,20 @@ namespace eyegui
 	std::u16string FutureKeyboard::buildContent() const
 	{
 		return mCollectedWords + mCurrentWord;
+	}
+
+	void FutureKeyboard::clear()
+	{
+		// Setup display
+		mCurrentWord.clear();
+		mCollectedWords.clear();
+
+		// Reset undo stuff
+		mLastWasSuggestion = false;
+		mWordBeforeSuggestion = u"";
+		mCollectedWordsBeforeSuggestion = u"";
+
+		// Reset last line
+		mLastLine = 0;
 	}
 }

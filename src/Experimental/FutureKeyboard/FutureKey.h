@@ -4,7 +4,8 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Keyboard key with optional field for suggestion which is activated by ext-
+// ended threshold.
 
 #ifndef FUTURE_KEY_H_
 #define FUTURE_KEY_H_
@@ -137,7 +138,7 @@ namespace eyegui
         KeyboardCase mKeyCase;
         bool mIgnoreCase;
         RenderItem const * mpKeyItem;
-        RenderItem const * mpBackgroundItem; // that' REALLY hacky because background is bigger then elements extend
+        RenderItem const * mpBackgroundItem; // that's REALLY hacky because background is bigger then elements extend
         RenderItem const * mpSuggestionBackgroundItem;
 		RenderItem const * mpThresholdItem;
         glm::mat4 mSuggestionBackgroundDrawMatrix;

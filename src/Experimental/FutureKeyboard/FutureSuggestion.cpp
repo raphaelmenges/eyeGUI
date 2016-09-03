@@ -43,7 +43,7 @@ namespace eyegui
 
 	FutureSuggestion::~FutureSuggestion()
 	{
-
+		// Nothing to do here
 	}
 
 	void FutureSuggestion::transformAndSize(int x, int y, int width, int height)
@@ -92,6 +92,7 @@ namespace eyegui
 			!penetrated || (mRetriggerTime > 0.f) || mupSuggestion->getContent().empty());
         if(mThreshold.getValue() >= 1.f)
         {
+			// Threshold is full, so react
 			mThreshold.setValue(0.f);
             hit = true;
             mPressing.setValue(1.f);
@@ -147,8 +148,6 @@ namespace eyegui
         }
    
         // *** DRAW THRESHOLD ***
-
-		// Calculate draw matrix for threshold
         int thresholdSize = (int)(glm::sqrt((mWidth * mWidth) + (mHeight * mHeight)));
         int thresholdX = mX - (int)((thresholdSize - mWidth) / 2.f);
         int thresholdY = mY - (int)((thresholdSize - mHeight) / 2.f);
