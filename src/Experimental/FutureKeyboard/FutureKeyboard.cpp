@@ -676,7 +676,7 @@ namespace eyegui
 		{
 			// Move suggestion line a little bit up to improve selection by user
 			suggestionHeight = (int)(0.12f * mHeight);
-			suggestionOffsetY = (keyOffsetY - keySpace - suggestionHeight) - (mHeight * 0.025f);
+			suggestionOffsetY = (keyOffsetY - keySpace - suggestionHeight) - (mHeight * 0.0125f);
 		}
 
 		// Position empty suggestion placeholders
