@@ -362,38 +362,29 @@ namespace eyegui
             // Backspace
             if(type == FutureKey::HitType::LETTER && rspKey->getId() == "backspace")
 			{
-				// When last was suggestion, try to undo it
-				if (mLastWasSuggestion)
+				// Try to delete something from current word
+				if(!mCurrentWord.empty())
 				{
-					mCurrentWord = mWordBeforeSuggestion;
-					mCollectedWords = mCollectedWordsBeforeSuggestion;
+					mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
 				}
-				else
+				else if(!mCollectedWords.empty())
 				{
-					// Try to delete something from current word
-					if(!mCurrentWord.empty())
-					{
-						mCurrentWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
-					}
-					else if(!mCollectedWords.empty())
-					{
-						mCollectedWords = mCollectedWords.substr(0, mCollectedWords.size() - 1);
+					mCollectedWords = mCollectedWords.substr(0, mCollectedWords.size() - 1);
 
-						// Try to get last word from collected words and set it as current word
-						if (!mCollectedWords.empty())
+					// Try to get last word from collected words and set it as current word
+					if (!mCollectedWords.empty())
+					{
+						// Go through words in collected
+						std::u16string delimiter = u" ";
+						size_t pos = 0;
+						std::u16string copyCollectedWords = mCollectedWords;
+						mCollectedWords = u"";
+						while ((pos = copyCollectedWords.find(delimiter)) != std::u16string::npos)
 						{
-							// Go through words in collected
-							std::u16string delimiter = u" ";
-							size_t pos = 0;
-							std::u16string copyCollectedWords = mCollectedWords;
-							mCollectedWords = u"";
-							while ((pos = copyCollectedWords.find(delimiter)) != std::u16string::npos)
-							{
-								mCollectedWords.append(copyCollectedWords.substr(0, pos) + u" "); // would have probably problems with mutliple spaces
-								copyCollectedWords.erase(0, pos + delimiter.length());
-							}
-							mCurrentWord = copyCollectedWords;
+							mCollectedWords.append(copyCollectedWords.substr(0, pos) + u" "); // would have probably problems with mutliple spaces
+							copyCollectedWords.erase(0, pos + delimiter.length());
 						}
+						mCurrentWord = copyCollectedWords;
 					}
 				}
 
@@ -457,22 +448,15 @@ namespace eyegui
 			mspSpaceKey->setInfo(mCurrentWord);
 
 			// Update word on backspace key
-			if (mLastWasSuggestion)
+			if (mCurrentWord.empty())
 			{
-				mspBackspaceKey->setInfo(mWordBeforeSuggestion + u"_");
+				mspBackspaceKey->setInfo(u"");
 			}
 			else
 			{
-				if (mCurrentWord.empty())
-				{
-					mspBackspaceKey->setInfo(u"");
-				}
-				else
-				{
-					std::u16string backWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
-					backWord.append(u"_");
-					mspBackspaceKey->setInfo(backWord);
-				}
+				std::u16string backWord = mCurrentWord.substr(0, mCurrentWord.size() - 1);
+				backWord.append(u"_");
+				mspBackspaceKey->setInfo(backWord);
 			}
 		}
 
