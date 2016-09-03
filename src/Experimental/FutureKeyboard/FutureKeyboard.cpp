@@ -665,19 +665,18 @@ namespace eyegui
 
 		// Values for suggestion line
 		int suggestionWidth = (int)((mWidth - ((2.f * xMargin) + (2.f * keySpace))) / 3.f);
-		int suggestionHeight = (int)(0.1f * mHeight);
-		int suggestionOffsetY = keyOffsetY - keySpace - suggestionHeight;
-
-		// Move suggestion to the correct line
+		int suggestionHeight, suggestionOffsetY;
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
 		{
 			// Move it depending from last line
-			suggestionOffsetY += mLastLine * (suggestionHeight + (2 * keySpace) + keyHeight);
+			suggestionHeight = (int)(0.1f * mHeight);
+			suggestionOffsetY = (keyOffsetY - keySpace - suggestionHeight) + (mLastLine * (suggestionHeight + (2 * keySpace) + keyHeight));
 		}
 		else
 		{
 			// Move suggestion line a little bit up to improve selection by user
-			suggestionOffsetY -= mHeight * 0.025f;
+			suggestionHeight = (int)(0.12f * mHeight);
+			suggestionOffsetY = (keyOffsetY - keySpace - suggestionHeight) - (mHeight * 0.025f);
 		}
 
 		// Position empty suggestion placeholders
