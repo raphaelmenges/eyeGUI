@@ -224,6 +224,13 @@ namespace eyegui
 
     bool convertUTF8ToUTF16(const std::string& rInput, std::u16string& rOutput)
     {
+		// Fetch case of empty string
+		if (rInput.empty())
+		{
+			rOutput = u"";
+			return true;
+		}
+
         // Variables which will be filled
         int32_t errors;
         size_t size;
@@ -259,6 +266,13 @@ namespace eyegui
 
     bool convertUTF16ToUTF8(const std::u16string& rInput, std::string& rOutput)
     {
+		// Fetch case of empty string
+		if (rInput.empty())
+		{
+			rOutput = "";
+			return true;
+		}
+
         // Variables which will be filled
         int32_t errors;
         size_t size;
