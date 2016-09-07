@@ -87,8 +87,7 @@ namespace eyegui
 
 		// Update threshold but only when penetrated, after retrigger delay and non empty suggestion
         mThreshold.update(
-			mpLayout->getConfig()->futureKeyboardSuggestionLineThresholdMultiplier
-			* (tpf / mpLayout->getConfig()->futureKeyboardThresholdDuration),
+			tpf / (mpLayout->getConfig()->futureKeyboardSuggestionLineThresholdMultiplier * mpLayout->getConfig()->futureKeyboardThresholdDuration),
 			!penetrated || (mRetriggerTime > 0.f) || mupSuggestion->getContent().empty());
         if(mThreshold.getValue() >= 1.f)
         {
