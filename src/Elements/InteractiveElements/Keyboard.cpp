@@ -12,6 +12,8 @@
 #include "src/Layout.h"
 #include "src/Rendering/ScissorStack.h"
 
+#include <iostream>
+
 
 namespace eyegui
 {
@@ -193,7 +195,13 @@ namespace eyegui
             // Update alpha and size
             mPressedKeys[i].first -= tpf / INTERACTION_FADING_DURATION;
             Key* pKey = mPressedKeys[i].second.get();
-            pKey->transformAndSize((int)pKey->getPosition().x, (int)pKey->getPosition().y, (int)(pKey->getSize() + PRESSED_KEY_SCALING_MULTIPLIER * tpf * initialKeySize));
+            pKey->transformAndSize(
+                (int)pKey->getPosition().x,
+                (int)pKey->getPosition().y,
+                (int)
+                    ((float)initialKeySize // using initial size as base
+                    + (float)initialKeySize * PRESSED_KEY_SCALING_MULTIPLIER
+                        * (1.f - mPressedKeys[i].first)));
 
             // Check, whether still visible
             if (mPressedKeys[i].first <= 0)
