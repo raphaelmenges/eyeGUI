@@ -10,6 +10,7 @@
 #define TEXT_SIMPLE_H_
 
 #include "src/Rendering/Assets/Text/Text.h"
+
 namespace eyegui
 {
     class TextSimple : public Text
@@ -57,7 +58,8 @@ namespace eyegui
         // Calculate mesh (in pixel coordinates)
         virtual void specialCalculateMesh(
             std::u16string streamlinedContent,
-            float lineHeight, std::vector<glm::vec3>& rVertices,
+            float lineHeight,
+			std::vector<glm::vec3>& rVertices,
             std::vector<glm::vec2>& rTextureCoordinates);
 
         // Members

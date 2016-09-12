@@ -15,6 +15,9 @@
 
 #include <cmath>
 
+// TODO: testing
+#include <iostream>
+
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -147,9 +150,10 @@ namespace eyegui
         // Draw flow
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
-
+	
 	bool TextFlow::getFlowWord(int index, TextFlow::FlowWord& rFlowWord) const
 	{
+		/*
 		if (index < mFlowWords.size())
 		{
 			rFlowWord = mFlowWords.at(index);
@@ -159,10 +163,13 @@ namespace eyegui
 		{
 			return false;
 		}
+		*/
+		return false; // TODO: temporarly added
 	}
 
 	bool TextFlow::getFlowWord(int x, int y, FlowWord& rFlowWord) const
 	{
+		/*
 		for (const auto& rTestFlowWord : mFlowWords)
 		{
             for (const auto& rSubWord : rTestFlowWord.subWords)
@@ -179,11 +186,13 @@ namespace eyegui
 				}
 			}
 		}
+		*/
 		return false;
 	}
 
     bool TextFlow::getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const
     {
+		/*
 		// Special case of front
 		if (contentIndex == -1 && !mFlowWords.empty())
 		{
@@ -230,12 +239,13 @@ namespace eyegui
                 }
             }
         }
-
+		*/
         return false;
     }
 
     bool TextFlow::insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
     {
+		/*
         // Index has to be advanced by one to be insert after given index
         int contentIndex = index + 1;
         if (contentIndex < (int)mContent.size())
@@ -252,11 +262,13 @@ namespace eyegui
             calculateMesh();
             return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
         }
+		*/
         return false;
 	}
 
     bool TextFlow::eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
     {
+		/*
 		if (letterCount < 0)
 		{
 			// Move index
@@ -287,6 +299,8 @@ namespace eyegui
 
 		// Set indices
 		return getFlowWordAndIndices(index, rFlowWord, rSubWordIndex, rLetterIndex);
+		*/
+		return false; // TODO: temporarly added
     }
 
 	std::u16string TextFlow::getContent(int index, int letterCount) const
@@ -300,17 +314,16 @@ namespace eyegui
             float lineHeight, std::vector<glm::vec3>& rVertices,
             std::vector<glm::vec2>& rTextureCoordinates)
     {
+		// OpenGL setup done in calling method
+
 		// Reset flow width to get longest line's width of this computation
 		mFlowWidth = 0;
 
 		// Clear vector which holds information about words in flow
-		mFlowWords.clear();
-
-        // OpenGL setup done in calling method
+		mFlowEntities.clear();
 
         // Get size of space character
 		mPixelOfSpace = 0;
-
         Glyph const * pGlyph = mpFont->getGlyph(mFontSize, u' ');
         if (pGlyph == NULL)
         {
@@ -332,71 +345,83 @@ namespace eyegui
 
         // Seperate into paragraphs
         size_t pos = 0;
-        std::u16string token;
-        while ((pos = streamlinedContent.find(paragraphDelimiter)) != std::u16string::npos)
+        do
         {
-            token = streamlinedContent.substr(0, pos);
-            paragraphs.push_back(token);
+            paragraphs.push_back(streamlinedContent.substr(0, pos));
             streamlinedContent.erase(0, pos + paragraphDelimiter.length());
-        }
-        paragraphs.push_back(streamlinedContent); // Last paragraph (paragraphs never empty)
+		} while ((pos = streamlinedContent.find(paragraphDelimiter)) != std::u16string::npos);
 
         // Do not generate text flow mesh when there is a failure
         bool failure = false;
 
         // Go over paragraphs (pens are in local pixel coordinate system with origin in lower left corner of element)
-        float yPixelPen = -lineHeight; // First line should be also inside flow
-		for (std::u16string& rPargraph : paragraphs)
+        float yPixelPen = -lineHeight; // First line should be also inside flow and not on top
+		for (std::u16string& rParagraph : paragraphs)
 		{
-			// Get words out of paragraph
-			std::vector<Word> words;
-			std::u16string wordDelimiter = u" ";
-			int contentStartIndex = 0;
-			while ((pos = rPargraph.find(wordDelimiter)) != std::u16string::npos)
+			// Get entities out of paragraph
+			int letterCount = rParagraph.size();
+			for (int index = 0; index < letterCount; index++)
 			{
-				// Extract current token aka word
-				token = rPargraph.substr(0, pos);
-
-				// Erase token from paragraph
-				rPargraph.erase(0, pos + wordDelimiter.length());
-
-				// Create vector of fitting words
-				std::vector<Word> fitWords;
-				failure |= !insertFitWord(fitWords, token, mWidth, mScale);
-
-				// TODO: Check whether this fix to prohibit extra spaces is correct
-				if (!fitWords.empty())
+				// Decide which entity to create
+				if (rParagraph.at(index) == u' ')
 				{
-					// Create structure which holds information about word
-					mFlowWords.push_back(FlowWord());
-					mFlowWords.back().contentStartIndex = contentStartIndex;
+					// Space
+					int endIndex = index;
+					while (endIndex < letterCount - 1 && rParagraph.at(endIndex + 1) == u' ')
+					{
+						endIndex++;
+					}
 
-					// Create as many sub flow words as fit words are added to global words vector
-					mFlowWords.back().subWords.resize(fitWords.size());
+					// Create entity
+					std::unique_ptr<FlowSpace> upFlowSpace = std::unique_ptr<FlowSpace>(new FlowSpace);
+					upFlowSpace->count = endIndex - index + 1;
+					upFlowSpace->contentStartIndex = index;
 
-					// Save index of flow word in vector for addressing by using class
-					mFlowWords.back().index = mFlowWords.size() - 1;
+					// Push back entity
+					mFlowEntities.push_back(std::move(upFlowSpace));
 
-					// Set content start index for next run
-					contentStartIndex = contentStartIndex + (int)pos + (int)wordDelimiter.length();
-
-					// Insert fitting words to global words vector
-					words.insert(words.end(), fitWords.begin(), fitWords.end());
+					// Set index to end of spaces
+					index = endIndex;
 				}
+				else
+				{
+					// No space...
+					int endIndex = index;
+					while (endIndex < letterCount - 1 && rParagraph.at(endIndex + 1) != u' ')
+					{
+						endIndex++;
+					}
+
+					// Create vector of fitting words
+					std::vector<Word> fitWords;
+					failure |= !insertFitWord(fitWords, rParagraph.substr(index, endIndex - index + 1), mWidth, mScale);
+
+					// Create entity
+					std::unique_ptr<FlowWord> upFlowWord = std::unique_ptr<FlowWord>(new FlowWord);
+					upFlowWord->contentStartIndex = index;
+
+					// Create subwords
+					for (const auto& rFitWord : fitWords)
+					{
+						std::unique_ptr<SubFlowWord> upSubFlowWord = std::unique_ptr<SubFlowWord>(new SubFlowWord);
+						upSubFlowWord->upWord = std::unique_ptr<Word>(new Word(rFitWord));
+						upFlowWord->subWords.push_back(std::move(upSubFlowWord));
+					}
+					
+					// Push back entity
+					mFlowEntities.push_back(std::move(upFlowWord));
+
+					// Set index to end of spaces
+					index = endIndex;
+				}
+
+				// Set index within vector
+				mFlowEntities.back()->index = (int)mFlowEntities.size() - 1;
 			}
 
-			// Add last token from paragraph as well (if it was not just some space)
-			if (!rPargraph.empty())
-			{
-				std::vector<Word> fitWords;
-				failure |= !insertFitWord(fitWords, rPargraph, mWidth, mScale);
-				mFlowWords.push_back(FlowWord());
-				mFlowWords.back().contentStartIndex = contentStartIndex;
-				mFlowWords.back().subWords.resize(fitWords.size());
-				mFlowWords.back().index = mFlowWords.size() - 1;
-				words.insert(words.end(), fitWords.begin(), fitWords.end());
-			}
+			// TODO: build up renderable text
 
+			/*
             // Failure appeared, forget it
             if (!failure)
             {
@@ -510,7 +535,7 @@ namespace eyegui
                     // Advance yPen
                     yPixelPen -= lineHeight;
                 }
-            }
+            }*/
         }
 
         // If failure appeared, clean up
@@ -520,6 +545,7 @@ namespace eyegui
             rVertices.clear();
             rTextureCoordinates.clear();
 			mFlowHeight = 0;
+			mFlowEntities.clear();
         }
 		else
 		{
@@ -543,12 +569,12 @@ namespace eyegui
         if ((content.size() == 1 && word.pixelWidth > maxPixelWidth) || content.empty())
         {
             // Return empty vector as signal of failure
-            return std::vector<Word>();
+			return {};
         }
         else if (word.pixelWidth <= maxPixelWidth)
         {
             // If word length is ok, just return it
-            return std::vector<Word>(1, word);
+			return { word };
         }
         else
         {
@@ -564,7 +590,7 @@ namespace eyegui
             // If one or more of both are empty, forget it
             if (leftWord.empty() || rightWord.empty())
             {
-                return std::vector<Word>();
+				return {};
             }
             else
             {

@@ -22,37 +22,59 @@ namespace eyegui
     {
     public:
 
-        // Struct like class for sub flow word (if word is devided to fit into lines)
-        class SubFlowWord
+		// Struct like class for sub flow word
+		class SubFlowWord
 		{
-        public:
+		public:
 
-            // Getter for letter count
-            int getLetterCount() const { return (int)lettersXOffsets.size(); }
+			// Getter for letter count
+			int getLetterCount() const { return (int)upWord->lettersXOffsets.size(); }
 
-            // Members
+			// Members
 			int x; // relative in flow
 			int y; // relative in flow
-			int width; // pixel width
-			// Height is given by line height
 
-			// Vector which saves the x offsets of single letters inside sub word
-			std::vector<int> lettersXOffsets; // position after letter
+			// Word
+			std::unique_ptr<Word> upWord; // geometry and information of word
 		};
 
-        // Struct like class for word in flow which is used to get a word at given coordinate in text flow
-        class FlowWord
+		// Enumeration of flow entities
+		enum class FlowEntityType { Word, Space};
+
+		// Abstract super class for flow entities
+		class FlowEntity
 		{
-        public:
+		public:
+
+			// Getter for letter count
+			virtual int getLetterCount() const = 0;
+
+			// Members
+			int contentStartIndex; // index in content where flow space starts
+			FlowEntityType type;
+			int index; // index within flow entity vector
+		};
+
+      
+
+        // Struct like class for word in flow which is used to get a word at given coordinate in text flow
+        class FlowWord : public FlowEntity
+		{
+		public:
+
+			FlowWord() { type = FlowEntityType::Word;  }
 
             // Getter for sub word count
             int getSubWordCount() const { return (int)subWords.size(); }
 
             // Getter for letter count of complete flow word
-            int getLetterCount() const
+			virtual int getLetterCount() const
             {
                 int count = 0;
-                std::for_each(subWords.begin(), subWords.end(), [&count](const SubFlowWord& rSubWord) { count += rSubWord.getLetterCount(); });
+				for (const auto& rSubWord : subWords)
+				{
+					count += rSubWord->getLetterCount();
+				}
                 return count;
             }
 
@@ -66,7 +88,7 @@ namespace eyegui
                     int offset = wordLetterIndex;
                     for(int i = 0; i < getSubWordCount(); i++)
                     {
-                        if((offset - subWords.at(i).getLetterCount()) < 0)
+                        if((offset - subWords.at(i)->getLetterCount()) < 0)
                         {
                             rSubWordIndex = i;
                             rLetterIndex = offset;
@@ -74,7 +96,7 @@ namespace eyegui
                         }
                         else
                         {
-                            offset -= subWords.at(i).getLetterCount();
+                            offset -= subWords.at(i)->getLetterCount();
                         }
                     }
                 }
@@ -87,7 +109,7 @@ namespace eyegui
 				int index = 0;
 				for (int i = 0; i < subWordIndex; i++)
 				{
-					index += subWords.at(i).getLetterCount();
+					index += subWords.at(i)->getLetterCount();
 				}
 				index += letterIndex;
 				index += contentStartIndex;
@@ -96,8 +118,21 @@ namespace eyegui
 
             // Members
 			int contentStartIndex; // index in content where flow word starts
-			std::vector<SubFlowWord> subWords; // can be divided into multiple sub words to fit into given space
-			int index; // index in text flow's vector for readdressing
+			std::vector<std::unique_ptr<SubFlowWord> > subWords; // can be divided into multiple sub words to fit into given space
+		};
+
+		// Struct like class for space within text flow
+		class FlowSpace : public FlowEntity
+		{
+		public:
+
+			FlowSpace() { type = FlowEntityType::Space; }
+
+			// Getter for letter count
+			virtual int getLetterCount() const { return count; }
+
+			// Members
+			int count; // count of spaces
 		};
 
         // Constructor
@@ -137,7 +172,7 @@ namespace eyegui
 		float getPixelWidthOfSpace() const { return mPixelOfSpace; }
 
         // Get count of flow words
-        int getFlowWordCount() const { return (int)mFlowWords.size(); }
+        int getFlowWordCount() const { return (int)mFlowEntities.size(); }
 
 		// Get data of certain word by index. Returns false if not found.
 		// Position is given in flow coordinates
@@ -166,7 +201,8 @@ namespace eyegui
         // Calculate mesh (in pixel coordinates)
         virtual void specialCalculateMesh(
             std::u16string streamlinedContent,
-            float lineHeight, std::vector<glm::vec3>& rVertices,
+            float lineHeight,
+			std::vector<glm::vec3>& rVertices,
             std::vector<glm::vec2>& rTextureCoordinates);
 
         // Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
@@ -184,7 +220,7 @@ namespace eyegui
         int mFlowHeight;
 		float mPixelOfSpace;
 		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
-		std::vector<FlowWord> mFlowWords; // holding information to make text manipulation possible
+		std::vector<std::unique_ptr<FlowEntity> > mFlowEntities; // holding information to make text manipulation possible
 	};
 }
 

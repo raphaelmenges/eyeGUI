@@ -72,7 +72,8 @@ namespace eyegui
         // Special calculate mesh implemented by specialized classes
         virtual void specialCalculateMesh(
             std::u16string streamlinedContent,
-            float lineHeight, std::vector<glm::vec3>& rVertices,
+            float lineHeight,
+			std::vector<glm::vec3>& rVertices,
             std::vector<glm::vec2>& rTextureCoordinates) = 0;
 
         // Calculate single word and returns it
@@ -91,7 +92,6 @@ namespace eyegui
         int mY;
         std::u16string mContent;
 		RenderItem const * mpBackground;
-
         Shader const * mpShader;
         GLuint mVertexCount;
         GLuint mVertexBuffer;

@@ -109,7 +109,7 @@ namespace eyegui
 					// Collect left letters of all subwords
 					for (int j = mSubWordIndex; j < mupActiveWord->subWords.size(); j++)
 					{
-						letterCount += (int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
+						letterCount += (int)mupActiveWord->subWords.at(j)->upWord->lettersXOffsets.size();
 					}
                     letterCount -= glm::max(0, mLetterIndex);
 				}
@@ -118,7 +118,7 @@ namespace eyegui
 					// Collect letters of lefhand subwords
 					for (int j = 0; j < mSubWordIndex; j++)
 					{
-                        letterCount = -(int)mupActiveWord->subWords.at(j).lettersXOffsets.size();
+                        letterCount = -(int)mupActiveWord->subWords.at(j)->upWord->lettersXOffsets.size();
 					}
                     letterCount -= glm::max(0, mLetterIndex) + 1;
 				}
@@ -165,7 +165,7 @@ namespace eyegui
 			int contentIndex = mupActiveWord->contentStartIndex;
 			for (int i = 0; i < mSubWordIndex; i++)
 			{
-				contentIndex += (int)mupActiveWord->subWords.at(i).lettersXOffsets.size();
+				contentIndex += (int)mupActiveWord->subWords.at(i)->upWord->lettersXOffsets.size();
 			}
             contentIndex += mLetterIndex; // -1 is ok here, since even at start of text, it should be inserted after -1 at 0
 
