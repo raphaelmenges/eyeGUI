@@ -149,7 +149,7 @@ namespace eyegui
         {
             setActiveWord(flowWord, false);
             mSubWordIndex = flowWord.getSubWordCount() - 1;
-            mLetterIndex = flowWord.subWords.at(mSubWordIndex).getLetterCount() - 1;
+            mLetterIndex = flowWord.subWords.at(mSubWordIndex)->getLetterCount() - 1;
         }
     }
 
@@ -233,6 +233,7 @@ namespace eyegui
 
     float TextEdit::specialUpdate(float tpf, Input* pInput)
     {
+		/*
         // Super call
         float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
@@ -311,10 +312,13 @@ namespace eyegui
 		}
 
         return adaptiveScale;
+		*/
+		return 0.f;
     }
 
     void TextEdit::specialDraw() const
     {
+		/*
         // *** BACKGROUND ***
         if (getStyle()->backgroundColor.a > 0)
         {
@@ -361,7 +365,7 @@ namespace eyegui
 			for (const auto& rSubFlowWord : rPair.first)
 			{
 				// Calculate draw matrix
-				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord.x, rSubFlowWord.y, rSubFlowWord.width);
+				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord.x, rSubFlowWord.y, rSubFlowWord.upWord->pixelWidth);
 
 				// Draw previous active sub word's background
 				mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
@@ -376,7 +380,7 @@ namespace eyegui
 			for (const auto& rSubFlowWord : mupActiveWord->subWords)
 			{
 				// Calculate draw matrix
-				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord.x, rSubFlowWord.y, rSubFlowWord.width);
+				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord->x, rSubFlowWord->y, rSubFlowWord->upWord->pixelWidth);
 
 				// Draw active sub word's background
 				mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
@@ -404,12 +408,12 @@ namespace eyegui
 			int letterOffsetX = 0;
 			if (mLetterIndex >= 0)
 			{
-				letterOffsetX = mupActiveWord->subWords.at(mSubWordIndex).lettersXOffsets.at(mLetterIndex);
+				letterOffsetX = mupActiveWord->subWords.at(mSubWordIndex)->upWord->lettersXOffsets.at(mLetterIndex);
 			}
 
-			cursorX = mupActiveWord->subWords.at(mSubWordIndex).x
+			cursorX = mupActiveWord->subWords.at(mSubWordIndex)->x;
 				+ letterOffsetX;
-			cursorY = mupActiveWord->subWords.at(mSubWordIndex).y;
+			cursorY = mupActiveWord->subWords.at(mSubWordIndex)->y;
 		}
 
 		// Calculate matrix for cursor
@@ -433,6 +437,7 @@ namespace eyegui
 
         // Draw stuff like highlighting
         InteractiveElement::specialDraw();
+		*/
     }
 
     void TextEdit::specialTransformAndSize()
@@ -478,6 +483,7 @@ namespace eyegui
 
 	void TextEdit::setActiveWord(const TextFlow::FlowWord& rFlowWord, bool setCursorToEnd)
 	{
+		/*
 		if (mupActiveWord != NULL)
 		{
 			mPreviousActiveWords.push_back(
@@ -497,15 +503,17 @@ namespace eyegui
 			mSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
 
 			// Set cursor position to last letter in subword
-			mLetterIndex = (int)mupActiveWord->subWords.at(mSubWordIndex).lettersXOffsets.size() - 1;
+			mLetterIndex = (int)mupActiveWord->subWords.at(mSubWordIndex)->upWord->lettersXOffsets.size() - 1;
 		}
 
 		// Reset cursor pulse to make it directly visible
 		mCursorPulse = 0.f;
+		*/
 	}
 
     void TextEdit::moveCursorOverLettersRightward(int letterCount)
     {
+		/*
         // When there is no active word, there is no text
         if (mupActiveWord != NULL)
         {
@@ -520,7 +528,7 @@ namespace eyegui
                 mLetterIndex++;
 
                 // Check whether still in range of subword
-                if(mLetterIndex >= mupActiveWord->subWords.at(mSubWordIndex).getLetterCount())
+                if(mLetterIndex >= mupActiveWord->subWords.at(mSubWordIndex)->getLetterCount())
                 {
                     // No more within that sub word, try next
                     mSubWordIndex++;
@@ -547,10 +555,12 @@ namespace eyegui
                 }
             }
         }
+		*/
     }
 
     void TextEdit::moveCursorOverLettersLeftward(int letterCount)
     {
+		/*
         // When there is no active word, there is no text
         if (mupActiveWord != NULL)
         {
@@ -580,7 +590,7 @@ namespace eyegui
                         {
                             setActiveWord(previousWord, false);
                             mSubWordIndex = previousWord.getSubWordCount() - 1;
-                            mLetterIndex = previousWord.subWords.at(mSubWordIndex).getLetterCount() - 1;
+                            mLetterIndex = previousWord.subWords.at(mSubWordIndex)->getLetterCount() - 1;
                         }
                         else
                         {
@@ -592,5 +602,6 @@ namespace eyegui
                 }
             }
         }
+		*/
     }
 }

@@ -22,6 +22,9 @@ namespace eyegui
     {
     public:
 
+		// Enumeration of flow entities
+		enum class FlowEntityType { Word, Space };
+
 		// Struct like class for sub flow word
 		class SubFlowWord
 		{
@@ -38,9 +41,6 @@ namespace eyegui
 			std::unique_ptr<Word> upWord; // geometry and information of word
 		};
 
-		// Enumeration of flow entities
-		enum class FlowEntityType { Word, Space};
-
 		// Abstract super class for flow entities
 		class FlowEntity
 		{
@@ -49,13 +49,14 @@ namespace eyegui
 			// Getter for letter count
 			virtual int getLetterCount() const = 0;
 
+			// Getter for type
+			FlowEntityType getType() const { return type; }
+
 			// Members
-			int contentStartIndex; // index in content where flow space starts
 			FlowEntityType type;
+			int contentStartIndex; // index in content where flow space starts
 			int index; // index within flow entity vector
 		};
-
-      
 
         // Struct like class for word in flow which is used to get a word at given coordinate in text flow
         class FlowWord : public FlowEntity

@@ -314,12 +314,14 @@ namespace eyegui
             float lineHeight, std::vector<glm::vec3>& rVertices,
             std::vector<glm::vec2>& rTextureCoordinates)
     {
+		// *** PREPARATION ***
+
 		// OpenGL setup done in calling method
 
 		// Reset flow width to get longest line's width of this computation
 		mFlowWidth = 0;
 
-		// Clear vector which holds information about words in flow
+		// Clear vector which holds information about entities in flow
 		mFlowEntities.clear();
 
         // Get size of space character
@@ -336,69 +338,70 @@ namespace eyegui
 			mPixelOfSpace = mScale * pGlyph->advance.x;
         }
 
-        // Create mark for overflow
-        Word overflowMark = calculateWord(TEXT_FLOW_OVERFLOW_MARK, mScale);
+		// *** COLLECT PARAGRAPHS ***
 
         // Get pararaphs separated by \n
         std::vector<std::u16string> paragraphs;
         std::u16string paragraphDelimiter = u"\n";
 
         // Seperate into paragraphs
-        size_t pos = 0;
-        do
-        {
-            paragraphs.push_back(streamlinedContent.substr(0, pos));
-            streamlinedContent.erase(0, pos + paragraphDelimiter.length());
-		} while ((pos = streamlinedContent.find(paragraphDelimiter)) != std::u16string::npos);
+		std::size_t start = 0, end = 0;
+		while ((end = streamlinedContent.find(paragraphDelimiter, start)) != std::string::npos) {
+			paragraphs.push_back(streamlinedContent.substr(start, end - start));
+			start = end + 1;
+		}
+		paragraphs.push_back(streamlinedContent.substr(start));
 
         // Do not generate text flow mesh when there is a failure
         bool failure = false;
 
-        // Go over paragraphs (pens are in local pixel coordinate system with origin in lower left corner of element)
-        float yPixelPen = -lineHeight; // First line should be also inside flow and not on top
-		for (std::u16string& rParagraph : paragraphs)
+		// Save entities per paragraph and merge later
+		std::vector<std::vector<std::unique_ptr<FlowEntity> > > entities(paragraphs.size());
+
+        // Go over paragraphs and draw single lines (pens are in local pixel coordinate system with origin in lower left corner of element)
+        float yPixelPen = -lineHeight; // first line should be also inside flow and not on top
+		uint globalEntityCount = 0;
+		for (uint paragraphIndex = 0; paragraphIndex < paragraphs.size(); paragraphIndex++)
 		{
+			// *** COLLECT ENTITIES ***
+
 			// Get entities out of paragraph
-			int letterCount = rParagraph.size();
-			for (int index = 0; index < letterCount; index++)
+			uint letterCount = paragraphs.at(paragraphIndex).size();
+			for (uint index = 0; index < letterCount; index++)
 			{
+				uint endIndex = index;
+
 				// Decide which entity to create
-				if (rParagraph.at(index) == u' ')
+				if (paragraphs.at(paragraphIndex).at(index) == u' ')
 				{
 					// Space
-					int endIndex = index;
-					while (endIndex < letterCount - 1 && rParagraph.at(endIndex + 1) == u' ')
+					while (endIndex < letterCount - 1 && paragraphs.at(paragraphIndex).at(endIndex + 1) == u' ')
 					{
 						endIndex++;
 					}
 
 					// Create entity
 					std::unique_ptr<FlowSpace> upFlowSpace = std::unique_ptr<FlowSpace>(new FlowSpace);
-					upFlowSpace->count = endIndex - index + 1;
+					upFlowSpace->count = (endIndex - index) + 1;
 					upFlowSpace->contentStartIndex = index;
 
 					// Push back entity
-					mFlowEntities.push_back(std::move(upFlowSpace));
-
-					// Set index to end of spaces
-					index = endIndex;
+					entities[paragraphIndex].push_back(std::move(upFlowSpace));
 				}
 				else
 				{
 					// No space...
-					int endIndex = index;
-					while (endIndex < letterCount - 1 && rParagraph.at(endIndex + 1) != u' ')
+					while (endIndex < letterCount - 1 && paragraphs.at(paragraphIndex).at(endIndex + 1) != u' ')
 					{
 						endIndex++;
 					}
 
 					// Create vector of fitting words
 					std::vector<Word> fitWords;
-					failure |= !insertFitWord(fitWords, rParagraph.substr(index, endIndex - index + 1), mWidth, mScale);
+					failure |= !insertFitWord(fitWords, paragraphs.at(paragraphIndex).substr(index, (endIndex - index) + 1), mWidth, mScale);
 
 					// Create entity
 					std::unique_ptr<FlowWord> upFlowWord = std::unique_ptr<FlowWord>(new FlowWord);
-					upFlowWord->contentStartIndex = index;
 
 					// Create subwords
 					for (const auto& rFitWord : fitWords)
@@ -407,135 +410,215 @@ namespace eyegui
 						upSubFlowWord->upWord = std::unique_ptr<Word>(new Word(rFitWord));
 						upFlowWord->subWords.push_back(std::move(upSubFlowWord));
 					}
-					
-					// Push back entity
-					mFlowEntities.push_back(std::move(upFlowWord));
 
-					// Set index to end of spaces
-					index = endIndex;
+					// Push back entity
+					entities[paragraphIndex].push_back(std::move(upFlowWord));
 				}
 
 				// Set index within vector
-				mFlowEntities.back()->index = (int)mFlowEntities.size() - 1;
+				entities[paragraphIndex].back()->contentStartIndex = index;
+				entities[paragraphIndex].back()->index = globalEntityCount;
+				globalEntityCount++;
+				index = endIndex; // increment by for loop, too
 			}
+		}
 
-			// TODO: build up renderable text
+		// Go over entities and draw them
+		if (!failure)
+		{
+			// Go over paragraphs
+			for (uint paragraphIndex = 0; paragraphIndex < paragraphs.size(); paragraphIndex++)
+			{
+				// *** SETUP LINES ***
 
-			/*
-            // Failure appeared, forget it
-            if (!failure)
-            {
-                // Prepare some values
-                uint wordIndex = 0;
-                bool hasNext = !words.empty();
-				int flowWordsIndex = 0;
-				int subFlowWordsIndex = 0;
+				// Prepare some values
+				uint flowEntityIndex = 0;
 
-                // Go over lines to write paragraph
-                while (hasNext && (abs(yPixelPen) <= mHeight || mOverflowHeight))
-                {
-                    // Collect words in one line
-                    std::vector<Word const *> line;
-                    float wordsPixelWidth = 0;
-                    float newWordsWithSpacesPixelWidth = 0;
+				// Remember where last line stopped
+				uint innerEnd = 0; // either count for space or sub word index within word. Do not access that but one before!
+				uint innerStart = 0; // same as above but holds information where to start for that line
 
-                    // Still words in the paragraph and enough space? Fill into line!
-                    while (hasNext && newWordsWithSpacesPixelWidth <= mWidth)
-                    {
-                        // First word should always fit into width because of previous checks
-                        wordsPixelWidth += words[wordIndex].pixelWidth;
-                        line.push_back(&words[wordIndex]);
-                        wordIndex++;
+				// Go over lines to write paragraph
+				while (
+					flowEntityIndex < entities[paragraphIndex].size() // entities left for new line
+					&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
+				{
+					// Remember where that lines started since it is the end of the last
+					innerStart = innerEnd;
 
-                        if (wordIndex >= words.size())
-                        {
-                            // No words in paragraph left
-                            hasNext = false;
-                        }
-                        else
-                        {
-                            // Calculate next width of line
-                            newWordsWithSpacesPixelWidth = std::ceil(
-                                (wordsPixelWidth + (float)words[wordIndex].pixelWidth) // Words size (old ones and new one)
-                                + (((float)line.size()) - 1.0f) * mPixelOfSpace); // Spaces between words
-                        }
-                    }
+					// Collect words in one line
+					float lineWidth = 0;
+					std::vector<FlowEntity*> line;
+					uint spaceCount = 0;
 
-                    // If this is last line and after it still words left, replace it by some mark for overflow
-                    if (!mOverflowHeight && hasNext && (abs(yPixelPen - lineHeight) > mHeight) && (overflowMark.pixelWidth <= mWidth))
-                    {
-                        line.clear();
-                        wordsPixelWidth = overflowMark.pixelWidth;
-                        line.push_back(&overflowMark);
-                    }
+					// Still entities in the paragraph and enough space? Fill into current line!
+					while (
+						flowEntityIndex < entities[paragraphIndex].size() // entities left to draw into that line
+						&& lineWidth < mWidth)
+					{
+						// Check what entity is given
+						FlowEntityType type = entities[paragraphIndex].at(flowEntityIndex)->getType();
 
-					// Remember longest line's width
-					mFlowWidth = mFlowWidth < ((int) wordsPixelWidth + 1) ? ((int)wordsPixelWidth + 1) : mFlowWidth;
+						// Count of internal (either space count or subword count)
+						uint innerCount = 0;
 
-                    // Decide dynamic space for line
-                    float dynamicSpace = mPixelOfSpace;
-                    if (line.size() > 1)
-                    {
-                        if (mAlignment == TextFlowAlignment::JUSTIFY && hasNext && line.size() > 1) // Do not use dynamic space for last line
-                        {
-                            // For justify, do something dynamic
-                            dynamicSpace = ((float)mWidth - wordsPixelWidth) / ((float)line.size() - 1.0f);
-                        }
-                        else
-                        {
-                            // Adjust space to compensate precision errors in other alignments
-                            float calculatedDynamicSpace = (float)mWidth - (wordsPixelWidth / (float)(line.size() - 1));
-                            dynamicSpace = std::min(dynamicSpace, calculatedDynamicSpace);
-                        }
-                    }
-
-                    // Now decide xOffset for line
-                    float xOffset = 0;
-                    if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
-                    {
-                        xOffset = (float)mWidth - ((wordsPixelWidth + ((float)line.size() - 1.0f) * dynamicSpace));
-                        if (mAlignment == TextFlowAlignment::CENTER)
-                        {
-                            xOffset = xOffset / 2.0f;
-                        }
-                    }
-
-                    // Combine word geometry to one line
-                    float xPixelPen = xOffset;
-                    for (uint i = 0; i < line.size(); i++)
-                    {
-                        // Assuming, that the count of vertices and texture coordinates is equal
-                        for (uint j = 0; j < line[i]->spVertices->size(); j++)
-                        {
-                            const glm::vec3& rVertex = line[i]->spVertices->at(j);
-                            rVertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
-                            const glm::vec2& rTextureCoordinate = line[i]->spTextureCoordinates->at(j);
-                            rTextureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
-                        }
-
-						// Save information about layouting of (fit)word to flow words vector
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).x = (int)xPixelPen;
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).y = std::ceil(abs(yPixelPen) - lineHeight);
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).width = (int)line.at(i)->pixelWidth;
-						mFlowWords.at(flowWordsIndex).subWords.at(subFlowWordsIndex).lettersXOffsets = line.at(i)->lettersXOffsets;
-
-						// Increment indices
-						int subIndexCount = (int)mFlowWords.at(flowWordsIndex).subWords.size();
-						subFlowWordsIndex++;
-						if (subFlowWordsIndex >= subIndexCount)
+						// Decide what to do
+						if (type == FlowEntityType::Space)
 						{
-							flowWordsIndex++; // next flow word should have at lease one sub word. Otherwise there must have been a failure and this code is not reached
-							subFlowWordsIndex = 0;
+							// Add as many pixels as the spaces would need
+							innerCount = dynamic_cast<FlowSpace const *>(entities[paragraphIndex].at(flowEntityIndex).get())->count;
+							for (uint i = innerEnd; i < innerCount; i++)
+							{
+								// Decide whether it fits in line or not
+								float newLineWidth = lineWidth + mPixelOfSpace;
+								if (newLineWidth <= mWidth)
+								{
+									lineWidth = newLineWidth;
+									spaceCount++; // remember how many spaces are in that line
+								}
+								else
+								{
+									innerEnd = i;
+									break;
+								}
+							}
+						}
+						else // Word
+						{
+							// Add as many words as available
+							FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(entities[paragraphIndex].at(flowEntityIndex).get());
+							innerCount = pFlowWord->subWords.size();
+							for (uint i = innerEnd; i < innerCount; i++)
+							{
+								// Decide whether it fits in line or not
+								float newLineWidth = lineWidth + pFlowWord->subWords.at(i)->upWord->pixelWidth;
+								if (newLineWidth <= mWidth)
+								{
+									lineWidth = newLineWidth;
+								}
+								else
+								{
+									innerEnd = i;
+									break;
+								}
+							}
 						}
 
-                        // Advance xPen
-                        xPixelPen += dynamicSpace + line[i]->pixelWidth;
-                    }
+						// Add flow entity to line
+						line.push_back(entities[paragraphIndex].at(flowEntityIndex).get());
 
-                    // Advance yPen
-                    yPixelPen -= lineHeight;
-                }
-            }*/
+						// Entity is completely drawn, next one please
+						if (innerEnd + 1 == innerCount)
+						{
+							flowEntityIndex++;
+							innerEnd = 0; // reset end since next entity is about to be used
+						}
+					}
+
+					// For last word in last line, set inner end counter to complete count since it is used later for index bounding
+					if (flowEntityIndex >= entities[paragraphIndex].size())
+					{
+						FlowEntityType type = entities[paragraphIndex].back()->getType();
+						if (type == FlowEntityType::Space)
+						{
+							innerEnd = dynamic_cast<FlowSpace const *>(entities[paragraphIndex].back().get())->count;
+						}
+						else
+						{
+							innerEnd = dynamic_cast<FlowWord const *>(entities[paragraphIndex].back().get())->subWords.size();
+						}
+
+					}
+					// *** PREPARE DRAWING ***
+
+					// Remember longest line's width
+					mFlowWidth = mFlowWidth < glm::ceil(lineWidth) ? glm::ceil(lineWidth) : mFlowWidth;
+
+					// Decide dynamic space for line
+					float dynamicSpace = mPixelOfSpace;
+					if (line.size() > 1)
+					{
+						if (
+							mAlignment == TextFlowAlignment::JUSTIFY
+							&& flowEntityIndex < entities[paragraphIndex].size() // do not use dynamic space for last line
+							&& line.size() > 1) // do not use dynamic space when there is only one word
+						{
+							// For justify, do something dynamic
+							float wordWidth = lineWidth - (spaceCount * mPixelOfSpace);
+							dynamicSpace = (lineWidth - wordWidth) / (float)spaceCount;
+						}
+					}
+
+					// Now decide xOffset for line
+					float xOffset = 0;
+					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+					{
+						xOffset = (float)mWidth - lineWidth;
+						if (mAlignment == TextFlowAlignment::CENTER)
+						{
+							xOffset /= 2.0f;
+						}
+					}
+
+					// *** DRAW LINES ***
+
+					// Combine word geometry to one renderable line
+					float xPixelPen = xOffset;
+					for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++)
+					{
+						// Check what entity is given
+						FlowEntityType type = line.at(entityIndex)->getType();
+
+						// Decide what to do
+						if (type == FlowEntityType::Space)
+						{
+							// Convert to flow space
+							FlowSpace* pFlowSpace = dynamic_cast<FlowSpace*>(line.at(entityIndex));
+
+							// Advance xPen
+							uint endSpaceIndex = entityIndex == line.size() - 1 ? innerEnd : pFlowSpace->count;
+							uint spaceIndex = entityIndex == 0 ? innerStart : 0;
+							for (; spaceIndex < endSpaceIndex; spaceIndex++)
+							{
+								xPixelPen += dynamicSpace;
+							}
+						}
+						else // Word
+						{
+							// Convert to flow word
+							FlowWord* pFlowWord = dynamic_cast<FlowWord*>(line.at(entityIndex));
+
+							// Go over sub words which are part of line
+							uint endSubWordIndex = entityIndex == line.size() - 1 ? innerEnd : pFlowWord->subWords.size();
+							uint subWordIndex = entityIndex == 0 ? innerStart : 0;
+							for (; subWordIndex < endSubWordIndex; subWordIndex++)
+							{
+								// Fetch pointer to word
+								const auto* pWord = pFlowWord->subWords.at(subWordIndex)->upWord.get();
+
+								// Push back vertices and texture coordiantes
+								for (uint i = 0; i < pWord->spVertices->size(); i++)
+								{
+									const glm::vec3& rVertex = pWord->spVertices->at(i);
+									rVertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
+									const glm::vec2& rTextureCoordinate = pWord->spTextureCoordinates->at(i);
+									rTextureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+								}
+
+								// Save position stuff in subword
+								pFlowWord->subWords.at(subWordIndex)->x = (int)xPixelPen;
+								pFlowWord->subWords.at(subWordIndex)->y = std::ceil(abs(yPixelPen) - lineHeight);
+
+								// Advance xPen
+								xPixelPen += pWord->pixelWidth;
+							}
+						}
+					}
+
+					// Advance yPen
+					yPixelPen -= lineHeight;
+				}
+			}
         }
 
         // If failure appeared, clean up
@@ -545,7 +628,6 @@ namespace eyegui
             rVertices.clear();
             rTextureCoordinates.clear();
 			mFlowHeight = 0;
-			mFlowEntities.clear();
         }
 		else
 		{
@@ -557,6 +639,15 @@ namespace eyegui
 			{
 				mHeight = mFlowHeight;
 			}
+
+			// Transfer all entities to member
+			for (auto& entitiesOfParagraph : entities)
+			{
+				mFlowEntities.insert(mFlowEntities.end(),
+					std::make_move_iterator(entitiesOfParagraph.begin()),
+					std::make_move_iterator(entitiesOfParagraph.end())
+					);
+			}	
 		}
     }
 
