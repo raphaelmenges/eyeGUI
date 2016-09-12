@@ -427,22 +427,25 @@ namespace eyegui
 		if (!failure)
 		{
 			// Go over paragraphs
-			for (uint paragraphIndex = 0; paragraphIndex < paragraphs.size(); paragraphIndex++)
+			for (uint paragraphIndex = 0; paragraphIndex < entities.size(); paragraphIndex++)
 			{
-				// *** SETUP LINES ***
+				// *** SETUP LINES OF PARAGRAPH ***
 
 				// Prepare some values
-				uint flowEntityIndex = 0;
+				uint entityIndex = 0;
 
 				// Remember where last line stopped
 				uint innerEnd = 0; // either count for space or sub word index within word. Do not access that but one before!
 				uint innerStart = 0; // same as above but holds information where to start for that line
 
 				// Go over lines to write paragraph
+				bool hasNext = !entities[paragraphIndex].empty();
 				while (
-					flowEntityIndex < entities[paragraphIndex].size() // entities left for new line
+					hasNext // entities left for new line
 					&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
 				{
+					// *** SETUP SINGLE LINE IN PARAGRAPH ***
+
 					// Remember where that lines started since it is the end of the last
 					innerStart = innerEnd;
 
@@ -450,23 +453,27 @@ namespace eyegui
 					float lineWidth = 0;
 					std::vector<FlowEntity*> line;
 					uint spaceCount = 0;
+					bool spaceLeft = true;
 
 					// Still entities in the paragraph and enough space? Fill into current line!
 					while (
-						flowEntityIndex < entities[paragraphIndex].size() // entities left to draw into that line
-						&& lineWidth < mWidth)
+						hasNext // entities left to draw into that line
+						&& spaceLeft) // whether space is available
 					{
 						// Check what entity is given
-						FlowEntityType type = entities[paragraphIndex].at(flowEntityIndex)->getType();
+						FlowEntityType type = entities[paragraphIndex].at(entityIndex)->getType();
 
 						// Count of internal (either space count or subword count)
 						uint innerCount = 0;
+
+						// Bool whether to add entity
+						bool addEntity = false;
 
 						// Decide what to do
 						if (type == FlowEntityType::Space)
 						{
 							// Add as many pixels as the spaces would need
-							innerCount = dynamic_cast<FlowSpace const *>(entities[paragraphIndex].at(flowEntityIndex).get())->count;
+							innerCount = dynamic_cast<FlowSpace const *>(entities[paragraphIndex].at(entityIndex).get())->count;
 							for (uint i = innerEnd; i < innerCount; i++)
 							{
 								// Decide whether it fits in line or not
@@ -475,10 +482,12 @@ namespace eyegui
 								{
 									lineWidth = newLineWidth;
 									spaceCount++; // remember how many spaces are in that line
+									addEntity = true; // at least one space is in line
 								}
 								else
 								{
 									innerEnd = i;
+									spaceLeft = false;
 									break;
 								}
 							}
@@ -486,7 +495,7 @@ namespace eyegui
 						else // Word
 						{
 							// Add as many words as available
-							FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(entities[paragraphIndex].at(flowEntityIndex).get());
+							FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(entities[paragraphIndex].at(entityIndex).get());
 							innerCount = pFlowWord->subWords.size();
 							for (uint i = innerEnd; i < innerCount; i++)
 							{
@@ -495,28 +504,36 @@ namespace eyegui
 								if (newLineWidth <= mWidth)
 								{
 									lineWidth = newLineWidth;
+									addEntity = true; // at least one word is in line
 								}
 								else
 								{
 									innerEnd = i;
+									spaceLeft = false;
 									break;
 								}
 							}
 						}
 
-						// Add flow entity to line
-						line.push_back(entities[paragraphIndex].at(flowEntityIndex).get());
-
-						// Entity is completely drawn, next one please
-						if (innerEnd + 1 == innerCount)
+						if (addEntity)
 						{
-							flowEntityIndex++;
-							innerEnd = 0; // reset end since next entity is about to be used
+							// Add flow entity to line
+							line.push_back(entities[paragraphIndex].at(entityIndex).get());
+
+							// Entity is completely drawn, next one please
+							if (innerEnd + 1 == innerCount)
+							{
+								entityIndex++;
+								innerEnd = 0; // reset end since next entity is about to be used
+
+								// Decide whether has next
+								hasNext = entities[paragraphIndex].size() > entityIndex;
+							}
 						}
 					}
 
 					// For last word in last line, set inner end counter to complete count since it is used later for index bounding
-					if (flowEntityIndex >= entities[paragraphIndex].size())
+					if (!hasNext)
 					{
 						FlowEntityType type = entities[paragraphIndex].back()->getType();
 						if (type == FlowEntityType::Space)
@@ -536,17 +553,14 @@ namespace eyegui
 
 					// Decide dynamic space for line
 					float dynamicSpace = mPixelOfSpace;
-					if (line.size() > 1)
+					if (
+						mAlignment == TextFlowAlignment::JUSTIFY
+						&& hasNext // do not use dynamic space for last line
+						&& line.size() > 1) // do not use dynamic space when there is only one word
 					{
-						if (
-							mAlignment == TextFlowAlignment::JUSTIFY
-							&& flowEntityIndex < entities[paragraphIndex].size() // do not use dynamic space for last line
-							&& line.size() > 1) // do not use dynamic space when there is only one word
-						{
-							// For justify, do something dynamic
-							float wordWidth = lineWidth - (spaceCount * mPixelOfSpace);
-							dynamicSpace = (lineWidth - wordWidth) / (float)spaceCount;
-						}
+						// For justify, do something dynamic
+						float wordWidth = lineWidth - (spaceCount * mPixelOfSpace);
+						dynamicSpace = (lineWidth - wordWidth) / (float)spaceCount;
 					}
 
 					// Now decide xOffset for line
@@ -560,7 +574,7 @@ namespace eyegui
 						}
 					}
 
-					// *** DRAW LINES ***
+					// *** DRAW LINE ***
 
 					// Combine word geometry to one renderable line
 					float xPixelPen = xOffset;
@@ -645,8 +659,7 @@ namespace eyegui
 			{
 				mFlowEntities.insert(mFlowEntities.end(),
 					std::make_move_iterator(entitiesOfParagraph.begin()),
-					std::make_move_iterator(entitiesOfParagraph.end())
-					);
+					std::make_move_iterator(entitiesOfParagraph.end()));
 			}	
 		}
     }
