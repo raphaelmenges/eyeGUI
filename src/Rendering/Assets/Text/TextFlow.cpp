@@ -694,7 +694,7 @@ namespace eyegui
 
             // Combine results from recursive call
             std::vector<Word> leftWord = calculateFitWord(content.substr(0, left), maxPixelWidth, scale);
-            std::vector<Word> rightWord = calculateFitWord(content.substr(left+1, right), maxPixelWidth, scale);
+            std::vector<Word> rightWord = calculateFitWord(content.substr(left, right), maxPixelWidth, scale);
 
             // If one or more of both are empty, forget it
             if (leftWord.empty() || rightWord.empty())
