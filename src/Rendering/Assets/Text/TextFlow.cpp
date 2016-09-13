@@ -418,19 +418,19 @@ namespace eyegui
 
 				// Prepare next loop
 				globalEntityCount++;
-				index = endIndex; // increment by for loop, too
+                index = endIndex; // incremented by for loop, too
 			}
 		}
-
-		// *** FILL LINES AND DRAW THEM ***
 
 		// Go over entities and draw them
 		if (!failure)
 		{
+            // *** FILL LINES OF ALL PARAGRAPHS AND DRAW THEM ***
+
 			// Go over paragraphs
 			for (uint paragraphIndex = 0; paragraphIndex < entities.size(); paragraphIndex++)
 			{
-				// *** SETUP LINES OF PARAGRAPH ***
+                // *** SETUP LINES OF PARAGRAPH ***
 
 				// Currently processed entity within paragraph
 				uint entityIndex = 0;
@@ -438,11 +438,8 @@ namespace eyegui
 				// Used to know at drawing in which part of first entity to start
 				uint initialPartIndex = 0;
 
-				// Index of last part within last entity for line
-				uint lastPartIndex = 0;
-
-				// Bool that tells whether entity of previous line is still used
-				bool entityPartsLeft = false;
+                // Index of next part of entity to draw
+                uint nextPartIndex = 0;
 
 				// Bool which indicates whether there are still entities to draw
 				bool hasNext = !entities[paragraphIndex].empty();
@@ -453,7 +450,7 @@ namespace eyegui
 					&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
 				{
 					// Initial part index for drawing
-					initialPartIndex = entityPartsLeft ? lastPartIndex + 1 : 0;
+                    initialPartIndex = nextPartIndex; // either last part is empty since last line has drawn complete word or it holds the last drawn index
 
 					// Pixel width of current line
 					float lineWidth = 0;
@@ -468,9 +465,12 @@ namespace eyegui
 					bool spaceLeft = true;
 
 					// Current index within current entity [0..partCount]
-					uint partIndex = initialPartIndex; 
+                    uint partIndex = initialPartIndex;
 
-					// *** SETUP SINGLE LINE IN PARAGRAPH ***
+                    // Count of parts of current entity
+                    uint partCount = 0;
+
+                    // *** SETUP SINGLE LINE IN PARAGRAPH ***
 
 					// Go over parts to build up line
 					while (
@@ -482,9 +482,6 @@ namespace eyegui
 
 						// Check which entity is given
 						FlowEntityType type = entities[paragraphIndex].at(entityIndex)->getType();
-
-						// Count of parts of current entity
-						uint partCount = 0;
 
 						// Decide what to do
 						if (type == FlowEntityType::Space)
@@ -524,7 +521,7 @@ namespace eyegui
 						if (addEntityToLine) { line.push_back(entities[paragraphIndex].at(entityIndex).get()); }
 
 						// Check whether entity was completely drawn
-						if (entityPartsLeft = (partIndex >= partCount)) // should be equal when completely drawn
+                        if (partIndex >= partCount) // should be equal when completely drawn
 						{
 							// Entity completely drawn, go on with next one
 							partIndex = 0;
@@ -537,8 +534,10 @@ namespace eyegui
 						{
 							// Entity not completely drawn
 							spaceLeft = false;
-						}
-						lastPartIndex = partIndex; // always update last part index
+
+                            // Remember where to go on in next line
+                            nextPartIndex = partIndex;
+						} 
 					}
 
 					// *** PREPARE DRAWING ***
@@ -585,11 +584,10 @@ namespace eyegui
 
 							// Just advance xPen
 							uint spaceCount = pFlowSpace->count;
-							if (
-								lineEntity == line.size() - 1 // last entity in line
-								&& entityPartsLeft) // last entity in line has not all parts in that line
+                            if (lineEntity == line.size() - 1 // last entity in line
+                                && hasNext) // using next part index make only sense when there is something after
 							{
-								spaceCount = lastPartIndex + 1;
+                                spaceCount = nextPartIndex;
 							}
 							uint spaceIndex = lineEntity == 0 ? initialPartIndex : 0;
 							for (; spaceIndex < spaceCount; spaceIndex++)
@@ -603,11 +601,10 @@ namespace eyegui
 
 							// Go over sub words which are part of line
 							uint subWordCount = pFlowWord->subWords.size();
-							if (
-								lineEntity == line.size() - 1 // last entity in line
-								&& entityPartsLeft) // last entity in line has not all parts in line
+                            if (lineEntity == line.size() - 1 // last entity in line
+                                && hasNext) // using next part index make only sense when there is something after
 							{
-								subWordCount = lastPartIndex + 1;
+                                subWordCount = nextPartIndex;
 							}
 							uint subWordIndex = lineEntity == 0 ? initialPartIndex : 0;
 							for (; subWordIndex < subWordCount; subWordIndex++)
