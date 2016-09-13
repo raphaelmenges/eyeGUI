@@ -438,7 +438,7 @@ namespace eyegui
 				// Used to know at drawing in which part of first entity to start
 				uint initialPartIndex = 0;
 
-				// Index of last entity part for line within last entity
+				// Index of last part within last entity for line
 				uint lastPartIndex = 0;
 
 				// Bool that tells whether entity of previous line is still used
@@ -467,7 +467,7 @@ namespace eyegui
 					// Indicator whether is still room for more in the current line
 					bool spaceLeft = true;
 
-					// Current index withing current entity. [0..partCount]
+					// Current index within current entity [0..partCount]
 					uint partIndex = initialPartIndex; 
 
 					// *** SETUP SINGLE LINE IN PARAGRAPH ***
@@ -480,7 +480,7 @@ namespace eyegui
 						// Whether to add entity to line or not
 						bool addEntityToLine = false;
 
-						// Check what entity is given
+						// Check which entity is given
 						FlowEntityType type = entities[paragraphIndex].at(entityIndex)->getType();
 
 						// Count of parts of current entity
@@ -495,7 +495,7 @@ namespace eyegui
 							// Go over parts and check for each whether fits into line
 							while (
 								partIndex < partCount // still within entity
-								&& lineWidth + mPixelOfSpace <= mWidth) // still space left
+								&& (lineWidth + mPixelOfSpace) <= mWidth) // still space left
 							{
 								addEntityToLine = true;
 								lineWidth += mPixelOfSpace;
@@ -512,7 +512,7 @@ namespace eyegui
 							// Go over parts and check for each whether fits into line
 							while (
 								partIndex < partCount // still within entity
-								&& lineWidth + pFlowWord->subWords.at(partIndex)->upWord->pixelWidth <= mWidth) // still space left
+								&& (lineWidth + pFlowWord->subWords.at(partIndex)->upWord->pixelWidth) <= mWidth) // still space left
 							{
 								addEntityToLine = true;
 								lineWidth += pFlowWord->subWords.at(partIndex)->upWord->pixelWidth;
@@ -524,12 +524,11 @@ namespace eyegui
 						if (addEntityToLine) { line.push_back(entities[paragraphIndex].at(entityIndex).get()); }
 
 						// Check whether entity was completely drawn
-						if (partIndex >= partCount) // should be equal when completey drawn
+						if (entityPartsLeft = (partIndex >= partCount)) // should be equal when completely drawn
 						{
-							// Entity completely drawn, go on
+							// Entity completely drawn, go on with next one
 							partIndex = 0;
 							entityIndex++;
-							entityPartsLeft = false;
 
 							// Check whether there are entities left
 							hasNext = entityIndex < entities[paragraphIndex].size();
@@ -538,9 +537,8 @@ namespace eyegui
 						{
 							// Entity not completely drawn
 							spaceLeft = false;
-							entityPartsLeft = true;
 						}
-						lastPartIndex = partIndex;
+						lastPartIndex = partIndex; // always update last part index
 					}
 
 					// *** PREPARE DRAWING ***
@@ -575,25 +573,25 @@ namespace eyegui
 
 					// Combine word geometry to one renderable line
 					float xPixelPen = xOffset;
-					for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++)
+					for (uint lineEntity = 0; lineEntity < line.size(); lineEntity++)
 					{
 						// Check what entity is given
-						FlowEntityType type = line.at(entityIndex)->getType();
+						FlowEntityType type = line.at(lineEntity)->getType();
 
 						// Decide what to do
 						if (type == FlowEntityType::Space)
 						{
-							FlowSpace* pFlowSpace = dynamic_cast<FlowSpace*>(line.at(entityIndex));
+							FlowSpace* pFlowSpace = dynamic_cast<FlowSpace*>(line.at(lineEntity));
 
 							// Just advance xPen
 							uint spaceCount = pFlowSpace->count;
 							if (
-								entityIndex == line.size() - 1 // last entity in line
+								lineEntity == line.size() - 1 // last entity in line
 								&& entityPartsLeft) // last entity in line has not all parts in that line
 							{
 								spaceCount = lastPartIndex + 1;
 							}
-							uint spaceIndex = entityIndex == 0 ? initialPartIndex : 0;
+							uint spaceIndex = lineEntity == 0 ? initialPartIndex : 0;
 							for (; spaceIndex < spaceCount; spaceIndex++)
 							{
 								xPixelPen += dynamicSpace;
@@ -601,17 +599,17 @@ namespace eyegui
 						}
 						else // Word
 						{
-							FlowWord* pFlowWord = dynamic_cast<FlowWord*>(line.at(entityIndex));
+							FlowWord* pFlowWord = dynamic_cast<FlowWord*>(line.at(lineEntity));
 
 							// Go over sub words which are part of line
 							uint subWordCount = pFlowWord->subWords.size();
 							if (
-								entityIndex == line.size() - 1 // last entity in line
+								lineEntity == line.size() - 1 // last entity in line
 								&& entityPartsLeft) // last entity in line has not all parts in line
 							{
 								subWordCount = lastPartIndex + 1;
 							}
-							uint subWordIndex = entityIndex == 0 ? initialPartIndex : 0;
+							uint subWordIndex = lineEntity == 0 ? initialPartIndex : 0;
 							for (; subWordIndex < subWordCount; subWordIndex++)
 							{
 								// Fetch pointer to word
