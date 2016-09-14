@@ -94,18 +94,28 @@ namespace eyegui
         streamlineLineEnding(copyContent);
 
         // Structures for OpenGL
-        std::vector<glm::vec3> vertices;
-        std::vector<glm::vec2> textureCoordinates;
+        RenderWordVertices vertices;
 
         // Let the subclasses to the work
-        specialCalculateMesh(copyContent, lineHeight, vertices, textureCoordinates);
+        specialCalculateMesh(copyContent, lineHeight, vertices);
 
         // Vertex count
         mVertexCount = (GLuint)vertices.size();
 
+        // Create buffers with positions and texture coordinates
+        std::vector<glm::vec3> positions;
+        positions.reserve(mVertexCount);
+        std::vector<glm::vec2> textureCoordinates;
+        textureCoordinates.reserve(mVertexCount);
+        for(int i = 0; i < mVertexCount; i++)
+        {
+            positions.push_back(vertices.at(i).first);
+            textureCoordinates.push_back(vertices.at(i).second);
+        }
+
         // Fill into buffer
         glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mVertexCount * 3 * sizeof(float), positions.data(), GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, mTextureCoordinateBuffer);
         glBufferData(GL_ARRAY_BUFFER, mVertexCount * 2 * sizeof(float), textureCoordinates.data(), GL_DYNAMIC_DRAW);
@@ -114,12 +124,11 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    Text::Word Text::calculateWord(std::u16string content, float scale) const
+    RenderWord Text::calculateWord(std::u16string content, float scale) const
     {
         // Empty word
-        Word word;
-        word.spVertices = std::shared_ptr<std::vector<glm::vec3> >(new std::vector<glm::vec3>);
-        word.spTextureCoordinates = std::shared_ptr<std::vector<glm::vec2> >(new std::vector<glm::vec2>);
+        RenderWord word;
+        word.spVertices = std::shared_ptr<RenderWordVertices>(new RenderWordVertices);
 		word.lettersXOffsets.reserve(content.size());
 
         // Fill word with data
@@ -156,19 +165,12 @@ namespace eyegui
 			word.lettersXOffsets.push_back(xPixelPen);
 
             // Fill into data blocks
-            word.spVertices->push_back(vertexA);
-            word.spVertices->push_back(vertexB);
-            word.spVertices->push_back(vertexC);
-            word.spVertices->push_back(vertexC);
-            word.spVertices->push_back(vertexD);
-            word.spVertices->push_back(vertexA);
-
-            word.spTextureCoordinates->push_back(textureCoordinateA);
-            word.spTextureCoordinates->push_back(textureCoordinateB);
-            word.spTextureCoordinates->push_back(textureCoordinateC);
-            word.spTextureCoordinates->push_back(textureCoordinateC);
-            word.spTextureCoordinates->push_back(textureCoordinateD);
-            word.spTextureCoordinates->push_back(textureCoordinateA);
+            word.spVertices->push_back(std::make_pair(vertexA, textureCoordinateA));
+            word.spVertices->push_back(std::make_pair(vertexB, textureCoordinateB));
+            word.spVertices->push_back(std::make_pair(vertexC, textureCoordinateC));
+            word.spVertices->push_back(std::make_pair(vertexC, textureCoordinateC));
+            word.spVertices->push_back(std::make_pair(vertexD, textureCoordinateD));
+            word.spVertices->push_back(std::make_pair(vertexA, textureCoordinateA));
         }
 
         // Set width of whole word

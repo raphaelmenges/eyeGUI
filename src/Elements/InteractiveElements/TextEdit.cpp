@@ -131,7 +131,7 @@ namespace eyegui
 
     void TextEdit::moveCursorToStart()
     {
-        TextFlow::FlowWord flowWord;
+        FlowWord flowWord;
         if (mupTextFlow->getFlowWord(
             0, flowWord))
         {
@@ -143,7 +143,7 @@ namespace eyegui
 
     void TextEdit::moveCursorToEnd()
     {
-        TextFlow::FlowWord flowWord;
+        FlowWord flowWord;
         if (mupTextFlow->getFlowWord(
             mupTextFlow->getFlowWordCount() - 1, flowWord))
         {
@@ -156,7 +156,7 @@ namespace eyegui
 	void TextEdit::addContentAtCursor(std::u16string content)
 	{
         // When there is already text and a active word, use that cursor position
-        TextFlow::FlowWord flowWord;
+        FlowWord flowWord;
         int subWordIndex = 0;
         int letterIndex = 0;
 		if (mupActiveWord != NULL)
@@ -201,7 +201,7 @@ namespace eyegui
 	{
 		if (mupActiveWord != NULL)
 		{
-			TextFlow::FlowWord flowWord;
+            FlowWord flowWord;
 			int subWordIndex = 0;
 			int letterIndex = 0;
 			if (mupTextFlow->eraseContent(
@@ -289,7 +289,7 @@ namespace eyegui
 			// *** ACTIVE WORD ***
 
 			// Get currently selected word
-			TextFlow::FlowWord newActiveWord;
+            FlowWord newActiveWord;
 
 			// Decide whether active word has changed
 			if (mupTextFlow->getFlowWord(flowX, flowY + oldTextFlowYOffset, newActiveWord))
@@ -481,7 +481,7 @@ namespace eyegui
 		return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getHeight() + mupTextFlow->getLineHeight()) - mHeight)));
 	}
 
-	void TextEdit::setActiveWord(const TextFlow::FlowWord& rFlowWord, bool setCursorToEnd)
+    void TextEdit::setActiveWord(const FlowWord& rFlowWord, bool setCursorToEnd)
 	{
 		/*
 		if (mupActiveWord != NULL)
@@ -493,7 +493,7 @@ namespace eyegui
 		}
 
 		// Save active word in memmber
-		mupActiveWord = std::unique_ptr<TextFlow::FlowWord>(new TextFlow::FlowWord(rFlowWord));
+        mupActiveWord = std::unique_ptr<FlowWord>(new FlowWord(rFlowWord));
 		mActiveWordFading = 0.f;
 
 		// Set cursor
@@ -537,7 +537,7 @@ namespace eyegui
                     if(mSubWordIndex >= mupActiveWord->getSubWordCount())
                     {
                         // No more within that word, try next
-                        TextFlow::FlowWord nextWord;
+                        FlowWord nextWord;
                         if (mupTextFlow->getFlowWord(
                             mupActiveWord->index + 1, nextWord))
                         {
@@ -584,7 +584,7 @@ namespace eyegui
                     if(mSubWordIndex < 0 )
                     {
                         // No more within that word, try next
-                        TextFlow::FlowWord previousWord;
+                        FlowWord previousWord;
                         if (mupTextFlow->getFlowWord(
                             mupActiveWord->index - 1, previousWord))
                         {

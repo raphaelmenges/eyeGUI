@@ -87,7 +87,7 @@ namespace eyegui
 		int calculateTextFlowYOffset() const;
 
 		// Set new active word
-		void setActiveWord(const TextFlow::FlowWord& rFlowWord, bool setCursorToEnd);
+        void setActiveWord(const FlowWord& rFlowWord, bool setCursorToEnd);
 
         // Move cursor over letter rightward
         void moveCursorOverLettersRightward(int letterCount);
@@ -96,7 +96,7 @@ namespace eyegui
         void moveCursorOverLettersLeftward(int letterCount);
 
 		// Typedef
-		typedef std::pair<std::vector<TextFlow::SubFlowWord>, float> SubFlowWordAlphaPair;
+        typedef std::pair<std::vector<SubFlowWord>, float> SubFlowWordAlphaPair;
 
         // Members
         RenderItem const * mpBackground;
@@ -109,7 +109,7 @@ namespace eyegui
 		FontSize mFontSize;
 
 		// Active word and cursor position
-        std::unique_ptr<TextFlow::FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
+        std::unique_ptr<FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
 		int mSubWordIndex; // inside active sub word
 		int mLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word
 		

@@ -22,6 +22,19 @@ namespace eyegui
     class AssetManager;
 	class RenderItem;
 
+    // Typedef
+    typedef std::vector<std::pair<glm::vec3, glm::vec2> > RenderWordVertices;
+
+    // Struct for renderable word
+    struct RenderWord
+    {
+        // Position and texture coordinate
+        std::shared_ptr<RenderWordVertices> spVertices;
+        float pixelWidth;
+        std::vector<int> lettersXOffsets; // position after letter
+    };
+
+    // Class
     class Text
     {
     public:
@@ -57,15 +70,6 @@ namespace eyegui
 
     protected:
 
-        // Struct for word
-        struct Word
-        {
-            std::shared_ptr<std::vector<glm::vec3> > spVertices;
-            std::shared_ptr<std::vector<glm::vec2> > spTextureCoordinates;
-            float pixelWidth;
-			std::vector<int> lettersXOffsets; // position after letter
-        };
-
         // Calculate mesh (in pixel coordinates). Calls specialized method of subclasses
         void calculateMesh();
 
@@ -73,11 +77,10 @@ namespace eyegui
         virtual void specialCalculateMesh(
             std::u16string streamlinedContent,
             float lineHeight,
-			std::vector<glm::vec3>& rVertices,
-            std::vector<glm::vec2>& rTextureCoordinates) = 0;
+            RenderWordVertices& rVertices) = 0;
 
         // Calculate single word and returns it
-        Word calculateWord(std::u16string content, float scale) const;
+        RenderWord calculateWord(std::u16string content, float scale) const;
 
 		// Prepare text
 		void prepareText();

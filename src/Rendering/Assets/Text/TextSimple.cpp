@@ -129,8 +129,8 @@ namespace eyegui
 
     void TextSimple::specialCalculateMesh(
             std::u16string streamlinedContent,
-            float lineHeight, std::vector<glm::vec3>& rVertices,
-            std::vector<glm::vec2>& rTextureCoordinates)
+            float lineHeight,
+            RenderWordVertices& rVertices)
     {
         // OpenGL setup done in calling method
 
@@ -152,15 +152,16 @@ namespace eyegui
         for(const std::u16string line : collectedLines)
         {
             // Just do whole line as one big word
-            Word word = calculateWord(line, mScale);
+            RenderWord word = calculateWord(line, mScale);
 
             // Assuming, that the count of vertices and texture coordinates is equal
             for (uint i = 0; i < word.spVertices->size(); i++)
-            {
-                const glm::vec3& rVertex = word.spVertices->at(i);
-                rVertices.push_back(glm::vec3(rVertex.x, rVertex.y + yPixelPen, rVertex.z));
-                const glm::vec2& rTextureCoordinate = word.spTextureCoordinates->at(i);
-                rTextureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+            {               
+                const std::pair<glm::vec3, glm::vec2>& rVertex = word.spVertices->at(i);
+                    rVertices.push_back(
+                        std::make_pair(
+                            glm::vec3(rVertex.first.x, rVertex.first.y + yPixelPen, rVertex.first.z),
+                            glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
             }
 
             // Advance yPen

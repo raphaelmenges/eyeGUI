@@ -59,8 +59,7 @@ namespace eyegui
         virtual void specialCalculateMesh(
             std::u16string streamlinedContent,
             float lineHeight,
-			std::vector<glm::vec3>& rVertices,
-            std::vector<glm::vec2>& rTextureCoordinates);
+            RenderWordVertices& rVertices);
 
         // Members
         int mWidth;

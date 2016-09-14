@@ -151,7 +151,7 @@ namespace eyegui
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
     }
 	
-	bool TextFlow::getFlowWord(int index, TextFlow::FlowWord& rFlowWord) const
+    bool TextFlow::getFlowWord(int index, FlowWord& rFlowWord) const
 	{
 		/*
 		if (index < mFlowWords.size())
@@ -311,8 +311,8 @@ namespace eyegui
 
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
-            float lineHeight, std::vector<glm::vec3>& rVertices,
-            std::vector<glm::vec2>& rTextureCoordinates)
+            float lineHeight,
+            RenderWordVertices& rVertices)
     {
 		// *** PREPARATION ***
 
@@ -394,7 +394,7 @@ namespace eyegui
 					}
 
 					// Create vector of fitting words
-					std::vector<Word> fitWords;
+                    std::vector<RenderWord> fitWords;
 					failure |= !insertFitWord(fitWords, paragraphs.at(paragraphIndex).substr(index, (endIndex - index) + 1), mWidth, mScale);
 
 					// Create entity
@@ -404,7 +404,7 @@ namespace eyegui
 					for (const auto& rFitWord : fitWords)
 					{
 						std::unique_ptr<SubFlowWord> upSubFlowWord = std::unique_ptr<SubFlowWord>(new SubFlowWord);
-						upSubFlowWord->upWord = std::unique_ptr<Word>(new Word(rFitWord)); // copy fit word
+                        upSubFlowWord->upWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
 						upFlowWord->subWords.push_back(std::move(upSubFlowWord));
 					}
 
@@ -612,13 +612,14 @@ namespace eyegui
 								// Fetch pointer to word
 								const auto* pWord = pFlowWord->subWords.at(subWordIndex)->upWord.get();
 
-								// Push back vertices and texture coordiantes
+                                // Push back positions and texture coordinates
 								for (uint i = 0; i < pWord->spVertices->size(); i++)
 								{
-									const glm::vec3& rVertex = pWord->spVertices->at(i);
-									rVertices.push_back(glm::vec3(rVertex.x + xPixelPen, rVertex.y + yPixelPen, rVertex.z));
-									const glm::vec2& rTextureCoordinate = pWord->spTextureCoordinates->at(i);
-									rTextureCoordinates.push_back(glm::vec2(rTextureCoordinate.s, rTextureCoordinate.t));
+                                    const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
+                                    rVertices.push_back(
+                                        std::make_pair(
+                                            glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
+                                            glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
 								}
 
 								// Save position stuff in subword
@@ -642,7 +643,6 @@ namespace eyegui
         {
             // Reset everything
             rVertices.clear();
-            rTextureCoordinates.clear();
 			mFlowWidth = 0;
 			mFlowHeight = 0;
 			mFlowEntities.clear();
@@ -669,10 +669,10 @@ namespace eyegui
 		}
     }
 
-    std::vector<Text::Word> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
+    std::vector<RenderWord> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
     {
         // Calculate word from content
-        Word word = calculateWord(content, scale);
+        RenderWord word = calculateWord(content, scale);
 
         // End of recursion
         if ((content.size() == 1 && word.pixelWidth > maxPixelWidth) || content.empty())
@@ -693,8 +693,8 @@ namespace eyegui
             int right = length - left;
 
             // Combine results from recursive call
-            std::vector<Word> leftWord = calculateFitWord(content.substr(0, left), maxPixelWidth, scale);
-            std::vector<Word> rightWord = calculateFitWord(content.substr(left, right), maxPixelWidth, scale);
+            std::vector<RenderWord> leftWord = calculateFitWord(content.substr(0, left), maxPixelWidth, scale);
+            std::vector<RenderWord> rightWord = calculateFitWord(content.substr(left, right), maxPixelWidth, scale);
 
             // If one or more of both are empty, forget it
             if (leftWord.empty() || rightWord.empty())
@@ -703,14 +703,14 @@ namespace eyegui
             }
             else
             {
-                std::vector<Word> words(leftWord);
+                std::vector<RenderWord> words(leftWord);
                 words.insert(words.end(), rightWord.begin(), rightWord.end());
                 return words;
             }
         }
     }
 
-    bool TextFlow::insertFitWord(std::vector<TextFlow::Word>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const
+    bool TextFlow::insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const
     {
         // Do nothing if input is empty
         if (rContent.empty())
@@ -718,7 +718,7 @@ namespace eyegui
             return true;
         }
 
-        std::vector<Word> newWords = calculateFitWord(rContent, maxPixelWidth, scale);
+        std::vector<RenderWord> newWords = calculateFitWord(rContent, maxPixelWidth, scale);
 
         // Check, whether call was successful
         if (newWords.empty())
