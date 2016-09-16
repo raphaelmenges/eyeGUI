@@ -62,6 +62,9 @@ namespace eyegui
 
     // String to float converter. Returns -1 at failure
     float stringToFloat(std::string value);
+
+    // Check whether coordinate within rectangle
+    bool insideRect(int rectX, int rectY, int width, int height, int x, int y);
 }
 
 #endif // HELPER_H_

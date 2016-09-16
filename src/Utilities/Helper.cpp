@@ -590,4 +590,12 @@ namespace eyegui
         // Return result
         return result;
     }
+
+    bool insideRect(int rectX, int rectY, int width, int height, int x, int y)
+    {
+        return (x >= rectX
+                && x < rectX + width
+                && y >= rectY
+                && y < rectY + height);
+    }
 }

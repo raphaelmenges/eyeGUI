@@ -133,6 +133,7 @@ namespace eyegui
 
     void TextEdit::moveCursorToStart()
     {
+        /*
         FlowWord flowWord;
         if (mupTextFlow->getFlowWord(
             0, flowWord))
@@ -141,6 +142,7 @@ namespace eyegui
             mSubWordIndex = 0;
             mLetterIndex = -1;
         }
+        */
     }
 
     void TextEdit::moveCursorToEnd()

@@ -156,6 +156,11 @@ namespace eyegui
         return (uint)mFlowEntities.size();
     }
 
+    std::u16string TextFlow::getContent(uint index, uint letterCount) const
+    {
+        return mContent.substr(index, letterCount);
+    }
+
     std::weak_ptr<const FlowEntity> TextFlow::getFlowEntity(uint index) const
     {
         if(index < mFlowEntities.size())
@@ -167,44 +172,61 @@ namespace eyegui
             return std::weak_ptr<const FlowEntity>();
         }
     }
-	
-    bool TextFlow::getFlowWord(int index, FlowWord& rFlowWord) const
-	{
-		/*
-		if (index < mFlowWords.size())
-		{
-			rFlowWord = mFlowWords.at(index);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-		*/
-		return false; // TODO: temporarly added
-	}
 
-	bool TextFlow::getFlowWord(int x, int y, FlowWord& rFlowWord) const
+    std::weak_ptr<const FlowEntity> TextFlow::getFlowEntity(int x, int y) const
 	{
-		/*
-		for (const auto& rTestFlowWord : mFlowWords)
+        for (const auto& rFlowEntity : mFlowEntities)
 		{
-            for (const auto& rSubWord : rTestFlowWord.subWords)
-			{
-				// Check whether coordinates inside sub word
-                if (x >= rSubWord.x
-                    && x < rSubWord.x + rSubWord.width
-                    && y >= rSubWord.y
-                    && y < rSubWord.y + getLineHeight())
-				{
-					// If check is true, return flow word
-                    rFlowWord = rTestFlowWord;
-					return true;
-				}
-			}
+            FlowEntity::Type type = rFlowEntity->getType();
+
+            switch(type)
+            {
+            case FlowEntity::Type::Space:
+            {
+                FlowSpace const * pFlowSpace = dynamic_cast<FlowSpace const *>(rFlowEntity.get());
+
+                if(insideRect(pFlowSpace->getX(), pFlowSpace->getY(), pFlowSpace->getPixelWidth(), getLineHeight(), x, y))
+                {
+                    return rFlowEntity;
+                }
+            }
+            break;
+
+            case FlowEntity::Type::Mark:
+            {
+                FlowMark const * pFlowMark = dynamic_cast<FlowMark const *>(rFlowEntity.get());
+
+                if(insideRect(pFlowMark->getX(), pFlowMark->getY(), pFlowMark->getPixelWidth(), getLineHeight(), x, y))
+                {
+                    return rFlowEntity;
+                }
+            }
+            break;
+
+            case FlowEntity::Type::Word:
+            {
+                FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(rFlowEntity.get());
+
+                for (const auto& rSubWord : pFlowWord->mSubWords)
+                {
+                    // Check whether coordinates inside sub word
+                    if(insideRect(rSubWord->getX(), rSubWord->getY(), rSubWord->getPixelWidth(), getLineHeight(), x, y))
+                    {
+                        return rFlowEntity;
+                    }
+                }
+            }
+            break;
+
+            default:
+            {
+                throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
+            }
+            }
 		}
-		*/
-		return false;
+
+        // Fallback
+        return std::weak_ptr<const FlowEntity>();
 	}
 
     bool TextFlow::getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const
@@ -320,11 +342,7 @@ namespace eyegui
 		return false; // TODO: temporarly added
     }
 
-	std::u16string TextFlow::getContent(int index, int letterCount) const
-	{
-		// TODO: what if letter count is negative?
-		return mContent.substr(index, letterCount);
-	}
+
 
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
@@ -453,6 +471,12 @@ namespace eyegui
                 }
                 break;
 
+                default:
+                {
+                    throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
+                    failure |= true;
+                }
+
                 }
 
                 // One entity was added
@@ -483,6 +507,9 @@ namespace eyegui
 
 				// Bool which indicates whether there are still entities to draw
 				bool hasNext = !entities[paragraphIndex].empty();
+
+                // Remeber previous filled entity to save position of first sub word of flow word later at drawing, f.e.
+                FlowEntity const * pPreviousFilledEntity = nullptr;
 
 				// Go over lines
 				while (
@@ -592,6 +619,13 @@ namespace eyegui
                             }
                         }
                         break;
+
+                        default:
+                        {
+                            throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
+                            failure |= true;
+                        }
+
 						}
 
                         // Add entity to line since at least something of it is drawn
@@ -673,6 +707,13 @@ namespace eyegui
 					float xPixelPen = xOffset;
                     for (uint lineIndex = 0; lineIndex < line.size(); lineIndex++)
 					{
+                        // Fill position
+                        if(pPreviousFilledEntity != line.at(lineIndex))
+                        {
+                            line.at(lineIndex)->mX = (int)xPixelPen;
+                            line.at(lineIndex)->mY = std::ceil(abs(yPixelPen) - lineHeight);
+                        }
+
                         FlowEntity::Type type = line.at(lineIndex)->getType();
 
 						// Decide what to do
@@ -686,6 +727,11 @@ namespace eyegui
                             if(!pFlowSpace->isCollapsed())
                             {
                                 xPixelPen += dynamicSpace;
+                                pFlowSpace->mPixelWidth = dynamicSpace;
+                            }
+                            else
+                            {
+                                pFlowSpace->mPixelWidth = 0;
                             }
 						}
                         break;
@@ -707,6 +753,9 @@ namespace eyegui
                                         glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
                             }
 
+                            // Fill position
+                            pFlowMark->mX = (int)xPixelPen;
+                            pFlowMark->mY = std::ceil(abs(yPixelPen) - lineHeight);
 
                             // Advance xPen
                             xPixelPen += pFlowMark->getPixelWidth();
@@ -743,7 +792,17 @@ namespace eyegui
 								xPixelPen += pWord->pixelWidth;
 							}
 						}
+
+                        default:
+                        {
+                            throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
+                            failure |= true;
                         }
+
+                        }
+
+                        // Update previous filled entity
+                        pPreviousFilledEntity = line.at(lineIndex);
 					}
 
 					// Advance yPen

@@ -39,117 +39,21 @@ namespace eyegui
         // Getter for index within entities vector
         uint getIndex() const { return mIndex; }
 
+        // Getter for position
+        int getX() const { return mX; }
+        int getY() const { return mY; }
+
     protected:
+
+        friend class TextFlow;
 
         // Members
         Type mType;
         uint mContentStartIndex; // index in content where flow entity starts
         uint mIndex; // index within flow entity vector
+        int mX; // relative in flow
+        int mY; // relative in flow
     };
-
-    // TODO: can be deleted probably later:
-    class FlowWord;
-
-    // Text flow class
-    class TextFlow : public Text
-    {
-    public:
-
-        // Constructor
-        TextFlow(
-            GUI const * pGUI,
-            AssetManager* pAssetManager,
-            Font const * pFont,
-            FontSize fontSize,
-            TextFlowAlignment alignment,
-            TextFlowVerticalAlignment verticalAlignment,
-            float scale,
-            std::u16string content,
-			bool overflowHeight);
-
-        // Destructor
-        virtual ~TextFlow();
-
-        // Transform and size (has to be called before first usage)
-        void transformAndSize(
-            int x,
-            int y,
-            int width,
-            int height);
-
-        // Draw
-        virtual void draw(
-			glm::vec4 color,
-			float alpha,
-			bool renderBackground = false,
-			int xOffset = 0,
-			int yOffset = 0) const;
-
-        // Get flow height (interesting if overflowHeight is true)
-        int getFlowHeight() const;
-
-		// Get pixel width of space letter in used font
-        float getPixelWidthOfSpace() const;
-
-        // Get count of flow entities
-        uint getFlowEntityCount() const;
-
-        // Get weak pointer to flow entity at index. Maybe empty when index not available
-        std::weak_ptr<const FlowEntity> getFlowEntity(uint index) const;
-
-
-
-
-
-
-
-
-		// Use position in flow coordinates to find a word. Returns false if not found
-		bool getFlowWord(int x, int y, FlowWord& rFlowWord) const;
-
-        // Get flow word, sub word index and letter index by content index. Returns whether successfull.
-        // rLetterIndex of -1 symbolizes position in front of first letter
-        bool getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const;
-
-        // Insert content after index of exisiting content.
-        // Fills resulting information about flow word, sub word index and letter index at end of insertion.
-        // Returns whether successull
-        bool insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
-
-        // Erases content from index to end index, including index and excluding index + length. Returns whether succesfully
-        bool eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
-
-		// Get content at given index plus length
-		std::u16string getContent(int index, int letterCount) const;
-
-    protected:
-
-        // Calculate mesh (in pixel coordinates)
-        virtual void specialCalculateMesh(
-            std::u16string streamlinedContent,
-            float lineHeight,
-            RenderWordVertices& rVertices);
-
-        // Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
-        std::vector<RenderWord> calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const;
-
-        // Inserts word into vector, returns true at success
-        bool insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
-
-        // Classify letter in terms of entity type
-        FlowEntity::Type classifyLetter(const char16_t& rLetter) const;
-
-        // Members
-        TextFlowAlignment mAlignment;
-        TextFlowVerticalAlignment mVerticalAlignment;
-        int mWidth;
-        int mHeight;
-		int mFlowWidth;
-        int mFlowHeight;
-		float mPixelOfSpace;
-		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
-        std::vector<std::shared_ptr<FlowEntity> > mFlowEntities; // holding information to make text manipulation possible
-	};
 
     // Class for sub flow word which forms parts of flow word
     class SubFlowWord
@@ -158,6 +62,13 @@ namespace eyegui
 
         // Getter for letter count
         uint getLetterCount() const { return (uint)mupWord->lettersXOffsets.size(); }
+
+        // Getter for position
+        int getX() const { return mX; }
+        int getY() const { return mY; }
+
+        // Getter for pixel width
+        int getPixelWidth() const { return mupWord->pixelWidth; }
 
     protected:
 
@@ -251,12 +162,16 @@ namespace eyegui
         // Getter whether collapsed
         bool isCollapsed() const { return mCollapsed; }
 
+        // Getter for pixel width
+        float getPixelWidth() const { return mPixelWidth; }
+
     protected:
 
         friend class TextFlow;
 
         // Members
         bool mCollapsed;
+        float mPixelWidth;
     };
 
     // Class for marks like question mark or dot within text flow
@@ -276,9 +191,114 @@ namespace eyegui
 
         friend class TextFlow;
 
-        // Word
+        // Members
         std::unique_ptr<RenderWord> mupWord; // geometry and information of word
     };
+
+    // TODO: can be deleted probably later:
+    class FlowWord;
+
+    // Text flow class
+    class TextFlow : public Text
+    {
+    public:
+
+        // Constructor
+        TextFlow(
+            GUI const * pGUI,
+            AssetManager* pAssetManager,
+            Font const * pFont,
+            FontSize fontSize,
+            TextFlowAlignment alignment,
+            TextFlowVerticalAlignment verticalAlignment,
+            float scale,
+            std::u16string content,
+			bool overflowHeight);
+
+        // Destructor
+        virtual ~TextFlow();
+
+        // Transform and size (has to be called before first usage)
+        void transformAndSize(
+            int x,
+            int y,
+            int width,
+            int height);
+
+        // Draw
+        virtual void draw(
+			glm::vec4 color,
+			float alpha,
+			bool renderBackground = false,
+			int xOffset = 0,
+			int yOffset = 0) const;
+
+        // Get flow height (interesting if overflowHeight is true)
+        int getFlowHeight() const;
+
+		// Get pixel width of space letter in used font
+        float getPixelWidthOfSpace() const;
+
+        // Get count of flow entities
+        uint getFlowEntityCount() const;
+
+        // Get content at given index plus length
+        std::u16string getContent(uint index, uint letterCount) const;
+
+        // Get weak pointer to flow entity at index. Maybe empty when index not available
+        std::weak_ptr<const FlowEntity> getFlowEntity(uint index) const;
+
+        // Use position in flow coordinates to get an entity. Maybe empty when index not available.
+        // Coordinates relative in pixel space of flow
+        std::weak_ptr<const FlowEntity> getFlowEntity(int x, int y) const;
+
+
+
+
+
+
+        // Get flow word, sub word index and letter index by content index. Returns whether successfull.
+        // rLetterIndex of -1 symbolizes position in front of first letter
+        bool getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const;
+
+        // Insert content after index of exisiting content.
+        // Fills resulting information about flow word, sub word index and letter index at end of insertion.
+        // Returns whether successull
+        bool insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
+
+        // Erases content from index to end index, including index and excluding index + length. Returns whether succesfully
+        bool eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
+
+
+
+    protected:
+
+        // Calculate mesh (in pixel coordinates)
+        virtual void specialCalculateMesh(
+            std::u16string streamlinedContent,
+            float lineHeight,
+            RenderWordVertices& rVertices);
+
+        // Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
+        std::vector<RenderWord> calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const;
+
+        // Inserts word into vector, returns true at success
+        bool insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
+
+        // Classify letter in terms of entity type
+        FlowEntity::Type classifyLetter(const char16_t& rLetter) const;
+
+        // Members
+        TextFlowAlignment mAlignment;
+        TextFlowVerticalAlignment mVerticalAlignment;
+        int mWidth;
+        int mHeight;
+		int mFlowWidth;
+        int mFlowHeight;
+		float mPixelOfSpace;
+		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
+        std::vector<std::shared_ptr<FlowEntity> > mFlowEntities; // holding information to make text manipulation possible
+	};
 }
 
 #endif // TEXT_FLOW_H_
