@@ -28,6 +28,9 @@ namespace eyegui
             scale,
             content)
     {
+       mTextWidth = 0;
+       mTextHeight = 0;
+
        // After construction, one can already construct the text.
        // Not like in text flow, which has to wait for a transform and resize
        calculateMesh();
@@ -36,8 +39,8 @@ namespace eyegui
 	TextSimple::TextSimple(const TextSimple& rOtherText) : Text(rOtherText)
 	{
 		// Copy members
-		this->mWidth = rOtherText.mWidth;
-		this->mHeight = rOtherText.mHeight;
+        this->mTextWidth = rOtherText.mTextWidth;
+        this->mTextHeight = rOtherText.mTextHeight;
 
 		// But create own mesh stuff!
 		calculateMesh();
@@ -68,7 +71,19 @@ namespace eyegui
 		int xOffset,
 		int yOffset) const
     {
-		// TODO: render background if necessary
+        // Draw background
+        if (renderBackground)
+        {
+            drawSimpleBackground(
+                mTextWidth,
+                mTextHeight,
+                mTextWidth,
+                mTextHeight,
+                0,
+                xOffset,
+                yOffset,
+                alpha);
+        }
 
         mpShader->bind();
         glBindVertexArray(mVertexArrayObject);
@@ -112,14 +127,14 @@ namespace eyegui
 		return mY;
 	}
 
-    int TextSimple::getWidth() const
+    int TextSimple::getTextWidth() const
     {
-        return mWidth;
+        return mTextWidth;
     }
 
-	int TextSimple::getHeight() const
+    int TextSimple::getTextHeight() const
 	{
-		return mHeight;
+        return mTextHeight;
 	}
 
 	std::u16string TextSimple::getContent() const
@@ -173,7 +188,7 @@ namespace eyegui
         }
 
         // Save used width and height
-        mWidth = (int)maxPixelWidth;
-        mHeight = (int)pixelHeight;
+        mTextWidth = (int)maxPixelWidth;
+        mTextHeight = (int)pixelHeight;
     }
 }

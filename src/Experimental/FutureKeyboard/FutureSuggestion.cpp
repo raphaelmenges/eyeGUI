@@ -217,8 +217,8 @@ namespace eyegui
     void FutureSuggestion::transformSuggestion()
     {
         mupSuggestion->transform(); // has to be called first to calculate width and height
-        int suggestionX = mX + (mWidth - mupSuggestion->getWidth()) / 2;
-        int suggestionY = mY + (mHeight - mupSuggestion->getHeight()) / 2;
+        int suggestionX = mX + (mWidth - mupSuggestion->getTextWidth()) / 2;
+        int suggestionY = mY + (mHeight - mupSuggestion->getTextHeight()) / 2;
 
         // Set position
         mupSuggestion->setPosition(suggestionX, suggestionY);

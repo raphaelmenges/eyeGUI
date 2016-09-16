@@ -49,8 +49,8 @@ namespace eyegui
         // Getter
 		int getX() const;
 		int getY() const;
-        int getWidth() const;
-		int getHeight() const;
+        int getTextWidth() const;
+        int getTextHeight() const;
 		std::u16string getContent() const;
 
     protected:
@@ -62,8 +62,8 @@ namespace eyegui
             RenderWordVertices& rVertices);
 
         // Members
-        int mWidth;
-        int mHeight;
+        int mTextWidth;
+        int mTextHeight;
 	};
 }
 

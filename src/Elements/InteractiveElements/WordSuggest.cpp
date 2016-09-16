@@ -151,7 +151,7 @@ namespace eyegui
                 {
                     // Uses real position, offset is already in suggestion
                     int x = rSuggestion->getX() - (mDelta / 2);
-                    int width = rSuggestion->getWidth() + mDelta;
+                    int width = rSuggestion->getTextWidth() + mDelta;
                     if (pInput->gazeX >= x && pInput->gazeX < x + width)
                     {
                         focusedSuggestion = i;
@@ -182,12 +182,12 @@ namespace eyegui
         }
 
         // *** UPDATE THRESHOLD ***
-        float standardWidth = (float)(mpAssetManager->createTextSimple(mFontSize, 1, u"hallo")->getWidth()); // just some width to compare to
+        float standardWidth = (float)(mpAssetManager->createTextSimple(mFontSize, 1, u"hallo")->getTextWidth()); // just some width to compare to
         int count = (int)mSuggestions.size();
         for (int i = 0; i < count; i++)
         {
             // Get width of suggestion to adapt threshold speed to length of suggestion
-            float width = float(mSuggestions[i]->getWidth());
+            float width = float(mSuggestions[i]->getTextWidth());
             float lengthCompensationMultiplicator = 0.75f + 0.25f * (standardWidth / width); // raw values would be too heavy
 
             // Update threshold
@@ -280,7 +280,7 @@ namespace eyegui
                         mpLayout->getLayoutHeight(),
                         mSuggestions[i]->getX() - (mDelta / 2),
                         mY,
-                        mSuggestions[i]->getWidth() + mDelta,
+                        mSuggestions[i]->getTextWidth() + mDelta,
                         mHeight);
 
                     // Draw threshold
@@ -378,7 +378,7 @@ namespace eyegui
         {
             // Fetch size of space in font (somehow strange way, but who cares)
             auto spaceText = mpAssetManager->createTextSimple(mFontSize, 1, u" ");
-            int space = spaceText->getWidth();
+            int space = spaceText->getTextWidth();
 
             // Go over suggestions and transform them
             mDelta = (int) (WORD_SUGGEST_SUGGESTION_DISTANCE * (float)space);
@@ -389,7 +389,7 @@ namespace eyegui
                 mSuggestions.at(i)->transform();
 
                 // Get width after transformation
-                int width = mSuggestions.at(i)->getWidth();
+                int width = mSuggestions.at(i)->getTextWidth();
 
                 // Remind width
                 if(i < (int)mSuggestions.size()-1)
@@ -420,8 +420,8 @@ namespace eyegui
             for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
             {
                 // Get values
-                int width = rSuggestion->getWidth();
-                int height = rSuggestion->getHeight();
+                int width = rSuggestion->getTextWidth();
+                int height = rSuggestion->getTextHeight();
 
                 // Set new position
                 int x = mX + xOffset;

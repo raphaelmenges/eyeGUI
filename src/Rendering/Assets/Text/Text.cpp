@@ -78,6 +78,44 @@ namespace eyegui
         calculateMesh();
     }
 
+    float Text::getLineHeight() const
+    {
+        return mpFont->getLineHeight(mFontSize);
+    }
+
+    void Text::drawSimpleBackground(
+        uint width,
+        uint height,
+        uint textWidth,
+        uint textHeight,
+        int yAlignmentOffset,
+        int xOffset,
+        int yOffset,
+        float alpha) const
+    {
+        // Determine smaller value of width and height
+        int value = width < height ? width : height;
+        int extraPixels = (int)(((float)value) * TEXT_BACKGROUND_SIZE) - value;
+
+        // Add extra pixels
+        int backgroundWidth = extraPixels + textWidth;
+        int backgroundHeight = extraPixels + textHeight;
+
+        // Determine which
+        glm::mat4 backgroundMatrix = calculateDrawMatrix(
+            mpGUI->getWindowWidth(),
+            mpGUI->getWindowHeight(),
+            mX + ((width - backgroundWidth) / 2) + xOffset,
+            mY + yAlignmentOffset - (extraPixels/2) + yOffset,
+            backgroundWidth,
+            backgroundHeight);
+        mpBackground->bind();
+        mpBackground->getShader()->fillValue("matrix", backgroundMatrix);
+        mpBackground->getShader()->fillValue("color", glm::vec4(0.f, 0.f, 0.f, 0.3f));
+        mpBackground->getShader()->fillValue("alpha", alpha);
+        mpBackground->draw();
+    }
+
     void Text::calculateMesh()
     {
         // Save currently set buffer

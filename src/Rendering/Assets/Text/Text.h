@@ -66,9 +66,20 @@ namespace eyegui
         void setContent(std::u16string content);
 
 		// Get height of line
-		float getLineHeight() const { return mpFont->getLineHeight(mFontSize); }
+        float getLineHeight() const ;
 
     protected:
+
+        // Draws simple background
+        void drawSimpleBackground(
+            uint width,
+            uint height,
+            uint textWidth,
+            uint textHeight,
+            int yAlignmentOffset,
+            int xOffset,
+            int yOffset,
+            float alpha) const;
 
         // Calculate mesh (in pixel coordinates). Calls specialized method of subclasses
         void calculateMesh();

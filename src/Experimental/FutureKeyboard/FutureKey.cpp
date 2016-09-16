@@ -408,8 +408,8 @@ namespace eyegui
     void FutureKey::transformLetter()
     {
         mupLetter->transform(); // has to be called first to calculate width and height
-        int letterX = mX + ((mWidth - mupLetter->getWidth()) / 2);
-        int letterY = mY + (int)(((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getHeight()) / 2.f) + (LETTER_Y_OFFSET * mHeight));
+        int letterX = mX + ((mWidth - mupLetter->getTextWidth()) / 2);
+        int letterY = mY + (int)(((((1.f - SUGGESTION_HEIGHT) * mHeight) - mupLetter->getTextHeight()) / 2.f) + (LETTER_Y_OFFSET * mHeight));
         mupLetter->setPosition(letterX, letterY);
     }
 
@@ -418,14 +418,14 @@ namespace eyegui
         if(mShowSuggestion)
         {
             mupSuggestion->transform(); // has to be called first to calculate width and height
-            int suggestionX = mX + (mWidth - mupSuggestion->getWidth()) / 2;
+            int suggestionX = mX + (mWidth - mupSuggestion->getTextWidth()) / 2;
 
             // Standard height of suggestion
             int suggestionStandardY = mY + (int)(mHeight * (1.f - SUGGESTION_HEIGHT)); // move to correct area
-            suggestionStandardY += (int)(((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getHeight()) / 2.f); // center in area
+            suggestionStandardY += (int)(((SUGGESTION_HEIGHT * mHeight) - mupSuggestion->getTextHeight()) / 2.f); // center in area
 
             // Height of suggestion when in center of complete key
-            int suggestionCenterY = mY + (mHeight - mupSuggestion->getHeight()) / 2;
+            int suggestionCenterY = mY + (mHeight - mupSuggestion->getTextHeight()) / 2;
 
             // Set position
             mupSuggestion->setPosition(suggestionX, glm::mix(suggestionStandardY, suggestionCenterY, mSecondThreshold.getValue()));
@@ -433,8 +433,8 @@ namespace eyegui
             // Animation update
             if(mSuggestionAnimation.first > 0 && mSuggestionAnimation.second != NULL)
             {
-				int suggestionSuggestionX = mX + (mWidth - mSuggestionAnimation.second->getWidth()) / 2;
-				int suggestionAnimationCenterY = mY + (mHeight - mSuggestionAnimation.second->getHeight()) / 2;
+                int suggestionSuggestionX = mX + (mWidth - mSuggestionAnimation.second->getTextWidth()) / 2;
+                int suggestionAnimationCenterY = mY + (mHeight - mSuggestionAnimation.second->getTextHeight()) / 2;
                 mSuggestionAnimation.second->setPosition(suggestionSuggestionX, glm::mix(mY, suggestionAnimationCenterY, mSuggestionAnimation.first / SUGGESTION_ANIMATION_DURATION));
             }
         }
@@ -444,6 +444,6 @@ namespace eyegui
 	{
 		mupInfo->transform();
 		int infoY = mY + (int)(mHeight * (1.f - SUGGESTION_HEIGHT)); // use suggestion position also for information
-		mupInfo->setPosition(mX + ((mWidth - mupInfo->getWidth()) / 2), infoY);
+        mupInfo->setPosition(mX + ((mWidth - mupInfo->getTextWidth()) / 2), infoY);
 	}
 }
