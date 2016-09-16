@@ -384,9 +384,24 @@ namespace eyegui
                 }
                 break;
 
+                case FlowEntity::Type::Mark:
+                {
+                    // Create and push back flow mark
+                    std::unique_ptr<FlowMark> upFlowMark = std::unique_ptr<FlowMark>(new FlowMark);
+                    upFlowMark->mContentStartIndex = index;
+                    upFlowMark->mIndex = globalEntityCount;
+                    upFlowMark->mupWord = std::unique_ptr<RenderWord>(
+                        new RenderWord(calculateWord(paragraphs.at(paragraphIndex).at(index), mScale)));
+                    entities[paragraphIndex].push_back(std::move(upFlowMark));
+
+                    // Go one letter further
+                    index++;
+                }
+                break;
+
                 case FlowEntity::Type::Word:
                 {
-                    // Determine letter count of word
+                    // Determine end index of word in content
                     uint endIndex = index;
                     while (
                         endIndex < letterCount - 1
@@ -411,7 +426,7 @@ namespace eyegui
                         upFlowWord->mSubWords.push_back(std::move(upSubFlowWord));
                     }
 
-                    // Push back complete word entity
+                    // Push back complete flow word
                     upFlowWord->mContentStartIndex = index;
                     upFlowWord->mIndex = globalEntityCount;
                     entities[paragraphIndex].push_back(std::move(upFlowWord));
@@ -486,11 +501,13 @@ namespace eyegui
                         uint currentEntityIndex = entityIndex;
 
 						// Check which entity is given
-                        FlowEntity::Type type = entities[paragraphIndex].at(entityIndex)->getType();
+                        FlowEntity::Type type = entities[paragraphIndex].at(currentEntityIndex)->getType();
 
 						// Decide what to do
-                        if (type == FlowEntity::Type::Space)
-						{
+                        switch(type)
+                        {
+                        case FlowEntity::Type::Space:
+                        {
                             // Decide whether there is space left for space entity
                             if((lineWidth + mPixelOfSpace) <= mWidth)
                             {
@@ -504,24 +521,44 @@ namespace eyegui
                                 spaceLeft = false;
                             }
 						}
-						else // Word
-						{
-							FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(entities[paragraphIndex].at(entityIndex).get());
+                        break;
+
+                        case FlowEntity::Type::Mark:
+                        {
+                            FlowMark const * pFlowMark = dynamic_cast<FlowMark const *>(entities[paragraphIndex].at(currentEntityIndex).get());
+
+                            // Decide whether there is space left for entity
+                            if((lineWidth + pFlowMark->getPixelWidth()) <= mWidth)
+                            {
+                                addEntityToLine = true; // remember to add entity to line but only one time
+                                lineWidth += pFlowMark->getPixelWidth();
+                                entityIndex++;
+                            }
+                            else
+                            {
+                                spaceLeft = false;
+                            }
+                        }
+                        break;
+
+                        case FlowEntity::Type::Word:
+                        {
+                            FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(entities[paragraphIndex].at(currentEntityIndex).get());
                             uint subWordCount = pFlowWord->getSubWordCount();
 
                             // Get index of sub word to start with
                             uint subWordIndex = line.empty() ? initialSubWordIndex : 0;
 
-							// Go over parts and check for each whether fits into line
-							while (
+                            // Go over parts and check for each whether fits into line
+                            while (
                                 subWordIndex < subWordCount // still within entity
                                 && (lineWidth + pFlowWord->mSubWords.at(subWordIndex)->mupWord->pixelWidth) <= mWidth) // still space left
-							{
+                            {
                                 addEntityToLine = true; // remember to add entity to line but only one time
                                 lineWidth += pFlowWord->mSubWords.at(subWordIndex)->mupWord->pixelWidth;
                                 endSubWordIndex = subWordIndex;
                                 subWordIndex++;
-							}
+                            }
 
                             // Check whether complete word is drawn or some subword is left
                             if(subWordIndex == subWordCount)
@@ -536,6 +573,8 @@ namespace eyegui
                                 nextSubWordIndex = subWordIndex;
                                 spaceLeft = false;
                             }
+                        }
+                        break;
 						}
 
                         // Add entity to line since at least something of it is drawn
@@ -620,8 +659,10 @@ namespace eyegui
                         FlowEntity::Type type = line.at(lineIndex)->getType();
 
 						// Decide what to do
-                        if (type == FlowEntity::Type::Space)
-						{
+                        switch(type)
+                        {
+                        case FlowEntity::Type::Space:
+                        {
                             FlowSpace* pFlowSpace = dynamic_cast<FlowSpace*>(line.at(lineIndex));
 
 							// Just advance xPen
@@ -630,7 +671,32 @@ namespace eyegui
                                 xPixelPen += dynamicSpace;
                             }
 						}
-						else // Word
+                        break;
+
+                        case FlowEntity::Type::Mark:
+                        {
+                            FlowMark* pFlowMark = dynamic_cast<FlowMark*>(line.at(lineIndex));
+
+                            // Fetch pointer to word
+                            const auto* pWord = pFlowMark->mupWord.get();
+
+                            // Push back positions and texture coordinates
+                            for (uint i = 0; i < pWord->spVertices->size(); i++)
+                            {
+                                const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
+                                rVertices.push_back(
+                                    std::make_pair(
+                                        glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
+                                        glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
+                            }
+
+
+                            // Advance xPen
+                            xPixelPen += pFlowMark->getPixelWidth();
+                        }
+                        break;
+
+                        case FlowEntity::Type::Word:
                         {
                             FlowWord* pFlowWord = dynamic_cast<FlowWord*>(line.at(lineIndex));
 
@@ -660,6 +726,7 @@ namespace eyegui
 								xPixelPen += pWord->pixelWidth;
 							}
 						}
+                        }
 					}
 
 					// Advance yPen
@@ -769,6 +836,19 @@ namespace eyegui
         switch(rLetter)
         {
             case u' ': return FlowEntity::Type::Space;
+            case u'.': return FlowEntity::Type::Mark;
+            case u':': return FlowEntity::Type::Mark;
+            case u',': return FlowEntity::Type::Mark;
+            case u';': return FlowEntity::Type::Mark;
+            case u'-': return FlowEntity::Type::Mark;
+            case u'_': return FlowEntity::Type::Mark;
+            case u'?': return FlowEntity::Type::Mark;
+            case u'!': return FlowEntity::Type::Mark;
+            case u'/': return FlowEntity::Type::Mark;
+            case u'\\': return FlowEntity::Type::Mark;
+            case u'´': return FlowEntity::Type::Mark;
+            case u'¸': return FlowEntity::Type::Mark;
+            case u'"': return FlowEntity::Type::Mark;
             default: return FlowEntity::Type::Word;
         }
     }

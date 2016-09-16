@@ -22,7 +22,7 @@ namespace eyegui
     public:
 
         // Enumeration of types
-        enum class Type { Word, Space };
+        enum class Type { Word, Space, Mark };
 
         // Getter for letter count
         virtual uint getLetterCount() const = 0;
@@ -248,6 +248,27 @@ namespace eyegui
 
         // Members
         bool mCollapsed;
+    };
+
+    // Class for marks like question mark or dot within text flow
+    class FlowMark : public FlowEntity
+    {
+    public:
+
+        FlowMark() { mType = FlowEntity::Type::Mark; }
+
+        // Getter for letter count
+        virtual uint getLetterCount() const { return 1; }
+
+        // Getter for pixel width
+        float getPixelWidth() const { return mupWord->pixelWidth; }
+
+    protected:
+
+        friend class TextFlow;
+
+        // Word
+        std::unique_ptr<RenderWord> mupWord; // geometry and information of word
     };
 }
 

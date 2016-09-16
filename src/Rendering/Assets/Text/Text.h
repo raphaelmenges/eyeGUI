@@ -31,7 +31,7 @@ namespace eyegui
         // Position and texture coordinate
         std::shared_ptr<RenderWordVertices> spVertices;
         float pixelWidth;
-        std::vector<int> lettersXOffsets; // position after letter
+        std::vector<int> lettersXOffsets; // position after single letters
     };
 
     // Class
@@ -80,7 +80,8 @@ namespace eyegui
             RenderWordVertices& rVertices) = 0;
 
         // Calculate single word and returns it
-        RenderWord calculateWord(std::u16string content, float scale) const;
+        RenderWord calculateWord(const std::u16string& rContent, float scale) const;
+        RenderWord calculateWord(const char16_t& rLetter, float scale) const;
 
 		// Prepare text
 		void prepareText();

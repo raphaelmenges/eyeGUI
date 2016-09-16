@@ -370,7 +370,7 @@ namespace eyegui
         char* space = (char*)malloc(size);
 
         // Convert to low
-        size_t newSize = utf8tolower(
+        utf8tolower(
             string8.c_str(), string8.size(),
             space, size,
             &errors);
@@ -428,7 +428,7 @@ namespace eyegui
         char* space = (char*)malloc(size);
 
         // Convert to low
-        size_t newSize = utf8toupper(
+        utf8toupper(
             string8.c_str(), string8.size(),
             space, size,
             &errors);

@@ -124,18 +124,18 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    RenderWord Text::calculateWord(std::u16string content, float scale) const
+    RenderWord Text::calculateWord(const std::u16string& rContent, float scale) const
     {
         // Empty word
         RenderWord word;
         word.spVertices = std::shared_ptr<RenderWordVertices>(new RenderWordVertices);
-		word.lettersXOffsets.reserve(content.size());
+        word.lettersXOffsets.reserve(rContent.size());
 
         // Fill word with data
         float xPixelPen = 0;
-        for (uint i = 0; i < content.size(); i++)
+        for (uint i = 0; i < rContent.size(); i++)
         {
-            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, content[i]);
+            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, rContent.at(i));
             if (pGlyph == NULL)
             {
                 throwWarning(
@@ -146,11 +146,11 @@ namespace eyegui
 
             float yPixelPen = 0 - (scale * (float)(pGlyph->size.y - pGlyph->bearing.y));
 
-            // Vertices for this quad
-            glm::vec3 vertexA = glm::vec3(xPixelPen, yPixelPen, 0);
-            glm::vec3 vertexB = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen, 0);
-            glm::vec3 vertexC = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen + (scale * pGlyph->size.y), 0);
-            glm::vec3 vertexD = glm::vec3(xPixelPen, yPixelPen + (scale * pGlyph->size.y), 0);
+            // Positions for this quad
+            glm::vec3 positionA = glm::vec3(xPixelPen, yPixelPen, 0);
+            glm::vec3 positionB = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen, 0);
+            glm::vec3 positionC = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen + (scale * pGlyph->size.y), 0);
+            glm::vec3 positionD = glm::vec3(xPixelPen, yPixelPen + (scale * pGlyph->size.y), 0);
 
             // Texture coordinates for this quad
             glm::vec2 textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
@@ -165,18 +165,27 @@ namespace eyegui
 			word.lettersXOffsets.push_back(xPixelPen);
 
             // Fill into data blocks
-            word.spVertices->push_back(std::make_pair(vertexA, textureCoordinateA));
-            word.spVertices->push_back(std::make_pair(vertexB, textureCoordinateB));
-            word.spVertices->push_back(std::make_pair(vertexC, textureCoordinateC));
-            word.spVertices->push_back(std::make_pair(vertexC, textureCoordinateC));
-            word.spVertices->push_back(std::make_pair(vertexD, textureCoordinateD));
-            word.spVertices->push_back(std::make_pair(vertexA, textureCoordinateA));
+            word.spVertices->push_back(std::make_pair(positionA, textureCoordinateA));
+            word.spVertices->push_back(std::make_pair(positionB, textureCoordinateB));
+            word.spVertices->push_back(std::make_pair(positionC, textureCoordinateC));
+            word.spVertices->push_back(std::make_pair(positionC, textureCoordinateC));
+            word.spVertices->push_back(std::make_pair(positionD, textureCoordinateD));
+            word.spVertices->push_back(std::make_pair(positionA, textureCoordinateA));
         }
 
         // Set width of whole word
         word.pixelWidth = xPixelPen;
 
         return word;
+    }
+
+    RenderWord Text::calculateWord(const char16_t& rLetter, float scale) const
+    {
+        // Create string out of char
+        std::u16string string(&rLetter, 1);
+
+        // Delegate to standard
+        return std::move(calculateWord(string, scale));
     }
 
 	void Text::prepareText()
