@@ -222,6 +222,7 @@ namespace eyegui
             {
                 throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
             }
+
             }
 		}
 
@@ -792,6 +793,7 @@ namespace eyegui
 								xPixelPen += pWord->pixelWidth;
 							}
 						}
+                        break;
 
                         default:
                         {
