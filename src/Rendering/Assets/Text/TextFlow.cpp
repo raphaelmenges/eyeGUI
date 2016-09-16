@@ -363,67 +363,68 @@ namespace eyegui
 			// *** COLLECT ENTITIES FOR EACH PARAGRAPH ***
 
 			// Get entities out of paragraph
-			uint letterCount = paragraphs.at(paragraphIndex).size();
-			for (uint index = 0; index < letterCount; index++)
+            uint letterCount = paragraphs.at(paragraphIndex).size();
+            uint index = 0;
+            while(index < letterCount)
 			{
-                // Index to which new entity covers content
-				uint endIndex = index;
+                FlowEntity::Type type = classifyLetter(paragraphs.at(paragraphIndex).at(index));
 
-				// Decide which entity to create
-                if (paragraphs.at(paragraphIndex).at(endIndex) == u' ')
-				{
-					// Space
-					while (endIndex < letterCount - 1 && paragraphs.at(paragraphIndex).at(endIndex + 1) == u' ')
-					{
-                        endIndex++;
-					}
+                switch(type)
+                {
+                case FlowEntity::Type::Space:
+                {
+                    // Create and push back flow space
+                    std::unique_ptr<FlowSpace> upFlowSpace = std::unique_ptr<FlowSpace>(new FlowSpace);
+                    upFlowSpace->mContentStartIndex = index;
+                    upFlowSpace->mIndex = globalEntityCount;
+                    entities[paragraphIndex].push_back(std::move(upFlowSpace));
 
-                    // Create space entities
-                    for(uint i = index; i <= endIndex; i++)
+                    // Go one letter further
+                    index++;
+                }
+                break;
+
+                case FlowEntity::Type::Word:
+                {
+                    // Determine letter count of word
+                    uint endIndex = index;
+                    while (
+                        endIndex < letterCount - 1
+                        && classifyLetter(paragraphs.at(paragraphIndex).at(endIndex + 1))
+                            == FlowEntity::Type::Word)
                     {
-                        std::unique_ptr<FlowSpace> upFlowSpace = std::unique_ptr<FlowSpace>(new FlowSpace);
-                        upFlowSpace->mContentStartIndex = i;
-                        upFlowSpace->mIndex = globalEntityCount;
-                        entities[paragraphIndex].push_back(std::move(upFlowSpace));
-
-                        // Prepare next run
-                        globalEntityCount++;
+                        endIndex++;
                     }
-				}
-				else
-				{
-					// Word
-					while (endIndex < letterCount - 1 && paragraphs.at(paragraphIndex).at(endIndex + 1) != u' ')
-					{
-						endIndex++;
-					}
 
-					// Create vector of fitting words
+                    // Create vector of fitting words
                     std::vector<RenderWord> fitWords;
-					failure |= !insertFitWord(fitWords, paragraphs.at(paragraphIndex).substr(index, (endIndex - index) + 1), mWidth, mScale);
+                    failure |= !insertFitWord(fitWords, paragraphs.at(paragraphIndex).substr(index, (endIndex - index) + 1), mWidth, mScale);
 
-					// Create entity
-					std::unique_ptr<FlowWord> upFlowWord = std::unique_ptr<FlowWord>(new FlowWord);
+                    // Create entity
+                    std::unique_ptr<FlowWord> upFlowWord = std::unique_ptr<FlowWord>(new FlowWord);
 
                     // Create sub words using fit words
-					for (const auto& rFitWord : fitWords)
-					{
-						std::unique_ptr<SubFlowWord> upSubFlowWord = std::unique_ptr<SubFlowWord>(new SubFlowWord);
+                    for (const auto& rFitWord : fitWords)
+                    {
+                        std::unique_ptr<SubFlowWord> upSubFlowWord = std::unique_ptr<SubFlowWord>(new SubFlowWord);
                         upSubFlowWord->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
                         upFlowWord->mSubWords.push_back(std::move(upSubFlowWord));
-					}
+                    }
 
                     // Push back complete word entity
                     upFlowWord->mContentStartIndex = index;
                     upFlowWord->mIndex = globalEntityCount;
-					entities[paragraphIndex].push_back(std::move(upFlowWord));
+                    entities[paragraphIndex].push_back(std::move(upFlowWord));
 
-                    // Prepare next run
-                    globalEntityCount++;
-				}
+                    // Go further
+                    index = endIndex + 1;
+                }
+                break;
 
-                // Update current index in content which is also incremented by loop
-                index = endIndex;
+                }
+
+                // One entity was added
+                globalEntityCount++;
 			}
 		}
 
@@ -760,6 +761,15 @@ namespace eyegui
             // Insert new words and return true
             rWords.insert(rWords.end(), newWords.begin(), newWords.end());
             return true;
+        }
+    }
+
+    FlowEntity::Type TextFlow::classifyLetter(const char16_t& rLetter) const
+    {
+        switch(rLetter)
+        {
+            case u' ': return FlowEntity::Type::Space;
+            default: return FlowEntity::Type::Word;
         }
     }
 }

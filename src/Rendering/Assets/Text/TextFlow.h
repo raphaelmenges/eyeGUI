@@ -16,9 +16,36 @@
 
 namespace eyegui
 {
-    // Forward declaration
-    class FlowEntity;
-    class FlowWord; // TODO: delete this later
+    // Abstract super class for flow entities
+    class FlowEntity
+    {
+    public:
+
+        // Enumeration of types
+        enum class Type { Word, Space };
+
+        // Getter for letter count
+        virtual uint getLetterCount() const = 0;
+
+        // Getter for type
+        Type getType() const { return mType; }
+
+        // Getter for index where entity starts in content
+        uint getContentStartIndex() const { return mContentStartIndex; }
+
+        // Getter for index within entities vector
+        uint getIndex() const { return mIndex; }
+
+    protected:
+
+        // Members
+        Type mType;
+        uint mContentStartIndex; // index in content where flow entity starts
+        uint mIndex; // index within flow entity vector
+    };
+
+    // TODO: can be deleted probably later:
+    class FlowWord;
 
     // Text flow class
     class TextFlow : public Text
@@ -100,6 +127,9 @@ namespace eyegui
         // Inserts word into vector, returns true at success
         bool insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
 
+        // Classify letter in terms of entity type
+        FlowEntity::Type classifyLetter(const char16_t& rLetter) const;
+
         // Members
         TextFlowAlignment mAlignment;
         TextFlowVerticalAlignment mVerticalAlignment;
@@ -130,36 +160,6 @@ namespace eyegui
 
         // Word
         std::unique_ptr<RenderWord> mupWord; // geometry and information of word
-    };
-
-    // Abstract super class for flow entities
-    class FlowEntity
-    {
-    public:
-
-        // Enumeration of types
-        enum class Type { Word, Space };
-
-        // Getter for letter count
-        virtual uint getLetterCount() const = 0;
-
-        // Getter for type
-        Type getType() const { return mType; }
-
-        // Getter for index where entity starts in content
-        uint getContentStartIndex() const { return mContentStartIndex; }
-
-        // Getter for index within entities vector
-        uint getIndex() const { return mIndex; }
-
-    protected:
-
-        friend class TextFlow;
-
-        // Members
-        Type mType;
-        uint mContentStartIndex; // index in content where flow entity starts
-        uint mIndex; // index within flow entity vector
     };
 
     // Class of flow word which is collection of sub flow words
