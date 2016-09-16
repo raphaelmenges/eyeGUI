@@ -159,7 +159,7 @@ namespace eyegui
             glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
 
 			// Advance x pen
-			xPixelPen += scale * pGlyph->advance.x;
+            xPixelPen += scale * (float)pGlyph->advance.x;
 
 			// Push back x offset of letters
 			word.lettersXOffsets.push_back(xPixelPen);
