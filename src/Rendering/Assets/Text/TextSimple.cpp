@@ -59,7 +59,7 @@ namespace eyegui
 
 	void TextSimple::setPosition(int x, int y)
 	{
-		// Remind it at drawing
+        // Remember it at drawing
 		mX = x;
 		mY = y;
 	}

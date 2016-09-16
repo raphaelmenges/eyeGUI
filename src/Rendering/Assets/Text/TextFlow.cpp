@@ -20,6 +20,8 @@
 
 namespace eyegui
 {
+    FlowEntity::~FlowEntity() {}
+
     TextFlow::TextFlow(
         GUI const * pGUI,
         AssetManager* pAssetManager,
@@ -137,6 +139,33 @@ namespace eyegui
 
         // Draw flow
         glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
+    }
+
+    int TextFlow::getFlowHeight() const
+    {
+        return mFlowHeight;
+    }
+
+    float TextFlow::getPixelWidthOfSpace() const
+    {
+        return mPixelOfSpace;
+    }
+
+    uint TextFlow::getFlowEntityCount() const
+    {
+        return (uint)mFlowEntities.size();
+    }
+
+    std::weak_ptr<const FlowEntity> TextFlow::getFlowEntity(uint index) const
+    {
+        if(index < mFlowEntities.size())
+        {
+            return mFlowEntities.at(index);
+        }
+        else
+        {
+            return std::weak_ptr<const FlowEntity>();
+        }
     }
 	
     bool TextFlow::getFlowWord(int index, FlowWord& rFlowWord) const
@@ -341,7 +370,7 @@ namespace eyegui
         bool failure = false;
 
 		// Save entities per paragraph and merge later to complete vector saved in members
-		std::vector<std::vector<std::unique_ptr<FlowEntity> > > entities(paragraphs.size());
+        std::vector<std::vector<std::shared_ptr<FlowEntity> > > entities(paragraphs.size());
 
         // Go over paragraphs and draw single lines (pens are in local pixel coordinate system with origin in lower left corner of element)
         float yPixelPen = -lineHeight; // first line should be also inside flow and not on top
@@ -362,7 +391,7 @@ namespace eyegui
                 case FlowEntity::Type::Space:
                 {
                     // Create and push back flow space
-                    std::unique_ptr<FlowSpace> upFlowSpace = std::unique_ptr<FlowSpace>(new FlowSpace);
+                    std::shared_ptr<FlowSpace> upFlowSpace = std::shared_ptr<FlowSpace>(new FlowSpace);
                     upFlowSpace->mContentStartIndex = index;
                     upFlowSpace->mIndex = globalEntityCount;
                     entities[paragraphIndex].push_back(std::move(upFlowSpace));
@@ -375,7 +404,7 @@ namespace eyegui
                 case FlowEntity::Type::Mark:
                 {
                     // Create and push back flow mark
-                    std::unique_ptr<FlowMark> upFlowMark = std::unique_ptr<FlowMark>(new FlowMark);
+                    std::shared_ptr<FlowMark> upFlowMark = std::shared_ptr<FlowMark>(new FlowMark);
                     upFlowMark->mContentStartIndex = index;
                     upFlowMark->mIndex = globalEntityCount;
                     upFlowMark->mupWord = std::unique_ptr<RenderWord>(
@@ -404,7 +433,7 @@ namespace eyegui
                     failure |= !insertFitWord(fitWords, paragraphs.at(paragraphIndex).substr(index, (endIndex - index) + 1), mWidth, mScale);
 
                     // Create entity
-                    std::unique_ptr<FlowWord> upFlowWord = std::unique_ptr<FlowWord>(new FlowWord);
+                    std::shared_ptr<FlowWord> upFlowWord = std::shared_ptr<FlowWord>(new FlowWord);
 
                     // Create sub words using fit words
                     for (const auto& rFitWord : fitWords)
@@ -736,12 +765,6 @@ namespace eyegui
 		{
 			// Get height of all lines (yPixelPen is one line to low now)
 			mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
-
-			// If overflow allowed, set height to flow height
-			if (mOverflowHeight)
-			{
-				mHeight = mFlowHeight;
-			}
 
 			// Transfer all entities to member
 			mFlowEntities.clear();

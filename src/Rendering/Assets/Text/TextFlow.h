@@ -24,6 +24,9 @@ namespace eyegui
         // Enumeration of types
         enum class Type { Word, Space, Mark };
 
+        // Virtual destructor
+        virtual ~FlowEntity() = 0;
+
         // Getter for letter count
         virtual uint getLetterCount() const = 0;
 
@@ -82,18 +85,24 @@ namespace eyegui
 			int xOffset = 0,
 			int yOffset = 0) const;
 
-		// Get height (interesting if overflowHeight is true)
-		int getHeight() const { return mHeight; }
+        // Get flow height (interesting if overflowHeight is true)
+        int getFlowHeight() const;
 
 		// Get pixel width of space letter in used font
-		float getPixelWidthOfSpace() const { return mPixelOfSpace; }
+        float getPixelWidthOfSpace() const;
 
-        // Get count of flow words
-        int getFlowWordCount() const { return (int)mFlowEntities.size(); }
+        // Get count of flow entities
+        uint getFlowEntityCount() const;
 
-		// Get data of certain word by index. Returns false if not found.
-		// Position is given in flow coordinates
-		bool getFlowWord(int index, FlowWord& rFlowWord) const;
+        // Get weak pointer to flow entity at index. Maybe empty when index not available
+        std::weak_ptr<const FlowEntity> getFlowEntity(uint index) const;
+
+
+
+
+
+
+
 
 		// Use position in flow coordinates to find a word. Returns false if not found
 		bool getFlowWord(int x, int y, FlowWord& rFlowWord) const;
@@ -139,7 +148,7 @@ namespace eyegui
         int mFlowHeight;
 		float mPixelOfSpace;
 		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
-		std::vector<std::unique_ptr<FlowEntity> > mFlowEntities; // holding information to make text manipulation possible
+        std::vector<std::shared_ptr<FlowEntity> > mFlowEntities; // holding information to make text manipulation possible
 	};
 
     // Class for sub flow word which forms parts of flow word

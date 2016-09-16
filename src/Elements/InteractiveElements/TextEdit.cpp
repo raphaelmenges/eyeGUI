@@ -484,7 +484,7 @@ namespace eyegui
 
 	int TextEdit::calculateTextFlowYOffset() const
 	{
-		return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getHeight() + mupTextFlow->getLineHeight()) - mHeight)));
+        return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()) - mHeight)));
 	}
 
     void TextEdit::setActiveWord(const FlowWord& rFlowWord, bool setCursorToEnd)
