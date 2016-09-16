@@ -95,6 +95,7 @@ namespace eyegui
 
 	void TextEdit::moveCursorOverWords(int wordCount)
 	{
+        /*
 		// When there is no active word, there is no text
 		if (mupActiveWord != NULL)
 		{
@@ -127,6 +128,7 @@ namespace eyegui
 				moveCursorOverLetters(letterCount);
 			}
 		}
+        */
 	}
 
     void TextEdit::moveCursorToStart()
@@ -143,6 +145,7 @@ namespace eyegui
 
     void TextEdit::moveCursorToEnd()
     {
+        /*
         FlowWord flowWord;
         if (mupTextFlow->getFlowWord(
             mupTextFlow->getFlowWordCount() - 1, flowWord))
@@ -151,10 +154,12 @@ namespace eyegui
             mSubWordIndex = flowWord.getSubWordCount() - 1;
             mLetterIndex = flowWord.subWords.at(mSubWordIndex)->getLetterCount() - 1;
         }
+        */
     }
 
 	void TextEdit::addContentAtCursor(std::u16string content)
 	{
+        /*
         // When there is already text and a active word, use that cursor position
         FlowWord flowWord;
         int subWordIndex = 0;
@@ -189,6 +194,7 @@ namespace eyegui
                 mLetterIndex = letterIndex;
             }
         }
+        */
 	}
 
 	void TextEdit::setContent(std::u16string content)
@@ -221,11 +227,11 @@ namespace eyegui
 
 	std::u16string TextEdit::getActiveWord() const
 	{
-		if (mupActiveWord != NULL)
+        /*if (mupActiveWord != NULL)
 		{
 			return mupTextFlow->getContent(mupActiveWord->contentStartIndex, mupActiveWord->getLetterCount());
 		}
-		else
+        else*/
 		{
 			return std::u16string();
 		}

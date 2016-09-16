@@ -13,10 +13,14 @@
 #define TEXT_FLOW_H_
 
 #include "src/Rendering/Assets/Text/Text.h"
-#include "src/Rendering/Assets/Text/FlowEntity.h"
 
 namespace eyegui
 {
+    // Forward declaration
+    class FlowEntity;
+    class FlowWord; // TODO: delete this later
+
+    // Text flow class
     class TextFlow : public Text
     {
     public:
@@ -107,6 +111,144 @@ namespace eyegui
 		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
 		std::vector<std::unique_ptr<FlowEntity> > mFlowEntities; // holding information to make text manipulation possible
 	};
+
+    // Class for sub flow word which forms parts of flow word
+    class SubFlowWord
+    {
+    public:
+
+        // Getter for letter count
+        uint getLetterCount() const { return (uint)mupWord->lettersXOffsets.size(); }
+
+    protected:
+
+        friend class TextFlow;
+
+        // Members
+        int mX; // relative in flow
+        int mY; // relative in flow
+
+        // Word
+        std::unique_ptr<RenderWord> mupWord; // geometry and information of word
+    };
+
+    // Abstract super class for flow entities
+    class FlowEntity
+    {
+    public:
+
+        // Enumeration of types
+        enum class Type { Word, Space };
+
+        // Getter for letter count
+        virtual uint getLetterCount() const = 0;
+
+        // Getter for type
+        Type getType() const { return mType; }
+
+        // Getter for index where entity starts in content
+        uint getContentStartIndex() const { return mContentStartIndex; }
+
+        // Getter for index within entities vector
+        uint getIndex() const { return mIndex; }
+
+    protected:
+
+        friend class TextFlow;
+
+        // Members
+        Type mType;
+        uint mContentStartIndex; // index in content where flow entity starts
+        uint mIndex; // index within flow entity vector
+    };
+
+    // Class of flow word which is collection of sub flow words
+    class FlowWord : public FlowEntity
+    {
+    public:
+
+        FlowWord() { mType = FlowEntity::Type::Word; }
+
+        // Getter for sub word count
+        uint getSubWordCount() const { return (uint)mSubWords.size(); }
+
+        // Getter for letter count of complete flow word
+        virtual uint getLetterCount() const
+        {
+            uint count = 0;
+            for (const auto& rSubWord : mSubWords)
+            {
+                count += rSubWord->getLetterCount();
+            }
+            return count;
+        }
+
+        // Getter for subword and letter index for given letter offset. Returns whether successfull.
+        // Letter index is index inside of sub word
+        bool getIndices(uint inputWordIndex, uint& rSubWordIndex, uint& rLetterIndex) const
+        {
+            // Only continue when enough letters are available
+            if(inputWordIndex < getLetterCount())
+            {
+                int offset = inputWordIndex;
+                for(uint i = 0; i < getSubWordCount(); i++)
+                {
+                    if((offset - mSubWords.at(i)->getLetterCount()) < 0)
+                    {
+                        rSubWordIndex = i;
+                        rLetterIndex = offset;
+                        return true;
+                    }
+                    else
+                    {
+                        offset -= mSubWords.at(i)->getLetterCount();
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Get content index by indices. Letter index is within subword
+        uint getContentIndex(uint subWordIndex, uint letterIndex) const
+        {
+            uint index = 0;
+            for (uint i = 0; i < subWordIndex; i++)
+            {
+                index += mSubWords.at(i)->getLetterCount();
+            }
+            index += letterIndex;
+            index += mContentStartIndex;
+            return index;
+        }
+
+    protected:
+
+        friend class TextFlow;
+
+        // Members
+        std::vector<std::unique_ptr<SubFlowWord> > mSubWords; // can be divided into multiple sub words to fit into given space
+    };
+
+    // Class for space within text flow
+    class FlowSpace : public FlowEntity
+    {
+    public:
+
+        FlowSpace() { mType = FlowEntity::Type::Space; mCollapsed = false; }
+
+        // Getter for letter count
+        virtual uint getLetterCount() const { return 1; }
+
+        // Getter whether collapsed
+        bool isCollapsed() const { return mCollapsed; }
+
+    protected:
+
+        friend class TextFlow;
+
+        // Members
+        bool mCollapsed;
+    };
 }
 
 #endif // TEXT_FLOW_H_

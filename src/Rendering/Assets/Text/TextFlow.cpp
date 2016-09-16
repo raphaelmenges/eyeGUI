@@ -382,8 +382,8 @@ namespace eyegui
                     for(uint i = index; i <= endIndex; i++)
                     {
                         std::unique_ptr<FlowSpace> upFlowSpace = std::unique_ptr<FlowSpace>(new FlowSpace);
-                        upFlowSpace->contentStartIndex = i;
-                        upFlowSpace->index = globalEntityCount;
+                        upFlowSpace->mContentStartIndex = i;
+                        upFlowSpace->mIndex = globalEntityCount;
                         entities[paragraphIndex].push_back(std::move(upFlowSpace));
 
                         // Prepare next run
@@ -409,13 +409,13 @@ namespace eyegui
 					for (const auto& rFitWord : fitWords)
 					{
 						std::unique_ptr<SubFlowWord> upSubFlowWord = std::unique_ptr<SubFlowWord>(new SubFlowWord);
-                        upSubFlowWord->upWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
-						upFlowWord->subWords.push_back(std::move(upSubFlowWord));
+                        upSubFlowWord->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
+                        upFlowWord->mSubWords.push_back(std::move(upSubFlowWord));
 					}
 
                     // Push back complete word entity
-                    upFlowWord->contentStartIndex = index;
-                    upFlowWord->index = globalEntityCount;
+                    upFlowWord->mContentStartIndex = index;
+                    upFlowWord->mIndex = globalEntityCount;
 					entities[paragraphIndex].push_back(std::move(upFlowWord));
 
                     // Prepare next run
@@ -506,7 +506,7 @@ namespace eyegui
 						else // Word
 						{
 							FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(entities[paragraphIndex].at(entityIndex).get());
-                            uint subWordCount = pFlowWord->subWords.size();
+                            uint subWordCount = pFlowWord->getSubWordCount();
 
                             // Get index of sub word to start with
                             uint subWordIndex = line.empty() ? initialSubWordIndex : 0;
@@ -514,10 +514,10 @@ namespace eyegui
 							// Go over parts and check for each whether fits into line
 							while (
                                 subWordIndex < subWordCount // still within entity
-                                && (lineWidth + pFlowWord->subWords.at(subWordIndex)->upWord->pixelWidth) <= mWidth) // still space left
+                                && (lineWidth + pFlowWord->mSubWords.at(subWordIndex)->mupWord->pixelWidth) <= mWidth) // still space left
 							{
                                 addEntityToLine = true; // remember to add entity to line but only one time
-                                lineWidth += pFlowWord->subWords.at(subWordIndex)->upWord->pixelWidth;
+                                lineWidth += pFlowWord->mSubWords.at(subWordIndex)->mupWord->pixelWidth;
                                 endSubWordIndex = subWordIndex;
                                 subWordIndex++;
 							}
@@ -557,7 +557,7 @@ namespace eyegui
                     {
                         if(line.at(lineIndex)->getType() == FlowEntity::Type::Space)
                         {
-                            dynamic_cast<FlowSpace*>(line.at(lineIndex))->collapsed = true;
+                            dynamic_cast<FlowSpace*>(line.at(lineIndex))->mCollapsed = true;
                             collapsedSpaceEntities++;
                         }
                         else
@@ -571,7 +571,7 @@ namespace eyegui
                     {
                         if(line.at(lineIndex)->getType() == FlowEntity::Type::Space)
                         {
-                            dynamic_cast<FlowSpace*>(line.at(lineIndex))->collapsed = true;
+                            dynamic_cast<FlowSpace*>(line.at(lineIndex))->mCollapsed = true;
                             collapsedSpaceEntities++;
                         }
                         else
@@ -624,7 +624,7 @@ namespace eyegui
                             FlowSpace* pFlowSpace = dynamic_cast<FlowSpace*>(line.at(lineIndex));
 
 							// Just advance xPen
-                            if(!pFlowSpace->collapsed)
+                            if(!pFlowSpace->isCollapsed())
                             {
                                 xPixelPen += dynamicSpace;
                             }
@@ -634,12 +634,12 @@ namespace eyegui
                             FlowWord* pFlowWord = dynamic_cast<FlowWord*>(line.at(lineIndex));
 
 							// Go over sub words which are part of line
-                            uint subWordCount = lineIndex == line.size() - 1 ? endSubWordIndex + 1 : pFlowWord->subWords.size();
+                            uint subWordCount = lineIndex == line.size() - 1 ? endSubWordIndex + 1 : pFlowWord->getSubWordCount();
                             uint subWordIndex = lineIndex == 0 ? initialSubWordIndex : 0;
 							for (; subWordIndex < subWordCount; subWordIndex++)
 							{
 								// Fetch pointer to word
-								const auto* pWord = pFlowWord->subWords.at(subWordIndex)->upWord.get();
+                                const auto* pWord = pFlowWord->mSubWords.at(subWordIndex)->mupWord.get();
 
                                 // Push back positions and texture coordinates
 								for (uint i = 0; i < pWord->spVertices->size(); i++)
@@ -652,8 +652,8 @@ namespace eyegui
 								}
 
 								// Save position stuff in subword
-								pFlowWord->subWords.at(subWordIndex)->x = (int)xPixelPen;
-								pFlowWord->subWords.at(subWordIndex)->y = std::ceil(abs(yPixelPen) - lineHeight);
+                                pFlowWord->mSubWords.at(subWordIndex)->mX = (int)xPixelPen;
+                                pFlowWord->mSubWords.at(subWordIndex)->mY = std::ceil(abs(yPixelPen) - lineHeight);
 
 								// Advance xPen
 								xPixelPen += pWord->pixelWidth;
