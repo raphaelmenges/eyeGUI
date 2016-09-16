@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Entities which form a text flow.
 
 #ifndef FLOW_ENTITY_H_
 #define FLOW_ENTITY_H_
@@ -15,10 +15,7 @@
 
 namespace eyegui
 {
-    // Enumeration of flow entities
-    enum class FlowEntityType { Word, Space };
-
-    // Struct like class for sub flow word
+    // Class for sub flow word which forms parts of flow word
     class SubFlowWord
     {
     public:
@@ -39,24 +36,27 @@ namespace eyegui
     {
     public:
 
+        // Enumeration of types
+        enum class Type { Word, Space };
+
         // Getter for letter count
         virtual int getLetterCount() const = 0;
 
         // Getter for type
-        FlowEntityType getType() const { return type; }
+        Type getType() const { return type; }
 
         // Members
-        FlowEntityType type;
+        Type type;
         int contentStartIndex; // index in content where flow space starts
         int index; // index within flow entity vector
     };
 
-    // Struct like class for word in flow which is used to get a word at given coordinate in text flow
+    // Class of flow word which is collection of sub flow words
     class FlowWord : public FlowEntity
     {
     public:
 
-        FlowWord() { type = FlowEntityType::Word;  }
+        FlowWord() { type = FlowEntity::Type::Word;  }
 
         // Getter for sub word count
         int getSubWordCount() const { return (int)subWords.size(); }
@@ -115,18 +115,18 @@ namespace eyegui
         std::vector<std::unique_ptr<SubFlowWord> > subWords; // can be divided into multiple sub words to fit into given space
     };
 
-    // Struct like class for space within text flow
+    // Class for space within text flow
     class FlowSpace : public FlowEntity
     {
     public:
 
-        FlowSpace() { type = FlowEntityType::Space; }
+        FlowSpace() { type = FlowEntity::Type::Space; collapsed = false; }
 
         // Getter for letter count
-        virtual int getLetterCount() const { return count; }
+        virtual int getLetterCount() const { return 1; }
 
         // Members
-        int count; // count of spaces
+        bool collapsed;
     };
 }
 
