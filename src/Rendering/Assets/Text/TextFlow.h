@@ -135,7 +135,7 @@ namespace eyegui
                     if((offset - mFlowParts.at(i)->getLetterCount()) < 0)
                     {
                         rFlowPartIndex = i;
-                        rLetterIndex = offset;
+                        rLetterIndex = offset + 1; // plus one because indices of letters start before first one
                         return true;
                     }
                     else
@@ -244,24 +244,18 @@ namespace eyegui
         // Get flow entity, flow part index and letter index inside flow part. Maybe empty when index not available.
         // Content index of -1 indicates front of text
         std::weak_ptr<const FlowEntity> getFlowEntityAndIndices(
-            uint contentIndex,
+            int contentIndex,
             uint& rFlowPartIndex,
             uint& rLetterIndex) const;
 
-
-
-
-
-
         // Insert content after index of exisiting content.
-        // Fills resulting information about flow word, sub word index and letter index at end of insertion.
-        // Returns whether successull
-        bool insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
+        // Returns flow entity and sets indices to position after insertion
+        std::weak_ptr<const FlowEntity> insertContent(uint index, std::u16string content, uint& rFlowPartIndex, uint& rLetterIndex);
 
-        // Erases content from index to end index, including index and excluding index + length. Returns whether succesfully
-        bool eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex);
-
-
+        // Erases letterCount many letters from content, beginning and including index and  excluding index + letterCount.
+        // Negative index results in deletion of letters before index.
+        // Returns flow entity and sets indices to position after deletion of content
+        std::weak_ptr<const FlowEntity> eraseContent(int index, uint letterCount, uint& rFlowPartIndex, uint& rLetterIndex);
 
     protected:
 

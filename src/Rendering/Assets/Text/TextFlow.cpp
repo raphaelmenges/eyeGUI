@@ -190,7 +190,7 @@ namespace eyegui
 	}
 
      std::weak_ptr<const FlowEntity> TextFlow::getFlowEntityAndIndices(
-            uint contentIndex,
+            int contentIndex,
             uint& rFlowPartIndex,
             uint& rLetterIndex) const
     {
@@ -231,67 +231,67 @@ namespace eyegui
         return std::weak_ptr<const FlowEntity>();
     }
 
-    bool TextFlow::insertContent(int index, std::u16string content, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::insertContent(uint index, std::u16string content, uint& rFlowPartIndex, uint& rLetterIndex)
     {
-		/*
         // Index has to be advanced by one to be insert after given index
-        int contentIndex = index + 1;
-        if (contentIndex < (int)mContent.size())
+        uint contentIndex = index + 1;
+        if (contentIndex < mContent.size())
 		{
             // Insert at given index
             mContent.insert(contentIndex, content);
 			calculateMesh();
-            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+            return getFlowEntityAndIndices(index + content.length(), rFlowPartIndex, rLetterIndex);
         }
-        else if(contentIndex == (int)mContent.size())
+        else if(contentIndex == mContent.size())
         {
             // Append to existing content
             mContent.append(content);
             calculateMesh();
-            return getFlowWordAndIndices(index + content.length(), rFlowWord, rSubWordIndex, rLetterIndex);
+            return getFlowEntityAndIndices(index + content.length(), rFlowPartIndex, rLetterIndex);
         }
-		*/
-        return false;
+
+        // Fallback
+        return std::weak_ptr<const FlowEntity>();
 	}
 
-    bool TextFlow::eraseContent(int index, int letterCount, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, uint letterCount, uint& rFlowPartIndex, uint& rLetterIndex)
     {
-		/*
-		if (letterCount < 0)
-		{
-			// Move index
-			index -= letterCount;
+        if(!mContent.empty())
+        {
+            if (letterCount < 0)
+            {
+                // Move index
+                index -= letterCount;
 
-			// Clamp index
-			int clampedIndex = glm::max(index, 0);
+                // Clamp index
+                int clampedIndex = glm::max(0, index);
 
-			// New letter count
-			letterCount = index - clampedIndex;
+                // New letter count
+                letterCount = (uint)glm::max(0, index - clampedIndex);
 
-			// Overwrite index
-			index = clampedIndex;
-		}
+                // Overwrite index
+                index = clampedIndex;
+            }
 
-		// Clamp length
-		int endIndex = index + letterCount;
-		if (endIndex >= (int)mContent.size())
-		{
-			letterCount -= (endIndex - ((int)mContent.size() - 1));
-		}
+            // Clamp length
+            if (index + letterCount >= mContent.size())
+            {
+                letterCount = (uint)glm::max(0, (int)mContent.size() - index) + 1;
+            }
 
-		// Apply it
-		mContent.erase(index, letterCount);
+            // Apply it
+            mContent.erase(index, letterCount);
 
-		// Recalulate mesh
-		calculateMesh();
+            // Recalulate mesh
+            calculateMesh();
 
-		// Set indices
-		return getFlowWordAndIndices(index, rFlowWord, rSubWordIndex, rLetterIndex);
-		*/
-		return false; // TODO: temporarly added
+            // Set indices
+            return getFlowEntityAndIndices(index, rFlowPartIndex, rLetterIndex);
+        }
+
+        // Fallback
+        return std::weak_ptr<const FlowEntity>();
     }
-
-
 
     void TextFlow::specialCalculateMesh(
             std::u16string streamlinedContent,
