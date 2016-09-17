@@ -25,13 +25,22 @@ namespace eyegui
     // Typedef
     typedef std::vector<std::pair<glm::vec3, glm::vec2> > RenderWordVertices;
 
-    // Struct for renderable word
-    struct RenderWord
+    // Minimal class for renderable word
+    class RenderWord
     {
+    public:
+
+        // Get letter count
+        uint getLetterCount() const { return (uint)glm::min(0, (int)lettersXOffsets.size() - 1); }
+
         // Position and texture coordinate
         std::shared_ptr<RenderWordVertices> spVertices;
+
+        // Width of rendered word
         float pixelWidth;
-        std::vector<int> lettersXOffsets; // position after single letters
+
+        // Position after single letters, first one is always zero to indicate position in front of first letter
+        std::vector<int> lettersXOffsets;
     };
 
     // Class

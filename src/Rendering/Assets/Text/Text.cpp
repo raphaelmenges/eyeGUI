@@ -167,7 +167,8 @@ namespace eyegui
         // Empty word
         RenderWord word;
         word.spVertices = std::shared_ptr<RenderWordVertices>(new RenderWordVertices);
-        word.lettersXOffsets.reserve(rContent.size());
+        word.lettersXOffsets.reserve(rContent.size() + 1); // first position is zero
+        word.lettersXOffsets.push_back(0.f);
 
         // Fill word with data
         float xPixelPen = 0;

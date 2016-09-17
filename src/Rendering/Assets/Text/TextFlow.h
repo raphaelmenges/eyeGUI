@@ -40,7 +40,7 @@ namespace eyegui
         {
             if(mupWord != nullptr)
             {
-                return (uint)mupWord->lettersXOffsets.size();
+                return mupWord->getLetterCount();
             }
             else
             {
@@ -121,13 +121,14 @@ namespace eyegui
             return count;
         }
 
-        // Getter for flow part and letter index for given letter offset. Returns whether successfull.
+        // Getter for flow part and letter index for given letter offset. Returns whether successful.
         // Letter index is index inside of flow part
         bool getIndices(uint inputWordIndex, uint& rFlowPartIndex, uint& rLetterIndex) const
         {
             // Only continue when enough letters are available
             if(inputWordIndex < getLetterCount())
             {
+                // TODO: if bug occurs, it may happen here since letterXOffset has one element more than before
                 int offset = inputWordIndex;
                 for(uint i = 0; i < getFlowPartCount(); i++)
                 {
@@ -229,14 +230,17 @@ namespace eyegui
         // Coordinates relative in pixel space of flow
         std::weak_ptr<const FlowEntity> getFlowEntity(int x, int y) const;
 
+        // Get flow entity, flow part index and letter index inside flow part. Maybe empty when index not available.
+        // Content index of -1 indicates front of text
+        std::weak_ptr<const FlowEntity> getFlowEntityAndIndices(
+            uint contentIndex,
+            uint& rFlowPartIndex,
+            uint& rLetterIndex) const;
 
 
 
 
 
-        // Get flow word, sub word index and letter index by content index. Returns whether successfull.
-        // rLetterIndex of -1 symbolizes position in front of first letter
-        bool getFlowWordAndIndices(int contentIndex, FlowWord& rFlowWord, int& rSubWordIndex, int& rLetterIndex) const;
 
         // Insert content after index of exisiting content.
         // Fills resulting information about flow word, sub word index and letter index at end of insertion.
