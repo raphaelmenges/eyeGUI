@@ -521,10 +521,27 @@ namespace eyegui
                                 spFlowEntity->mFlowParts.at(flowPartIndex)
                                     ->getPixelWidth()) <= mWidth) // still space left
                         {
-                            addEntityToLine = true; // remember to add entity to line but only one time
-                            lineWidth += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
-                            endFlowPartIndex = flowPartIndex;
-                            flowPartIndex++;
+                            // New line width including flow part
+                            float newLineWidth = lineWidth + spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+
+                            // If currently processed entity is a word and next entity is a mark and both would not fit
+                            // into current line, start next line
+                            if(spFlowEntity->getType() == FlowEntity::Type::Word // is word
+                                && entityIndex + 1 < entities[paragraphIndex].size() // there is next entity
+                                && entities[paragraphIndex].at(entityIndex + 1)->getType() == FlowEntity::Type::Mark // next entity would be a mark
+                                && newLineWidth + entities[paragraphIndex].at(entityIndex + 1)->getPixelWidth() > mWidth // mark would not fit in same line
+                                && !line.empty()) // word would be not alone in line. If alone in line and shifted to next, infinite loop would happen
+                            {
+                                // Do break to start again in next line
+                                break;
+                            }
+                            //else
+                            {
+                                addEntityToLine = true; // remember to add entity to line but only one time
+                                lineWidth = newLineWidth;
+                                endFlowPartIndex = flowPartIndex;
+                                flowPartIndex++;
+                            }
 
                             // Spaces must be remembered
                             if(spFlowEntity->getType() == FlowEntity::Type::Space)

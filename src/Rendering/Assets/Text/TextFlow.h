@@ -160,6 +160,17 @@ namespace eyegui
             return index;
         }
 
+        // Add all flow parts pixel width, not regarding the placing in different lines
+        float getPixelWidth() const
+        {
+            float pixelWidth = 0;
+            for (const auto& rFlowPart : mFlowParts)
+            {
+                pixelWidth += rFlowPart->getPixelWidth();
+            }
+            return pixelWidth;
+        }
+
     protected:
 
         friend class TextFlow;
