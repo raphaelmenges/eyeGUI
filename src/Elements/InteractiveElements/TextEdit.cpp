@@ -67,13 +67,13 @@ namespace eyegui
 			meshes::Type::QUAD);
 
 		// Create text flow
-		mupTextFlow = std::move(mpAssetManager->createTextFlow(
+        /*mupTextFlow = std::move(mpAssetManager->createTextFlow(
 			fontSize,
 			TextFlowAlignment::LEFT,
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
 			u"", // TODO: maybe later some content from xeyegui or localization for initial value
-			true));
+            true));*/
 	}
 
     TextEdit::~TextEdit()
@@ -201,12 +201,13 @@ namespace eyegui
 
 	void TextEdit::setContent(std::u16string content)
 	{
-		mupTextFlow->setContent(content);
-		moveCursorToEnd();
+        /*mupTextFlow->setContent(content);
+        moveCursorToEnd();*/
 	}
 
 	void TextEdit::deleteContentAtCursor(int letterCount)
 	{
+        /*
 		if (mupActiveWord != NULL)
 		{
             FlowWord flowWord;
@@ -225,6 +226,7 @@ namespace eyegui
 				mLetterIndex = letterIndex;
 			}
 		}
+        */
 	}
 
 	std::u16string TextEdit::getActiveWord() const
@@ -450,11 +452,13 @@ namespace eyegui
 
     void TextEdit::specialTransformAndSize()
     {
+        /*
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
 
 		// Unset active word
 		mupActiveWord.reset();
+        */
     }
 
     void TextEdit::specialReset()
@@ -486,7 +490,8 @@ namespace eyegui
 
 	int TextEdit::calculateTextFlowYOffset() const
 	{
-        return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()) - mHeight)));
+        //return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()) - mHeight)));
+        return 0; // TODO: tmp added
 	}
 
     void TextEdit::setActiveWord(const FlowWord& rFlowWord, bool setCursorToEnd)

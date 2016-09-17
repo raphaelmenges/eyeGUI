@@ -20,8 +20,6 @@
 
 namespace eyegui
 {
-    FlowEntity::~FlowEntity() {}
-
     TextFlow::TextFlow(
         GUI const * pGUI,
         AssetManager* pAssetManager,
@@ -177,52 +175,13 @@ namespace eyegui
 	{
         for (const auto& rFlowEntity : mFlowEntities)
 		{
-            FlowEntity::Type type = rFlowEntity->getType();
-
-            switch(type)
+            for (const auto& rFlowPart : rFlowEntity->mFlowParts)
             {
-            case FlowEntity::Type::Space:
-            {
-                FlowSpace const * pFlowSpace = dynamic_cast<FlowSpace const *>(rFlowEntity.get());
-
-                if(insideRect(pFlowSpace->getX(), pFlowSpace->getY(), pFlowSpace->getPixelWidth(), getLineHeight(), x, y))
+                // Check whether coordinates inside flow part
+                if(insideRect(rFlowPart->getX(), rFlowPart->getY(), rFlowPart->getPixelWidth(), getLineHeight(), x, y))
                 {
                     return rFlowEntity;
                 }
-            }
-            break;
-
-            case FlowEntity::Type::Mark:
-            {
-                FlowMark const * pFlowMark = dynamic_cast<FlowMark const *>(rFlowEntity.get());
-
-                if(insideRect(pFlowMark->getX(), pFlowMark->getY(), pFlowMark->getPixelWidth(), getLineHeight(), x, y))
-                {
-                    return rFlowEntity;
-                }
-            }
-            break;
-
-            case FlowEntity::Type::Word:
-            {
-                FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(rFlowEntity.get());
-
-                for (const auto& rSubWord : pFlowWord->mSubWords)
-                {
-                    // Check whether coordinates inside sub word
-                    if(insideRect(rSubWord->getX(), rSubWord->getY(), rSubWord->getPixelWidth(), getLineHeight(), x, y))
-                    {
-                        return rFlowEntity;
-                    }
-                }
-            }
-            break;
-
-            default:
-            {
-                throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
-            }
-
             }
 		}
 
@@ -403,32 +362,54 @@ namespace eyegui
             uint index = 0;
             while(index < letterCount)
 			{
+                // Initialize entity
+                std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
+                spFlowEntity->mContentStartIndex = index;
+                spFlowEntity->mIndex = globalEntityCount;
+
+                // Determine type
                 FlowEntity::Type type = classifyLetter(paragraphs.at(paragraphIndex).at(index));
 
                 switch(type)
                 {
                 case FlowEntity::Type::Space:
                 {
-                    // Create and push back flow space
-                    std::shared_ptr<FlowSpace> upFlowSpace = std::shared_ptr<FlowSpace>(new FlowSpace);
-                    upFlowSpace->mContentStartIndex = index;
-                    upFlowSpace->mIndex = globalEntityCount;
-                    entities[paragraphIndex].push_back(std::move(upFlowSpace));
+                    // Determine end index of word in content
+                    uint endIndex = index;
+                    while (
+                        endIndex < letterCount - 1
+                        && classifyLetter(paragraphs.at(paragraphIndex).at(endIndex + 1))
+                            == FlowEntity::Type::Space)
+                    {
+                        endIndex++;
+                    }
 
-                    // Go one letter further
-                    index++;
+                    // Set type
+                    spFlowEntity->mType = FlowEntity::Type::Space;
+
+                    // Add flow parts
+                    for(uint i = index; i <= endIndex; i++)
+                    {
+                        std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
+                        upFlowPart->mPixelWidth = mPixelOfSpace; // just initial value, is updated later in this method
+                        spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
+                    }
+
+                    // Go further
+                    index = endIndex + 1;
                 }
                 break;
 
                 case FlowEntity::Type::Mark:
                 {
-                    // Create and push back flow mark
-                    std::shared_ptr<FlowMark> upFlowMark = std::shared_ptr<FlowMark>(new FlowMark);
-                    upFlowMark->mContentStartIndex = index;
-                    upFlowMark->mIndex = globalEntityCount;
-                    upFlowMark->mupWord = std::unique_ptr<RenderWord>(
+                    // Set type
+                    spFlowEntity->mType = FlowEntity::Type::Mark;
+
+                    // Add one flow part
+                    std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
+                    upFlowPart->mupWord = std::unique_ptr<RenderWord>(
                         new RenderWord(calculateWord(paragraphs.at(paragraphIndex).at(index), mScale)));
-                    entities[paragraphIndex].push_back(std::move(upFlowMark));
+                    spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
 
                     // Go one letter further
                     index++;
@@ -451,21 +432,13 @@ namespace eyegui
                     std::vector<RenderWord> fitWords;
                     failure |= !insertFitWord(fitWords, paragraphs.at(paragraphIndex).substr(index, (endIndex - index) + 1), mWidth, mScale);
 
-                    // Create entity
-                    std::shared_ptr<FlowWord> upFlowWord = std::shared_ptr<FlowWord>(new FlowWord);
-
-                    // Create sub words using fit words
+                    // Create flow parts words using fit words
                     for (const auto& rFitWord : fitWords)
-                    {
-                        std::unique_ptr<SubFlowWord> upSubFlowWord = std::unique_ptr<SubFlowWord>(new SubFlowWord);
-                        upSubFlowWord->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
-                        upFlowWord->mSubWords.push_back(std::move(upSubFlowWord));
+                    {                       
+                        std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
+                        upFlowPart->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
+                        spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
                     }
-
-                    // Push back complete flow word
-                    upFlowWord->mContentStartIndex = index;
-                    upFlowWord->mIndex = globalEntityCount;
-                    entities[paragraphIndex].push_back(std::move(upFlowWord));
 
                     // Go further
                     index = endIndex + 1;
@@ -479,6 +452,9 @@ namespace eyegui
                 }
 
                 }
+
+                // Push back entity
+                entities[paragraphIndex].push_back(std::move(spFlowEntity));
 
                 // One entity was added
                 globalEntityCount++;
@@ -497,14 +473,14 @@ namespace eyegui
 				// Currently processed entity within paragraph
 				uint entityIndex = 0;
 
-                // Save index of sub word to draw at front of line
-                uint initialSubWordIndex = 0;
+                // Save index of flow part to draw at front of line
+                uint initialFlowPartIndex = 0;
 
-                // Save index of sub word to draw at end of line
-                uint endSubWordIndex = 0;
+                // Save index of flow part to draw at end of line
+                uint endFlowPartIndex = 0;
 
-                // Save index of next sub word which has to be drawn in next line
-                uint nextSubWordIndex = 0;
+                // Save index of next flow part which has to be drawn in next line
+                uint nextFlowPartIndex = 0;
 
 				// Bool which indicates whether there are still entities to draw
 				bool hasNext = !entities[paragraphIndex].empty();
@@ -517,8 +493,8 @@ namespace eyegui
 					hasNext // entities left for new line
 					&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
 				{
-                    // Initial sub word index for line
-                    initialSubWordIndex = nextSubWordIndex;
+                    // Initial flow part index for line
+                    initialFlowPartIndex = nextFlowPartIndex;
 
 					// Pixel width of current line
 					float lineWidth = 0;
@@ -529,8 +505,8 @@ namespace eyegui
 					// Indicator whether is still room for more in the current line
                     bool spaceLeft = lineWidth < mWidth;
 
-                    // Space entity count for line
-                    uint spaceEntityCount = 0;
+                    // Space flow part count for line
+                    uint spaceFlowPartCount = 0;
 
                     // *** SETUP SINGLE LINE OF PARAGRAPH ***
 
@@ -545,89 +521,46 @@ namespace eyegui
                         // Save index of currently processed entity's index
                         uint currentEntityIndex = entityIndex;
 
-						// Check which entity is given
-                        FlowEntity::Type type = entities[paragraphIndex].at(currentEntityIndex)->getType();
+                        // Count of flow parts
+                        uint flowPartCount = entities[paragraphIndex].at(currentEntityIndex)->getFlowPartCount();
 
-						// Decide what to do
-                        switch(type)
-                        {
-                        case FlowEntity::Type::Space:
-                        {
-                            // Decide whether there is space left for space entity
-                            if((lineWidth + mPixelOfSpace) <= mWidth)
-                            {
-                                addEntityToLine = true; // remember to add entity to line but only one time
-                                lineWidth += mPixelOfSpace;
-                                spaceEntityCount++;
-                                entityIndex++;
-                            }
-                            else
-                            {
-                                spaceLeft = false;
-                            }
-						}
-                        break;
+                        // Get index of flow part to start with
+                        uint flowPartIndex = line.empty() ? initialFlowPartIndex : 0;
 
-                        case FlowEntity::Type::Mark:
+                        // Go over parts and check for each whether fits into line
+                        while (
+                            flowPartIndex < flowPartCount // still within entity
+                            && (lineWidth +
+                                entities[paragraphIndex]
+                                    .at(currentEntityIndex)
+                                        ->mFlowParts.at(flowPartIndex)
+                                            ->getPixelWidth()) <= mWidth) // still space left
                         {
-                            FlowMark const * pFlowMark = dynamic_cast<FlowMark const *>(entities[paragraphIndex].at(currentEntityIndex).get());
+                            addEntityToLine = true; // remember to add entity to line but only one time
+                            lineWidth += entities[paragraphIndex].at(currentEntityIndex)->mFlowParts.at(flowPartIndex)->getPixelWidth();
+                            endFlowPartIndex = flowPartIndex;
+                            flowPartIndex++;
 
-                            // Decide whether there is space left for entity
-                            if((lineWidth + pFlowMark->getPixelWidth()) <= mWidth)
+                            // Spaces must be remembered
+                            if(entities[paragraphIndex].at(currentEntityIndex)->getType() == FlowEntity::Type::Space)
                             {
-                                addEntityToLine = true; // remember to add entity to line but only one time
-                                lineWidth += pFlowMark->getPixelWidth();
-                                entityIndex++;
-                            }
-                            else
-                            {
-                                spaceLeft = false;
+                                spaceFlowPartCount++;
                             }
                         }
-                        break;
 
-                        case FlowEntity::Type::Word:
+                        // Check whether complete block of text is drawn or some flow part is left
+                        if(flowPartIndex == flowPartCount)
                         {
-                            FlowWord const * pFlowWord = dynamic_cast<FlowWord const *>(entities[paragraphIndex].at(currentEntityIndex).get());
-                            uint subWordCount = pFlowWord->getSubWordCount();
-
-                            // Get index of sub word to start with
-                            uint subWordIndex = line.empty() ? initialSubWordIndex : 0;
-
-                            // Go over parts and check for each whether fits into line
-                            while (
-                                subWordIndex < subWordCount // still within entity
-                                && (lineWidth + pFlowWord->mSubWords.at(subWordIndex)->mupWord->pixelWidth) <= mWidth) // still space left
-                            {
-                                addEntityToLine = true; // remember to add entity to line but only one time
-                                lineWidth += pFlowWord->mSubWords.at(subWordIndex)->mupWord->pixelWidth;
-                                endSubWordIndex = subWordIndex;
-                                subWordIndex++;
-                            }
-
-                            // Check whether complete word is drawn or some subword is left
-                            if(subWordIndex == subWordCount)
-                            {
-                                // Complete word drawn
-                                nextSubWordIndex = 0;
-                                entityIndex++;
-                            }
-                            else
-                            {
-                                // Sub words in word are left
-                                nextSubWordIndex = subWordIndex;
-                                spaceLeft = false;
-                            }
+                            // Complete block drawn
+                            nextFlowPartIndex = 0;
+                            entityIndex++;
                         }
-                        break;
-
-                        default:
+                        else
                         {
-                            throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
-                            failure |= true;
+                            // Flow parts in block are left
+                            nextFlowPartIndex = flowPartIndex;
+                            spaceLeft = false;
                         }
-
-						}
 
                         // Add entity to line since at least something of it is drawn
                         if (addEntityToLine) { line.push_back(entities[paragraphIndex].at(currentEntityIndex).get()); }
@@ -642,41 +575,37 @@ namespace eyegui
 					// *** PREPARE DRAWING ***
 
                     // Get rid of spaces in front and end of line by collapsing them
-                    uint collapsedSpaceEntities = 0;
+                    uint collapsedSpaceFlowPartCount = 0;
 
                     // Front of line
-                    for(uint lineIndex = 0; lineIndex < line.size(); lineIndex++)
+                    if(line.front()->getType() == FlowEntity::Type::Space)
                     {
-                        if(line.at(lineIndex)->getType() == FlowEntity::Type::Space)
+                        uint flowPartCount = line.size() == 1? endFlowPartIndex + 1 : line.front()->getFlowPartCount();
+                        uint flowPartIndex = initialFlowPartIndex;
+                        for (; flowPartIndex < flowPartCount; flowPartIndex++)
                         {
-                            dynamic_cast<FlowSpace*>(line.at(lineIndex))->mCollapsed = true;
-                            collapsedSpaceEntities++;
-                        }
-                        else
-                        {
-                            break; // no space entity anymore, break the for-loop
+                            line.front()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
+                            collapsedSpaceFlowPartCount++;
                         }
                     }
 
-                    // End of line (using signed integer because subtraction)
-                    for(int lineIndex = (int)line.size() - 1; lineIndex >= 0; lineIndex--)
+                    // End of line
+                    if(line.size() > 1 && line.back()->getType() == FlowEntity::Type::Space)
                     {
-                        if(line.at(lineIndex)->getType() == FlowEntity::Type::Space)
+                        uint flowPartCount = endFlowPartIndex + 1;
+                        uint flowPartIndex = line.size() == 1 ? initialFlowPartIndex : 0;
+                        for (; flowPartIndex < flowPartCount; flowPartIndex++)
                         {
-                            dynamic_cast<FlowSpace*>(line.at(lineIndex))->mCollapsed = true;
-                            collapsedSpaceEntities++;
-                        }
-                        else
-                        {
-                            break; // no space entity anymore, break the for-loop
+                            line.back()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
+                            collapsedSpaceFlowPartCount++;
                         }
                     }
 
                     // Width of non space only
-                    float nonSpaceWidth = lineWidth - (spaceEntityCount * mPixelOfSpace);
+                    float nonSpaceWidth = lineWidth - (spaceFlowPartCount * mPixelOfSpace);
 
                     // Count of space entities which are actually drawn
-                    float drawnSpaceEntityCount = (float)(spaceEntityCount - collapsedSpaceEntities);
+                    float drawnSpaceFlowPartCount = (float)(spaceFlowPartCount - collapsedSpaceFlowPartCount);
 
                     // Decide dynamic space for line
 					float dynamicSpace = mPixelOfSpace;
@@ -685,11 +614,11 @@ namespace eyegui
 						&& hasNext // do not use dynamic space for last line
 						&& line.size() > 1) // do not use dynamic space when there is only one word
 					{
-                        dynamicSpace = ((float)mWidth - nonSpaceWidth) / drawnSpaceEntityCount;
+                        dynamicSpace = ((float)mWidth - nonSpaceWidth) / drawnSpaceFlowPartCount;
 					}
 
                     // Calculate the new line width
-                    float newLineWidth = nonSpaceWidth + (drawnSpaceEntityCount * dynamicSpace);
+                    float newLineWidth = nonSpaceWidth + (drawnSpaceFlowPartCount * dynamicSpace);
 
 					// Now decide xOffset for line
 					float xOffset = 0;
@@ -713,94 +642,55 @@ namespace eyegui
                         {
                             line.at(lineIndex)->mX = (int)xPixelPen;
                             line.at(lineIndex)->mY = std::ceil(abs(yPixelPen) - lineHeight);
-                        }
+                        } 
 
-                        FlowEntity::Type type = line.at(lineIndex)->getType();
-
-						// Decide what to do
-                        switch(type)
+                        // Go over flow parts which are in line
+                        uint flowPartCount = lineIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(lineIndex)->getFlowPartCount();
+                        uint flowPartIndex = lineIndex == 0 ? initialFlowPartIndex : 0;
+                        for (; flowPartIndex < flowPartCount; flowPartIndex++)
                         {
-                        case FlowEntity::Type::Space:
-                        {
-                            FlowSpace* pFlowSpace = dynamic_cast<FlowSpace*>(line.at(lineIndex));
-
-							// Just advance xPen
-                            if(!pFlowSpace->isCollapsed())
+                            if(line.at(lineIndex)->getType() == FlowEntity::Type::Space)
                             {
-                                xPixelPen += dynamicSpace;
-                                pFlowSpace->mPixelWidth = dynamicSpace;
+                                // Only show space when not collapsed
+                                if(line.at(lineIndex)->mFlowParts.at(flowPartIndex)->isCollapsed())
+                                {
+                                    line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
+                                }
+                                else
+                                {
+                                    line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
+                                }
                             }
                             else
                             {
-                                pFlowSpace->mPixelWidth = 0;
+                                // Fetch pointer to word
+                                if(line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupWord != nullptr)
+                                {
+                                    const auto* pWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupWord.get();
+
+                                    // Push back positions and texture coordinates
+                                    for (uint i = 0; i < pWord->spVertices->size(); i++)
+                                    {
+                                        const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
+                                        rVertices.push_back(
+                                            std::make_pair(
+                                                glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
+                                                glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
+                                    }
+
+                                    // Save position in flow part
+                                    line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
+                                    line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mY = std::ceil(abs(yPixelPen) - lineHeight);
+                                }
+                                else
+                                {
+                                    throwWarning(OperationNotifier::Operation::BUG, "TextFlow has null pointer in flow part which should not be null");
+                                    failure |= true;
+                                }
                             }
-						}
-                        break;
-
-                        case FlowEntity::Type::Mark:
-                        {
-                            FlowMark* pFlowMark = dynamic_cast<FlowMark*>(line.at(lineIndex));
-
-                            // Fetch pointer to word
-                            const auto* pWord = pFlowMark->mupWord.get();
-
-                            // Push back positions and texture coordinates
-                            for (uint i = 0; i < pWord->spVertices->size(); i++)
-                            {
-                                const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
-                                rVertices.push_back(
-                                    std::make_pair(
-                                        glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
-                                        glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
-                            }
-
-                            // Fill position
-                            pFlowMark->mX = (int)xPixelPen;
-                            pFlowMark->mY = std::ceil(abs(yPixelPen) - lineHeight);
 
                             // Advance xPen
-                            xPixelPen += pFlowMark->getPixelWidth();
-                        }
-                        break;
-
-                        case FlowEntity::Type::Word:
-                        {
-                            FlowWord* pFlowWord = dynamic_cast<FlowWord*>(line.at(lineIndex));
-
-							// Go over sub words which are part of line
-                            uint subWordCount = lineIndex == line.size() - 1 ? endSubWordIndex + 1 : pFlowWord->getSubWordCount();
-                            uint subWordIndex = lineIndex == 0 ? initialSubWordIndex : 0;
-							for (; subWordIndex < subWordCount; subWordIndex++)
-							{
-								// Fetch pointer to word
-                                const auto* pWord = pFlowWord->mSubWords.at(subWordIndex)->mupWord.get();
-
-                                // Push back positions and texture coordinates
-								for (uint i = 0; i < pWord->spVertices->size(); i++)
-								{
-                                    const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
-                                    rVertices.push_back(
-                                        std::make_pair(
-                                            glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
-                                            glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
-								}
-
-								// Save position stuff in subword
-                                pFlowWord->mSubWords.at(subWordIndex)->mX = (int)xPixelPen;
-                                pFlowWord->mSubWords.at(subWordIndex)->mY = std::ceil(abs(yPixelPen) - lineHeight);
-
-								// Advance xPen
-								xPixelPen += pWord->pixelWidth;
-							}
-						}
-                        break;
-
-                        default:
-                        {
-                            throwWarning(OperationNotifier::Operation::BUG, "Flow entity unkown");
-                            failure |= true;
-                        }
-
+                            xPixelPen += line.at(lineIndex)->mFlowParts.at(flowPartIndex)->getPixelWidth();
                         }
 
                         // Update previous filled entity

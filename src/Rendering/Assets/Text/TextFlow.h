@@ -16,7 +16,68 @@
 
 namespace eyegui
 {
-    // Abstract super class for flow entities
+    // Class which forms parts of flow entity
+    class FlowPart
+    {
+    public:
+
+        // Constructor
+        FlowPart()
+        {
+            mX = 0;
+            mY = 0;
+            mCollapsed = false;
+            mupWord = nullptr;
+            mPixelWidth = 0;
+        }
+
+        // Getter for position
+        int getX() const { return mX; }
+        int getY() const { return mY; }
+
+        // Getter for letter count
+        uint getLetterCount() const
+        {
+            if(mupWord != nullptr)
+            {
+                return (uint)mupWord->lettersXOffsets.size();
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        // Getter for pixel width
+        float getPixelWidth() const
+        {
+            if(mupWord != nullptr)
+            {
+                return mupWord->pixelWidth;
+            }
+            else
+            {
+                return mPixelWidth;
+            }
+
+        }
+
+        // Getter whether collapsed
+        bool isCollapsed() const { return mCollapsed; }
+
+    protected:
+
+        friend class TextFlow;
+
+        // Members
+        int mX; // relative in flow
+        int mY; // relative in flow
+        bool mCollapsed;
+        std::unique_ptr<RenderWord> mupWord; // geometry and information of word
+        float mPixelWidth; // fallback when mupWord is null
+    };
+
+    // Class for flow entities
     class FlowEntity
     {
     public:
@@ -24,11 +85,14 @@ namespace eyegui
         // Enumeration of types
         enum class Type { Word, Space, Mark };
 
-        // Virtual destructor
-        virtual ~FlowEntity() = 0;
-
-        // Getter for letter count
-        virtual uint getLetterCount() const = 0;
+        // Constructor
+        FlowEntity()
+        {
+            mContentStartIndex = 0;
+            mIndex = 0;
+            mX = 0;
+            mY = 0;
+        }
 
         // Getter for type
         Type getType() const { return mType; }
@@ -43,98 +107,52 @@ namespace eyegui
         int getX() const { return mX; }
         int getY() const { return mY; }
 
-    protected:
+        // Getter for flow part count
+        uint getFlowPartCount() const { return (uint)mFlowParts.size(); }
 
-        friend class TextFlow;
-
-        // Members
-        Type mType;
-        uint mContentStartIndex; // index in content where flow entity starts
-        uint mIndex; // index within flow entity vector
-        int mX; // relative in flow
-        int mY; // relative in flow
-    };
-
-    // Class for sub flow word which forms parts of flow word
-    class SubFlowWord
-    {
-    public:
-
-        // Getter for letter count
-        uint getLetterCount() const { return (uint)mupWord->lettersXOffsets.size(); }
-
-        // Getter for position
-        int getX() const { return mX; }
-        int getY() const { return mY; }
-
-        // Getter for pixel width
-        int getPixelWidth() const { return mupWord->pixelWidth; }
-
-    protected:
-
-        friend class TextFlow;
-
-        // Members
-        int mX; // relative in flow
-        int mY; // relative in flow
-
-        // Word
-        std::unique_ptr<RenderWord> mupWord; // geometry and information of word
-    };
-
-    // Class of flow word which is collection of sub flow words
-    class FlowWord : public FlowEntity
-    {
-    public:
-
-        FlowWord() { mType = FlowEntity::Type::Word; }
-
-        // Getter for sub word count
-        uint getSubWordCount() const { return (uint)mSubWords.size(); }
-
-        // Getter for letter count of complete flow word
-        virtual uint getLetterCount() const
+        // Getter for letter count of complete flow entity
+        uint getLetterCount() const
         {
             uint count = 0;
-            for (const auto& rSubWord : mSubWords)
+            for (const auto& rFlowPart : mFlowParts)
             {
-                count += rSubWord->getLetterCount();
+                count += rFlowPart->getLetterCount();
             }
             return count;
         }
 
-        // Getter for subword and letter index for given letter offset. Returns whether successfull.
-        // Letter index is index inside of sub word
-        bool getIndices(uint inputWordIndex, uint& rSubWordIndex, uint& rLetterIndex) const
+        // Getter for flow part and letter index for given letter offset. Returns whether successfull.
+        // Letter index is index inside of flow part
+        bool getIndices(uint inputWordIndex, uint& rFlowPartIndex, uint& rLetterIndex) const
         {
             // Only continue when enough letters are available
             if(inputWordIndex < getLetterCount())
             {
                 int offset = inputWordIndex;
-                for(uint i = 0; i < getSubWordCount(); i++)
+                for(uint i = 0; i < getFlowPartCount(); i++)
                 {
-                    if((offset - mSubWords.at(i)->getLetterCount()) < 0)
+                    if((offset - mFlowParts.at(i)->getLetterCount()) < 0)
                     {
-                        rSubWordIndex = i;
+                        rFlowPartIndex = i;
                         rLetterIndex = offset;
                         return true;
                     }
                     else
                     {
-                        offset -= mSubWords.at(i)->getLetterCount();
+                        offset -= mFlowParts.at(i)->getLetterCount();
                     }
                 }
             }
             return false;
         }
 
-        // Get content index by indices. Letter index is within subword
-        uint getContentIndex(uint subWordIndex, uint letterIndex) const
+        // Get content index by indices. Letter index is within flow part
+        uint getContentIndex(uint flowPartIndex, uint letterIndex) const
         {
             uint index = 0;
-            for (uint i = 0; i < subWordIndex; i++)
+            for (uint i = 0; i < flowPartIndex; i++)
             {
-                index += mSubWords.at(i)->getLetterCount();
+                index += mFlowParts.at(i)->getLetterCount();
             }
             index += letterIndex;
             index += mContentStartIndex;
@@ -146,53 +164,12 @@ namespace eyegui
         friend class TextFlow;
 
         // Members
-        std::vector<std::unique_ptr<SubFlowWord> > mSubWords; // can be divided into multiple sub words to fit into given space
-    };
-
-    // Class for space within text flow
-    class FlowSpace : public FlowEntity
-    {
-    public:
-
-        FlowSpace() { mType = FlowEntity::Type::Space; mCollapsed = false; }
-
-        // Getter for letter count
-        virtual uint getLetterCount() const { return 1; }
-
-        // Getter whether collapsed
-        bool isCollapsed() const { return mCollapsed; }
-
-        // Getter for pixel width
-        float getPixelWidth() const { return mPixelWidth; }
-
-    protected:
-
-        friend class TextFlow;
-
-        // Members
-        bool mCollapsed;
-        float mPixelWidth;
-    };
-
-    // Class for marks like question mark or dot within text flow
-    class FlowMark : public FlowEntity
-    {
-    public:
-
-        FlowMark() { mType = FlowEntity::Type::Mark; }
-
-        // Getter for letter count
-        virtual uint getLetterCount() const { return 1; }
-
-        // Getter for pixel width
-        float getPixelWidth() const { return mupWord->pixelWidth; }
-
-    protected:
-
-        friend class TextFlow;
-
-        // Members
-        std::unique_ptr<RenderWord> mupWord; // geometry and information of word
+        int mX; // relative in flow
+        int mY; // relative in flow
+        Type mType; // has to be set by creator!
+        uint mContentStartIndex; // index in content where flow entity starts
+        uint mIndex; // index within flow entity vector
+        std::vector<std::unique_ptr<FlowPart> > mFlowParts;
     };
 
     // TODO: can be deleted probably later:

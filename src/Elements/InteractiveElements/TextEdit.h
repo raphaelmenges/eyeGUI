@@ -96,7 +96,7 @@ namespace eyegui
         void moveCursorOverLettersLeftward(int letterCount);
 
 		// Typedef
-        typedef std::pair<std::vector<SubFlowWord>, float> SubFlowWordAlphaPair;
+        //typedef std::pair<std::vector<SubFlowWord>, float> SubFlowWordAlphaPair;
 
         // Members
         RenderItem const * mpBackground;
@@ -104,19 +104,19 @@ namespace eyegui
 		RenderItem const * mpActiveWordBackground;
 
 		// Text flow
-		std::unique_ptr<TextFlow> mupTextFlow;
+        //std::unique_ptr<TextFlow> mupTextFlow;
 		LerpValue mTextFlowYOffset;
 		FontSize mFontSize;
 
 		// Active word and cursor position
-        std::unique_ptr<FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
+        //std::unique_ptr<FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
 		int mSubWordIndex; // inside active sub word
 		int mLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word
 		
 		// Animation related members
 		float mCursorPulse; // [0..2*Pi]
 		float mActiveWordFading; // [0..AnimationDuration]
-		std::vector<SubFlowWordAlphaPair> mPreviousActiveWords; // float is initialized with animation
+        //std::vector<SubFlowWordAlphaPair> mPreviousActiveWords; // float is initialized with animation
 																								 // duration and decremented at each update
     };
 }
