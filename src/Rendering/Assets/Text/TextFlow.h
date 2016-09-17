@@ -21,6 +21,8 @@ namespace eyegui
     {
     public:
 
+        // TODO: access letter x offset of word or if that is null: 0 is at front, 1 is at end
+
         // Constructor
         FlowPart()
         {
