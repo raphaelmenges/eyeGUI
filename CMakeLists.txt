@@ -14,6 +14,11 @@ if(${CMAKE_COMPILER_IS_GNUCXX})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
 endif(${CMAKE_COMPILER_IS_GNUCXX})
 
+# Clang settings
+if(${CMAKE_COMPILER_IS_CLANG})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
+endif(${CMAKE_COMPILER_IS_CLANG})
+
 # Directory of implementation
 set(SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
 
