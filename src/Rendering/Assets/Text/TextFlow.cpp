@@ -815,8 +815,6 @@ namespace eyegui
             case u'!': return FlowEntity::Type::Mark;
             case u'/': return FlowEntity::Type::Mark;
             case u'\\': return FlowEntity::Type::Mark;
-            case u'´': return FlowEntity::Type::Mark;
-            case u'¸': return FlowEntity::Type::Mark;
             case u'"': return FlowEntity::Type::Mark;
             default: return FlowEntity::Type::Word;
         }
