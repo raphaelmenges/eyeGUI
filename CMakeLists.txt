@@ -9,15 +9,16 @@ set(LIBNAME "eyeGUI")
 # Output path
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib/")
 
-# GCC settings
-if(${CMAKE_COMPILER_IS_GNUCXX})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
-endif(${CMAKE_COMPILER_IS_GNUCXX})
-
-# Clang settings
-if(${CMAKE_COMPILER_IS_CLANG})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
-endif(${CMAKE_COMPILER_IS_CLANG})
+# Compiler settings
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # Clang
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  # GCC
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # Visual Studio
+endif()
 
 # Directory of implementation
 set(SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
