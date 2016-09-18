@@ -152,6 +152,20 @@ namespace eyegui
             unsigned char const * pData,
             bool flipY);
 
+		// Set image of picture
+		void setImageOfPicture(
+			std::string id,
+			std::string name);
+
+		// Fetch image
+		void fetchImage(
+			std::string name,
+			int width,
+			int height,
+			ColorFormat format,
+			unsigned char const * pData,
+			bool flipY);
+
         // Interact with interactive element
         void interactWithInteractiveElement(std::string id);
 

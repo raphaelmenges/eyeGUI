@@ -566,7 +566,7 @@ namespace eyegui
 		unsigned char const * pIconData,
 		bool flipY = false);
 
-	//! Set image in picture.
+	//! Set image of picture.
 	/*!
 	  \param pLayout pointer to layout.
 	  \param id is the unique id of an element.
@@ -574,12 +574,42 @@ namespace eyegui
 	  \param width is with of image.
 	  \param height is height of image.
 	  \param format is format of pixel data.
-	  \param pIconData is pointer to unsigned char data. Must have size of width * height *  channelCount (as specified in format implicitly).
+	  \param pData is pointer to unsigned char data. Must have size of width * height *  channelCount (as specified in format implicitly).
 	  \param flipY indicates, whether texture is flipped vertically.
 	*/
 	void setImageOfPicture(
 		Layout* pLayout,
 		std::string id,
+		std::string name,
+		int width,
+		int height,
+		ColorFormat format,
+		unsigned char const * pData,
+		bool flipY = false);
+
+	//! Set image of picture.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param name is unique name of already loaded texture (either filepath or name of custom image)
+	*/
+	void setImageOfPicture(
+		Layout* pLayout,
+		std::string id,
+		std::string name);
+
+	//! Fetch image from disk to use it later.
+	/*!
+	  \param pLayout pointer to layout.
+	  \param name is unique name of later texture. Can be used to overwrite existing one.
+	  \param width is with of image.
+	  \param height is height of image.
+	  \param format is format of pixel data.
+	  \param pData is pointer to unsigned char data. Must have size of width * height *  channelCount (as specified in format implicitly).
+	  \param flipY indicates, whether texture is flipped vertically.
+	*/
+	void fetchImage(
+		Layout* pLayout,
 		std::string name,
 		int width,
 		int height,

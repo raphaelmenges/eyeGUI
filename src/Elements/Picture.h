@@ -43,14 +43,17 @@ namespace eyegui
             int& rWidth,
             int& rHeight) const;
 
-        // Set image in picture
-		void setContentOfImage(
+        // Set image in picture, creating new image with given data
+		void setImage(
 			std::string name,
 			int width,
 			int height,
 			ColorFormat format,
 			unsigned char const * pData,
 			bool flipY);
+
+		// Set image in picture, using existing image
+		void setImage(std::string name);
 
     protected:
 

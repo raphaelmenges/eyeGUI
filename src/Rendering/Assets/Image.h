@@ -37,7 +37,7 @@ namespace eyegui
         // Deconstructor
         virtual ~Image();
 
-        // Set content
+        // Set content using new data
         void setContent(
             std::string name,
             int width,
@@ -45,6 +45,9 @@ namespace eyegui
 			ColorFormat format,
             unsigned char const * pData,
 			bool flipY);
+
+		// Set content using existing data
+		void setContent(std::string name);
 
         // Check before transformation, how much space is needed
         void evaluateSize(

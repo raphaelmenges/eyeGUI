@@ -46,6 +46,11 @@ namespace eyegui
         mpTexture = mpAssetManager->fetchTexture(name, width, height, format, pData, flipY);
     }
 
+	void Image::setContent(std::string name)
+	{
+		mpTexture = mpAssetManager->fetchTexture(name);
+	}
+
     void Image::evaluateSize(
         int availableWidth,
         int availableHeight,

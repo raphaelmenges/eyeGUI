@@ -457,13 +457,39 @@ namespace eyegui
         Picture* pPicture = toPicture(fetchElement(id));
         if (pPicture != NULL)
         {
-            pPicture->setContentOfImage(name, width, height, format, pData, flipY);
+            pPicture->setImage(name, width, height, format, pData, flipY);
         }
         else
         {
             throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find picture with id: " + id);
         }
     }
+
+	void Layout::setImageOfPicture(
+		std::string id,
+		std::string name)
+	{
+		Picture* pPicture = toPicture(fetchElement(id));
+		if (pPicture != NULL)
+		{
+			pPicture->setImage(name);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find picture with id: " + id);
+		}
+	}
+
+	void Layout::fetchImage(
+		std::string name,
+		int width,
+		int height,
+		ColorFormat format,
+		unsigned char const * pData,
+		bool flipY)
+	{
+		mpAssetManager->fetchTexture(name, width, height, format, pData, flipY);
+	}
 
     void Layout::interactWithInteractiveElement(std::string id)
     {

@@ -280,6 +280,26 @@ namespace eyegui
         pLayout->setImageOfPicture(id, name, width, height, format, pData, flipY);
     }
 
+	void setImageOfPicture(
+		Layout* pLayout,
+		std::string id,
+		std::string name)
+	{
+		pLayout->setImageOfPicture(id, name);
+	}
+
+	void fetchImage(
+		Layout* pLayout,
+		std::string name,
+		int width,
+		int height,
+		ColorFormat format,
+		unsigned char const * pData,
+		bool flipY)
+	{
+		pLayout->fetchImage(name, width, height, format, pData, flipY);
+	}
+
     void interactWithInteractiveElement(Layout* pLayout, std::string id)
     {
         pLayout->interactWithInteractiveElement(id);
