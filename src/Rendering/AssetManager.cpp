@@ -240,10 +240,6 @@ namespace eyegui
             case shaders::Type::IMAGE:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pImageFragmentShader));
                 break;
-
-            // TODO
-
-
             case shaders::Type::KEY:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeyFragmentShader));
                 break;

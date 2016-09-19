@@ -72,7 +72,7 @@ namespace eyegui
         Layout const * mpLayout;
         AssetManager* mpAssetManager;
         RenderItem const * mpQuad;
-        Texture const * mpTexture;
+        std::string mTexture; // TODO: no pointer to texture is saved anymore but string to access it from asset manager
         ImageAlignment mAlignment;
         int mX;
         int mY;

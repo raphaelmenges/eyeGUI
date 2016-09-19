@@ -22,7 +22,7 @@ namespace eyegui
         mpLayout = pLayout;
         mpAssetManager = pAssetManager;
         mpQuad = mpAssetManager->fetchRenderItem(shaders::Type::IMAGE, meshes::Type::QUAD);
-        mpTexture = mpAssetManager->fetchTexture(filepath);
+		mTexture = filepath;
         mAlignment = alignment;
         mX = 0;
         mY = 0;
@@ -43,12 +43,13 @@ namespace eyegui
         unsigned char const * pData,
 		bool flipY)
     {
-        mpTexture = mpAssetManager->fetchTexture(name, width, height, format, pData, flipY);
+        mpAssetManager->fetchTexture(name, width, height, format, pData, flipY);
+		mTexture = name;
     }
 
 	void Image::setContent(std::string name)
 	{
-		mpTexture = mpAssetManager->fetchTexture(name);
+		mTexture = name;
 	}
 
     void Image::evaluateSize(
@@ -61,9 +62,12 @@ namespace eyegui
         {
         case ImageAlignment::ORIGINAL:
             {
+				// Fetch current texture
+				Texture const * pTexture = mpAssetManager->fetchTexture(mTexture);
+
                 // Extra parenthesis somehow necessary because of variable initialization
                 float availableAspectRatio = ((float)availableWidth) / ((float)availableHeight);
-                float aspectRatio = mpTexture->getAspectRatio();
+                float aspectRatio = pTexture->getAspectRatio();
 
                 if (availableAspectRatio < aspectRatio)
                 {
@@ -122,12 +126,15 @@ namespace eyegui
         mpQuad->getShader()->fillValue("alpha", alpha);
         mpQuad->getShader()->fillValue("image", 1);
 
+		// Fetch current texture
+		Texture const * pTexture = mpAssetManager->fetchTexture(mTexture);
+
         // Fill scale
         glm::vec2 scale = glm::vec2(1.f,1.f);
         if(mAlignment == ImageAlignment::ZOOMED)
         {
             float availableAspectRatio = ((float)mWidth) / ((float)mHeight);
-            float aspectRatio = mpTexture->getAspectRatio();
+            float aspectRatio = pTexture->getAspectRatio();
 
             if (availableAspectRatio < aspectRatio)
             {
@@ -144,19 +151,19 @@ namespace eyegui
         mpQuad->getShader()->fillValue("scale", scale);
 
         // Bind texture to render
-        mpTexture->bind(1);
-
+		pTexture->bind(1);
+		
         // Draw the quad
         mpQuad->draw();
     }
 
     unsigned int Image::getTextureWidth() const
     {
-        return (uint)(mpTexture->getWidth());
+        return (uint)(mpAssetManager->fetchTexture(mTexture)->getWidth());
     }
 
     unsigned int Image::getTextureHeight() const
     {
-        return (uint)(mpTexture->getHeight());
+        return (uint)(mpAssetManager->fetchTexture(mTexture)->getHeight());
     }
 }
