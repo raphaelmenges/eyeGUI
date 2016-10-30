@@ -10,13 +10,13 @@ set(LIBNAME "eyeGUI")
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib/")
 
 # Compiler settings
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
   # Clang
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
   # GCC
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
   # Visual Studio
 endif()
 
@@ -143,7 +143,7 @@ set(ALL_CODE
 	${UTF8REWIND})
 
 # Filtering for Visual Studio
-IF(MSVC)
+if(MSVC)
 
 	# http://stackoverflow.com/questions/9701387/cmake-source-group-multiple-files
 	foreach(f ${ALL_CODE})
@@ -160,7 +160,7 @@ IF(MSVC)
 		source_group("${SRCGR}" FILES ${f})
 	endforeach()
 
-ENDIF(MSVC)
+endif(MSVC)
 
 # Add the interface header file
 set(ALL_CODE ${ALL_CODE} "${CMAKE_CURRENT_LIST_DIR}/include/eyeGUI.h")
