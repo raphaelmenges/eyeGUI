@@ -205,6 +205,11 @@ namespace eyegui
 		notifyInteraction("NEXT_SENTENCE", convertUTF16ToUTF8(sentence));
 	}
 
+	void FutureKeyboard::clearPredisplay()
+	{
+		mupPreDisplay->setContent(u"");
+	}
+
 	float FutureKeyboard::specialUpdate(float tpf, Input* pInput)
 	{
         // Prepare tasks

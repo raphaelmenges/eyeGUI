@@ -1437,6 +1437,15 @@ namespace eyegui_experimental
 		eyegui::Layout* pLayout,
 		std::string id,
 		std::u16string sentence);
+
+	//! Clear predisplay of sentence to type in.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	*/
+	void clearFutureKeyboardPredisplay(
+		eyegui::Layout* pLayout,
+		std::string id);
 }
 
 #endif // EYE_GUI_H_

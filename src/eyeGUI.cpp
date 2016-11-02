@@ -809,4 +809,11 @@ namespace eyegui_experimental
 	{
 		pLayout->nextFutureKeyboardSentence(id, sentence);
 	}
+
+	void clearFutureKeyboardPredisplay(
+		eyegui::Layout* pLayout,
+		std::string id)
+	{
+		pLayout->clearFutureKeyboardPredisplay(id);
+	}
 }

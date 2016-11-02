@@ -405,6 +405,9 @@ namespace eyegui
 			std::string id,
 			std::u16string sentence);
 
+		// Clear predisplay of future keyboard
+		void clearFutureKeyboardPredisplay(std::string id);
+
     private:
 
         // Resize function

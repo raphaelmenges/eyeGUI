@@ -52,6 +52,9 @@ namespace eyegui
 		// Set next sentence
 		void nextSentence(std::u16string sentence);
 
+		// Clear predisplay
+		void clearPredisplay();
+
 	protected:
 
 		// Updating filled by subclasses, returns adaptive scale

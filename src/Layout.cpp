@@ -1758,6 +1758,19 @@ namespace eyegui
 		}
 	}
 
+	void Layout::clearFutureKeyboardPredisplay(std::string id)
+	{
+		FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
+		if (pFutureKeyboard != NULL)
+		{
+			pFutureKeyboard->clearPredisplay();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
+		}
+	}
+
     void Layout::internalResizing(bool force, bool instant)
     {
         if (force || (mResizeNecessary && mAlpha.getValue() > 0))
