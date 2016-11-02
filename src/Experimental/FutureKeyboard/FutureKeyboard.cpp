@@ -650,7 +650,7 @@ namespace eyegui
 	{
 		// Display is independend from everything else
 		int displayX = (int)(mX + 0.05f * mWidth);
-		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.03f * mHeight) : (int)(mY + 0.1f * mHeight);
+		int displayY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(mY + 0.075f * mHeight) : (int)(mY + 0.1f * mHeight);
 		int displayHeight = (int)(0.175f * mHeight);
 		mDisplayLowerBound = displayY + displayHeight; // save lower bound of display to determine at interaction logging when gaze is upon it
 
@@ -658,7 +658,7 @@ namespace eyegui
 		int keyWidth = (int)(0.09f * mWidth);
 		int keyHeight = (int)(0.125f * mHeight);
 		int keySpace = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.005f * mWidth) : (int)(0.01f * mWidth);
-		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.225f * mHeight) : (int)(0.4f * mHeight); // defines where keys star
+		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.27f * mHeight) : (int)(0.4f * mHeight); // defines where keys start
 
 		// Offset for suggestions and keys to start
 		int xMargin = (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
@@ -669,13 +669,13 @@ namespace eyegui
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
 		{
 			// Move it depending from last line
-			suggestionHeight = (int)(0.1f * mHeight);
+			suggestionHeight = (int)(0.09f * mHeight);
 			suggestionOffsetY = (keyOffsetY - keySpace - suggestionHeight) + (mLastLine * (suggestionHeight + (2 * keySpace) + keyHeight));
 		}
 		else
 		{
 			// Move suggestion line a little bit up to improve selection by user
-			suggestionHeight = (int)(0.12f * mHeight);
+			suggestionHeight = (int)(0.09f * mHeight);
 			suggestionOffsetY = (keyOffsetY - keySpace - suggestionHeight) - (mHeight * 0.0125f);
 		}
 
