@@ -43,110 +43,62 @@ namespace eyegui
         // Destructor
         virtual ~NotifierTemplate() = 0;
 
-        // Register listeners for pressing etc
+        // Register listeners for element activities
         bool registerListener(std::weak_ptr<T> wpListener)
         {
             bool success = true;
 
-            // Get raw pointer from weak pointer
-            T* ptr = NULL;
-            if (auto wp = wpListener.lock())
+            // Get shared pointer from weak pointer
+            if (auto newSp = wpListener.lock())
             {
-                ptr = wp.get();
-            }
+				// Check whether listener is already listening
+				for (const std::weak_ptr<T>& rwpListener : mListeners)
+				{
+					// Compare raw pointers for equality
+					if (auto sp = rwpListener.lock())
+					{
+						if (sp.get() == newSp.get())
+						{
+							success = false;
+							break;
+						}
+					}
+				}
 
-            // Only continue if there is still a pointer
-            if (ptr != NULL)
-            {
-                // Check whether listener is already listening
-                for (std::weak_ptr<T>& listener : mListeners)
-                {
-                    // Compare raw pointer for equality
-                    if (auto sp = listener.lock())
-                    {
-                        if (sp.get() == ptr)
-                        {
-                            success = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (success)
-                {
-                    // Not yet listening, change it
-                    mListeners.push_back(wpListener);
-                }
+				if (success)
+				{
+					// Not yet listening, change it
+					mListeners.push_back(wpListener);
+				}
             }
+			else
+			{
+				// Could not register NULL pointer
+				success = false;
+			}
 
             return success;
         }
 
     protected:
 
-        // Notify listener about something (one need to know which method to call from listener)
+        // Notify listener about something. Takes parameters of chosen method
+		template <class...T_values>
         void notifyListener(
-            void (T::*method) (Layout*, std::string),
-            Layout* pLayout, std::string id)
+            void (T::*method) (Layout*, T_values...), // method that is called back
+            Layout* pLayout, // pointer to layout of element calling
+			const T_values&... values) // parameters for method
         {
             // Inform listener
             for (std::shared_ptr<T>& spListener : getListener())
             {
-                (spListener.get()->*method)(pLayout, id);
-            }
-        }
-
-        // Notify listener about something (one need to know which method to call from listener)
-        void notifyListener(
-            void (T::*method) (Layout*, std::string, float),
-            Layout* pLayout, std::string id, float value)
-        {
-            // Inform listener
-            for (std::shared_ptr<T>& spListener : getListener())
-            {
-                (spListener.get()->*method)(pLayout, id, value);
-            }
-        }
-
-        // Notify listener about something (one need to know which method to call from listener)
-        void notifyListener(
-            void (T::*method) (Layout*, std::string, std::u16string),
-            Layout* pLayout, std::string id, std::u16string value)
-        {
-            // Inform listener
-            for (std::shared_ptr<T>& spListener : getListener())
-            {
-                (spListener.get()->*method)(pLayout, id, value);
-            }
-        }
-
-        // Notify listener about something (one need to know which method to call from listener)
-        void notifyListener(
-            void (T::*method) (Layout*, std::string, std::string),
-            Layout* pLayout, std::string id, std::string value)
-        {
-            // Inform listener
-            for (std::shared_ptr<T>& spListener : getListener())
-            {
-                (spListener.get()->*method)(pLayout, id, value);
-            }
-        }
-
-        // Notify listener about something (one need to know which method to call from listener)
-        void notifyListener(
-            void (T::*method) (Layout*, std::string, std::string, std::u16string),
-            Layout* pLayout, std::string id, std::string keyId, std::u16string word)
-        {
-            // Inform listener
-            for (std::shared_ptr<T>& spListener : getListener())
-            {
-                (spListener.get()->*method)(pLayout, id, keyId, word);
+                (spListener.get()->*method)(pLayout, values...); // call method of element
             }
         }
 
     private:
 
-        // Helper for notifications (shared pointer somehow expensive)
+        // Helper for notifications
         std::vector<std::shared_ptr<T> > getListener()
         {
             std::vector<std::shared_ptr<T> > listeners;
@@ -165,7 +117,7 @@ namespace eyegui
                 }
                 else
                 {
-                    // Dead listeners even not added to return vector
+                    // Dead listeners not added to result vector
                     deadListeners.push_back(i);
                 }
             }
