@@ -48,7 +48,6 @@ namespace eyegui
         mThreshold.setValue(0);
         mFocusedKeyRow = -1;
         mFocusedKeyColumn = -1;
-        mGazePosition = glm::vec2(0,0);
         mKeyWasPressed = false;
         mCurrentKeymapIndex = 0;
         mBigCharactersActive = false;

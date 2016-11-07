@@ -48,9 +48,6 @@ namespace eyegui
         // Fill members
         mType = Type::SENSOR;
 
-        // Initialize members
-        mPenetration.setValue(0);
-
         // Render item
         mpSensorItem = mpAssetManager->fetchRenderItem(
             shaders::Type::SENSOR,

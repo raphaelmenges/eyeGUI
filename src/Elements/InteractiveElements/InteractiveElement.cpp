@@ -40,12 +40,6 @@ namespace eyegui
     {
         mType = Type::INTERACTIVE_ELEMENT;
 
-        // Filling member
-        mHighlight.setValue(0);
-        mIsHighlighted = false;
-        mSelection.setValue(0);
-        mIsSelected = false;
-
         // Render items
         mpHighlightItem = mpAssetManager->fetchRenderItem(shaders::Type::HIGHLIGHT, meshes::Type::QUAD);
         mpSelectionItem = mpAssetManager->fetchRenderItem(shaders::Type::SELECTION, meshes::Type::QUAD);

@@ -52,23 +52,13 @@ namespace eyegui
         mAlpha = 1;
         mBorderAspectRatio = 1;
         mAdaptiveScaling = adaptiveScaling;
-        mAdaptiveScale.setValue(0);
         mHidden = false;
         mMarking = false;
         mMark.setValue(0);
         mRenderingMask = renderingMask;
-        mPenetratedLastUpdate = false;
 
         // Decide about dimming
         mDimming = dimming;
-        if(mDimming)
-        {
-            mDim.setValue(1);
-        }
-        else
-        {
-            mDim.setValue(0);
-        }
 
         // Fetch style from layout
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);

@@ -53,11 +53,7 @@ namespace eyegui
         // Fill members
         mIsSwitch = isSwitch;
         mUseCircleThreshold = useCircleThreshold;
-
-        // Calling virtual reset method in constructor is not good
         mIsDown = false;
-        mThreshold.setValue(0);
-        mPressing.setValue(0);
 
         // Render items
         if(mUseCircleThreshold)

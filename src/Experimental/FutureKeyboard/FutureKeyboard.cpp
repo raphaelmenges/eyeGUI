@@ -47,7 +47,6 @@ namespace eyegui
         mMode = mode;
         mCurrentWord = u"";
         mCollectedWords = u"";
-        mLastLetter = u"";
 		mLastLine = 0;
 		mLastWasSuggestion = false;
 		mWordBeforeSuggestion = u"";
@@ -142,9 +141,6 @@ namespace eyegui
 
 		// Placeholder for empty suggestion
 		mpEmptySuggestion = mpAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
-
-		// Interaction logging
-		mLastFocused.clear();
 	}
 
 	FutureKeyboard::~FutureKeyboard()

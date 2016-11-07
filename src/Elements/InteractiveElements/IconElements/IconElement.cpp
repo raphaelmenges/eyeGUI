@@ -46,7 +46,6 @@ namespace eyegui
         // Fill members
         setIcon(iconFilepath);
         mDescriptionKey = descKey;
-        mDescriptionAlpha.setValue(0);
 
         // Create description (TODO: maybe merge somehow with text block init)
         std::u16string descriptionContent;
@@ -83,8 +82,6 @@ namespace eyegui
                     1.f,
                     descriptionContent));
         }
-
-
     }
 
     IconElement::~IconElement()

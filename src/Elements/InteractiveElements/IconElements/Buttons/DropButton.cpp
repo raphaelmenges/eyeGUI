@@ -52,8 +52,6 @@ namespace eyegui
 
         // Initial values
 		mupInnerElement = NULL; // One has to call attach inner element method
-        mInnerAlpha.setValue(0);
-        mInnerElementVisible = false;
     }
 
     DropButton::~DropButton()
