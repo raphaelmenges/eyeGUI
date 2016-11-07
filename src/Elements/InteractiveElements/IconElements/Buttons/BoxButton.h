@@ -17,28 +17,31 @@ namespace eyegui
     {
     public:
 
-        // Constructor
-        BoxButton(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            std::string iconFilepath,
-			std::u16string desc,
-			std::string descKey,
-            bool isSwitch);
-
         // Deconstructor
         ~BoxButton();
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		BoxButton(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			std::string iconFilepath,
+			std::u16string desc,
+			std::string descKey,
+			bool isSwitch);
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;

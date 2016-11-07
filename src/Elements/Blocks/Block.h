@@ -15,30 +15,33 @@ namespace eyegui
 {
     class Block : public Element
     {
-    public:
-
-        // Constructor
-        Block(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            float innerBorder = 0);
+	public:
 
         // Destructor
         virtual ~Block();
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		Block(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			bool consumeInput,
+			std::string backgroundFilepath,
+			ImageAlignment backgroundAlignment,
+			float innerBorder = 0);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);

@@ -36,7 +36,21 @@ namespace eyegui
             BOTH_AXES, MAIN_AXIS
         };
 
-        // Constructor
+        // Destructor
+        virtual ~Stack();
+
+        // Attach elment
+        void attachElement(std::unique_ptr<Element> upElement);
+
+        // Tries to fetch next interactive element for selecting, returns NULL if fails
+        virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
+
+    protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
 		Stack(
 			std::string id,
 			std::string styleName,
@@ -59,17 +73,6 @@ namespace eyegui
 			Alignment alignment,
 			float padding,
 			float separator);
-
-        // Destructor
-        virtual ~Stack();
-
-        // Attach elment
-        void attachElement(std::unique_ptr<Element> upElement);
-
-        // Tries to fetch next interactive element for selecting, returns NULL if fails
-        virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
-
-    protected:
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;

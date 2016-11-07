@@ -26,25 +26,6 @@ namespace eyegui
 			LEFT_TO_RIGHT, RIGHT_TO_LEFT, TOP_TO_BOTTOM, BOTTOM_TO_TOP
 		};
 
-        // Constructor
-        ProgressBar(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            float innerBorder,
-            Direction progressDirection);
-
         // Destructor
         virtual ~ProgressBar();
 
@@ -52,6 +33,28 @@ namespace eyegui
         void setProgress(float progress);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		ProgressBar(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			bool consumeInput,
+			std::string backgroundFilepath,
+			ImageAlignment backgroundAlignment,
+			float innerBorder,
+			Direction progressDirection);
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;

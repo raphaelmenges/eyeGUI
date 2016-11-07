@@ -18,30 +18,6 @@ namespace eyegui
     {
     public:
 
-        // Constructors
-        TextBlock(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            float innerBorder,
-            FontSize fontSize,
-            TextFlowAlignment alignment,
-            TextFlowVerticalAlignment verticalAlignment,
-			float textScale,
-            std::u16string content,
-            std::string key);
-
         // Destructor
         virtual ~TextBlock();
 
@@ -52,6 +28,33 @@ namespace eyegui
         void setKey(std::string key);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		TextBlock(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			bool consumeInput,
+			std::string backgroundFilepath,
+			ImageAlignment backgroundAlignment,
+			float innerBorder,
+			FontSize fontSize,
+			TextFlowAlignment alignment,
+			TextFlowVerticalAlignment verticalAlignment,
+			float textScale,
+			std::u16string content,
+			std::string key);
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;

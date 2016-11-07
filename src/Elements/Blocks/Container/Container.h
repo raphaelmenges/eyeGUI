@@ -17,25 +17,6 @@ namespace eyegui
     {
     public:
 
-        // Constructor
-        Container(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            float innerBorder,
-            bool showBackground);
-
         // Destructor
         virtual ~Container() = 0;
 
@@ -57,6 +38,28 @@ namespace eyegui
             std::unique_ptr<Element> upReplacement);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		Container(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			bool consumeInput,
+			std::string backgroundFilepath,
+			ImageAlignment backgroundAlignment,
+			float innerBorder,
+			bool showBackground);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);

@@ -1144,7 +1144,8 @@ namespace eyegui
         if (pElement != NULL)
         {
             // Create new block
-            std::unique_ptr<Block> upBlock = std::unique_ptr<Block>(new Block(
+			ElementFactory fac;
+			auto upBlock = fac.build<Block>(
                 pElement->getId(),
                 pElement->getStyleName(),
                 pElement->getParent(),
@@ -1158,7 +1159,7 @@ namespace eyegui
                 pElement->getAdaptiveScaling(),
                 consumeInput,
                 backgroundFilepath,
-                backgroundAlignment));
+                backgroundAlignment);
                 // innerBorder is 0 by default and not necessary for block
 
             Element* pBlock = upBlock.get();
@@ -1181,7 +1182,8 @@ namespace eyegui
         if (pElement != NULL)
         {
             // Create new picture
-            std::unique_ptr<Picture> upPicture = std::unique_ptr<Picture>(new Picture(
+			ElementFactory fac;
+			auto upPicture = fac.build<Picture>(
                 pElement->getId(),
                 pElement->getStyleName(),
                 pElement->getParent(),
@@ -1194,7 +1196,7 @@ namespace eyegui
                 pElement->isDimming(),
                 pElement->getAdaptiveScaling(),
                 filepath,
-                alignment));
+                alignment);
 
             Element* pPicture = upPicture.get();
 
@@ -1216,7 +1218,8 @@ namespace eyegui
         if (pElement != NULL)
         {
             // Create new blank
-            std::unique_ptr<Blank> upBlank = std::unique_ptr<Blank>(new Blank(
+			ElementFactory fac;
+			auto upBlank = fac.build<Blank>(
                 pElement->getId(),
                 pElement->getStyleName(),
                 pElement->getParent(),
@@ -1227,7 +1230,7 @@ namespace eyegui
                 pElement->getRelativeScale(),
                 pElement->getBorder(),
                 pElement->isDimming(),
-                pElement->getAdaptiveScaling()));
+                pElement->getAdaptiveScaling());
 
             Element* pBlank = upBlank.get();
 
@@ -1249,7 +1252,8 @@ namespace eyegui
         if (pElement != NULL)
         {
             // Create new picture
-            std::unique_ptr<CircleButton> upCircleButton = std::unique_ptr<CircleButton>(new CircleButton(
+			ElementFactory fac;
+			auto upCircleButton = fac.build<CircleButton>(
                 pElement->getId(),
                 pElement->getStyleName(),
                 pElement->getParent(),
@@ -1264,7 +1268,7 @@ namespace eyegui
                 iconFilepath,
                 desc,
                 descKey,
-                isSwitch));
+                isSwitch);
 
             Element* pCircleButton = upCircleButton.get();
 
@@ -1285,8 +1289,9 @@ namespace eyegui
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
         {
-            // Create new picture
-            std::unique_ptr<BoxButton> upBoxButton = std::unique_ptr<BoxButton>(new BoxButton(
+            // Create box button
+			ElementFactory fac;
+			auto upBoxButton = fac.build<BoxButton>(
                 pElement->getId(),
                 pElement->getStyleName(),
                 pElement->getParent(),
@@ -1301,7 +1306,7 @@ namespace eyegui
                 iconFilepath,
                 desc,
                 descKey,
-                isSwitch));
+                isSwitch);
 
             Element* pBoxButton = upBoxButton.get();
 
@@ -1322,8 +1327,9 @@ namespace eyegui
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
         {
-            // Create new picture
-            std::unique_ptr<Sensor> upSensor = std::unique_ptr<Sensor>(new Sensor(
+            // Create sensor
+			ElementFactory fac;
+			auto upSensor = fac.build<Sensor>(
                 pElement->getId(),
                 pElement->getStyleName(),
                 pElement->getParent(),
@@ -1337,7 +1343,7 @@ namespace eyegui
                 pElement->getAdaptiveScaling(),
                 iconFilepath,
                 desc,
-                descKey));
+                descKey);
 
             Element* pSensor = upSensor.get();
 
@@ -1370,8 +1376,9 @@ namespace eyegui
         Element* pElement = fetchElement(id);
         if (pElement != NULL)
         {
-            // Create new text block
-            std::unique_ptr<TextBlock> upTextBlock = std::unique_ptr<TextBlock>(new TextBlock(
+            // Create text block
+			ElementFactory fac;
+			auto upTextBlock = fac.build<TextBlock>(
                 pElement->getId(),
                 pElement->getStyleName(),
                 pElement->getParent(),
@@ -1392,7 +1399,7 @@ namespace eyegui
                 verticalAlignment,
                 textScale,
                 content,
-                key));
+                key);
 
             Element* pTextBlock = upTextBlock.get();
 

@@ -19,21 +19,6 @@ namespace eyegui
     {
     public:
 
-        // Constructors
-        InteractiveElement(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            RenderingMask renderingMask,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling);
-
         // Destructor
         virtual ~InteractiveElement() = 0;
 
@@ -53,6 +38,24 @@ namespace eyegui
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		InteractiveElement(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			RenderingMask renderingMask,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);

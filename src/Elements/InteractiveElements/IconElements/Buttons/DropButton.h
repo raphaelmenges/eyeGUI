@@ -19,24 +19,6 @@ namespace eyegui
     {
     public:
 
-        // Constructor
-        DropButton(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            std::string iconFilepath,
-			std::u16string desc,
-			std::string descKey,
-            float space);
-
         // Deconstructor
         ~DropButton();
 
@@ -59,6 +41,27 @@ namespace eyegui
         virtual void setActivity(bool active, bool fade);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		DropButton(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			std::string iconFilepath,
+			std::u16string desc,
+			std::string descKey,
+			float space);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);

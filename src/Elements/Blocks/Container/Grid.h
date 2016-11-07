@@ -21,26 +21,6 @@ namespace eyegui
     {
     public:
 
-        // Constructor
-        Grid(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            float innerBorder,
-            bool showBackground,
-            int rows);
-
         // Destructor
         virtual ~Grid();
 
@@ -69,6 +49,29 @@ namespace eyegui
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		Grid(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			bool consumeInput,
+			std::string backgroundFilepath,
+			ImageAlignment backgroundAlignment,
+			float innerBorder,
+			bool showBackground,
+			int rows);
 
         // Transformation filled by subclasses
         virtual void specialTransformAndSize();

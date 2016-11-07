@@ -22,21 +22,6 @@ namespace eyegui
         // Modes
         enum class Mode { ONE_SUGGESTION_LINE, MANY_SUGGESTION_LINES, SUGGESTION_PER_KEY };
 
-		// Constructor
-		FutureKeyboard(
-			std::string id,
-			std::string styleName,
-			Element* pParent,
-			Layout const * pLayout,
-			Frame* pFrame,
-			AssetManager* pAssetManager,
-			NotificationQueue* pNotificationQueue,
-			float relativeScale,
-			float border,
-			bool dimming,
-			bool adaptiveScaling,
-			Mode mode);
-
 		// Destructor
 		virtual ~FutureKeyboard();
 
@@ -56,6 +41,24 @@ namespace eyegui
 		void clearPredisplay();
 
 	protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		FutureKeyboard(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			Mode mode);
 
 		// Updating filled by subclasses, returns adaptive scale
 		virtual float specialUpdate(float tpf, Input* pInput);

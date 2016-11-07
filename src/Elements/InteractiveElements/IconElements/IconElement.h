@@ -18,24 +18,6 @@ namespace eyegui
     {
     public:
 
-        // Constructors
-        IconElement(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            RenderingMask renderingMask,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            std::string iconFilepath,
-            std::u16string desc,
-            std::string descKey);
-
         // Destructor
         virtual ~IconElement() = 0;
 
@@ -50,6 +32,27 @@ namespace eyegui
 			bool flipY);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		IconElement(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			RenderingMask renderingMask,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			std::string iconFilepath,
+			std::u16string desc,
+			std::string descKey);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);

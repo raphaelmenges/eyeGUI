@@ -21,21 +21,6 @@ namespace eyegui
     {
         public:
 
-            // Constructors
-            NotifierElement(
-                std::string id,
-                std::string styleName,
-                Element* pParent,
-                Layout const * pLayout,
-                Frame* pFrame,
-                AssetManager* pAssetManager,
-                NotificationQueue* pNotificationQueue,
-                RenderingMask renderingMask,
-                float relativeScale,
-                float border,
-                bool dimming,
-                bool adaptiveScaling);
-
             // Destructor
             virtual ~NotifierElement() = 0;
 
@@ -43,6 +28,24 @@ namespace eyegui
             void pipeNotification(NotificationType notification, Layout* pLayout);
 
         protected:
+
+			// Factory is friend
+			friend ElementFactory;
+
+			// Protected constructor
+			NotifierElement(
+				std::string id,
+				std::string styleName,
+				Element* pParent,
+				Layout const * pLayout,
+				Frame* pFrame,
+				AssetManager* pAssetManager,
+				NotificationQueue* pNotificationQueue,
+				RenderingMask renderingMask,
+				float relativeScale,
+				float border,
+				bool dimming,
+				bool adaptiveScaling);
 
             // Filled by subclass and called by layout after updating
             virtual void specialPipeNotification(NotificationType notification, Layout* pLayout) = 0;

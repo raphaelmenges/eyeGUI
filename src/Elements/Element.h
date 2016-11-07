@@ -19,9 +19,10 @@
 #define ELEMENT_H_
 
 #include "include/eyeGUI.h"
-#include "Object.h"
-#include "Rendering/AssetManager.h"
-#include "Style.h"
+#include "src/Object.h"
+#include "src/Elements/ElementFactory.h"
+#include "src/Rendering/AssetManager.h"
+#include "src/Style.h"
 #include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
@@ -76,21 +77,6 @@ namespace eyegui
 
         // Orientation of element
         enum class Orientation { HORIZONTAL, VERTICAL };
-
-        // Constructor
-        Element(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            RenderingMask renderingMask,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling);
 
         // Destructor
         virtual ~Element() = 0;
@@ -231,6 +217,24 @@ namespace eyegui
         bool checkForParentType(Element::Type type) const;
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		Element(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			RenderingMask renderingMask,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput) = 0;

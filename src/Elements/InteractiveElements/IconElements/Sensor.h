@@ -18,23 +18,6 @@ namespace eyegui
     {
     public:
 
-        // Constructor
-        Sensor(
-            std::string id,
-            std::string styleName,
-            Element* pParent,
-            Layout const * pLayout,
-            Frame* pFrame,
-            AssetManager* pAssetManager,
-            NotificationQueue* pNotificationQueue,
-            float relativeScale,
-            float border,
-            bool dimming,
-            bool adaptiveScaling,
-            std::string iconFilepath,
-			std::u16string desc,
-			std::string descKey);
-
         // Deconstructor
         ~Sensor();
 
@@ -42,6 +25,26 @@ namespace eyegui
         void penetrate(float amount);
 
     protected:
+
+		// Factory is friend
+		friend ElementFactory;
+
+		// Protected constructor
+		Sensor(
+			std::string id,
+			std::string styleName,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			std::string iconFilepath,
+			std::u16string desc,
+			std::string descKey);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
