@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Factory class for elements. Is friend of all of them. Calls automtically
+// Factory class for elements. Is friend of all of them. Calls automatically
 // reset after instantiation.
 
 #ifndef ELEMENT_FACTORY_H_
