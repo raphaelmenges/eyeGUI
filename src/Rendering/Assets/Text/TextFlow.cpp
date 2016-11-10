@@ -15,9 +15,6 @@
 
 #include <cmath>
 
-// TODO: testing
-#include <iostream>
-
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -178,7 +175,7 @@ namespace eyegui
             for (const auto& rFlowPart : rFlowEntity->mFlowParts)
             {
                 // Check whether coordinates are inside flow part of flow entity
-                if(insideRect(rFlowPart->getX(), rFlowPart->getY(), rFlowPart->getPixelWidth(), getLineHeight(), x, y))
+                if(insideRect(rFlowPart->getX(), rFlowPart->getY(), (int)rFlowPart->getPixelWidth(), (int)getLineHeight(), x, y))
                 {
                     return rFlowEntity;
                 }
@@ -199,7 +196,7 @@ namespace eyegui
 		{
             rFlowPartIndex = 0;
             rLetterIndex = 0;
-            return mFlowEntities.front();;
+            return mFlowEntities.front();
 		}
 
         // Check, whether there are enough letters in content for that index
@@ -207,7 +204,9 @@ namespace eyegui
         {
             // Go over flow words and search index
             uint flowEntityIndex = 0;
-            while ((flowEntityIndex + 1 < mFlowEntities.size()) && (mFlowEntities.at(flowEntityIndex + 1)->getContentStartIndex() <= contentIndex))
+            while (
+				(flowEntityIndex + 1 < mFlowEntities.size())
+				&& (mFlowEntities.at(flowEntityIndex + 1)->getContentStartIndex() <= contentIndex))
 			{
                 flowEntityIndex++;
 			}
@@ -240,14 +239,14 @@ namespace eyegui
             // Insert at given index
             mContent.insert(contentIndex, content);
 			calculateMesh();
-            return getFlowEntityAndIndices(index + content.length(), rFlowPartIndex, rLetterIndex);
+            return getFlowEntityAndIndices(index + (int)content.length(), rFlowPartIndex, rLetterIndex);
         }
         else if(contentIndex == mContent.size())
         {
             // Append to existing content
             mContent.append(content);
             calculateMesh();
-            return getFlowEntityAndIndices(index + content.length(), rFlowPartIndex, rLetterIndex);
+            return getFlowEntityAndIndices(index + (int)content.length(), rFlowPartIndex, rLetterIndex);
         }
 
         // Fallback
@@ -347,7 +346,7 @@ namespace eyegui
 			// *** COLLECT ENTITIES FOR EACH PARAGRAPH ***
 
 			// Get entities out of paragraph
-            uint letterCount = paragraphs.at(paragraphIndex).size();
+            uint letterCount = (uint)paragraphs.at(paragraphIndex).size();
             uint index = 0;
             while(index < letterCount)
 			{
@@ -374,7 +373,7 @@ namespace eyegui
                         endIndex++;
                     }
 
-                    // Add flow parts for each space
+                    // Add flow part for each space
                     for(uint i = index; i <= endIndex; i++)
                     {
                         std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
@@ -431,7 +430,7 @@ namespace eyegui
 
                 default:
                 {
-                    throwWarning(OperationNotifier::Operation::BUG, "Flow entity type unkown");
+                    throwWarning(OperationNotifier::Operation::BUG, "Flow entity type unknown");
                     failure |= true;
                 }
 
@@ -572,7 +571,7 @@ namespace eyegui
 					}
 
                     // Remember longest line's width
-                    mFlowWidth = mFlowWidth < glm::ceil(lineWidth) ? glm::ceil(lineWidth) : mFlowWidth;
+                    mFlowWidth = mFlowWidth < (int)glm::ceil(lineWidth) ? (int)glm::ceil(lineWidth) : mFlowWidth;
 
 					// *** PREPARE DRAWING ***
 
@@ -646,7 +645,7 @@ namespace eyegui
                         if(pPreviousFilledEntity != line.at(lineIndex).get())
                         {
                             spFlowEntity->mX = (int)xPixelPen;
-                            spFlowEntity->mY = std::ceil(abs(yPixelPen) - lineHeight);
+                            spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
                         } 
 
                         // Go over flow parts which are in line
@@ -685,7 +684,7 @@ namespace eyegui
 
                                     // Save position in flow part
                                     spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                                    spFlowEntity->mFlowParts.at(flowPartIndex)->mY = std::ceil(abs(yPixelPen) - lineHeight);
+                                    spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
                                 }
                                 else
                                 {

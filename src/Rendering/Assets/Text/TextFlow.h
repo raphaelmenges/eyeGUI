@@ -8,6 +8,8 @@
 // for font rendering in general. All values in this class are in pixel space,
 // even floats. Internally the origin is at lower left but all methods
 // expect values in a coordinate system with an origin at the upper left.
+// Front of content is marked with -1. Front of flow parts is marked by 0,
+// so a flow part has letterCount + 1 indices.
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
@@ -20,8 +22,6 @@ namespace eyegui
     class FlowPart
     {
     public:
-
-        // TODO: access letter x offset of word or if that is null: 0 is at front, 1 is at end
 
         // Constructor
         FlowPart()
@@ -67,6 +67,18 @@ namespace eyegui
         // Getter whether collapsed
         bool isCollapsed() const { return mCollapsed; }
 
+		// Getter for x offset of letter. Returns -1 if letter not found.
+		// Letter index starts at 0, where this symbolizes the position before
+		// the first letter. Index 1 is the position after the the first letter
+		// and so on...
+		int getLetterXOffset(uint letterIndex) const
+		{
+			if (letterIndex < mupWord->lettersXOffsets.size())
+			{
+				return mupWord->lettersXOffsets.at(letterIndex);
+			}
+		}
+
     protected:
 
         friend class TextFlow;
@@ -102,7 +114,7 @@ namespace eyegui
         // Getter for index where entity starts in content
         uint getContentStartIndex() const { return mContentStartIndex; }
 
-        // Getter for index within entities vector
+        // Getter for index of flow entity within entities vector
         uint getIndex() const { return mIndex; }
 
         // Getter for position
@@ -123,31 +135,44 @@ namespace eyegui
             return count;
         }
 
-        // Getter for flow part and letter index for given letter offset. Returns whether successful.
-        // Letter index is index inside of flow part
-        bool getIndices(uint inputWordIndex, uint& rFlowPartIndex, uint& rLetterIndex) const
-        {
-            // Only continue when enough letters are available
-            if(inputWordIndex < getLetterCount())
-            {
-                // TODO: if bug occurs, it may happen here since letterXOffset has one element more than before
-                int offset = inputWordIndex;
-                for(uint i = 0; i < getFlowPartCount(); i++)
-                {
-                    if((offset - mFlowParts.at(i)->getLetterCount()) < 0)
-                    {
-                        rFlowPartIndex = i;
-                        rLetterIndex = offset + 1; // plus one because indices of letters start before first one
-                        return true;
-                    }
-                    else
-                    {
-                        offset -= mFlowParts.at(i)->getLetterCount();
-                    }
-                }
-            }
-            return false;
-        }
+		// Calculates index of flow part and letter within flow part of given letter within a raw word.
+		// Zero means in front of the word, everything else within
+		bool getIndices(uint wordLetterIndex, uint& rFlowPartIndex, uint& rLetterIndex) const
+		{
+			// Case when in front of word
+			if (wordLetterIndex == 0)
+			{
+				rFlowPartIndex = 0;
+				rLetterIndex = 0;
+				return true;
+			}
+			else
+			{
+				int localIndex = (int) wordLetterIndex - 1; // subtract front position
+
+				// Go over flow parts
+				for (uint i = 0; i < getFlowPartCount(); i++)
+				{
+					// Get length of flow part
+					int partLetterCount = mFlowParts.at(i)->getLetterCount();
+
+					// Check whether index is already included
+					if (localIndex < partLetterCount) // add one because front is zero
+					{
+						rFlowPartIndex = i;
+						rLetterIndex = localIndex + 1; // shift one to the right to never be in front of the flow part
+						return true;
+					}
+					else
+					{
+						localIndex -= partLetterCount; // subtract letter count from local index
+					}
+				}
+			}
+
+			// Fallback
+			return false;
+		}
 
         // Get content index by indices. Letter index is within flow part
         uint getContentIndex(uint flowPartIndex, uint letterIndex) const
@@ -157,12 +182,12 @@ namespace eyegui
             {
                 index += mFlowParts.at(i)->getLetterCount();
             }
-            index += letterIndex;
+            index += letterIndex - 1; // because letter index is including front position
             index += mContentStartIndex;
             return index;
         }
 
-        // Add all flow parts pixel width, not regarding the placing in different lines
+        // Add all flow parts pixel width, not regarding the possible placing in different lines
         float getPixelWidth() const
         {
             float pixelWidth = 0;
@@ -185,9 +210,6 @@ namespace eyegui
         uint mIndex; // index within flow entity vector
         std::vector<std::unique_ptr<FlowPart> > mFlowParts;
     };
-
-    // TODO: can be deleted probably later:
-    class FlowWord;
 
     // Text flow class
     class TextFlow : public Text
@@ -244,7 +266,7 @@ namespace eyegui
         std::weak_ptr<const FlowEntity> getFlowEntity(int x, int y) const;
 
         // Get flow entity, flow part index and letter index inside flow part. Maybe empty when index not available.
-        // Content index of -1 indicates front of text
+        // Content index of -1 indicates front of text.
         std::weak_ptr<const FlowEntity> getFlowEntityAndIndices(
             int contentIndex,
             uint& rFlowPartIndex,

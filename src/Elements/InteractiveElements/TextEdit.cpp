@@ -48,7 +48,6 @@ namespace eyegui
 		mFontSize = fontSize;
 		mTextFlowYOffset.setValue(0);
 		mActiveWordFading = 0;
-		mCursorPulse = 1.f;
 		mSubWordIndex = 0;
 
 		// Fetch render item for background
@@ -328,7 +327,7 @@ namespace eyegui
 
     void TextEdit::specialDraw() const
     {
-		/*
+		
         // *** BACKGROUND ***
         if (getStyle()->backgroundColor.a > 0)
         {
@@ -339,6 +338,8 @@ namespace eyegui
             mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
+		
+		/*
 
 		// *** TEXT ***
 
@@ -494,7 +495,7 @@ namespace eyegui
         return 0; // TODO: tmp added
 	}
 
-    void TextEdit::setActiveWord(const FlowWord& rFlowWord, bool setCursorToEnd)
+    void TextEdit::setActiveWord(const FlowEntity& rFlowEntity, bool setCursorToEnd)
 	{
 		/*
 		if (mupActiveWord != NULL)

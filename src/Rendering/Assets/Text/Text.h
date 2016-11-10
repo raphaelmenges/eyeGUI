@@ -30,7 +30,7 @@ namespace eyegui
     {
     public:
 
-        // Get letter count
+        // Get letter count (is equal size of letter x offset minus one)
         uint getLetterCount() const { return (uint)glm::min(0, (int)lettersXOffsets.size() - 1); }
 
         // Position and texture coordinate

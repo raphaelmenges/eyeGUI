@@ -90,7 +90,7 @@ namespace eyegui
 		int calculateTextFlowYOffset() const;
 
 		// Set new active word
-        void setActiveWord(const FlowWord& rFlowWord, bool setCursorToEnd);
+        void setActiveWord(const FlowEntity& rFlowEntity, bool setCursorToEnd);
 
         // Move cursor over letter rightward
         void moveCursorOverLettersRightward(int letterCount);
