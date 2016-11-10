@@ -86,7 +86,7 @@ namespace eyegui
 
     private:
 
-		// Calculate text flow y offset
+		// Calculate text flow y offset in pixels
 		int calculateTextFlowYOffset() const;
 
 		// Set new active word
@@ -107,8 +107,8 @@ namespace eyegui
 		RenderItem const * mpActiveWordBackground;
 
 		// Text flow
-        //std::unique_ptr<TextFlow> mupTextFlow;
-		LerpValue mTextFlowYOffset;
+        std::unique_ptr<TextFlow> mupTextFlow;
+		LerpValue mTextFlowYOffset; // as relative value [0..1]
 		FontSize mFontSize;
 
 		// Active word and cursor position

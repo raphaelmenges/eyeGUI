@@ -66,13 +66,13 @@ namespace eyegui
 			meshes::Type::QUAD);
 
 		// Create text flow
-        /*mupTextFlow = std::move(mpAssetManager->createTextFlow(
+        mupTextFlow = std::move(mpAssetManager->createTextFlow(
 			fontSize,
 			TextFlowAlignment::LEFT,
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
-			u"", // TODO: maybe later some content from xeyegui or localization for initial value
-            true));*/
+			u"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.Lorem ipsum dolor sit amet, ", // TODO: maybe later some content from xeyegui or localization for initial value
+            true));
 	}
 
     TextEdit::~TextEdit()
@@ -242,11 +242,12 @@ namespace eyegui
 
     float TextEdit::specialUpdate(float tpf, Input* pInput)
     {
-		/*
         // Super call
         float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
 		// *** ANIMATIONS ***
+
+		/*
 
 		// Update previous active words
 		for (auto& rPair : mPreviousActiveWords)
@@ -271,10 +272,12 @@ namespace eyegui
 		mCursorPulse += (tpf * fullCircle) / TEXT_EDIT_CURSOR_PULSE_DURATION;
 		while (mCursorPulse >= fullCircle) { mCursorPulse -= fullCircle; }
 
+		*/
+
 		// *** UPDATE OF TEXT FLOW ***
 
 		// Scroll text flow
-		if (penetratedByInput(pInput) && (mupTextFlow->getHeight() > 0))
+		if (penetratedByInput(pInput) && (mupTextFlow->getFlowHeight() > 0))
 		{
 			// *** SCROLLING ***
 
@@ -286,14 +289,17 @@ namespace eyegui
 			int oldTextFlowYOffset = calculateTextFlowYOffset();
 
 			// How much is gazeY away from elements center used for speed
-			float offsetSpeed = ((float)(4 * (flowY - (mHeight / 2))) / (float)mHeight); // [-0.5, 0.5]
+			float offsetSpeed = ((float)((flowY - (mHeight / 2))) / (float)mHeight); // [-0.5, 0.5]
 
-			// Normalize speed by height of text flow
-			float textFlowHeight = (mupTextFlow->getHeight() + mupTextFlow->getLineHeight()); // add line height to avoid cutting letters like 'p'
-			offsetSpeed /= textFlowHeight / (float)mHeight;
+			// Calculate text flow height
+			float textFlowHeight = (mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()); // add line height to avoid cutting letters like 'p'
+
+			// TODO normalize speed by height
 
 			// Update relative offset
 			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
+
+			/*
 
 			// *** ACTIVE WORD ***
 
@@ -318,16 +324,15 @@ namespace eyegui
 					setActiveWord(newActiveWord, true);
 				}
 			}
+
+			*/
 		}
 
         return adaptiveScale;
-		*/
-		return 0.f;
     }
 
     void TextEdit::specialDraw() const
     {
-		
         // *** BACKGROUND ***
         if (getStyle()->backgroundColor.a > 0)
         {
@@ -338,8 +343,6 @@ namespace eyegui
             mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
-		
-		/*
 
 		// *** TEXT ***
 
@@ -365,6 +368,8 @@ namespace eyegui
 				activeBackgroundWidth,
 				activeBackgroundHeight);
 		};
+
+		/*
 
 		// Draw background behind active word (or better said behind active sub words
 		mpActiveWordBackground->bind();
@@ -401,6 +406,8 @@ namespace eyegui
 			}
 		}
 
+		*/
+
 		// Drawing of text flow
 		mupTextFlow->draw(
 			getStyle()->fontColor,
@@ -408,6 +415,8 @@ namespace eyegui
 			false,
 			0,
 			textFlowYOffset);
+
+		/*
 
 		// Calculate x and y of cursor
         int cursorX = 0; // fallback when there is no active word
@@ -443,20 +452,22 @@ namespace eyegui
 		mpCursor->getShader()->fillValue("alpha", getMultipliedDimmedAlpha() * (glm::cos(mCursorPulse) * 0.5f) + 0.5f);
 		mpCursor->draw();
 
+		*/
+
 		// Pop own scissor
 		popScissor();
 
         // Draw stuff like highlighting
         InteractiveElement::specialDraw();
-		*/
     }
 
     void TextEdit::specialTransformAndSize()
     {
-        /*
+       
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
 
+ /*
 		// Unset active word
 		mupActiveWord.reset();
         */
@@ -491,8 +502,7 @@ namespace eyegui
 
 	int TextEdit::calculateTextFlowYOffset() const
 	{
-        //return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()) - mHeight)));
-        return 0; // TODO: tmp added
+        return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()) - mHeight)));
 	}
 
     void TextEdit::setActiveWord(const FlowEntity& rFlowEntity, bool setCursorToEnd)
