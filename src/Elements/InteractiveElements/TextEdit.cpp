@@ -294,7 +294,11 @@ namespace eyegui
 			// Calculate text flow height
 			float textFlowHeight = (mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()); // add line height to avoid cutting letters like 'p'
 
-			// TODO normalize speed by height
+			// Normalization of offset speed
+			if (textFlowHeight > 0)
+			{
+				offsetSpeed *= ((float)mHeight / textFlowHeight);
+			}
 
 			// Update relative offset
 			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
