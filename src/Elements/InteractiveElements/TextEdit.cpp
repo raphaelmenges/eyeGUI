@@ -72,7 +72,7 @@ namespace eyegui
 			TextFlowAlignment::JUSTIFY, // TODO pipe through
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
-			u"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.Lorem ipsum dolor sit amet, ", // TODO: maybe later some content from xeyegui or localization for initial value
+			u"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.Lorem ipsum dolor sit amet", // TODO: maybe later some content from xeyegui or localization for initial value
             true));
 	}
 
@@ -133,30 +133,20 @@ namespace eyegui
 
     void TextEdit::moveCursorToStart()
     {
-        /*
-        FlowWord flowWord;
-        if (mupTextFlow->getFlowWord(
-            0, flowWord))
-        {
-            setActiveWord(flowWord, false);
-            mSubWordIndex = 0;
-            mLetterIndex = -1;
-        }
-        */
+		auto wpEntity = mupTextFlow->getFlowEntity(0);
+		if (!wpEntity.expired())
+		{
+			setActiveEntity(wpEntity, false);
+		}
     }
 
     void TextEdit::moveCursorToEnd()
     {
-        /*
-        FlowWord flowWord;
-        if (mupTextFlow->getFlowWord(
-            mupTextFlow->getFlowWordCount() - 1, flowWord))
-        {
-            setActiveWord(flowWord, false);
-            mSubWordIndex = flowWord.getSubWordCount() - 1;
-            mLetterIndex = flowWord.subWords.at(mSubWordIndex)->getLetterCount() - 1;
-        }
-        */
+		auto wpEntity = mupTextFlow->getFlowEntity(mupTextFlow->getFlowEntityCount() - 1);
+		if (!wpEntity.expired())
+		{
+			setActiveEntity(wpEntity, true);
+		}
     }
 
 	void TextEdit::addContentAtCursor(std::u16string content)
