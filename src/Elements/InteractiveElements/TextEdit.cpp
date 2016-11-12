@@ -229,13 +229,13 @@ namespace eyegui
         */
 	}
 
-	std::u16string TextEdit::getActiveWord() const
+	std::u16string TextEdit::getActiveEntityContent() const
 	{
-        /*if (mupActiveWord != NULL)
+        if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
-			return mupTextFlow->getContent(mupActiveWord->contentStartIndex, mupActiveWord->getLetterCount());
+			return mupTextFlow->getContent(spActiveEntity->getContentStartIndex(), spActiveEntity->getLetterCount());
 		}
-        else*/
+        else
 		{
 			return std::u16string();
 		}
@@ -319,8 +319,6 @@ namespace eyegui
 						}
 					}
 				}
-
-				
 			}
 		}
 

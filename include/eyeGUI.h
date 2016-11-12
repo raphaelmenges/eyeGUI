@@ -859,13 +859,13 @@ namespace eyegui
 	*/
 	void deleteContentAtCursorInTextEdit(Layout* pLayout, std::string id, int letterCount);
 
-	//! Get active word in text edit.
+	//! Get content of active entity in text edit.
 	/*!
 		\param pLayout pointer to layout.
 		\param id is the unique id of an element.
-		\return string of active word or empty string if there is no active word.
+		\return string of active entity or empty string if there is no active entity.
 	*/
-	std::u16string getActiveWordInTextEdit(Layout const * pLayout, std::string id);
+	std::u16string getActiveEntityContentInTextEdit(Layout const * pLayout, std::string id);
 
 	//! Add brick to stack
 	/*!

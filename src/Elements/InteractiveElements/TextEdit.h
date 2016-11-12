@@ -43,8 +43,8 @@ namespace eyegui
 		// Delete content at cursor. Positive value deletes rightward, negative leftward
 		void deleteContentAtCursor(int letterCount);
 
-		// Getter for active word. Returns empty string if there is no
-		std::u16string getActiveWord() const;
+		// Getter for content in active entity. Returns empty string if there is no
+		std::u16string getActiveEntityContent() const;
 
     protected:
 

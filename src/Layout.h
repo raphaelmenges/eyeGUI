@@ -237,8 +237,8 @@ namespace eyegui
 		// Delete content
 		void deleteContentAtCursorInTextEdit(std::string id, int letterCount);
 
-		// Get active word
-		std::u16string getActiveWordInTextEdit(std::string id) const;
+		// Get content of acitve entity
+		std::u16string getActiveEntityContentInTextEdit(std::string id) const;
 
         // Add brick to stack
         void addBrickToStack(

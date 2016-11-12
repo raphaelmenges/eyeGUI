@@ -825,12 +825,12 @@ namespace eyegui
 		}
 	}
 
-	std::u16string Layout::getActiveWordInTextEdit(std::string id) const
+	std::u16string Layout::getActiveEntityContentInTextEdit(std::string id) const
 	{
 		TextEdit* pTextEdit = toTextEdit(fetchElement(id));
 		if (pTextEdit != NULL)
 		{
-			return pTextEdit->getActiveWord();
+			return pTextEdit->getActiveEntityContent();
 		}
 		else
 		{
