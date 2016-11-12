@@ -69,7 +69,7 @@ namespace eyegui
 		// Create text flow
         mupTextFlow = std::move(mpAssetManager->createTextFlow(
 			fontSize,
-			TextFlowAlignment::LEFT,
+			TextFlowAlignment::JUSTIFY, // TODO pipe through
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
 			u"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.Lorem ipsum dolor sit amet, ", // TODO: maybe later some content from xeyegui or localization for initial value
@@ -298,26 +298,33 @@ namespace eyegui
 			// Decide whether active entity has changed
 			if (!wpEntity.expired()) // found one is valid
 			{
-				if (!mwpActiveEntity.expired()) // current one is valid
+				// Check that entity is no space
+				if (auto spEntity = wpEntity.lock())
 				{
-					// Compare by indices within text flow vector
-					if (auto spActiveEntity = mwpActiveEntity.lock())
+					if (spEntity->getType() != FlowEntity::Type::Space)
 					{
-						if (auto spEntity = wpEntity.lock())
+						// Check whether currently active entity is valid
+						if (!mwpActiveEntity.expired()) // current one is valid
 						{
-							if (spActiveEntity->getIndex() != spEntity->getIndex())
+							// Compare by indices within text flow vector
+							if (auto spActiveEntity = mwpActiveEntity.lock())
 							{
-								// Flow entity index is different, use it!
-								setActiveEntity(wpEntity, true);
+								if (spActiveEntity->getIndex() != spEntity->getIndex())
+								{
+									// Flow entity index is different, use it!
+									setActiveEntity(wpEntity, true);
+								}
 							}
+						}
+						else
+						{
+							// No active entity has been set, do it now
+							setActiveEntity(wpEntity, true);
 						}
 					}
 				}
-				else
-				{
-					// No active word has been set, do it now
-					setActiveEntity(wpEntity, true);
-				}
+
+				
 			}
 		}
 
@@ -510,7 +517,7 @@ namespace eyegui
 				}
 				else
 				{
-					mCursorLetterIndex = 0;
+					mCursorLetterIndex = -1;
 				}
 				
 			}

@@ -108,10 +108,6 @@ namespace eyegui
         // Getter for index of flow entity within entities vector of text flow object
         uint getIndex() const { return mIndex; }
 
-        // Getter for position within text flow
-        int getX() const { return mX; }
-        int getY() const { return mY; }
-
 		// Getter for parts. Returns emtpy weak pointer at failure
 		std::weak_ptr<const FlowPart> getFlowPart(uint index) const
 		{
@@ -216,6 +212,11 @@ namespace eyegui
 			}
 			return pixelWidth;
 		}
+
+		// Getter for position within text flow.
+		// Is equal to position of first flow part
+		int getX() const { return mX; }
+		int getY() const { return mY; }
 
         // Members
         int mX; // relative in flow

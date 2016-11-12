@@ -113,7 +113,7 @@ namespace eyegui
 		
 		// CursorPosition
 		int mCursorFlowPartIndex; // flow part inside active entity
-		int mCursorLetterIndex; // inside active word's flow part
+		int mCursorLetterIndex; // inside active word's flow part. -1 when in front of flow part
 		
 		// Animation related members
 		//float mCursorPulse; // [0..2*Pi]

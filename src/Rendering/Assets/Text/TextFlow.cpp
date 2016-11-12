@@ -647,7 +647,7 @@ namespace eyegui
                         std::shared_ptr<FlowEntity> spFlowEntity = line.at(lineIndex);
 
                         // Fill position
-                        if(pPreviousFilledEntity != line.at(lineIndex).get())
+                        if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only one, so equal to first part's
                         {
                             spFlowEntity->mX = (int)xPixelPen;
                             spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
@@ -686,17 +686,18 @@ namespace eyegui
                                                 glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
                                                 glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
                                     }
-
-                                    // Save position in flow part
-                                    spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                                    spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
                                 }
                                 else
                                 {
-                                    throwWarning(OperationNotifier::Operation::BUG, "TextFlow has null pointer in flow part which should not be null");
+                                    throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
                                     failure |= true;
                                 }
                             }
+
+							// Save position in flow part
+							spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
+							spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+
                             // Advance xPen
                             xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
 
