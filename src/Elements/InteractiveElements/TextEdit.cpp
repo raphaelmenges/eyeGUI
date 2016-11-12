@@ -350,8 +350,8 @@ namespace eyegui
 		std::function<glm::mat4(int, int, int)> calculateActiveWordBackgroundDrawMatrix = [&](int x, int y, int width)
 		{
 			// Calculate width and height for active word background
-            int activeBackgroundWidth = width + mupTextFlow->getPixelWidthOfSpace();
-            int activeBackgroundHeight = mupTextFlow->getLineHeight() + mupTextFlow->getPixelWidthOfSpace();
+            int activeBackgroundWidth = width + (int)mupTextFlow->getPixelWidthOfSpace();
+            int activeBackgroundHeight = (int)(mupTextFlow->getLineHeight() + mupTextFlow->getPixelWidthOfSpace());
 
 			// Calculate draw matrix
 			return calculateDrawMatrix(
@@ -379,7 +379,7 @@ namespace eyegui
 				if (auto spFlowPart = spActiveEntity->getFlowPart(i).lock())
 				{
 					// Calculate draw matrix
-					glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(spFlowPart->getX(), spFlowPart->getY(), spFlowPart->getPixelWidth());
+					glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(spFlowPart->getX(), spFlowPart->getY(), (int)spFlowPart->getPixelWidth());
 
 					// Draw active sub word's background
 					mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
@@ -515,95 +515,127 @@ namespace eyegui
 
     void TextEdit::moveCursorOverLettersRightward(int letterCount)
     {
-		/*
-        // When there is no active word, there is no text
-        if (mupActiveWord != NULL)
+        // Check for current position
+        if (auto spActiveEntity = mwpActiveEntity.lock())
         {
-            // Save old values when no further word is found later on
-            int subWordIndex = mSubWordIndex;
-            int letterIndex = mLetterIndex;
-
             // Repeat it as indicated
             for (int i = 0; i < letterCount; i++)
             {
+				// Save old values when no further word is found later on
+				int flowPartIndex = mCursorFlowPartIndex;
+				int letterIndex = mCursorLetterIndex;
+
                 // Try to increment just letter index
-                mLetterIndex++;
+				letterIndex++;
 
-                // Check whether still in range of subword
-                if(mLetterIndex >= mupActiveWord->subWords.at(mSubWordIndex)->getLetterCount())
-                {
-                    // No more within that sub word, try next
-                    mSubWordIndex++;
+                // Check whether still in range of flow part
+				if (auto spFlowPart = spActiveEntity->getFlowPart(flowPartIndex).lock())
+				{
+					if (letterIndex >= (int)spFlowPart->getLetterCount()) // exceeds letter count and has to move in front of next flow part or entity
+					{
+						// Try for next flow part
+						if (flowPartIndex < (int)spActiveEntity->getFlowPartCount() - 1) // there is another flow part
+						{
+							mCursorFlowPartIndex = flowPartIndex + 1;
+							mCursorLetterIndex = -1; // front of flow part
+						}
+						else // no further flow part
+						{
+							// Try for next entity
+							int index = spActiveEntity->getIndex();
+							index++;
+							auto wpEntity = mupTextFlow->getFlowEntity(index);
+							if (auto spEntity = wpEntity.lock())
+							{
+								// Check for non-space. Should overstep spaces
+								while (spEntity->getType() == FlowEntity::Type::Space)
+								{
+									index++;
+									auto spNextEntity = mupTextFlow->getFlowEntity(index).lock();
+									if (!spNextEntity)
+									{
+										break; // ok, no further. Just use the found space
+									}
+									else
+									{
+										spEntity = spNextEntity;
+									}
+								}
 
-                    // Check whether still inside word
-                    if(mSubWordIndex >= mupActiveWord->getSubWordCount())
-                    {
-                        // No more within that word, try next
-                        FlowWord nextWord;
-                        if (mupTextFlow->getFlowWord(
-                            mupActiveWord->index + 1, nextWord))
-                        {
-                            setActiveWord(nextWord, false);
-                            mSubWordIndex = 0;
-                            mLetterIndex = -1;
-                        }
-                        else
-                        {
-                            // Reset
-                            mSubWordIndex = subWordIndex;
-                            mLetterIndex = letterIndex;
-                        }
-                    }
-                }
+								// Let everything do set by method
+								setActiveEntity(spEntity, false);
+							}
+						}
+					}
+					else // ok just to move within flow part
+					{
+						mCursorLetterIndex = letterIndex;
+					}
+				}
             }
         }
-		*/
     }
 
     void TextEdit::moveCursorOverLettersLeftward(int letterCount)
     {
-		/*
-        // When there is no active word, there is no text
-        if (mupActiveWord != NULL)
-        {
-            // Save old values when no further word is found later on
-            int subWordIndex = mSubWordIndex;
-            int letterIndex = mLetterIndex;
+		// Check for current position
+		if (auto spActiveEntity = mwpActiveEntity.lock())
+		{
+			// Repeat it as indicated
+			for (int i = 0; i < letterCount; i++)
+			{
+				// Save old values when no further word is found later on
+				int flowPartIndex = mCursorFlowPartIndex;
+				int letterIndex = mCursorLetterIndex;
 
-            // Repeat it as indicated
-            for (int i = 0; i < letterCount; i++)
-            {
-                // Try to increment just letter index
-                mLetterIndex--;
+				// Try to decrement just letter index
+				letterIndex--;
 
-                // Check whether still in range of subword
-                if(mLetterIndex < -1)
-                {
-                    // No more within that sub word, try next
-                    mSubWordIndex--;
+				// Check whether still in range of flow part
+				if (auto spFlowPart = spActiveEntity->getFlowPart(flowPartIndex).lock())
+				{
+					if (letterIndex < -1) // in front of front, so check for other flow part or flow entity before
+					{
+						// Try for previous flow part
+						if (flowPartIndex > 0) // there is another flow part
+						{
+							mCursorFlowPartIndex = flowPartIndex - 1;
+							mCursorLetterIndex = spFlowPart->getLetterCount() - 1; // front of flow part
+						}
+						else // no previous flow part
+						{
+							// Try for previous entity
+							int index = spActiveEntity->getIndex();
+							index--;
+							auto wpEntity = mupTextFlow->getFlowEntity(index);
+							if (auto spEntity = wpEntity.lock())
+							{
+								// Check for non-space. Should overstep spaces
+								while (spEntity->getType() == FlowEntity::Type::Space)
+								{
+									index--;
+									auto spPreviousEntity = mupTextFlow->getFlowEntity(index).lock();
+									if (!spPreviousEntity)
+									{
+										break; // ok, no further. Just use the found space
+									}
+									else
+									{
+										spEntity = spPreviousEntity;
+									}
+								}
 
-                    // Check whether still inside word
-                    if(mSubWordIndex < 0 )
-                    {
-                        // No more within that word, try next
-                        FlowWord previousWord;
-                        if (mupTextFlow->getFlowWord(
-                            mupActiveWord->index - 1, previousWord))
-                        {
-                            setActiveWord(previousWord, false);
-                            mSubWordIndex = previousWord.getSubWordCount() - 1;
-                            mLetterIndex = previousWord.subWords.at(mSubWordIndex)->getLetterCount() - 1;
-                        }
-                        else
-                        {
-                            // Reset
-                            mSubWordIndex = subWordIndex;
-                            mLetterIndex = letterIndex;
-                        }
-                    }
-                }
-            }
-        }
-		*/
+								// Let everything do set by method
+								setActiveEntity(spEntity, true);
+							}
+						}
+					}
+					else // ok just to move within flow part
+					{
+						mCursorLetterIndex = letterIndex;
+					}
+				}
+			}
+		}
     }
 }

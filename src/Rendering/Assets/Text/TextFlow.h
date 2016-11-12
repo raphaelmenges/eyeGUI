@@ -56,19 +56,35 @@ namespace eyegui
         // Getter whether collapsed
         bool isCollapsed() const { return mCollapsed; }
 
-		// Getter for x offset of letters. Returns -1 if offset not found.
+		// Getter for x offset of letters. Returns 0 if offset not found.
 		// Offset index starts at 0, where this symbolizes the position before
 		// the first letter. Index 1 is the position after the the first letter
 		// and so on... So there are letterCount + 1 many offsets
 		int getXOffset(uint offsetIndex) const
 		{
-			if (mupWord != nullptr && offsetIndex < mupWord->xOffsets.size())
+			if (mupWord != nullptr)
 			{
-				return mupWord->xOffsets.at(offsetIndex);
+				if (offsetIndex < mupWord->xOffsets.size()) // index found
+				{
+					return mupWord->xOffsets.at(offsetIndex);
+				}
+				else // not found
+				{
+					return 0;
+				}
+				
 			}
-			else
+			else // no render word
 			{
-				return -1;
+				// Fix for space: Since each space is represented by one flow part, return pixel width when index is 1
+				if (offsetIndex == 1)
+				{
+					return (int)getPixelWidth();
+				}
+				else
+				{
+					return 0;
+				}
 			}
 		}
 
