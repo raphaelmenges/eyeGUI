@@ -62,9 +62,13 @@ namespace eyegui
 		// and so on... So there are letterCount + 1 many offsets
 		int getXOffset(uint offsetIndex) const
 		{
-			if (offsetIndex < mupWord->xOffsets.size())
+			if (mupWord != nullptr && offsetIndex < mupWord->xOffsets.size())
 			{
 				return mupWord->xOffsets.at(offsetIndex);
+			}
+			else
+			{
+				return -1;
 			}
 		}
 

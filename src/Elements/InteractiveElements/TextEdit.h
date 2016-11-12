@@ -116,7 +116,7 @@ namespace eyegui
 		int mCursorLetterIndex; // inside active word's flow part. -1 when in front of flow part
 		
 		// Animation related members
-		//float mCursorPulse; // [0..2*Pi]
+		float mCursorPulse; // [0..2*Pi]
 		float mActiveEntityFading; // [0..AnimationDuration]
     };
 }

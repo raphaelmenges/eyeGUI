@@ -248,14 +248,10 @@ namespace eyegui
 
 		// *** ANIMATIONS ***
 
-		/*		
-
 		// Update pulsing of cursor
 		float fullCircle = 2 * glm::pi<float>();
 		mCursorPulse += (tpf * fullCircle) / TEXT_EDIT_CURSOR_PULSE_DURATION;
 		while (mCursorPulse >= fullCircle) { mCursorPulse -= fullCircle; }
-
-		*/
 
 		// Update active word's fading
 		if (!mwpActiveEntity.expired())
@@ -406,26 +402,24 @@ namespace eyegui
 			0,
 			textFlowYOffset);
 
-		/*
-
 		// *** CURSOR ***
 
 		// Calculate x and y of cursor
-        int cursorX = 0; // fallback when there is no active word
-        int cursorY = 0; // fallback when there is no active word
+        int cursorX = 0; // fallback when there is no active entity
+        int cursorY = 0; // fallback when there is no active entity
 
-		// If there is a active word, get cursor position
-		if (mupActiveWord != NULL)
+		// If there is a active entity, get cursor position from datastructure
+		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
-			int letterOffsetX = 0;
-			if (mLetterIndex >= 0)
-			{
-				letterOffsetX = mupActiveWord->subWords.at(mSubWordIndex)->upWord->lettersXOffsets.at(mLetterIndex);
-			}
+			// Offsets are saved from 0 to letterCount, so adapt given index
+			int offsetIndex = mCursorLetterIndex + 1;
 
-			cursorX = mupActiveWord->subWords.at(mSubWordIndex)->x;
-				+ letterOffsetX;
-			cursorY = mupActiveWord->subWords.at(mSubWordIndex)->y;
+			// Recieve offset from flow part
+			if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
+			{
+				cursorX = spFlowPart->getX() + spFlowPart->getXOffset(offsetIndex);
+				cursorY = spFlowPart->getY();
+			}
 		}
 
 		// Calculate matrix for cursor
@@ -444,8 +438,6 @@ namespace eyegui
 		mpCursor->getShader()->fillValue("alpha", getMultipliedDimmedAlpha() * (glm::cos(mCursorPulse) * 0.5f) + 0.5f);
 		mpCursor->draw();
 
-		*/
-
 		// Pop own scissor
 		popScissor();
 
@@ -455,14 +447,13 @@ namespace eyegui
 
     void TextEdit::specialTransformAndSize()
     {
-       
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
 
 		// Unset active entity and cursor
 		mwpActiveEntity = std::weak_ptr<const FlowEntity>();
 		mCursorFlowPartIndex = 0;
-		mCursorLetterIndex = 0;
+		mCursorLetterIndex = -1;
     }
 
     void TextEdit::specialReset()
@@ -471,7 +462,7 @@ namespace eyegui
 		InteractiveElement::specialReset();
 
 		// Class resets
-		//mCursorPulse = 1.f;
+		mCursorPulse = 1.f;
     }
 
     void TextEdit::specialInteract()
@@ -504,6 +495,8 @@ namespace eyegui
 		mActiveEntityFading = 0.f; // reset fading
 
 		// Set cursor
+		mCursorFlowPartIndex = 0;
+		mCursorLetterIndex = -1;
 		if (setCursorToEnd)
 		{
 			if (auto spActiveEntity = mwpActiveEntity.lock())
@@ -513,18 +506,13 @@ namespace eyegui
 
 				if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
 				{
-					mCursorLetterIndex = (int)spFlowPart->getLetterCount() - 1;
+					mCursorLetterIndex = (int)(spFlowPart->getLetterCount()) - 1;
 				}
-				else
-				{
-					mCursorLetterIndex = -1;
-				}
-				
 			}
 		}
 
 		// Reset cursor pulse to make it directly visible
-		//mCursorPulse = 0.f;
+		mCursorPulse = 0.f;
 	}
 
     void TextEdit::moveCursorOverLettersRightward(int letterCount)

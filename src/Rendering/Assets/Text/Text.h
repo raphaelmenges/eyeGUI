@@ -31,7 +31,7 @@ namespace eyegui
     public:
 
         // Get letter count (is equal size of x offsets minus one)
-        uint getLetterCount() const { return (uint)glm::min(0, (int)xOffsets.size() - 1); }
+        uint getLetterCount() const { return (uint)glm::max(0, (int)xOffsets.size() - 1); }
 
         // Position and texture coordinate
         std::shared_ptr<RenderWordVertices> spVertices;
