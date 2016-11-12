@@ -174,7 +174,8 @@ namespace eyegui
 		{
             for (const auto& rFlowPart : rFlowEntity->mFlowParts)
             {
-                // Check whether coordinates are inside flow part of flow entity
+                // Check whether coordinates are inside flow part of flow entity. Do not use pixel with of complete flow entity because
+				// it may be distibuted over multiple lines and the pixel width calculation ignores this possibility
                 if(insideRect(rFlowPart->getX(), rFlowPart->getY(), (int)rFlowPart->getPixelWidth(), (int)getLineHeight(), x, y))
                 {
                     return rFlowEntity;
@@ -191,40 +192,44 @@ namespace eyegui
             uint& rFlowPartIndex,
             uint& rLetterIndex) const
     {
-		// Special case of front
-        if (contentIndex == -1 && !mFlowEntities.empty())
+		// Check whether there are flow entities
+		if (!mFlowEntities.empty())
 		{
-            rFlowPartIndex = 0;
-            rLetterIndex = 0;
-            return mFlowEntities.front();
-		}
-
-        // Check, whether there are enough letters in content for that index
-        if(contentIndex >= 0 && contentIndex < mContent.length())
-        {
-            // Go over flow words and search index
-            uint flowEntityIndex = 0;
-            while (
-				(flowEntityIndex + 1 < mFlowEntities.size())
-				&& (mFlowEntities.at(flowEntityIndex + 1)->getContentStartIndex() <= contentIndex))
+			// Special case of front
+			if (contentIndex == -1)
 			{
-                flowEntityIndex++;
+				rFlowPartIndex = 0;
+				rLetterIndex = 0;
+				return mFlowEntities.front();
 			}
 
-            // Found index, so assume it as searched flow word
-            std::shared_ptr<const FlowEntity> spFlowEntity = mFlowEntities.at(flowEntityIndex);
+			// Check, whether there are enough letters in content for that index
+			if (contentIndex >= 0 && contentIndex < mContent.length())
+			{
+				// Go over flow words and search index
+				uint flowEntityIndex = 0;
+				while (
+					(flowEntityIndex + 1 < mFlowEntities.size())
+					&& (mFlowEntities.at(flowEntityIndex + 1)->getContentStartIndex() <= contentIndex))
+				{
+					flowEntityIndex++;
+				}
 
-            // Fill sub word index and letter index
-            uint flowPartIndex = 0;
-            uint letterIndex = 0;
-            if(spFlowEntity->getIndices(contentIndex - spFlowEntity->getContentStartIndex(), flowPartIndex, letterIndex))
-            {
-                // Set references and return pointer
-                rFlowPartIndex = flowPartIndex;
-                rLetterIndex = letterIndex;
-                return spFlowEntity;
-            }
-        }
+				// Found index, so assume it as searched flow word
+				std::shared_ptr<const FlowEntity> spFlowEntity = mFlowEntities.at(flowEntityIndex);
+
+				// Fill sub word index and letter index
+				uint flowPartIndex = 0;
+				uint letterIndex = 0;
+				if (spFlowEntity->getIndices(contentIndex - spFlowEntity->getContentStartIndex(), flowPartIndex, letterIndex))
+				{
+					// Set references and return pointer
+					rFlowPartIndex = flowPartIndex;
+					rLetterIndex = letterIndex;
+					return spFlowEntity;
+				}
+			}
+		}
 
         // Fallback
         return std::weak_ptr<const FlowEntity>();

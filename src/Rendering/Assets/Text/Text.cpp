@@ -167,8 +167,8 @@ namespace eyegui
         // Empty word
         RenderWord word;
         word.spVertices = std::shared_ptr<RenderWordVertices>(new RenderWordVertices);
-        word.lettersXOffsets.reserve(rContent.size() + 1); // first position is zero
-        word.lettersXOffsets.push_back(0);
+        word.xOffsets.reserve(rContent.size() + 1); // first offset is zero
+        word.xOffsets.push_back(0); // offset in front of render word
 
         // Fill word with data
         float xPixelPen = 0;
@@ -201,7 +201,7 @@ namespace eyegui
             xPixelPen += scale * (float)pGlyph->advance.x;
 
 			// Push back x offset of letters
-			word.lettersXOffsets.push_back((int)xPixelPen);
+			word.xOffsets.push_back((int)xPixelPen);
 
             // Fill into data blocks
             word.spVertices->push_back(std::make_pair(positionA, textureCoordinateA));

@@ -30,8 +30,8 @@ namespace eyegui
     {
     public:
 
-        // Get letter count (is equal size of letter x offset minus one)
-        uint getLetterCount() const { return (uint)glm::min(0, (int)lettersXOffsets.size() - 1); }
+        // Get letter count (is equal size of x offsets minus one)
+        uint getLetterCount() const { return (uint)glm::min(0, (int)xOffsets.size() - 1); }
 
         // Position and texture coordinate
         std::shared_ptr<RenderWordVertices> spVertices;
@@ -39,8 +39,9 @@ namespace eyegui
         // Width of rendered word
         float pixelWidth;
 
-        // Position after single letters, first one is always zero to indicate position in front of first letter
-        std::vector<int> lettersXOffsets;
+        // Position after single letters, first one is always zero to indicate position in front of first letter.
+		// So there are be letterCount + 1 many offsets
+        std::vector<int> xOffsets;
     };
 
     // Class
@@ -71,7 +72,7 @@ namespace eyegui
 			int xOffset = 0,
 			int yOffset = 0) const = 0;
 
-        // Set content and calls "calculateMesh"
+        // Set content and call "calculateMesh"
         void setContent(std::u16string content);
 
 		// Get height of line

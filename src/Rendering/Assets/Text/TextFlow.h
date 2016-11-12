@@ -8,8 +8,7 @@
 // for font rendering in general. All values in this class are in pixel space,
 // even floats. Internally the origin is at lower left but all methods
 // expect values in a coordinate system with an origin at the upper left.
-// Front of content is marked with -1. Front of flow parts is marked by 0,
-// so a flow part has letterCount + 1 indices.
+// Front of content is marked with -1.
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
@@ -23,21 +22,11 @@ namespace eyegui
     {
     public:
 
-        // Constructor
-        FlowPart()
-        {
-            mX = 0;
-            mY = 0;
-            mCollapsed = false;
-            mupWord = nullptr;
-            mPixelWidth = 0;
-        }
-
         // Getter for position
         int getX() const { return mX; }
         int getY() const { return mY; }
 
-        // Getter for letter count
+        // Getter for letter count (not count of offset indices!)
         uint getLetterCount() const
         {
             if(mupWord != nullptr)
@@ -67,31 +56,42 @@ namespace eyegui
         // Getter whether collapsed
         bool isCollapsed() const { return mCollapsed; }
 
-		// Getter for x offset of letter. Returns -1 if letter not found.
-		// Letter index starts at 0, where this symbolizes the position before
+		// Getter for x offset of letter. Returns -1 if offset not found.
+		// Offset index starts at 0, where this symbolizes the position before
 		// the first letter. Index 1 is the position after the the first letter
-		// and so on...
-		int getLetterXOffset(uint letterIndex) const
+		// and so on... So there are letterCount + 1 many offsets
+		int getLetterXOffset(uint offsetIndex) const
 		{
-			if (letterIndex < mupWord->lettersXOffsets.size())
+			if (offsetIndex < mupWord->xOffsets.size())
 			{
-				return mupWord->lettersXOffsets.at(letterIndex);
+				return mupWord->xOffsets.at(offsetIndex);
 			}
 		}
 
     protected:
 
+		// TextFlow fill values
         friend class TextFlow;
+
+		// Constructor
+		FlowPart()
+		{
+			mX = 0;
+			mY = 0;
+			mCollapsed = false;
+			mupWord = nullptr;
+			mPixelWidth = 0;
+		}
 
         // Members
         int mX; // relative in flow
         int mY; // relative in flow
         bool mCollapsed;
         std::unique_ptr<RenderWord> mupWord; // geometry and information of word
-        float mPixelWidth; // fallback when mupWord is null
+        float mPixelWidth; // fallback when mupWord is nullptr
     };
 
-    // Class for flow entities
+    // Class for flow entities. Consists at least of one flow part
     class FlowEntity
     {
     public:
@@ -99,25 +99,16 @@ namespace eyegui
         // Enumeration of types
         enum class Type { Word, Space, Mark };
 
-        // Constructor
-        FlowEntity()
-        {
-            mContentStartIndex = 0;
-            mIndex = 0;
-            mX = 0;
-            mY = 0;
-        }
-
         // Getter for type
         Type getType() const { return mType; }
 
         // Getter for index where entity starts in content
         uint getContentStartIndex() const { return mContentStartIndex; }
 
-        // Getter for index of flow entity within entities vector
+        // Getter for index of flow entity within entities vector of text flow object
         uint getIndex() const { return mIndex; }
 
-        // Getter for position
+        // Getter for position within text flow
         int getX() const { return mX; }
         int getY() const { return mY; }
 
@@ -136,19 +127,19 @@ namespace eyegui
         }
 
 		// Calculates index of flow part and letter within flow part of given letter within a raw word.
-		// Zero means in front of the word, everything else within
+		// -1 means in front of the word, everything else within
 		bool getIndices(uint wordLetterIndex, uint& rFlowPartIndex, uint& rLetterIndex) const
 		{
 			// Case when in front of word
-			if (wordLetterIndex == 0)
+			if (wordLetterIndex == -1)
 			{
 				rFlowPartIndex = 0;
 				rLetterIndex = 0;
 				return true;
 			}
-			else
+			else if(wordLetterIndex >= 0)
 			{
-				int localIndex = (int) wordLetterIndex - 1; // subtract front position
+				int localIndex = (int) wordLetterIndex;
 
 				// Go over flow parts
 				for (uint i = 0; i < getFlowPartCount(); i++)
@@ -187,20 +178,31 @@ namespace eyegui
             return index;
         }
 
-        // Add all flow parts pixel width, not regarding the possible placing in different lines
-        float getPixelWidth() const
-        {
-            float pixelWidth = 0;
-            for (const auto& rFlowPart : mFlowParts)
-            {
-                pixelWidth += rFlowPart->getPixelWidth();
-            }
-            return pixelWidth;
-        }
-
     protected:
 
+		// TextFlow fill values
         friend class TextFlow;
+
+		// Constructor
+		FlowEntity()
+		{
+			mContentStartIndex = 0;
+			mIndex = 0;
+			mX = 0;
+			mY = 0;
+		}
+
+		// Add all flow parts pixel width, not regarding the possible placing in different lines.
+		// Used in calculation of text flow mesh
+		float getPixelWidth() const
+		{
+			float pixelWidth = 0;
+			for (const auto& rFlowPart : mFlowParts)
+			{
+				pixelWidth += rFlowPart->getPixelWidth();
+			}
+			return pixelWidth;
+		}
 
         // Members
         int mX; // relative in flow
