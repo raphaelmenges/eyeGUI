@@ -47,8 +47,9 @@ namespace eyegui
 		// Fill members
 		mFontSize = fontSize;
 		mTextFlowYOffset.setValue(0);
-		mActiveWordFading = 0;
-		mSubWordIndex = 0;
+		mCursorFlowPartIndex = 0;
+		mCursorLetterIndex = 0;
+		mActiveEntityFading = 0;
 
 		// Fetch render item for background
 		mpBackground = mpAssetManager->fetchRenderItem(
@@ -247,25 +248,7 @@ namespace eyegui
 
 		// *** ANIMATIONS ***
 
-		/*
-
-		// Update previous active words
-		for (auto& rPair : mPreviousActiveWords)
-		{
-			rPair.second -= tpf;
-		}
-		mPreviousActiveWords.erase(
-			std::remove_if(
-				mPreviousActiveWords.begin(),
-				mPreviousActiveWords.end(),
-                [](const SubFlowWordAlphaPair& i) { return i.second <= 0; }),
-			mPreviousActiveWords.end());
-
-		// Update active word's fading
-		if (mupActiveWord != NULL)
-		{
-			mActiveWordFading = glm::min(mActiveWordFading + tpf, mpLayout->getConfig()->animationDuration);
-		}
+		/*		
 
 		// Update pulsing of cursor
 		float fullCircle = 2 * glm::pi<float>();
@@ -273,6 +256,12 @@ namespace eyegui
 		while (mCursorPulse >= fullCircle) { mCursorPulse -= fullCircle; }
 
 		*/
+
+		// Update active word's fading
+		if (!mwpActiveEntity.expired())
+		{
+			mActiveEntityFading = glm::min(mActiveEntityFading + tpf, mpLayout->getConfig()->animationDuration);
+		}
 
 		// *** UPDATE OF TEXT FLOW ***
 
@@ -303,33 +292,33 @@ namespace eyegui
 			// Update relative offset
 			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
 
-			/*
+			// *** ACTIVE ENTITY ***
+			auto wpEntity = mupTextFlow->getFlowEntity(flowX, flowY + oldTextFlowYOffset);
 
-			// *** ACTIVE WORD ***
-
-			// Get currently selected word
-            FlowWord newActiveWord;
-
-			// Decide whether active word has changed
-			if (mupTextFlow->getFlowWord(flowX, flowY + oldTextFlowYOffset, newActiveWord))
+			// Decide whether active entity has changed
+			if (!wpEntity.expired()) // found one is valid
 			{
-				if (mupActiveWord != NULL)
+				if (!mwpActiveEntity.expired()) // current one is valid
 				{
-					// Compare flow word index
-					if (newActiveWord.index != mupActiveWord->index)
+					// Compare by indices within text flow vector
+					if (auto spActiveEntity = mwpActiveEntity.lock())
 					{
-						// Flow word index is different, use it!
-						setActiveWord(newActiveWord, true);
+						if (auto spEntity = wpEntity.lock())
+						{
+							if (spActiveEntity->getIndex() != spEntity->getIndex())
+							{
+								// Flow entity index is different, use it!
+								setActiveEntity(wpEntity, true);
+							}
+						}
 					}
 				}
 				else
 				{
-					// No active word was set, do it now
-					setActiveWord(newActiveWord, true);
+					// No active word has been set, do it now
+					setActiveEntity(wpEntity, true);
 				}
 			}
-
-			*/
 		}
 
         return adaptiveScale;
@@ -348,7 +337,7 @@ namespace eyegui
             mpBackground->draw();
         }
 
-		// *** TEXT ***
+		// *** PREPARATION ***
 
 		// Push scissor to render text only within element
 		pushScissor(mX, mY, mWidth, mHeight);
@@ -373,44 +362,34 @@ namespace eyegui
 				activeBackgroundHeight);
 		};
 
-		/*
+		// *** ACTIVE ENTITY BACKGROUND ***
 
 		// Draw background behind active word (or better said behind active sub words
 		mpActiveWordBackground->bind();
 		mpActiveWordBackground->getShader()->fillValue("color", getStyle()->markColor); // TODO: marked color used. Maybe use some custom
 
-		// Draw previous active ones
-		for (const auto& rPair : mPreviousActiveWords)
-		{
-			for (const auto& rSubFlowWord : rPair.first)
-			{
-				// Calculate draw matrix
-				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord.x, rSubFlowWord.y, rSubFlowWord.upWord->pixelWidth);
-
-				// Draw previous active sub word's background
-				mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
-				mpActiveWordBackground->getShader()->fillValue("alpha", (rPair.second / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
-				mpActiveWordBackground->draw();
-			}
-		}
-
 		// Draw currently active one
-		if (mupActiveWord != NULL)
+		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
-			for (const auto& rSubFlowWord : mupActiveWord->subWords)
+			// Iterate over flow parts
+			for (uint i = 0; i < spActiveEntity->getFlowPartCount(); i++)
 			{
-				// Calculate draw matrix
-				glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(rSubFlowWord->x, rSubFlowWord->y, rSubFlowWord->upWord->pixelWidth);
+				// Lock flow part pointer
+				if (auto spFlowPart = spActiveEntity->getFlowPart(i).lock())
+				{
+					// Calculate draw matrix
+					glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(spFlowPart->getX(), spFlowPart->getY(), spFlowPart->getPixelWidth());
 
-				// Draw active sub word's background
-				mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
-				mpActiveWordBackground->getShader()->fillValue("alpha", (mActiveWordFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
+					// Draw active sub word's background
+					mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
+					mpActiveWordBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
 
-				mpActiveWordBackground->draw();
+					mpActiveWordBackground->draw();
+				}
 			}
 		}
 
-		*/
+		// *** TEXT FLOW ***
 
 		// Drawing of text flow
 		mupTextFlow->draw(
@@ -421,6 +400,8 @@ namespace eyegui
 			textFlowYOffset);
 
 		/*
+
+		// *** CURSOR ***
 
 		// Calculate x and y of cursor
         int cursorX = 0; // fallback when there is no active word
@@ -471,10 +452,10 @@ namespace eyegui
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
 
- /*
-		// Unset active word
-		mupActiveWord.reset();
-        */
+		// Unset active entity and cursor
+		mwpActiveEntity = std::weak_ptr<const FlowEntity>();
+		mCursorFlowPartIndex = 0;
+		mCursorLetterIndex = 0;
     }
 
     void TextEdit::specialReset()
@@ -483,7 +464,7 @@ namespace eyegui
 		InteractiveElement::specialReset();
 
 		// Class resets
-		mCursorPulse = 1.f;
+		//mCursorPulse = 1.f;
     }
 
     void TextEdit::specialInteract()
@@ -509,34 +490,34 @@ namespace eyegui
         return (int)(mTextFlowYOffset.getValue() * glm::max(0.f, (float)((mupTextFlow->getFlowHeight() + mupTextFlow->getLineHeight()) - mHeight)));
 	}
 
-    void TextEdit::setActiveWord(const FlowEntity& rFlowEntity, bool setCursorToEnd)
+	void TextEdit::setActiveEntity(std::weak_ptr<const FlowEntity> wpFlowEntity, bool setCursorToEnd)
 	{
-		/*
-		if (mupActiveWord != NULL)
-		{
-			mPreviousActiveWords.push_back(
-				std::make_pair(
-					mupActiveWord->subWords,
-					mActiveWordFading));
-		}
-
-		// Save active word in memmber
-        mupActiveWord = std::unique_ptr<FlowWord>(new FlowWord(rFlowWord));
-		mActiveWordFading = 0.f;
+		// Save active entity in members
+		mwpActiveEntity = wpFlowEntity;
+		mActiveEntityFading = 0.f; // reset fading
 
 		// Set cursor
 		if (setCursorToEnd)
 		{
-			// Set cursor position to last subword of active word
-			mSubWordIndex = (int)mupActiveWord->subWords.size() - 1;
+			if (auto spActiveEntity = mwpActiveEntity.lock())
+			{
+				// Set cursor position behind active flow entity
+				mCursorFlowPartIndex = (int)spActiveEntity->getFlowPartCount() - 1;
 
-			// Set cursor position to last letter in subword
-			mLetterIndex = (int)mupActiveWord->subWords.at(mSubWordIndex)->upWord->lettersXOffsets.size() - 1;
+				if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
+				{
+					mCursorLetterIndex = (int)spFlowPart->getLetterCount() - 1;
+				}
+				else
+				{
+					mCursorLetterIndex = 0;
+				}
+				
+			}
 		}
 
 		// Reset cursor pulse to make it directly visible
-		mCursorPulse = 0.f;
-		*/
+		//mCursorPulse = 0.f;
 	}
 
     void TextEdit::moveCursorOverLettersRightward(int letterCount)

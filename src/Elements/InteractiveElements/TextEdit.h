@@ -89,17 +89,14 @@ namespace eyegui
 		// Calculate text flow y offset in pixels
 		int calculateTextFlowYOffset() const;
 
-		// Set new active word
-        void setActiveWord(const FlowEntity& rFlowEntity, bool setCursorToEnd);
+		// Set new active entity
+        void setActiveEntity(std::weak_ptr<const FlowEntity> wpFlowEntity, bool setCursorToEnd);
 
         // Move cursor over letter rightward
         void moveCursorOverLettersRightward(int letterCount);
 
         // Move cursor over letter leftward
         void moveCursorOverLettersLeftward(int letterCount);
-
-		// Typedef
-        //typedef std::pair<std::vector<SubFlowWord>, float> SubFlowWordAlphaPair;
 
         // Members
         RenderItem const * mpBackground;
@@ -111,16 +108,16 @@ namespace eyegui
 		LerpValue mTextFlowYOffset; // as relative value [0..1]
 		FontSize mFontSize;
 
-		// Active word and cursor position
-        //std::unique_ptr<FlowWord> mupActiveWord; // unique pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
-		int mSubWordIndex; // inside active sub word
-		int mLetterIndex; // inside active sub word's letters. Minus one indicates, that cursor is at beginning of word
+		// Active entity
+		std::weak_ptr<const FlowEntity> mwpActiveEntity; // weak pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
+		
+		// CursorPosition
+		int mCursorFlowPartIndex; // flow part inside active entity
+		int mCursorLetterIndex; // inside active word's flow part
 		
 		// Animation related members
-		float mCursorPulse; // [0..2*Pi]
-		float mActiveWordFading; // [0..AnimationDuration]
-        //std::vector<SubFlowWordAlphaPair> mPreviousActiveWords; // float is initialized with animation
-																								 // duration and decremented at each update
+		//float mCursorPulse; // [0..2*Pi]
+		float mActiveEntityFading; // [0..AnimationDuration]
     };
 }
 

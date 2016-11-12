@@ -56,11 +56,11 @@ namespace eyegui
         // Getter whether collapsed
         bool isCollapsed() const { return mCollapsed; }
 
-		// Getter for x offset of letter. Returns -1 if offset not found.
+		// Getter for x offset of letters. Returns -1 if offset not found.
 		// Offset index starts at 0, where this symbolizes the position before
 		// the first letter. Index 1 is the position after the the first letter
 		// and so on... So there are letterCount + 1 many offsets
-		int getLetterXOffset(uint offsetIndex) const
+		int getXOffset(uint offsetIndex) const
 		{
 			if (offsetIndex < mupWord->xOffsets.size())
 			{
@@ -111,6 +111,19 @@ namespace eyegui
         // Getter for position within text flow
         int getX() const { return mX; }
         int getY() const { return mY; }
+
+		// Getter for parts. Returns emtpy weak pointer at failure
+		std::weak_ptr<const FlowPart> getFlowPart(uint index) const
+		{
+			if (index < getFlowPartCount())
+			{
+				return mFlowParts.at(index);
+			}
+			else
+			{
+				return std::weak_ptr<const FlowPart>();
+			}
+		}
 
         // Getter for flow part count
         uint getFlowPartCount() const { return (uint)mFlowParts.size(); }
@@ -210,7 +223,7 @@ namespace eyegui
         Type mType; // has to be set by creator!
         uint mContentStartIndex; // index in content where flow entity starts
         uint mIndex; // index within flow entity vector
-        std::vector<std::unique_ptr<FlowPart> > mFlowParts;
+        std::vector<std::shared_ptr<FlowPart> > mFlowParts;
     };
 
     // Text flow class
