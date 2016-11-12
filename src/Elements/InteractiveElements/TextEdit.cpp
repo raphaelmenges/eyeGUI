@@ -61,8 +61,8 @@ namespace eyegui
 			shaders::Type::COLOR,
 			meshes::Type::QUAD);
 
-		// Fetch render item for background of active word
-		mpActiveWordBackground = mpAssetManager->fetchRenderItem(
+		// Fetch render item for background of active entity
+		mpActiveEntityBackground = mpAssetManager->fetchRenderItem(
 			shaders::Type::COLOR,
 			meshes::Type::QUAD);
 
@@ -95,40 +95,70 @@ namespace eyegui
 
 	void TextEdit::moveCursorOverWords(int wordCount)
 	{
-        /*
-		// When there is no active word, there is no text
-		if (mupActiveWord != NULL)
-		{
-			// Decide direction
-			bool rightward = wordCount > 0;
-			for (int i = 0; i < glm::abs(wordCount); i++)
-			{
-				// Count how many letters have to be skipped to get to next word
-				int letterCount = 0;
-				if (rightward)
-				{
-					// Collect left letters of all subwords
-					for (int j = mSubWordIndex; j < mupActiveWord->subWords.size(); j++)
-					{
-						letterCount += (int)mupActiveWord->subWords.at(j)->upWord->lettersXOffsets.size();
-					}
-                    letterCount -= glm::max(0, mLetterIndex);
-				}
-				else
-				{
-					// Collect letters of lefhand subwords
-					for (int j = 0; j < mSubWordIndex; j++)
-					{
-                        letterCount = -(int)mupActiveWord->subWords.at(j)->upWord->lettersXOffsets.size();
-					}
-                    letterCount -= glm::max(0, mLetterIndex) + 1;
-				}
+		// Decide direction
+		bool rightward = wordCount > 0;
+		int absWordCount = glm::abs(wordCount);
 
-				// Delegate it to move by letters method
-				moveCursorOverLetters(letterCount);
+		// Implement movement
+		if (auto spActiveEntity = mwpActiveEntity.lock())
+		{
+			// Move as often as requested
+			for (int i = 0; i < absWordCount; i++)
+			{
+				if (rightward) // rightward
+				{
+					// Try for next entity
+					int index = spActiveEntity->getIndex();
+					index++;
+					if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
+					{
+						// Search for next word
+						while (spEntity->getType() != FlowEntity::Type::Word)
+						{
+							index++;
+							auto spNextEntity = mupTextFlow->getFlowEntity(index).lock();
+							if (!spNextEntity)
+							{
+								return; // no next word found
+							}
+							else
+							{
+								spEntity = spNextEntity;
+							}
+						}
+
+						// Let everything do set by method
+						setActiveEntity(spEntity, true);
+					}
+				}
+				else // leftward
+				{
+					// Try for previous entity
+					int index = spActiveEntity->getIndex();
+					index--;
+					if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
+					{
+						// Search for previous word
+						while (spEntity->getType() != FlowEntity::Type::Word)
+						{
+							index--;
+							auto spPreviousEntity = mupTextFlow->getFlowEntity(index).lock();
+							if (!spPreviousEntity)
+							{
+								return; // no previous word found
+							}
+							else
+							{
+								spEntity = spPreviousEntity;
+							}
+						}
+
+						// Let everything do set by method
+						setActiveEntity(spEntity, true);
+					}
+				}
 			}
 		}
-        */
 	}
 
     void TextEdit::moveCursorToStart()
@@ -191,32 +221,21 @@ namespace eyegui
 
 	void TextEdit::setContent(std::u16string content)
 	{
-        /*mupTextFlow->setContent(content);
-        moveCursorToEnd();*/
+        mupTextFlow->setContent(content);
+        moveCursorToEnd();
 	}
 
 	void TextEdit::deleteContentAtCursor(int letterCount)
 	{
-        /*
-		if (mupActiveWord != NULL)
+		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
-            FlowWord flowWord;
-			int subWordIndex = 0;
-			int letterIndex = 0;
-			if (mupTextFlow->eraseContent(
-				mupActiveWord->getContentIndex(mSubWordIndex, mLetterIndex),
-				letterCount,
-				flowWord,
-				subWordIndex,
-				letterIndex))
-			{
-				// Update active word and cursor indices stuff
-				setActiveWord(flowWord, false);
-				mSubWordIndex = subWordIndex;
-				mLetterIndex = letterIndex;
-			}
+			int contentIndex = spActiveEntity->getContentIndex(mCursorFlowPartIndex, mCursorLetterIndex);
+			mwpActiveEntity = mupTextFlow->eraseContent(
+				contentIndex,
+				-letterCount, // interface is defined differently from internal here
+				mCursorFlowPartIndex,
+				mCursorLetterIndex);
 		}
-        */
 	}
 
 	std::u16string TextEdit::getActiveEntityContent() const
@@ -243,7 +262,7 @@ namespace eyegui
 		mCursorPulse += (tpf * fullCircle) / TEXT_EDIT_CURSOR_PULSE_DURATION;
 		while (mCursorPulse >= fullCircle) { mCursorPulse -= fullCircle; }
 
-		// Update active word's fading
+		// Update active entity's fading
 		if (!mwpActiveEntity.expired())
 		{
 			mActiveEntityFading = glm::min(mActiveEntityFading + tpf, mpLayout->getConfig()->animationDuration);
@@ -336,10 +355,10 @@ namespace eyegui
 		// Y offset of text flow in pixels
 		int textFlowYOffset = calculateTextFlowYOffset();
 
-		// Function for draw matrix of active word background
-		std::function<glm::mat4(int, int, int)> calculateActiveWordBackgroundDrawMatrix = [&](int x, int y, int width)
+		// Function for draw matrix of active entity background
+		std::function<glm::mat4(int, int, int)> calculateActiveEnitiyBackgroundDrawMatrix = [&](int x, int y, int width)
 		{
-			// Calculate width and height for active word background
+			// Calculate width and height for active entity background
             int activeBackgroundWidth = width + (int)mupTextFlow->getPixelWidthOfSpace();
             int activeBackgroundHeight = (int)(mupTextFlow->getLineHeight() + mupTextFlow->getPixelWidthOfSpace());
 
@@ -355,9 +374,9 @@ namespace eyegui
 
 		// *** ACTIVE ENTITY BACKGROUND ***
 
-		// Draw background behind active word (or better said behind active sub words
-		mpActiveWordBackground->bind();
-		mpActiveWordBackground->getShader()->fillValue("color", getStyle()->markColor); // TODO: marked color used. Maybe use some custom
+		// Draw background behind active entity
+		mpActiveEntityBackground->bind();
+		mpActiveEntityBackground->getShader()->fillValue("color", getStyle()->markColor); // TODO: marked color used. Maybe use some custom
 
 		// Draw currently active one
 		if (auto spActiveEntity = mwpActiveEntity.lock())
@@ -369,13 +388,13 @@ namespace eyegui
 				if (auto spFlowPart = spActiveEntity->getFlowPart(i).lock())
 				{
 					// Calculate draw matrix
-					glm::mat4 activeWordBackgroundDrawMatrix = calculateActiveWordBackgroundDrawMatrix(spFlowPart->getX(), spFlowPart->getY(), (int)spFlowPart->getPixelWidth());
+					glm::mat4 activeEntityBackgroundDrawMatrix = calculateActiveEnitiyBackgroundDrawMatrix(spFlowPart->getX(), spFlowPart->getY(), (int)spFlowPart->getPixelWidth());
 
-					// Draw active sub word's background
-					mpActiveWordBackground->getShader()->fillValue("matrix", activeWordBackgroundDrawMatrix);
-					mpActiveWordBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
+					// Draw flow part background
+					mpActiveEntityBackground->getShader()->fillValue("matrix", activeEntityBackgroundDrawMatrix);
+					mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
 
-					mpActiveWordBackground->draw();
+					mpActiveEntityBackground->draw();
 				}
 			}
 		}
@@ -438,10 +457,9 @@ namespace eyegui
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
 
-		// Unset active entity and cursor
-		mwpActiveEntity = std::weak_ptr<const FlowEntity>();
-		mCursorFlowPartIndex = 0;
-		mCursorLetterIndex = -1;
+		// Set cursor to start
+		mwpActiveEntity = std::weak_ptr<FlowEntity>(); // reset active entity to be sure of valid state
+		moveCursorToEnd();
     }
 
     void TextEdit::specialReset()
@@ -490,11 +508,14 @@ namespace eyegui
 			if (auto spActiveEntity = mwpActiveEntity.lock())
 			{
 				// Set cursor position behind active flow entity
-				mCursorFlowPartIndex = (int)spActiveEntity->getFlowPartCount() - 1;
-
-				if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
+				if (spActiveEntity->getFlowPartCount() >= 1)
 				{
-					mCursorLetterIndex = (int)(spFlowPart->getLetterCount()) - 1;
+					mCursorFlowPartIndex = (uint)((int)spActiveEntity->getFlowPartCount() - 1);
+
+					if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
+					{
+						mCursorLetterIndex = (int)(spFlowPart->getLetterCount()) - 1;
+					}
 				}
 			}
 		}
@@ -511,8 +532,7 @@ namespace eyegui
             // Repeat it as indicated
             for (int i = 0; i < letterCount; i++)
             {
-				// Save old values when no further word is found later on
-				int flowPartIndex = mCursorFlowPartIndex;
+				uint flowPartIndex = mCursorFlowPartIndex;
 				int letterIndex = mCursorLetterIndex;
 
                 // Try to increment just letter index
@@ -534,8 +554,7 @@ namespace eyegui
 							// Try for next entity
 							int index = spActiveEntity->getIndex();
 							index++;
-							auto wpEntity = mupTextFlow->getFlowEntity(index);
-							if (auto spEntity = wpEntity.lock())
+							if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
 							{
 								// Check for non-space. Should overstep spaces
 								while (spEntity->getType() == FlowEntity::Type::Space)
@@ -574,8 +593,7 @@ namespace eyegui
 			// Repeat it as indicated
 			for (int i = 0; i < letterCount; i++)
 			{
-				// Save old values when no further word is found later on
-				int flowPartIndex = mCursorFlowPartIndex;
+				uint flowPartIndex = mCursorFlowPartIndex;
 				int letterIndex = mCursorLetterIndex;
 
 				// Try to decrement just letter index
@@ -589,7 +607,7 @@ namespace eyegui
 						// Try for previous flow part
 						if (flowPartIndex > 0) // there is another flow part
 						{
-							mCursorFlowPartIndex = flowPartIndex - 1;
+							mCursorFlowPartIndex = (uint)((int)flowPartIndex - 1);
 							mCursorLetterIndex = spFlowPart->getLetterCount() - 1; // front of flow part
 						}
 						else // no previous flow part
@@ -597,8 +615,7 @@ namespace eyegui
 							// Try for previous entity
 							int index = spActiveEntity->getIndex();
 							index--;
-							auto wpEntity = mupTextFlow->getFlowEntity(index);
-							if (auto spEntity = wpEntity.lock())
+							if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
 							{
 								// Check for non-space. Should overstep spaces
 								while (spEntity->getType() == FlowEntity::Type::Space)

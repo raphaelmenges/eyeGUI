@@ -10,6 +10,11 @@
 // expect values in a coordinate system with an origin at the upper left.
 // Front of content is marked with -1.
 
+// TODO: documentation
+// flow part index: 0..FlowPartCount-1
+// letter index: -1..letterCount-1
+// offset: 0...letterCount
+
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
 
@@ -157,13 +162,13 @@ namespace eyegui
 
 		// Calculates index of flow part and letter within flow part of given letter within a raw word.
 		// -1 means in front of the word, everything else within
-		bool getIndices(uint wordLetterIndex, uint& rFlowPartIndex, uint& rLetterIndex) const
+		bool getIndices(int wordLetterIndex, uint& rFlowPartIndex, int& rLetterIndex) const
 		{
 			// Case when in front of word
 			if (wordLetterIndex == -1)
 			{
 				rFlowPartIndex = 0;
-				rLetterIndex = 0;
+				rLetterIndex = -1;
 				return true;
 			}
 			else if(wordLetterIndex >= 0)
@@ -180,7 +185,7 @@ namespace eyegui
 					if (localIndex < partLetterCount) // add one because front is zero
 					{
 						rFlowPartIndex = i;
-						rLetterIndex = localIndex + 1; // shift one to the right to never be in front of the flow part
+						rLetterIndex = localIndex;
 						return true;
 					}
 					else
@@ -194,15 +199,15 @@ namespace eyegui
 			return false;
 		}
 
-        // Get content index by indices. Letter index is within flow part
-        uint getContentIndex(uint flowPartIndex, uint letterIndex) const
+        // Get content index by indices
+        int getContentIndex(uint flowPartIndex, int letterIndex) const
         {
-            uint index = 0;
+            int index = 0;
             for (uint i = 0; i < flowPartIndex; i++)
             {
                 index += mFlowParts.at(i)->getLetterCount();
             }
-            index += letterIndex - 1; // because letter index is including front position
+            index += letterIndex;
             index += mContentStartIndex;
             return index;
         }
@@ -306,16 +311,16 @@ namespace eyegui
         std::weak_ptr<const FlowEntity> getFlowEntityAndIndices(
             int contentIndex,
             uint& rFlowPartIndex,
-            uint& rLetterIndex) const;
+            int& rLetterIndex) const;
 
         // Insert content after index of exisiting content.
         // Returns flow entity and sets indices to position after insertion
-        std::weak_ptr<const FlowEntity> insertContent(uint index, std::u16string content, uint& rFlowPartIndex, uint& rLetterIndex);
+        std::weak_ptr<const FlowEntity> insertContent(uint index, std::u16string content, uint& rFlowPartIndex, int& rLetterIndex);
 
         // Erases letterCount many letters from content, beginning and including index and  excluding index + letterCount.
         // Negative index results in deletion of letters before index.
         // Returns flow entity and sets indices to position after deletion of content
-        std::weak_ptr<const FlowEntity> eraseContent(int index, uint letterCount, uint& rFlowPartIndex, uint& rLetterIndex);
+        std::weak_ptr<const FlowEntity> eraseContent(int index, uint letterCount, uint& rFlowPartIndex, int& rLetterIndex);
 
     protected:
 

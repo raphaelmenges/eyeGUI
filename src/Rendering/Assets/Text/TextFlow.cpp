@@ -190,7 +190,7 @@ namespace eyegui
      std::weak_ptr<const FlowEntity> TextFlow::getFlowEntityAndIndices(
             int contentIndex,
             uint& rFlowPartIndex,
-            uint& rLetterIndex) const
+            int& rLetterIndex) const
     {
 		// Check whether there are flow entities
 		if (!mFlowEntities.empty())
@@ -199,14 +199,14 @@ namespace eyegui
 			if (contentIndex == -1)
 			{
 				rFlowPartIndex = 0;
-				rLetterIndex = 0;
+				rLetterIndex = -1;
 				return mFlowEntities.front();
 			}
 
 			// Check, whether there are enough letters in content for that index
 			if (contentIndex >= 0 && contentIndex < mContent.length())
 			{
-				// Go over flow words and search index
+				// Go over flow entities and search index
 				uint flowEntityIndex = 0;
 				while (
 					(flowEntityIndex + 1 < mFlowEntities.size())
@@ -215,15 +215,15 @@ namespace eyegui
 					flowEntityIndex++;
 				}
 
-				// Found index, so assume it as searched flow word
+				// Found index of flow entity, so assume it as searched flow entity
 				std::shared_ptr<const FlowEntity> spFlowEntity = mFlowEntities.at(flowEntityIndex);
 
-				// Fill sub word index and letter index
+				// Fill flow part index and letter index
 				uint flowPartIndex = 0;
-				uint letterIndex = 0;
+				int letterIndex = -1;
 				if (spFlowEntity->getIndices(contentIndex - spFlowEntity->getContentStartIndex(), flowPartIndex, letterIndex))
 				{
-					// Set references and return pointer
+					// Set references and return weak pointer
 					rFlowPartIndex = flowPartIndex;
 					rLetterIndex = letterIndex;
 					return spFlowEntity;
@@ -235,7 +235,7 @@ namespace eyegui
         return std::weak_ptr<const FlowEntity>();
     }
 
-    std::weak_ptr<const FlowEntity> TextFlow::insertContent(uint index, std::u16string content, uint& rFlowPartIndex, uint& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::insertContent(uint index, std::u16string content, uint& rFlowPartIndex, int& rLetterIndex)
     {
         // Index has to be advanced by one to be insert after given index
         uint contentIndex = index + 1;
@@ -258,7 +258,7 @@ namespace eyegui
         return std::weak_ptr<const FlowEntity>();
 	}
 
-    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, uint letterCount, uint& rFlowPartIndex, uint& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, uint letterCount, uint& rFlowPartIndex, int& rLetterIndex)
     {
         if(!mContent.empty())
         {

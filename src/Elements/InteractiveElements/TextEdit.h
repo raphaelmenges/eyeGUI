@@ -101,7 +101,7 @@ namespace eyegui
         // Members
         RenderItem const * mpBackground;
 		RenderItem const * mpCursor;
-		RenderItem const * mpActiveWordBackground;
+		RenderItem const * mpActiveEntityBackground;
 
 		// Text flow
         std::unique_ptr<TextFlow> mupTextFlow;
@@ -109,11 +109,11 @@ namespace eyegui
 		FontSize mFontSize;
 
 		// Active entity
-		std::weak_ptr<const FlowEntity> mwpActiveEntity; // weak pointer to active flow word. Defines indirectly position of cursor, which is somewhere inside that word
+		std::weak_ptr<const FlowEntity> mwpActiveEntity; // weak pointer to active flow entity. Defines indirectly position of cursor, which is somewhere inside that entitiy
 		
 		// CursorPosition
-		int mCursorFlowPartIndex; // flow part inside active entity
-		int mCursorLetterIndex; // inside active word's flow part. -1 when in front of flow part
+		uint mCursorFlowPartIndex; // flow part inside active entity
+		int mCursorLetterIndex; // inside active entity's flow part. -1 when in front of flow part
 		
 		// Animation related members
 		float mCursorPulse; // [0..2*Pi]
