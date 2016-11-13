@@ -317,10 +317,10 @@ namespace eyegui
         // Returns flow entity and sets indices to position after insertion
         std::weak_ptr<const FlowEntity> insertContent(uint index, std::u16string content, uint& rFlowPartIndex, int& rLetterIndex);
 
-        // Erases letterCount many letters from content, beginning and including index and  excluding index + letterCount.
+        // Erases letterCount many letters from content, beginning and including index and excluding index + letterCount.
         // Negative index results in deletion of letters before index.
         // Returns flow entity and sets indices to position after deletion of content
-        std::weak_ptr<const FlowEntity> eraseContent(int index, uint letterCount, uint& rFlowPartIndex, int& rLetterIndex);
+        std::weak_ptr<const FlowEntity> eraseContent(int index, int letterCount, uint& rFlowPartIndex, int& rLetterIndex);
 
     protected:
 

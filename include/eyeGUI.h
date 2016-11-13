@@ -855,7 +855,7 @@ namespace eyegui
 	/*!
 		\param pLayout pointer to layout.
 		\param id is the unique id of an element.
-		\param letterCount is count of deleted letters. Positive values indicates leftward deletion, negative values rightward deletion.
+		\param letterCount is count of deleted letters. Positive values indicates rightward deletion, negative values leftward deletion.
 	*/
 	void deleteContentAtCursorInTextEdit(Layout* pLayout, std::string id, int letterCount);
 

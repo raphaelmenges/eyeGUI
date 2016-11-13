@@ -15,6 +15,9 @@
 
 #include <cmath>
 
+// TODO: testing
+#include <iostream>
+
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -258,20 +261,20 @@ namespace eyegui
         return std::weak_ptr<const FlowEntity>();
 	}
 
-    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, uint letterCount, uint& rFlowPartIndex, int& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, int letterCount, uint& rFlowPartIndex, int& rLetterIndex)
     {
         if(!mContent.empty())
         {
             if (letterCount < 0)
             {
-                // Move index
-                index -= letterCount;
+				// Absolute letter count
+				int absLetterCount = glm::abs(letterCount);
 
-                // Clamp index
-                int clampedIndex = glm::max(0, index);
+                // Move index to start of deletion and clamp it
+                int clampedIndex = glm::max(0, (index - absLetterCount) + 1); // plus one because letter at original index should be deleted too
 
                 // New letter count
-                letterCount = (uint)glm::max(0, index - clampedIndex);
+                letterCount = (int)glm::max(0, (index - clampedIndex) + 1);
 
                 // Overwrite index
                 index = clampedIndex;
@@ -280,7 +283,7 @@ namespace eyegui
             // Clamp length
             if (index + letterCount >= mContent.size())
             {
-                letterCount = (uint)glm::max(0, (int)mContent.size() - index) + 1;
+                letterCount = (int)glm::max(0, (int)mContent.size() - index);
             }
 
             // Apply it
@@ -288,6 +291,9 @@ namespace eyegui
 
             // Recalulate mesh
             calculateMesh();
+
+			// Calculate index to set (range is -1 .. mContent.size() - 1)
+			index = glm::max(-1, glm::min(index - 1, (int)mContent.size() - 1)); // subtract -1 from index because the letter at it has been erased
 
             // Set indices
             return getFlowEntityAndIndices(index, rFlowPartIndex, rLetterIndex);
