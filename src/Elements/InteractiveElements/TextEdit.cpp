@@ -66,13 +66,13 @@ namespace eyegui
 			shaders::Type::COLOR,
 			meshes::Type::QUAD);
 
-		// Create text flow
+		// Create text flow (TODO: pipe through the xml stuff)
         mupTextFlow = std::move(mpAssetManager->createTextFlow(
 			fontSize,
-			TextFlowAlignment::JUSTIFY, // TODO pipe through
+			TextFlowAlignment::LEFT,
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
-			u"hallo Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.Lorem ipsum dolor sit amet", // TODO: maybe later some content from xeyegui or localization for initial value
+			u"",
             true));
 	}
 
@@ -181,42 +181,20 @@ namespace eyegui
 
 	void TextEdit::addContentAtCursor(std::u16string content)
 	{
-        /*
-        // When there is already text and a active word, use that cursor position
-        FlowWord flowWord;
-        int subWordIndex = 0;
-        int letterIndex = 0;
-		if (mupActiveWord != NULL)
+        // When there an active entity, use that and the cursor position
+		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
-			// Find out, where the cursor is in content
-			int contentIndex = mupActiveWord->contentStartIndex;
-			for (int i = 0; i < mSubWordIndex; i++)
-			{
-				contentIndex += (int)mupActiveWord->subWords.at(i)->upWord->lettersXOffsets.size();
-			}
-            contentIndex += mLetterIndex; // -1 is ok here, since even at start of text, it should be inserted after -1 at 0
+			// Calculate content index
+			int contentIndex = spActiveEntity->getContentIndex(mCursorFlowPartIndex, mCursorLetterIndex);
 
-            // Tell text flow insert add content there
-            if(mupTextFlow->insertContent(contentIndex, content, flowWord, subWordIndex, letterIndex))
-            {
-                // Update active word and cursor indices stuff
-                setActiveWord(flowWord, false);
-                mSubWordIndex = subWordIndex;
-                mLetterIndex = letterIndex;
-            }
+            // Tell text flow to insert content there
+			mwpActiveEntity = mupTextFlow->insertContent(contentIndex, content, mCursorFlowPartIndex, mCursorLetterIndex);
 		}
         else
         {
-            // No active word and therefore no cursor position
-            if(mupTextFlow->insertContent(-1, content, flowWord, subWordIndex, letterIndex))
-            {
-                // Update active word and cursor indices stuff
-                setActiveWord(flowWord, false);
-                mSubWordIndex = subWordIndex;
-                mLetterIndex = letterIndex;
-            }
+            // No active entity, add it to front
+			mwpActiveEntity = mupTextFlow->insertContent(-1, content, mCursorFlowPartIndex, mCursorLetterIndex);
         }
-        */
 	}
 
 	void TextEdit::setContent(std::u16string content)
