@@ -402,13 +402,10 @@ namespace eyegui
 		// If there is a active entity, get cursor position from datastructure
 		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
-			// Offsets are saved from 0 to letterCount, so adapt given index
-			int offsetIndex = mCursorLetterIndex + 1;
-
 			// Recieve offset from flow part
 			if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
 			{
-				cursorX = spFlowPart->getX() + spFlowPart->getXOffset(offsetIndex);
+				cursorX = spFlowPart->getX() + spFlowPart->getXOffset(mCursorLetterIndex);
 				cursorY = spFlowPart->getY();
 			}
 		}

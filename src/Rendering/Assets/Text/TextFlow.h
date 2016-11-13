@@ -13,7 +13,7 @@
 // TODO: documentation
 // flow part index: 0..FlowPartCount-1
 // letter index: -1..letterCount-1
-// offset: 0...letterCount
+// offset: -1...letterCount-1
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
@@ -62,11 +62,14 @@ namespace eyegui
         bool isCollapsed() const { return mCollapsed; }
 
 		// Getter for x offset of letters. Returns 0 if offset not found.
-		// Offset index starts at 0, where this symbolizes the position before
-		// the first letter. Index 1 is the position after the the first letter
+		// Offset index starts at -1, where this symbolizes the position before
+		// the first letter. Index 0 is the position after the the first letter
 		// and so on... So there are letterCount + 1 many offsets
 		int getXOffset(uint offsetIndex) const
 		{
+			// Increment offset index to fit render words implementation
+			offsetIndex++;
+
 			if (mupWord != nullptr)
 			{
 				if (offsetIndex < mupWord->xOffsets.size()) // index found
