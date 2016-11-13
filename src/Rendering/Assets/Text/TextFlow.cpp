@@ -154,6 +154,11 @@ namespace eyegui
         return (uint)mFlowEntities.size();
     }
 
+	std::u16string TextFlow::getContent() const
+	{
+		return mContent;
+	}
+
     std::u16string TextFlow::getContent(uint index, uint letterCount) const
     {
         return mContent.substr(index, letterCount);

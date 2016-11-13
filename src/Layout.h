@@ -234,6 +234,9 @@ namespace eyegui
 		// Set content
 		void setContentOfTextEdit(std::string id, std::u16string content);
 
+		// Get content
+		std::u16string getContentOfTextEdit(std::string id) const;
+
 		// Delete content
 		void deleteContentAtCursorInTextEdit(std::string id, int letterCount);
 

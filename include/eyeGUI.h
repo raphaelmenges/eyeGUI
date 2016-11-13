@@ -843,13 +843,21 @@ namespace eyegui
 	*/
 	void addContentAtCursorInTextEdit(Layout* pLayout, std::string id, std::u16string content);
 
-	//! Set content in text edit.
+	//! Set content of text edit.
 	/*!
 		\param pLayout pointer to layout.
 		\param id is the unique id of an element.
 		\param content is the set text.
 	*/
 	void setContentOfTextEdit(Layout* pLayout, std::string id, std::u16string content);
+
+	//! Get content of text edit.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\return content of the text edit. Is empty if element not found.
+	*/
+	std::u16string getContentOfTextEdit(Layout const * pLayout, std::string id);
 
 	//! Set content in text edit.
 	/*!

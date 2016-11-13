@@ -452,6 +452,11 @@ namespace eyegui
 		pLayout->setContentOfTextEdit(id, content);
 	}
 
+	std::u16string getContentOfTextEdit(Layout const * pLayout, std::string id)
+	{
+		return pLayout->getContentOfTextEdit(id);
+	}
+
 	void deleteContentAtCursorInTextEdit(Layout* pLayout, std::string id, int letterCount)
 	{
 		pLayout->deleteContentAtCursorInTextEdit(id, letterCount);

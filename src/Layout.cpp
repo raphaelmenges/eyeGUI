@@ -812,6 +812,20 @@ namespace eyegui
 		}
 	}
 
+	std::u16string Layout::getContentOfTextEdit(std::string id) const
+	{
+		TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+		if (pTextEdit != NULL)
+		{
+			return pTextEdit->getContent();
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+		}
+		return std::u16string();
+	}
+
 	void Layout::deleteContentAtCursorInTextEdit(std::string id, int letterCount)
 	{
 		TextEdit* pTextEdit = toTextEdit(fetchElement(id));

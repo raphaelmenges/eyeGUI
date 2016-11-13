@@ -40,6 +40,9 @@ namespace eyegui
 		// Set complete content and set cursor after end of content
 		void setContent(std::u16string content);
 
+		// Get complete content
+		std::u16string getContent() const;
+
 		// Delete content at cursor. Positive value deletes rightward, negative leftward
 		void deleteContentAtCursor(int letterCount);
 

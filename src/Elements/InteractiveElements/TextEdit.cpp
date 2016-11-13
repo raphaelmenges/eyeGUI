@@ -203,6 +203,11 @@ namespace eyegui
         moveCursorToEnd();
 	}
 
+	std::u16string TextEdit::getContent() const
+	{
+		return mupTextFlow->getContent();
+	}
+
 	void TextEdit::deleteContentAtCursor(int letterCount)
 	{
 		if (auto spActiveEntity = mwpActiveEntity.lock())

@@ -299,6 +299,9 @@ namespace eyegui
         // Get count of flow entities
         uint getFlowEntityCount() const;
 
+		// Get complete content
+		std::u16string getContent() const;
+
         // Get content at given index plus length
         std::u16string getContent(uint index, uint letterCount) const;
 
