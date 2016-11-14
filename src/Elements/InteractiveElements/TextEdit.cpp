@@ -237,6 +237,35 @@ namespace eyegui
 		}
 	}
 
+	void TextEdit::setActiveEntityContent(std::u16string content)
+	{
+		// TODO: Test and debug!!!
+
+		// Delete content
+		if (auto spActiveEntity = mwpActiveEntity.lock())
+		{
+			int contentIndex = spActiveEntity->getContentStartIndex();
+			int letterCount = spActiveEntity->getLetterCount();
+			mwpActiveEntity = mupTextFlow->eraseContent(
+				contentIndex,
+				letterCount,
+				mCursorFlowPartIndex,
+				mCursorLetterIndex);
+		}
+
+		// Insert content
+		if (auto spActiveEntity = mwpActiveEntity.lock())
+		{
+			int contentIndex = spActiveEntity->getContentStartIndex();
+			mwpActiveEntity = mupTextFlow->insertContent(
+				contentIndex,
+				content,
+				mCursorFlowPartIndex,
+				mCursorLetterIndex);
+		}
+
+	}
+
     float TextEdit::specialUpdate(float tpf, Input* pInput)
     {
         // Super call

@@ -854,6 +854,19 @@ namespace eyegui
 		return std::u16string();
 	}
 
+	void Layout::setActiveEntityContentInTextEdit(std::string id, std::u16string content)
+	{
+		TextEdit* pTextEdit = toTextEdit(fetchElement(id));
+		if (pTextEdit != NULL)
+		{
+			pTextEdit->setActiveEntityContent(content);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find text edit with id: " + id);
+		}
+	}
+
     void Layout::addBrickToStack(
         std::string id,
         std::string filepath,

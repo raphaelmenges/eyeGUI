@@ -467,6 +467,11 @@ namespace eyegui
 		return pLayout->getActiveEntityContentInTextEdit(id);
 	}
 
+	void setActiveEntityContentInTextEdit(Layout* pLayout, std::string id, std::u16string content)
+	{
+		pLayout->setActiveEntityContentInTextEdit(id, content);
+	}
+
     void addBrickToStack(
         Layout* pLayout,
         std::string id,

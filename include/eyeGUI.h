@@ -875,6 +875,14 @@ namespace eyegui
 	*/
 	std::u16string getActiveEntityContentInTextEdit(Layout const * pLayout, std::string id);
 
+	//! Set content of active entity in text edit.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param content that is used to replace active entity.
+	*/
+	void setActiveEntityContentInTextEdit(Layout* pLayout, std::string id, std::u16string content);
+
 	//! Add brick to stack
 	/*!
 	\param pLayout pointer to layout.

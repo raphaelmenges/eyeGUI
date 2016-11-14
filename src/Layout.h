@@ -243,6 +243,9 @@ namespace eyegui
 		// Get content of acitve entity
 		std::u16string getActiveEntityContentInTextEdit(std::string id) const;
 
+		// Set content of acitve entity
+		void setActiveEntityContentInTextEdit(std::string id, std::u16string content);
+
         // Add brick to stack
         void addBrickToStack(
             std::string id,

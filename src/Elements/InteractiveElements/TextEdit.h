@@ -52,6 +52,9 @@ namespace eyegui
 		// Getter for content in active entity. Returns empty string if there is no
 		std::u16string getActiveEntityContent() const;
 
+		// Replace active entity with other content
+		void setActiveEntityContent(std::u16string content);
+
     protected:
 
 		// Factory is friend
