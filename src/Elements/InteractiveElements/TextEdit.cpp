@@ -239,8 +239,6 @@ namespace eyegui
 
 	void TextEdit::setActiveEntityContent(std::u16string content)
 	{
-		// TODO: Test and debug!!!
-
 		// Delete content
 		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
@@ -263,7 +261,14 @@ namespace eyegui
 				mCursorFlowPartIndex,
 				mCursorLetterIndex);
 		}
-
+		else // no active entity. Seems that content is empty, so create new
+		{
+			mwpActiveEntity = mupTextFlow->insertContent(
+				-1,
+				content,
+				mCursorFlowPartIndex,
+				mCursorLetterIndex);
+		}
 	}
 
     float TextEdit::specialUpdate(float tpf, Input* pInput)
