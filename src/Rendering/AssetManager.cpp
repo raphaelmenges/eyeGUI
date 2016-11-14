@@ -365,7 +365,8 @@ namespace eyegui
         TextFlowVerticalAlignment verticalAlignment,
         float scale,
         std::u16string content,
-		bool overflowHeight)
+		bool overflowHeight,
+		bool collapseSpaces)
     {
         return std::move(
             std::unique_ptr<TextFlow>(
@@ -378,7 +379,8 @@ namespace eyegui
                     verticalAlignment,
                     scale,
                     content,
-					overflowHeight)));
+					overflowHeight,
+					collapseSpaces)));
     }
 
     std::unique_ptr<TextSimple> AssetManager::createTextSimple(

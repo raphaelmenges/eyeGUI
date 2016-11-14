@@ -101,7 +101,8 @@ namespace eyegui
             TextFlowVerticalAlignment verticalAlignment,
             float scale = 1.f,
             std::u16string content = u"",
-			bool overflowHeight = false);
+			bool overflowHeight = false,
+			bool collapseSpaces = true);
 
         // Create text simple and return it as unique pointer
         std::unique_ptr<TextSimple> createTextSimple(

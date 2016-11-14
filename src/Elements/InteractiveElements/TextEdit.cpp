@@ -73,7 +73,8 @@ namespace eyegui
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
 			u"",
-            true));
+            true,
+			false));
 	}
 
     TextEdit::~TextEdit()

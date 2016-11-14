@@ -29,7 +29,8 @@ namespace eyegui
         TextFlowVerticalAlignment verticalAlignment,
         float scale,
         std::u16string content,
-		bool overflowHeight) : Text(
+		bool overflowHeight,
+		bool collapseSpaces) : Text(
             pGUI,
             pAssetManager,
             pFont,
@@ -44,6 +45,7 @@ namespace eyegui
         mFlowHeight = 0;
 		mPixelOfSpace = 0.f;
 		mOverflowHeight = overflowHeight;
+		mCollapseSpaces = collapseSpaces;
 
         // TransformAndSize has to be called before usage (no calculate mesh is called here)
         mWidth = 0;
@@ -594,29 +596,33 @@ namespace eyegui
                     // Get rid of spaces in front and end of line by collapsing them
                     uint collapsedSpaceFlowPartCount = 0;
 
-                    // Front of line
-                    if(line.front()->getType() == FlowEntity::Type::Space)
-                    {
-                        uint flowPartCount = line.size() == 1 ? endFlowPartIndex + 1 : line.front()->getFlowPartCount();
-                        uint flowPartIndex = initialFlowPartIndex;
-                        for (; flowPartIndex < flowPartCount; flowPartIndex++)
-                        {
-                            line.front()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
-                            collapsedSpaceFlowPartCount++;
-                        }
-                    }
+					// Collapse spaces only when indicated
+					if (mCollapseSpaces)
+					{
+						// Front of line
+						if (line.front()->getType() == FlowEntity::Type::Space)
+						{
+							uint flowPartCount = line.size() == 1 ? endFlowPartIndex + 1 : line.front()->getFlowPartCount();
+							uint flowPartIndex = initialFlowPartIndex;
+							for (; flowPartIndex < flowPartCount; flowPartIndex++)
+							{
+								line.front()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
+								collapsedSpaceFlowPartCount++;
+							}
+						}
 
-                    // End of line
-                    if(line.size() > 1 && line.back()->getType() == FlowEntity::Type::Space)
-                    {
-                        uint flowPartCount = endFlowPartIndex + 1;
-                        uint flowPartIndex = line.size() == 1 ? initialFlowPartIndex : 0;
-                        for (; flowPartIndex < flowPartCount; flowPartIndex++)
-                        {
-                            line.back()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
-                            collapsedSpaceFlowPartCount++;
-                        }
-                    }
+						// End of line
+						if (line.size() > 1 && line.back()->getType() == FlowEntity::Type::Space)
+						{
+							uint flowPartCount = endFlowPartIndex + 1;
+							uint flowPartIndex = line.size() == 1 ? initialFlowPartIndex : 0;
+							for (; flowPartIndex < flowPartCount; flowPartIndex++)
+							{
+								line.back()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
+								collapsedSpaceFlowPartCount++;
+							}
+						}
+					}
 
                     // Width of non space only
                     float nonSpaceWidth = lineWidth - (spaceFlowPartCount * mPixelOfSpace);

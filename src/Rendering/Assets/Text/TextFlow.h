@@ -270,7 +270,8 @@ namespace eyegui
             TextFlowVerticalAlignment verticalAlignment,
             float scale,
             std::u16string content,
-			bool overflowHeight);
+			bool overflowHeight,
+			bool collapseSpaces);
 
         // Destructor
         virtual ~TextFlow();
@@ -355,6 +356,7 @@ namespace eyegui
 		float mPixelOfSpace;
 		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text
         std::vector<std::shared_ptr<FlowEntity> > mFlowEntities; // holding information to make text manipulation possible
+		bool mCollapseSpaces; // collapses spaces at frond and end of line
 	};
 }
 
