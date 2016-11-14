@@ -8,12 +8,9 @@
 // for font rendering in general. All values in this class are in pixel space,
 // even floats. Internally the origin is at lower left but all methods
 // expect values in a coordinate system with an origin at the upper left.
-// Front of content is marked with -1.
-
-// TODO: documentation
-// flow part index: 0..FlowPartCount-1
-// letter index: -1..letterCount-1
-// offset: -1...letterCount-1
+// Front of content is marked with -1. Flow parts are addressed with
+// 0..flowPartCount-1. Letter indices and offset indices are defined in a
+// range from -1 to letterCount-1, where -1 marks the front of a flow part.
 
 #ifndef TEXT_FLOW_H_
 #define TEXT_FLOW_H_
@@ -31,7 +28,7 @@ namespace eyegui
         int getX() const { return mX; }
         int getY() const { return mY; }
 
-        // Getter for letter count (not count of offset indices!)
+        // Getter for letter count
         uint getLetterCount() const
         {
             if(mupWord != nullptr)
@@ -62,9 +59,9 @@ namespace eyegui
         bool isCollapsed() const { return mCollapsed; }
 
 		// Getter for x offset of letters. Returns 0 if offset not found.
-		// Offset index starts at -1, where this symbolizes the position before
+		// Offset index starts at -1, where this symbolizes the position in front of
 		// the first letter. Index 0 is the position after the the first letter
-		// and so on... So there are letterCount + 1 many offsets
+		// and so on... so there are letterCount + 1 many offsets
 		int getXOffset(uint offsetIndex) const
 		{
 			// Increment offset index to fit render words implementation
@@ -115,7 +112,7 @@ namespace eyegui
         int mX; // relative in flow
         int mY; // relative in flow
         bool mCollapsed;
-        std::unique_ptr<RenderWord> mupWord; // geometry and information of word
+        std::unique_ptr<RenderWord> mupWord; // geometry information of word
         float mPixelWidth; // fallback when mupWord is nullptr
     };
 
@@ -163,8 +160,8 @@ namespace eyegui
             return count;
         }
 
-		// Calculates index of flow part and letter within flow part of given letter within a raw word.
-		// -1 means in front of the word, everything else within
+		// Calculates index of flow part and letter within flow part of given letter within the represented word.
+		// -1 means in front of the word, everything else within. Returns whether successful
 		bool getIndices(int wordLetterIndex, uint& rFlowPartIndex, int& rLetterIndex) const
 		{
 			// Case when in front of word
@@ -249,7 +246,7 @@ namespace eyegui
         // Members
         int mX; // relative in flow
         int mY; // relative in flow
-        Type mType; // has to be set by creator!
+        Type mType;
         uint mContentStartIndex; // index in content where flow entity starts
         uint mIndex; // index within flow entity vector
         std::vector<std::shared_ptr<FlowPart> > mFlowParts;
@@ -306,7 +303,7 @@ namespace eyegui
         // Get content at given index plus length
         std::u16string getContent(uint index, uint letterCount) const;
 
-        // Get weak pointer to flow entity at index. Maybe empty when index not available
+        // Get weak pointer to flow entity at index. May be empty when index not available
         std::weak_ptr<const FlowEntity> getFlowEntity(uint index) const;
 
         // Use position in flow coordinates to get an entity. Maybe empty when index not available.
@@ -326,7 +323,7 @@ namespace eyegui
 
         // Erases letterCount many letters from content, beginning and including index and excluding index + letterCount.
         // Negative index results in deletion of letters before index.
-        // Returns flow entity and sets indices to position after deletion of content
+        // Returns flow entity and sets indices to front position of deletion
         std::weak_ptr<const FlowEntity> eraseContent(int index, int letterCount, uint& rFlowPartIndex, int& rLetterIndex);
 
     protected:

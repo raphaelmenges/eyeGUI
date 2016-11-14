@@ -11,9 +11,6 @@
 #include "src/Rendering/ScissorStack.h"
 #include "src/Utilities/Helper.h"
 
-// TODO: testing
-#include <iostream>
-
 namespace eyegui
 {
 	TextEdit::TextEdit(
@@ -287,6 +284,8 @@ namespace eyegui
 			// Update relative offset
 			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
 
+			/* TODO: CHECK WHETHER THIS KIND OF INTERACTION MAKES SENSE
+
 			// *** ACTIVE ENTITY ***
 			auto wpEntity = mupTextFlow->getFlowEntity(flowX, flowY + oldTextFlowYOffset);
 
@@ -319,6 +318,8 @@ namespace eyegui
 					}
 				}
 			}
+
+			*/
 		}
 
         return adaptiveScale;
@@ -384,6 +385,7 @@ namespace eyegui
 					mpActiveEntityBackground->getShader()->fillValue("matrix", activeEntityBackgroundDrawMatrix);
 					mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
 
+					// Draw it
 					mpActiveEntityBackground->draw();
 				}
 			}

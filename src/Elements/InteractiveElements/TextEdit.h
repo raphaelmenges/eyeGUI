@@ -4,7 +4,10 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Element for text editing. Delegates rendering to text flow asset. Saves
+// a pointer to the active entity and highlights it for the user. Within the
+// active entity, a cursor position is set, which is used for deleting and
+// inserting new content to the text that is edited.
 
 #ifndef TEXT_EDIT_H_
 #define TEXT_EDIT_H_

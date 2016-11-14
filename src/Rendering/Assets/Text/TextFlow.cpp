@@ -15,9 +15,6 @@
 
 #include <cmath>
 
-// TODO: testing
-#include <iostream>
-
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -184,8 +181,8 @@ namespace eyegui
 		{
             for (const auto& rFlowPart : rFlowEntity->mFlowParts)
             {
-                // Check whether coordinates are inside flow part of flow entity. Do not use pixel with of complete flow entity because
-				// it may be distibuted over multiple lines and the pixel width calculation ignores this possibility
+                // Check whether coordinates are inside flow part of flow entity. Do not use pixel width of complete flow entity because
+				// it may be distibuted over multiple lines and the pixel width calculation ignores this possibility. Do is for each flow part
                 if(insideRect(rFlowPart->getX(), rFlowPart->getY(), (int)rFlowPart->getPixelWidth(), (int)getLineHeight(), x, y))
                 {
                     return rFlowEntity;
@@ -208,6 +205,7 @@ namespace eyegui
 			// Special case of front
 			if (contentIndex == -1)
 			{
+				// Set references and return weak pointer
 				rFlowPartIndex = 0;
 				rLetterIndex = -1;
 				return mFlowEntities.front();
@@ -247,7 +245,7 @@ namespace eyegui
 
     std::weak_ptr<const FlowEntity> TextFlow::insertContent(uint index, std::u16string content, uint& rFlowPartIndex, int& rLetterIndex)
     {
-        // Index has to be advanced by one to be insert after given index
+        // Index has to be advanced by one to be inserted after given index
         uint contentIndex = index + 1;
         if (contentIndex < mContent.size())
 		{
