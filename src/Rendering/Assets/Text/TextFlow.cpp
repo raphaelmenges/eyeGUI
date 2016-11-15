@@ -458,13 +458,10 @@ namespace eyegui
 
                 // One entity was added
                 globalEntityCount++;
-
-				// Update paragraph content offset at last iteration for this paragraph
-				if (index >= letterCount)
-				{
-					paragraphContentOffset += letterCount + 1; // plus one because \n is counted as letter but not saved in paragraph
-				}
 			}
+
+			// Update content offset of next paragraph
+			paragraphContentOffset += letterCount + 1; // plus one because \n is counted as letter but not saved in paragraph
 		}
 
 		if (!failure)
@@ -514,7 +511,7 @@ namespace eyegui
                     // Space flow part count for line
                     uint spaceFlowPartCount = 0;
 
-                    // *** SETUP SINGLE LINE OF PARAGRAPH ***
+                    // *** SETUP SINGLE LINES OF PARAGRAPH ***
 
                     // Go over entities to build up line
 					while (
@@ -730,10 +727,19 @@ namespace eyegui
 
                     } // end of line
 
-					// Advance yPen
-					yPixelPen -= lineHeight;
+					// Advance yPen if there is a next line
+					if (hasNext)
+					{
+						yPixelPen -= lineHeight;
+					}
 
                 } // end of paragraph
+
+				// If there are paragraphs left, move yPen by one line
+				if ((int)paragraphIndex < (int)entities.size() - 1)
+				{
+					yPixelPen -= lineHeight;
+				}
 			}
         }
 

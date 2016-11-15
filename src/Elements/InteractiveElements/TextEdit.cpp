@@ -69,7 +69,7 @@ namespace eyegui
 			TextFlowAlignment::LEFT,
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
-			u"",
+			u"Hi, this is test.\nNewLine.\n\nCheck?",
             true,
 			false));
 	}
