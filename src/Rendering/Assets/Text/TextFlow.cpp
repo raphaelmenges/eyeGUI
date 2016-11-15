@@ -357,6 +357,7 @@ namespace eyegui
         // Go over paragraphs and draw single lines (pens are in local pixel coordinate system with origin in lower left corner of element)
         float yPixelPen = -lineHeight; // first line should be also inside flow and not on top
 		uint globalEntityCount = 0;
+		uint paragraphContentOffset = 0; // offset of content start in currently processed paragraph
 		for (uint paragraphIndex = 0; paragraphIndex < paragraphs.size(); paragraphIndex++)
 		{
 			// *** COLLECT ENTITIES FOR EACH PARAGRAPH ***
@@ -372,7 +373,7 @@ namespace eyegui
                 // Initialize entity
                 std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
                 spFlowEntity->mType = type;
-                spFlowEntity->mContentStartIndex = index;
+                spFlowEntity->mContentStartIndex = paragraphContentOffset + index;
                 spFlowEntity->mIndex = globalEntityCount;
 
                 switch(spFlowEntity->mType)
@@ -457,6 +458,12 @@ namespace eyegui
 
                 // One entity was added
                 globalEntityCount++;
+
+				// Update paragraph content offset at last iteration for this paragraph
+				if (index >= letterCount)
+				{
+					paragraphContentOffset += letterCount + 1; // plus one because \n is counted as letter but not saved in paragraph
+				}
 			}
 		}
 

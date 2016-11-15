@@ -1,10 +1,7 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
 
 ## New features
-- TextEdit element for easy text editing
 - Ring Container
-- InteractionLogging
-  - What to do with Sensors and penetration?
 
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
@@ -29,6 +26,7 @@
 - HelloWorld project crashes on my desktop computer (somewhere at pixel texture creation)
 - Ubuntu: Debug NanoSVG
 - Config file is not usable for one time setters because seems to have delayed read or so...
+- Two new line in text flow do not create empty line
 
 ## Wiki
 - Dictionary
