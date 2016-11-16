@@ -326,10 +326,10 @@ namespace eyegui
 			// Decide whether active entity has changed
 			if (!wpEntity.expired()) // found one is valid
 			{
-				// Check that entity is no space
+				// Check that entity is no whitespace
 				if (auto spEntity = wpEntity.lock())
 				{
-					if (spEntity->getType() != FlowEntity::Type::Space)
+					if (!spEntity->isWhitespace())
 					{
 						// Check whether currently active entity is valid
 						if (!mwpActiveEntity.expired()) // current one is valid
@@ -579,8 +579,8 @@ namespace eyegui
 							index++;
 							if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
 							{
-								// Check for non-space. Should overstep spaces
-								while (spEntity->getType() == FlowEntity::Type::Space)
+								// Check for non-whitespace. Should overstep that
+								while (spEntity->isWhitespace())
 								{
 									index++;
 									auto spNextEntity = mupTextFlow->getFlowEntity(index).lock();
@@ -640,8 +640,8 @@ namespace eyegui
 							index--;
 							if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
 							{
-								// Check for non-space. Should overstep spaces
-								while (spEntity->getType() == FlowEntity::Type::Space)
+								// Check for non-whitespace. Should overstep that
+								while (spEntity->isWhitespace())
 								{
 									index--;
 									auto spPreviousEntity = mupTextFlow->getFlowEntity(index).lock();

@@ -122,7 +122,7 @@ namespace eyegui
     public:
 
         // Enumeration of types
-        enum class Type { Word, Space, Mark };
+        enum class Type { Word, Space, Mark, NewLine };
 
         // Getter for type
         Type getType() const { return mType; }
@@ -132,6 +132,12 @@ namespace eyegui
 
         // Getter for index of flow entity within entities vector of text flow object
         uint getIndex() const { return mIndex; }
+
+		// Check whether flow entity represents whitespace
+		bool isWhitespace() const
+		{
+			return mType == Type::Space || mType == Type::NewLine;
+		}
 
 		// Getter for parts. Returns emtpy weak pointer at failure
 		std::weak_ptr<const FlowPart> getFlowPart(uint index) const
