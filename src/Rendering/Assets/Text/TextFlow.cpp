@@ -320,6 +320,9 @@ namespace eyegui
 		// Reset flow width to get longest line's width of this computation
 		mFlowWidth = 0;		
 
+		// Clear entity vector
+		mFlowEntities.clear();
+
         // Get size of space character
 		mPixelOfSpace = 0;
         Glyph const * pGlyph = mpFont->getGlyph(mFontSize, u' ');
@@ -334,429 +337,406 @@ namespace eyegui
 			mPixelOfSpace = mScale * pGlyph->advance.x;
         }
 
-		// *** COLLECT PARAGRAPHS ***
-
-        // Get pararaphs separated by \n
-        std::vector<std::u16string> paragraphs;
-        std::u16string paragraphDelimiter = u"\n";
-
-        // Seperate into paragraphs
-		std::size_t start = 0, end = 0;
-		while ((end = streamlinedContent.find(paragraphDelimiter, start)) != std::string::npos) {
-			paragraphs.push_back(streamlinedContent.substr(start, end - start) + u"\n"); // add new line sign for processing at end of paragraph when another paragraph is following
-			start = end + 1;
-		}
-		paragraphs.push_back(streamlinedContent.substr(start));
-
         // Do not generate text flow mesh when there is a failure
         bool failure = false;
 
-		// Save entities per paragraph and merge later to complete vector saved in members
-        std::vector<std::vector<std::shared_ptr<FlowEntity> > > entities(paragraphs.size());
-
         // Go over paragraphs and draw single lines (pens are in local pixel coordinate system with origin in lower left corner of element)
         float yPixelPen = -lineHeight; // first line should be also inside flow and not on top
-		uint globalEntityCount = 0;
-		uint paragraphContentOffset = 0; // offset of content start in currently processed paragraph
-		for (uint paragraphIndex = 0; paragraphIndex < paragraphs.size(); paragraphIndex++)
+
+		// *** COLLECT ENTITIES REPRESENTING TEXT ***
+
+		// Get entities out of paragraph
+        uint letterCount = streamlinedContent.size();
+        uint index = 0;
+        while(index < letterCount)
 		{
-			// *** COLLECT ENTITIES FOR EACH PARAGRAPH ***
+            // Determine type
+            FlowEntity::Type type = classifyLetter(streamlinedContent.at(index));
 
-			// Get entities out of paragraph
-            uint letterCount = (uint)paragraphs.at(paragraphIndex).size();
-            uint index = 0;
-            while(index < letterCount)
-			{
-                // Determine type
-                FlowEntity::Type type = classifyLetter(paragraphs.at(paragraphIndex).at(index));
+            // Initialize entity
+            std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
+            spFlowEntity->mType = type;
+            spFlowEntity->mContentStartIndex = index;
+            spFlowEntity->mIndex = streamlinedContent.size();
 
-                // Initialize entity
-                std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
-                spFlowEntity->mType = type;
-                spFlowEntity->mContentStartIndex = paragraphContentOffset + index;
-                spFlowEntity->mIndex = globalEntityCount;
-
-                switch(spFlowEntity->mType)
+            switch(spFlowEntity->mType)
+            {
+            case FlowEntity::Type::Space:
+            {              
+                // Determine end index of word in content
+                uint endIndex = index;
+                while (
+                    endIndex < letterCount - 1
+                    && classifyLetter(streamlinedContent.at(endIndex + 1))
+                        == FlowEntity::Type::Space)
                 {
-                case FlowEntity::Type::Space:
-                {              
-                    // Determine end index of word in content
-                    uint endIndex = index;
-                    while (
-                        endIndex < letterCount - 1
-                        && classifyLetter(paragraphs.at(paragraphIndex).at(endIndex + 1))
-                            == FlowEntity::Type::Space)
-                    {
-                        endIndex++;
-                    }
-
-                    // Add flow part for each space
-                    for(uint i = index; i <= endIndex; i++)
-                    {
-                        std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-                        upFlowPart->mPixelWidth = mPixelOfSpace; // just initial value, is updated later in this method
-                        spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
-                    }
-
-                    // Go further
-                    index = endIndex + 1;
+                    endIndex++;
                 }
-                break;
 
-				case FlowEntity::Type::NewLine:
-				{
-					// Add empty flow part for the new line
-					std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-					upFlowPart->mPixelWidth = 0;
-					spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
-
-					// Go one letter further
-					index++;
-				}
-				break;
-
-                case FlowEntity::Type::Mark:
+                // Add flow part for each space
+                for(uint i = index; i <= endIndex; i++)
                 {
-                    // Add one flow part for the mark
                     std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-                    upFlowPart->mupWord = std::unique_ptr<RenderWord>(
-                        new RenderWord(calculateWord(paragraphs.at(paragraphIndex).at(index), mScale)));
+                    upFlowPart->mPixelWidth = mPixelOfSpace; // just initial value, is updated later in this method
                     spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
-
-                    // Go one letter further
-                    index++;
-                }
-                break;
-
-                case FlowEntity::Type::Word:
-                {
-                    // Determine end index of word in content
-                    uint endIndex = index;
-                    while (
-                        endIndex < letterCount - 1
-                        && classifyLetter(paragraphs.at(paragraphIndex).at(endIndex + 1))
-                            == FlowEntity::Type::Word)
-                    {
-                        endIndex++;
-                    }
-
-                    // Create vector of fitting words
-                    std::vector<RenderWord> fitWords;
-                    failure |= !insertFitWord(fitWords, paragraphs.at(paragraphIndex).substr(index, (endIndex - index) + 1), mWidth, mScale);
-
-                    // Create flow parts words using fit words
-                    for (const auto& rFitWord : fitWords)
-                    {                       
-                        std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-                        upFlowPart->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
-                        spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
-                    }
-
-                    // Go further
-                    index = endIndex + 1;
-                }
-                break;
-
-                default:
-                {
-                    throwWarning(OperationNotifier::Operation::BUG, "Flow entity type unknown");
-                    failure |= true;
                 }
 
-                }
+                // Go further
+                index = endIndex + 1;
+            }
+            break;
 
-                // Push back created entity
-                entities[paragraphIndex].push_back(std::move(spFlowEntity));
+			case FlowEntity::Type::NewLine:
+			{
+				// Add empty flow part for the new line
+				std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
+				upFlowPart->mPixelWidth = 0;
+				spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
 
-                // One entity was added
-                globalEntityCount++;
+				// Go one letter further
+				index++;
 			}
+			break;
 
-			// Update content offset of next paragraph
-			paragraphContentOffset += letterCount + 1; // plus one because \n is counted as letter but not saved in paragraph
+            case FlowEntity::Type::Mark:
+            {
+                // Add one flow part for the mark
+                std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
+                upFlowPart->mupWord = std::unique_ptr<RenderWord>(
+                    new RenderWord(calculateWord(streamlinedContent.at(index), mScale)));
+                spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
+
+                // Go one letter further
+                index++;
+            }
+            break;
+
+            case FlowEntity::Type::Word:
+            {
+                // Determine end index of word in content
+                uint endIndex = index;
+                while (
+                    endIndex < letterCount - 1
+                    && classifyLetter(streamlinedContent.at(endIndex + 1))
+                        == FlowEntity::Type::Word)
+                {
+                    endIndex++;
+                }
+
+                // Create vector of fitting words
+                std::vector<RenderWord> fitWords;
+                failure |= !insertFitWord(fitWords, streamlinedContent.substr(index, (endIndex - index) + 1), mWidth, mScale);
+
+                // Create flow parts words using fit words
+                for (const auto& rFitWord : fitWords)
+                {                       
+                    std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
+                    upFlowPart->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
+                    spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
+                }
+
+                // Go further
+                index = endIndex + 1;
+            }
+            break;
+
+            default:
+            {
+                throwWarning(OperationNotifier::Operation::BUG, "Flow entity type unknown");
+                failure |= true;
+            }
+
+            }
+
+            // Push back created entity
+            mFlowEntities.push_back(std::move(spFlowEntity));
 		}
 
 		if (!failure)
 		{
-            // *** FILL LINES OF ALL PARAGRAPHS AND DRAW THEM ***
+            // *** SETUP LINES OF PARAGRAPH ***
 
-			// Go over paragraphs
-			for (uint paragraphIndex = 0; paragraphIndex < entities.size(); paragraphIndex++)
+			// Currently processed entity
+			uint entityIndex = 0;
+
+            // Save index of flow part to draw at front of line
+            uint initialFlowPartIndex = 0;
+
+            // Save index of flow part to draw at end of line
+            uint endFlowPartIndex = 0;
+
+            // Save index of next flow part which has to be drawn in next line
+            uint nextFlowPartIndex = 0;
+
+            // Bool which indicates whether there are still entities to draw left
+			bool hasNext = !mFlowEntities.empty();
+
+            // Remember previous filled entity to save position of first flow part of flow entity later at drawing
+            FlowEntity const * pPreviousFilledEntity = nullptr;
+
+			// Go over lines
+			while (
+				hasNext // entities left for new line
+				&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
 			{
-                // *** SETUP LINES OF PARAGRAPH ***
+                // Initial flow part index for line
+                initialFlowPartIndex = nextFlowPartIndex;
 
-				// Currently processed entity within paragraph
-				uint entityIndex = 0;
+				// Pixel width of current line
+				float lineWidth = 0;
 
-                // Save index of flow part to draw at front of line
-                uint initialFlowPartIndex = 0;
+				// Pointer to entities in line
+                std::vector<std::shared_ptr<FlowEntity> > line;
 
-                // Save index of flow part to draw at end of line
-                uint endFlowPartIndex = 0;
+				// Indicator whether is still room for more in the current line
+                bool spaceLeft = lineWidth < mWidth;
 
-                // Save index of next flow part which has to be drawn in next line
-                uint nextFlowPartIndex = 0;
+                // Space flow part count for line
+                uint spaceFlowPartCount = 0;
 
-                // Bool which indicates whether there are still entities to draw left
-				bool hasNext = !entities[paragraphIndex].empty();
+				// Mark for end of paragraph. A new line is then started
+				bool endOfParagraph = false;
 
-                // Remember previous filled entity to save position of first flow part of flow entity later at drawing
-                FlowEntity const * pPreviousFilledEntity = nullptr;
+                // *** SETUP SINGLE LINE ***
 
-				// Go over lines
+                // Go over entities to build up line
 				while (
-					hasNext // entities left for new line
-					&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
+					hasNext // entities left to draw into that line
+					&& spaceLeft // whether space is available within line
+					&& !endOfParagraph) // stop single line when end of paragraph reached
 				{
-                    // Initial flow part index for line
-                    initialFlowPartIndex = nextFlowPartIndex;
+                    // Whether to add entity to line or not
+                    bool addEntityToLine = false;
 
-					// Pixel width of current line
-					float lineWidth = 0;
+                    // Save index of currently processed entity's index
+                    uint currentEntityIndex = entityIndex;
 
-					// Pointer to entities in line
-                    std::vector<std::shared_ptr<FlowEntity> > line;
+                    // Fetch pointer to flow entity
+                    std::shared_ptr<FlowEntity> spFlowEntity = mFlowEntities.at(currentEntityIndex);
 
-					// Indicator whether is still room for more in the current line
-                    bool spaceLeft = lineWidth < mWidth;
-
-                    // Space flow part count for line
-                    uint spaceFlowPartCount = 0;
-
-                    // *** SETUP SINGLE LINES OF PARAGRAPH ***
-
-                    // Go over entities to build up line
-					while (
-						hasNext // entities left to draw into that line
-						&& spaceLeft) // whether space is available within line
+					// Check for new line
+					if (spFlowEntity->getType() == FlowEntity::Type::NewLine)
 					{
-                        // Whether to add entity to line or not
-                        bool addEntityToLine = false;
-
-                        // Save index of currently processed entity's index
-                        uint currentEntityIndex = entityIndex;
-
-                        // Fetch pointer to flow entity
-                        std::shared_ptr<FlowEntity> spFlowEntity = entities[paragraphIndex].at(currentEntityIndex);
-
-                        // Count of flow parts
-                        uint flowPartCount = spFlowEntity->getFlowPartCount();
-
-                        // Get index of flow part to start with
-                        uint flowPartIndex = line.empty() ? initialFlowPartIndex : 0;
-
-                        // Go over parts and check for each whether fits into line
-                        while (
-                            flowPartIndex < flowPartCount // still within entity
-                            && (lineWidth +
-                                spFlowEntity->mFlowParts.at(flowPartIndex)
-                                    ->getPixelWidth()) <= mWidth) // still space left
-                        {
-                            // New line width including flow part
-                            float newLineWidth = lineWidth + spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
-
-                            // If currently processed entity is a word and next entity is a mark and both would not fit
-                            // into current line, start next line
-                            if(spFlowEntity->getType() == FlowEntity::Type::Word // is word
-                                && entityIndex + 1 < entities[paragraphIndex].size() // there is next entity
-                                && entities[paragraphIndex].at(entityIndex + 1)->getType() == FlowEntity::Type::Mark // next entity would be a mark
-                                && newLineWidth + entities[paragraphIndex].at(entityIndex + 1)->getPixelWidth() > mWidth // mark would not fit in same line
-                                && !line.empty()) // word would be not alone in line. If alone in line and shifted to next, infinite loop would happen
-                            {
-                                // Do break to start again in next line
-                                break;
-                            }
-                            //else
-                            {
-                                addEntityToLine = true; // remember to add entity to line but only one time
-                                lineWidth = newLineWidth;
-                                endFlowPartIndex = flowPartIndex;
-                                flowPartIndex++;
-                            }
-
-                            // Spaces must be remembered
-                            if(spFlowEntity->getType() == FlowEntity::Type::Space)
-                            {
-                                spaceFlowPartCount++;
-                            }
-                        }
-
-                        // Check whether complete block of text is drawn or some flow part is left
-                        if(flowPartIndex == flowPartCount)
-                        {
-                            // Complete block drawn
-                            nextFlowPartIndex = 0;
-                            entityIndex++;
-                        }
-                        else
-                        {
-                            // Flow parts in block are left
-                            nextFlowPartIndex = flowPartIndex;
-                            spaceLeft = false;
-                        }
-
-                        // Add entity to line since at least something of it is drawn
-                        if (addEntityToLine) { line.push_back(spFlowEntity); }
-
-                        // Check whether there are entities left
-                        hasNext = entityIndex < entities[paragraphIndex].size();
+						endOfParagraph = true;
+						addEntityToLine = true;
+						entityIndex++;
 					}
-
-                    // Remember longest line's width
-                    mFlowWidth = mFlowWidth < (int)glm::ceil(lineWidth) ? (int)glm::ceil(lineWidth) : mFlowWidth;
-
-					// *** PREPARE DRAWING ***
-
-                    // Get rid of spaces in front and end of line by collapsing them
-                    uint collapsedSpaceFlowPartCount = 0;
-
-					// Collapse spaces only when indicated
-					if (mCollapseSpaces)
+					
+					// Only proceed with processing if no new line sign has occured
+					if (!endOfParagraph)
 					{
-						// Front of line
-						if (line.front()->getType() == FlowEntity::Type::Space)
+						// Count of flow parts
+						uint flowPartCount = spFlowEntity->getFlowPartCount();
+
+						// Get index of flow part to start with
+						uint flowPartIndex = line.empty() ? initialFlowPartIndex : 0;
+
+						// Go over parts and check for each whether fits into line
+						while (
+							flowPartIndex < flowPartCount // still within entity
+							&& (lineWidth +
+								spFlowEntity->mFlowParts.at(flowPartIndex)
+								->getPixelWidth()) <= mWidth) // still space left
 						{
-							uint flowPartCount = line.size() == 1 ? endFlowPartIndex + 1 : line.front()->getFlowPartCount();
-							uint flowPartIndex = initialFlowPartIndex;
-							for (; flowPartIndex < flowPartCount; flowPartIndex++)
+							// New line width including flow part
+							float newLineWidth = lineWidth + spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+
+							// If currently processed entity is a word and next entity is a mark and both would not fit
+							// into current line, start next line
+							if (spFlowEntity->getType() == FlowEntity::Type::Word // is word
+								&& entityIndex + 1 < mFlowEntities.size() // there is next entity
+								&& mFlowEntities.at(entityIndex + 1)->getType() == FlowEntity::Type::Mark // next entity would be a mark
+								&& newLineWidth + mFlowEntities.at(entityIndex + 1)->getPixelWidth() > mWidth // mark would not fit in same line
+								&& !line.empty()) // word would be not alone in line. If alone in line and shifted to next, infinite loop would happen
 							{
-								line.front()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
-								collapsedSpaceFlowPartCount++;
+								// Do break to start again in next line
+								break;
+							}
+							//else
+							{
+								addEntityToLine = true; // remember to add entity to line but only one time
+								lineWidth = newLineWidth;
+								endFlowPartIndex = flowPartIndex;
+								flowPartIndex++;
+							}
+
+							// Spaces must be remembered
+							if (spFlowEntity->getType() == FlowEntity::Type::Space)
+							{
+								spaceFlowPartCount++;
 							}
 						}
 
-						// End of line
-						if (line.size() > 1 && line.back()->getType() == FlowEntity::Type::Space)
+						// Check whether complete block of text is drawn or some flow part is left
+						if (flowPartIndex == flowPartCount)
 						{
-							uint flowPartCount = endFlowPartIndex + 1;
-							uint flowPartIndex = line.size() == 1 ? initialFlowPartIndex : 0;
-							for (; flowPartIndex < flowPartCount; flowPartIndex++)
-							{
-								line.back()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
-								collapsedSpaceFlowPartCount++;
-							}
+							// Complete block drawn
+							nextFlowPartIndex = 0;
+							entityIndex++;
+						}
+						else
+						{
+							// Flow parts in block are left
+							nextFlowPartIndex = flowPartIndex;
+							spaceLeft = false;
 						}
 					}
 
-                    // Width of non space only
-                    float nonSpaceWidth = lineWidth - (spaceFlowPartCount * mPixelOfSpace);
+                    // Add entity to line since at least some flow parts of it is drawn
+                    if (addEntityToLine) { line.push_back(spFlowEntity); }
 
-                    // Count of space entities which are actually drawn
-                    float drawnSpaceFlowPartCount = (float)(spaceFlowPartCount - collapsedSpaceFlowPartCount);
+                    // Check whether there are entities left
+                    hasNext = entityIndex < mFlowEntities.size();
+				}
 
-                    // Decide dynamic space for line
-					float dynamicSpace = mPixelOfSpace;
-					if (
-						mAlignment == TextFlowAlignment::JUSTIFY
-						&& hasNext // do not use dynamic space for last line
-						&& line.size() > 1) // do not use dynamic space when there is only one word
+                // Remember longest line's width
+                mFlowWidth = mFlowWidth < (int)glm::ceil(lineWidth) ? (int)glm::ceil(lineWidth) : mFlowWidth;
+
+				// *** PREPARE DRAWING ***
+
+                // Get rid of spaces in front and end of line by collapsing them
+                uint collapsedSpaceFlowPartCount = 0;
+
+				// Collapse spaces only when indicated
+				if (mCollapseSpaces)
+				{
+					// Front of line
+					if (line.front()->getType() == FlowEntity::Type::Space)
 					{
-                        dynamicSpace = ((float)mWidth - nonSpaceWidth) / drawnSpaceFlowPartCount;
-					}
-
-                    // Calculate the new line width
-                    float newLineWidth = nonSpaceWidth + (drawnSpaceFlowPartCount * dynamicSpace);
-
-					// Now decide xOffset for line
-					float xOffset = 0;
-					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
-					{
-                        xOffset = (float)mWidth - newLineWidth;
-						if (mAlignment == TextFlowAlignment::CENTER)
+						uint flowPartCount = line.size() == 1 ? endFlowPartIndex + 1 : line.front()->getFlowPartCount();
+						uint flowPartIndex = initialFlowPartIndex;
+						for (; flowPartIndex < flowPartCount; flowPartIndex++)
 						{
-							xOffset /= 2.0f;
+							line.front()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
+							collapsedSpaceFlowPartCount++;
 						}
 					}
 
-					// *** DRAW LINE ***
-
-                    // Integrate entities' geometry to renderable mesh structure
-					float xPixelPen = xOffset;
-                    for (uint lineIndex = 0; lineIndex < line.size(); lineIndex++)
+					// End of line
+					if (line.size() > 1 && line.back()->getType() == FlowEntity::Type::Space)
 					{
-                        // Fetch pointer to currently drawn entity
-                        std::shared_ptr<FlowEntity> spFlowEntity = line.at(lineIndex);
-
-                        // Fill position
-                        if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only one, so equal to first part's
-                        {
-                            spFlowEntity->mX = (int)xPixelPen;
-                            spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
-                        } 
-
-                        // Go over flow parts which are in line
-                        uint flowPartCount = lineIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(lineIndex)->getFlowPartCount();
-                        uint flowPartIndex = lineIndex == 0 ? initialFlowPartIndex : 0;
-                        for (; flowPartIndex < flowPartCount; flowPartIndex++)
-                        {
-                            if(spFlowEntity->getType() == FlowEntity::Type::Space) // space
-                            {
-                                // Set pixel with of space flow part as fallback
-                                if(spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
-                                {
-                                    spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
-                                }
-                                else
-                                {
-                                    spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
-                                }
-                            }
-							else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
-							{
-								// do nothing here
-							}
-                            else // word or mark
-                            {
-                                // Draw word of flow part
-                                if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupWord != nullptr)
-                                {
-                                    const auto* pWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupWord.get();
-
-                                    // Push back positions and texture coordinates
-                                    for (uint i = 0; i < pWord->spVertices->size(); i++)
-                                    {
-                                        const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
-                                        rVertices.push_back(
-                                            std::make_pair(
-                                                glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
-                                                glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
-                                    }
-                                }
-                                else
-                                {
-                                    throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
-                                    failure |= true;
-                                }
-                            }
-
-							// Save position in flow part
-							spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-							spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
-
-                            // Advance xPen
-                            xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
-
-                        } // end of flow part iteration
-
-                        // Update previous filled entity
-                        pPreviousFilledEntity = spFlowEntity.get();
-
-                    } // end of line
-
-					// Advance yPen if there is a next line
-					if (hasNext)
-					{
-						yPixelPen -= lineHeight;
+						uint flowPartCount = endFlowPartIndex + 1;
+						uint flowPartIndex = line.size() == 1 ? initialFlowPartIndex : 0;
+						for (; flowPartIndex < flowPartCount; flowPartIndex++)
+						{
+							line.back()->mFlowParts.at(flowPartIndex)->mCollapsed = true;
+							collapsedSpaceFlowPartCount++;
+						}
 					}
+				}
 
-                } // end of paragraph
+                // Width of non space only
+                float nonSpaceWidth = lineWidth - (spaceFlowPartCount * mPixelOfSpace);
 
-				// If there are paragraphs left, move yPen by one line
-				if ((int)paragraphIndex < (int)entities.size() - 1)
+                // Count of space entities which are actually drawn
+                float drawnSpaceFlowPartCount = (float)(spaceFlowPartCount - collapsedSpaceFlowPartCount);
+
+                // Decide dynamic space for line
+				float dynamicSpace = mPixelOfSpace;
+				if (
+					mAlignment == TextFlowAlignment::JUSTIFY
+					&& hasNext // do not use dynamic space for last line
+					&& line.size() > 1) // do not use dynamic space when there is only one word
+				{
+                    dynamicSpace = ((float)mWidth - nonSpaceWidth) / drawnSpaceFlowPartCount;
+				}
+
+                // Calculate the new line width
+                float newLineWidth = nonSpaceWidth + (drawnSpaceFlowPartCount * dynamicSpace);
+
+				// Now decide xOffset for line
+				float xOffset = 0;
+				if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+				{
+                    xOffset = (float)mWidth - newLineWidth;
+					if (mAlignment == TextFlowAlignment::CENTER)
+					{
+						xOffset /= 2.0f;
+					}
+				}
+
+				// *** DRAW LINE ***
+
+                // Integrate entities' geometry to renderable mesh structure
+				float xPixelPen = xOffset;
+                for (uint lineIndex = 0; lineIndex < line.size(); lineIndex++)
+				{
+                    // Fetch pointer to currently drawn entity
+                    std::shared_ptr<FlowEntity> spFlowEntity = line.at(lineIndex);
+
+                    // Fill position
+                    if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only one, so equal to first part's
+                    {
+                        spFlowEntity->mX = (int)xPixelPen;
+                        spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                    } 
+
+                    // Go over flow parts which are in line
+                    uint flowPartCount = lineIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(lineIndex)->getFlowPartCount();
+                    uint flowPartIndex = lineIndex == 0 ? initialFlowPartIndex : 0;
+                    for (; flowPartIndex < flowPartCount; flowPartIndex++)
+                    {
+                        if(spFlowEntity->getType() == FlowEntity::Type::Space) // space
+                        {
+                            // Set pixel with of space flow part as fallback
+                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
+                            {
+                                spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
+                            }
+                            else
+                            {
+                                spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
+                            }
+                        }
+						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
+						{
+							// Nothing to do here
+						}
+                        else // word or mark
+                        {
+                            // Draw word of flow part
+                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupWord != nullptr)
+                            {
+                                const auto* pWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupWord.get();
+
+                                // Push back positions and texture coordinates
+                                for (uint i = 0; i < pWord->spVertices->size(); i++)
+                                {
+                                    const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
+                                    rVertices.push_back(
+                                        std::make_pair(
+                                            glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
+                                            glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
+                                }
+                            }
+                            else
+                            {
+                                throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
+                                failure |= true;
+                            }
+                        }
+
+						// Save position in flow part
+						spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
+						spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+
+                        // Advance xPen
+                        xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+
+                    } // end of flow part iteration
+
+                    // Update previous filled entity
+                    pPreviousFilledEntity = spFlowEntity.get();
+
+                } // end of line
+
+				// Advance yPen if there is a next line
+				if (hasNext)
 				{
 					yPixelPen -= lineHeight;
 				}
-			}
+
+            } // end of paragraph
         }
 
         // If failure appeared, clean up
@@ -772,15 +752,6 @@ namespace eyegui
 		{
 			// Get height of all lines
 			mFlowHeight = (int)glm::abs(yPixelPen);
-
-			// Transfer all entities to member
-			mFlowEntities.clear();
-			for (auto& entitiesOfParagraph : entities)
-			{
-				mFlowEntities.insert(mFlowEntities.end(),
-					std::make_move_iterator(entitiesOfParagraph.begin()),
-					std::make_move_iterator(entitiesOfParagraph.end()));
-			}	
 		}
     }
 
