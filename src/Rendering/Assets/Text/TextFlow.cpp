@@ -340,12 +340,12 @@ namespace eyegui
         // Do not generate text flow mesh when there is a failure
         bool failure = false;
 
-        // Go over paragraphs and draw single lines (pens are in local pixel coordinate system with origin in lower left corner of element)
+        // Go over lines and draw single ones (pens are in local pixel coordinate system with origin in lower left corner of element)
         float yPixelPen = -lineHeight; // first line should be also inside flow and not on top
 
 		// *** COLLECT ENTITIES REPRESENTING TEXT ***
 
-		// Get entities out of paragraph
+        // Get entities out of content
         uint letterCount = streamlinedContent.size();
         uint index = 0;
         while(index < letterCount)
@@ -454,7 +454,7 @@ namespace eyegui
 
 		if (!failure)
 		{
-            // *** SETUP LINES OF PARAGRAPH ***
+            // *** SETUP LINES ***
 
 			// Currently processed entity
 			uint entityIndex = 0;
@@ -679,10 +679,16 @@ namespace eyegui
                             {
                                 spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
                             }
+
+                            // Save position in flow part
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
                         }
 						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
 						{
-							// Nothing to do here
+                            // Save position in flow part (different from other entities!)
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xOffset;
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen- lineHeight) - lineHeight));
 						}
                         else // word or mark
                         {
@@ -706,11 +712,11 @@ namespace eyegui
                                 throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
                                 failure |= true;
                             }
-                        }
 
-						// Save position in flow part
-						spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-						spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                            // Save position in flow part
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                        }
 
                         // Advance xPen
                         xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
@@ -728,7 +734,7 @@ namespace eyegui
 					yPixelPen -= lineHeight;
 				}
 
-            } // end of paragraph
+            } // end of lines
         }
 
         // If failure appeared, clean up
