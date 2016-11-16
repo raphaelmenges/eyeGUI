@@ -215,7 +215,7 @@ namespace eyegui
                 }
 
                 // For last element, decide to add pixel if something is left
-                if(i == mChildren.size()-1 && accStep > 0)
+                if(i == (int)mChildren.size()-1 && accStep > 0)
                 {
                     elemWidths[i] += 1;
                 }
@@ -354,7 +354,7 @@ namespace eyegui
                 }
 
                 // For last element, decide to add pixel if something is left
-                if(i == mChildren.size()-1 && accStep > 0)
+                if(i == (int)mChildren.size()-1 && accStep > 0)
                 {
                     elemHeights[i] += 1;
                 }

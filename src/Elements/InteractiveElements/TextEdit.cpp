@@ -567,7 +567,7 @@ namespace eyegui
 					if (letterIndex >= (int)spFlowPart->getLetterCount()) // exceeds letter count and has to move in front of next flow part or entity
 					{
 						// Try for next flow part
-						if (flowPartIndex < (int)spActiveEntity->getFlowPartCount() - 1) // there is another flow part
+                        if ((int)flowPartIndex < (int)spActiveEntity->getFlowPartCount() - 1) // there is another flow part
 						{
 							mCursorFlowPartIndex = flowPartIndex + 1;
 							mCursorLetterIndex = -1; // front of flow part

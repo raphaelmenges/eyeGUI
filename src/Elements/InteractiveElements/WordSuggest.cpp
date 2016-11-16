@@ -329,7 +329,7 @@ namespace eyegui
         // Find suggestion with value most close to threshold
         int maxIndex = -1;
         float maxValue = -1.f;
-        for (int i = 0; i < mThresholds.size(); i++)
+        for (int i = 0; i < (int)mThresholds.size(); i++)
         {
             float value = mThresholds.at(i).getValue();
             if (value > maxValue)
