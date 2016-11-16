@@ -98,7 +98,7 @@ namespace eyegui
 				mX + xOffset,
 				mpGUI->getWindowHeight() - (mY + yAlignmentOffset) + yOffset,
 				0)); // Change coordinate system and translate to position
-		matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // Pixel to world space
+		matrix = glm::ortho(0.0f, (float)(mpGUI->getWindowWidth() - 1), 0.0f, (float)(mpGUI->getWindowHeight() - 1)) * matrix; // pixel to world space
 
 		// Draw background
 		if (renderBackground)
@@ -754,8 +754,8 @@ namespace eyegui
         }
 		else
 		{
-			// Get height of all lines (yPixelPen is one line to low now)
-			mFlowHeight = (int)std::max(std::ceil(abs(yPixelPen) - lineHeight), 0.0f);
+			// Get height of all lines
+			mFlowHeight = (int)glm::abs(yPixelPen);
 
 			// Transfer all entities to member
 			mFlowEntities.clear();
