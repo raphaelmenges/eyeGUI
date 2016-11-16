@@ -343,7 +343,7 @@ namespace eyegui
         // Seperate into paragraphs
 		std::size_t start = 0, end = 0;
 		while ((end = streamlinedContent.find(paragraphDelimiter, start)) != std::string::npos) {
-			paragraphs.push_back(streamlinedContent.substr(start, end - start));
+			paragraphs.push_back(streamlinedContent.substr(start, end - start) + u"\n"); // add new line sign for processing at end of paragraph when another paragraph is following
 			start = end + 1;
 		}
 		paragraphs.push_back(streamlinedContent.substr(start));
@@ -402,6 +402,18 @@ namespace eyegui
                     index = endIndex + 1;
                 }
                 break;
+
+				case FlowEntity::Type::NewLine:
+				{
+					// Add empty flow part for the new line
+					std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
+					upFlowPart->mPixelWidth = 0;
+					spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
+
+					// Go one letter further
+					index++;
+				}
+				break;
 
                 case FlowEntity::Type::Mark:
                 {
@@ -677,7 +689,7 @@ namespace eyegui
                         uint flowPartIndex = lineIndex == 0 ? initialFlowPartIndex : 0;
                         for (; flowPartIndex < flowPartCount; flowPartIndex++)
                         {
-                            if(spFlowEntity->getType() == FlowEntity::Type::Space)
+                            if(spFlowEntity->getType() == FlowEntity::Type::Space) // space
                             {
                                 // Set pixel with of space flow part as fallback
                                 if(spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
@@ -689,7 +701,11 @@ namespace eyegui
                                     spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
                                 }
                             }
-                            else
+							else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
+							{
+								// do nothing here
+							}
+                            else // word or mark
                             {
                                 // Draw word of flow part
                                 if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupWord != nullptr)
@@ -837,19 +853,20 @@ namespace eyegui
     {
         switch(rLetter)
         {
-            case u' ': return FlowEntity::Type::Space;
-            case u'.': return FlowEntity::Type::Mark;
-            case u':': return FlowEntity::Type::Mark;
-            case u',': return FlowEntity::Type::Mark;
-            case u';': return FlowEntity::Type::Mark;
-            case u'-': return FlowEntity::Type::Mark;
-            case u'_': return FlowEntity::Type::Mark;
-            case u'?': return FlowEntity::Type::Mark;
-            case u'!': return FlowEntity::Type::Mark;
-            case u'/': return FlowEntity::Type::Mark;
-            case u'\\': return FlowEntity::Type::Mark;
-            case u'"': return FlowEntity::Type::Mark;
-            default: return FlowEntity::Type::Word;
+            case u' '	: return FlowEntity::Type::Space;
+			case u'\n'	: return FlowEntity::Type::NewLine;
+            case u'.'	: return FlowEntity::Type::Mark;
+            case u':'	: return FlowEntity::Type::Mark;
+            case u','	: return FlowEntity::Type::Mark;
+            case u';'	: return FlowEntity::Type::Mark;
+            case u'-'	: return FlowEntity::Type::Mark;
+            case u'_'	: return FlowEntity::Type::Mark;
+            case u'?'	: return FlowEntity::Type::Mark;
+            case u'!'	: return FlowEntity::Type::Mark;
+            case u'/'	: return FlowEntity::Type::Mark;
+            case u'\\'	: return FlowEntity::Type::Mark;
+            case u'"'	: return FlowEntity::Type::Mark;
+            default		: return FlowEntity::Type::Word;
         }
     }
 }
