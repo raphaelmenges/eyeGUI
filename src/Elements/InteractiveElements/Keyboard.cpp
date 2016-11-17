@@ -138,7 +138,7 @@ namespace eyegui
         // Not that important parameters
         float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
         float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
-        float PRESSED_KEY_SCALING_MULTIPLIER = 2f; // Just animation scale of pressed key which is moving and fading towards user
+        float PRESSED_KEY_SCALING_MULTIPLIER = 2.f; // Just animation scale of pressed key which is moving and fading towards user
         float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of zoom after pressing
         float ZOOM_DECREASE_DURATION = 1.f; // General decrease duration of zoom if no gaze is upon element
         float FOCUS_RADIUS = 3.5f; // Radius of gaze affected keys (in the center bigger, else smaller). Normalized by standard key size
