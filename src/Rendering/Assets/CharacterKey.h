@@ -40,7 +40,6 @@ namespace eyegui
             glm::vec4 pickColor,
             glm::vec4 iconColor,
 			glm::vec4 thresholdColor,
-			float threshold,
             float alpha) const;
 
         // Get value

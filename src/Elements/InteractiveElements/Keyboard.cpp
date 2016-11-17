@@ -12,9 +12,6 @@
 #include "src/Layout.h"
 #include "src/Rendering/ScissorStack.h"
 
-#include <iostream>
-
-
 namespace eyegui
 {
     Keyboard::Keyboard(
@@ -45,16 +42,9 @@ namespace eyegui
         mType = Type::KEYBOARD;
 
         // Initialize members
-        mThreshold.setValue(0);
-        mFocusedKeyRow = -1;
-        mFocusedKeyColumn = -1;
-        mKeyWasPressed = false;
         mCurrentKeymapIndex = 0;
         mBigCharactersActive = false;
-        mLastFastKeyRow = -1;
-        mLastFastKeyColumn = -1;
         mUseFastTyping = false;
-        mFastBuffer = u"";
 
         // Fetch render item for background
         mpBackground = mpAssetManager->fetchRenderItem(
@@ -111,7 +101,7 @@ namespace eyegui
 
     void Keyboard::setKeymap(uint keymapIndex)
     {
-        // Set keymap (must be bigger than zero because unsigned int used)
+        // Set keymap (must be positive because unsigned int used)
         if(keymapIndex >= getCountOfKeymaps())
         {
             throwWarning(
@@ -142,29 +132,27 @@ namespace eyegui
         // Radius stuff is given in key radii (since normalized with that value)
 
         // Some parameters which may or may not be defineable in config file
-        float GAZE_DELTA_WEIGHT_RADIUS = 1.0f; // Radius in which gaze has to be so that threshold is increased
-        float THRESHOLD_INCREASE_DURATION = 0.25f; // Duration of threshold to become one (depending very much on other parameters)
+        float GAZE_DELTA_WEIGHT_RADIUS = 1.0f; // Radius in which gaze has to be so that zoom is increased
+        float ZOOM_INCREASE_DURATION = 0.25f; // Duration of zoom to become one (depending very much on other parameters)
 
         // Not that important parameters
         float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
         float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
-        float PRESSED_KEY_SCALING_MULTIPLIER = 5.f; // Just animation scale of pressed key which is moving and fading towards user
-        float THRESHOLD_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of threshold after pressing
-        float THRESHOLD_DECREASE_DURATION = 1.f; // General decrease duration of threshold if no gaze is upon element
-        float FOCUS_RADIUS = 3.0f; // Radius of gaze affected keys (in the center bigger, else smaller)
-        float KEY_POSITION_DELTA_MULTIPLIER = 0.25f; // Delta position multiplier of keys in focus
-        float KEY_SIZE_DELTA_MULTIPLIER = 0.5f; // Delta size multiplier of keys in focus
-        float MINIMAL_KEY_SIZE = 0.75f; // Cap minimal key size for those in focus area
+        float PRESSED_KEY_SCALING_MULTIPLIER = 2f; // Just animation scale of pressed key which is moving and fading towards user
+        float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of zoom after pressing
+        float ZOOM_DECREASE_DURATION = 1.f; // General decrease duration of zoom if no gaze is upon element
+        float FOCUS_RADIUS = 3.5f; // Radius of gaze affected keys (in the center bigger, else smaller). Normalized by standard key size
+        float MINIMAL_KEY_SIZE = 0.5f; // Cap minimal key size for those in outer focus area
 
         // Some adjustments for fast typing
         if (mUseFastTyping)
         {
             GAZE_DELTA_WEIGHT_RADIUS *= 0.3f;
-            THRESHOLD_INCREASE_DURATION *= 1.5f;
+            ZOOM_INCREASE_DURATION *= 1.5f;
         }
 
         // Use speed multiplier
-        THRESHOLD_INCREASE_DURATION /= mpLayout->getConfig()->keyboardSpeedMultiplier;
+        ZOOM_INCREASE_DURATION /= mpLayout->getConfig()->keyboardZoomSpeedMultiplier;
 
         // *** SETUP ***
 
@@ -228,28 +216,28 @@ namespace eyegui
         float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, GAZE_DIRECT_USAGE_MULTIPLIER * tpf);
         mGazePosition += gazeFilter * rawGazeDelta;
 
-        // Use gaze delta as weight for threshold (is one if low delta in gaze)
+        // Use gaze delta as weight for zoom (is one if low delta in gaze)
         float gazeDelta = glm::abs(glm::length(rawGazeDelta)); // In pixels!
         float gazeDeltaWeight = 1.f - clamp(gazeDelta / (GAZE_DELTA_WEIGHT_RADIUS * initialKeySize), 0, 1); // Key size used for normalization
 
         // *** CHECK FOR PENETRATION ***
 
-        // Threshold (used to determine pressing a key)
-        if (mKeyWasPressed)
+        // Zoom
+        if (mKeyboardRecovers)
         {
-            mThreshold.update(-tpf / THRESHOLD_DECREASE_AFTER_PRESS_DURATION);
-            if (mThreshold.getValue() <= 0)
+            mZoom.update(-tpf / ZOOM_DECREASE_AFTER_PRESS_DURATION);
+            if (mZoom.getValue() <= 0)
             {
-                mKeyWasPressed = false;
+				mKeyboardRecovers = false;
             }
         }
         else if (penetrated)
         {
-            mThreshold.update((tpf * (gazeDeltaWeight - 0.8f)) / THRESHOLD_INCREASE_DURATION);
+			mZoom.update((tpf * (gazeDeltaWeight - 0.8f)) / ZOOM_INCREASE_DURATION);
         }
         else
         {
-            mThreshold.update(-tpf / THRESHOLD_DECREASE_DURATION);
+			mZoom.update(-tpf / ZOOM_DECREASE_DURATION);
         }
 
         // *** DETERMINE FOCUSED KEY ***
@@ -323,36 +311,38 @@ namespace eyegui
                 glm::vec2 positionDelta = (*pInitialKeyPositions)[i][j] - mGazePosition;
 
                 // Radius of focus
-                float focusWeight = 1.f - glm::length(positionDelta) / (FOCUS_RADIUS * initialKeySize); // Key size used for normalization
-                focusWeight = clamp(focusWeight, 0, 1);
+                float focusWeight = 1.f - glm::length(positionDelta) / (FOCUS_RADIUS * initialKeySize); // key size used for normalization
+                focusWeight = clamp(focusWeight, 0, 1); // so between zero and one
 
                 // Only near keys have to be moved
-                positionDelta *= focusWeight;
-                positionDelta *= KEY_POSITION_DELTA_MULTIPLIER;
+				positionDelta *= 0.4f; // scale position delta
+                positionDelta *= focusWeight; // only use it within focus
 
                 // Calculate delta of size
-                float sizeDelta = initialKeySize - glm::length((*pKeys)[i][j]->getPosition() - mGazePosition);
-                sizeDelta = (1.f - focusWeight) + sizeDelta * focusWeight;
-                sizeDelta = std::max(-(1.f - MINIMAL_KEY_SIZE) * initialKeySize, sizeDelta); // Subtracted from initial size
-                sizeDelta *= KEY_SIZE_DELTA_MULTIPLIER;
+				float sizeDelta = glm::length((*pKeys)[i][j]->getPosition() - mGazePosition);
+				sizeDelta /= initialKeySize; // normalize using key size
+				sizeDelta *= 25.f; // scale it (makes keys smaller later)
+				sizeDelta = -sizeDelta; // make outer keys smaller
+				sizeDelta += 0.65f * initialKeySize * glm::sin(0.5f * 3.14f * focusWeight); // make inner ones bigger
+				sizeDelta *= focusWeight; // only do all this around focus
 
-                // Weight with threshold
-                positionDelta *= mThreshold.getValue();
-                sizeDelta *= mThreshold.getValue();
+                // Weight with zoom
+                positionDelta *= mZoom.getValue();
+                sizeDelta *= mZoom.getValue();
 
                 // Calc stuff for key
                 int keyPositionX = (int)((*pInitialKeyPositions)[i][j].x + positionDelta.x);
                 int keyPositionY = (int)((*pInitialKeyPositions)[i][j].y + positionDelta.y);
-                int keySize = (int)(initialKeySize + sizeDelta);
+                int keySize = (int)(glm::max(MINIMAL_KEY_SIZE, initialKeySize + sizeDelta));
 
                 // Transform and size
                 (*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
 
                 // Updating
-                (*pKeys)[i][j]->update(tpf);
+                bool pressed = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated); // do not calculate penetration for each key but use one from elements
 
                 // Check for "key pressed"
-                if(!mKeyWasPressed && mThreshold.getValue() >= 1.f && (*pKeys)[i][j]->isFocused())
+                if(pressed) // && (*pKeys)[i][j]->isFocused())
                 {
                     // Check, whether gaze is really on focused key
                     /*
@@ -413,7 +403,7 @@ namespace eyegui
                     getStyle()->pickColor,
                     getStyle()->iconColor,
                     getStyle()->thresholdColor,
-                    mThreshold.getValue() * rupKey->getFocusValue(),
+                    // mThreshold.getValue() * rupKey->getFocusValue(),
                     getMultipliedDimmedAlpha());
             }
         }
@@ -426,7 +416,6 @@ namespace eyegui
                 getStyle()->pickColor,
                 getStyle()->iconColor,
                 getStyle()->thresholdColor,
-                0,
                 getMultipliedDimmedAlpha() * rPressedKey.first);
         }
 
@@ -519,7 +508,7 @@ namespace eyegui
 
     void Keyboard::specialInteract()
     {
-        // Either currently focused or the one with highest combination of focus and threshold...first idea used here
+        // Either currently focused or the one with highest combination of focus and zoom...first idea used here
         if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
         {
             if (mBigCharactersActive)
@@ -661,8 +650,8 @@ namespace eyegui
 
     void Keyboard::resetKeymapsAndState()
     {
-        mThreshold.setValue(0);
-        mKeyWasPressed = false;
+        mZoom.setValue(0);
+		mKeyboardRecovers = false;
         mFocusedKeyRow = -1;
         mFocusedKeyColumn = -1;
         mFastBuffer = u"";
@@ -719,8 +708,8 @@ namespace eyegui
         mLastFastKeyRow = -1;
         mLastFastKeyColumn = -1;
 
-        // Just a reminder for the threshold to decrease
-        mKeyWasPressed = true;
+        // Just a reminder for the zoom to decrease
+		mKeyboardRecovers = true;
 
         // Inform listener after updating
         mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);

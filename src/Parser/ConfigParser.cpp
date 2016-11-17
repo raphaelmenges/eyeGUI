@@ -177,10 +177,14 @@ namespace eyegui
             {
                 rConfig.gazeVisualizationMaxSize = stringToFloat(value);
             }
-            else if (attribute == "keyboard-speed-multiplier")
+            else if (attribute == "keyboard-zoom-speed-multiplier")
             {
-                rConfig.keyboardSpeedMultiplier = stringToFloat(value);
+                rConfig.keyboardZoomSpeedMultiplier = stringToFloat(value);
             }
+			else if (attribute == "keyboard-key-press-duration")
+			{
+				rConfig.keyboardKeyPressDuration = stringToFloat(value);
+			}
             else if (attribute == "flow-speed-multiplier")
             {
                 rConfig.flowSpeedMultiplier = stringToFloat(value);

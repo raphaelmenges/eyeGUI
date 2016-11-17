@@ -36,7 +36,8 @@ namespace eyegui
         float gazeVisualizationRejectThreshold = 0.125f;
         float gazeVisualizationMinSize = 0.02f;
         float gazeVisualizationMaxSize = 0.075f;
-        float keyboardSpeedMultiplier = 1.0f;
+        float keyboardZoomSpeedMultiplier = 1.0f;
+		float keyboardKeyPressDuration = 1.25f;
         float flowSpeedMultiplier = 1.0f;
 		float textEditScrollSpeedMultiplier = 5.0f;
 

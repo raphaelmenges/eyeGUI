@@ -41,8 +41,8 @@ namespace eyegui
         // Set position of center and size of key
         virtual void transformAndSize(int x, int y, int size);
 
-        // Update
-        virtual void update(float tpf);
+        // Update. Returns whether has been pressed
+        virtual bool update(float tpf, bool penetrated);
 
         // Draw
 		virtual void draw(
@@ -50,7 +50,6 @@ namespace eyegui
 			glm::vec4 pickColor,
 			glm::vec4 iconColor,
 			glm::vec4 thresholdColor,
-			float threshold,
 			float alpha) const = 0;
 
         // Reset
@@ -91,7 +90,6 @@ namespace eyegui
 		// Draw threshold
 		void drawThreshold(
 			glm::vec4 thresholdColor,
-			float threshold,
 			float alpha) const;
 
         // Members
@@ -107,6 +105,7 @@ namespace eyegui
         bool mPicked;
         LerpValue mPick;
         glm::mat4 mCircleMatrix;
+		LerpValue mThreshold;
     };
 }
 

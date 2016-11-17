@@ -54,6 +54,7 @@ namespace eyegui
         mPick.setValue(rOtherKey.mPick.getValue());
         mpCircleRenderItem = rOtherKey.mpCircleRenderItem;
 		mpThresholdItem = rOtherKey.mpThresholdItem;
+		mThreshold.setValue(0); // reset threshold at copying
     }
 
     Key::~Key()
@@ -82,10 +83,25 @@ namespace eyegui
         transformAndSize();
     }
 
-    void Key::update(float tpf)
+    bool Key::update(float tpf, bool penetrated)
     {
         mFocus.update(tpf / KEY_FOCUS_DURATION, !mFocused);
         mPick.update(tpf / KEY_SELECT_DURATION, !mPicked);
+
+		// Use focus for updating threshold
+		mThreshold.update(tpf / mpLayout->getConfig()->keyboardKeyPressDuration, !mFocused || !penetrated);
+
+		// Check whether pressed
+		bool pressed = mThreshold.getValue() >= 1.f;
+
+		// If pressed, reset threshold
+		if (pressed)
+		{
+			mThreshold.setValue(0.f);
+		}
+
+		// Return whether pressed
+		return pressed;
     }
 
     void Key::reset()
@@ -94,6 +110,7 @@ namespace eyegui
         mFocus.setValue(0);
         mPicked = false;
         mPick.setValue(0);
+		mThreshold.setValue(0);
     }
 
     void Key::setFocus(bool doFocus)
@@ -155,15 +172,14 @@ namespace eyegui
 
 	void Key::drawThreshold(
 		glm::vec4 thresholdColor,
-		float threshold,
 		float alpha) const
 	{
-		if (threshold > 0)
+		if (mThreshold.getValue() > 0)
 		{
 			mpThresholdItem->bind();
 			mpThresholdItem->getShader()->fillValue("matrix", mCircleMatrix);
 			mpThresholdItem->getShader()->fillValue("thresholdColor", thresholdColor);
-			mpThresholdItem->getShader()->fillValue("threshold", threshold);
+			mpThresholdItem->getShader()->fillValue("threshold", mThreshold.getValue());
 			mpThresholdItem->getShader()->fillValue("alpha", alpha);
 			mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
 			mpThresholdItem->draw();

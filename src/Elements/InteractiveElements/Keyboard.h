@@ -135,12 +135,12 @@ namespace eyegui
 
         // Members
         RenderItem const * mpBackground;
-        LerpValue mThreshold;
+        LerpValue mZoom;
         int mFocusedKeyRow;
         int mFocusedKeyColumn;
-        glm::vec2 mGazePosition;
+        glm::vec2 mGazePosition; // gaze position in pixels
         std::u16string mLastPressedKeyValue;
-        bool mKeyWasPressed;
+		bool mKeyboardRecovers; //  key has been pressed and keyboard goes back to initial state
         std::vector<PressedKey> mPressedKeys;  // Alpha [0..1] and copy of key
         bool mUseFastTyping;
         std::u16string mFastBuffer;
