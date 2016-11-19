@@ -406,39 +406,23 @@ namespace eyegui
 		// Draw currently active one
 		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
-			// Iterate over flow parts if available
-			if (spActiveEntity->hasFlowParts())
+			// Iterate over flow parts
+			for (uint i = 0; i < spActiveEntity->getFlowPartCount(); i++)
 			{
-				for (uint i = 0; i < spActiveEntity->getFlowPartCount(); i++)
+				// Lock flow part pointer
+				if (auto spFlowPart = spActiveEntity->getFlowPart(i).lock())
 				{
-					// Lock flow part pointer
-					if (auto spFlowPart = spActiveEntity->getFlowPart(i).lock())
-					{
-						// Calculate draw matrix
-						glm::mat4 activeEntityBackgroundDrawMatrix = calculateActiveEnitiyBackgroundDrawMatrix(spFlowPart->getX(), spFlowPart->getY(), (int)spFlowPart->getPixelWidth());
+					// Calculate draw matrix
+					glm::mat4 activeEntityBackgroundDrawMatrix = calculateActiveEnitiyBackgroundDrawMatrix(spFlowPart->getX(), spFlowPart->getY(), (int)spFlowPart->getPixelWidth());
 
-						// Draw flow part background
-						mpActiveEntityBackground->getShader()->fillValue("matrix", activeEntityBackgroundDrawMatrix);
-						mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
+					// Draw flow part background
+					mpActiveEntityBackground->getShader()->fillValue("matrix", activeEntityBackgroundDrawMatrix);
+					mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
 
-						// Draw it
-						mpActiveEntityBackground->draw();
-					}
+					// Draw it
+					mpActiveEntityBackground->draw();
 				}
 			}
-			else // no flow parts, use entity information
-			{
-				// Calculate draw matrix
-				glm::mat4 activeEntityBackgroundDrawMatrix = calculateActiveEnitiyBackgroundDrawMatrix(spActiveEntity->getX(), spActiveEntity->getY(), (int)spActiveEntity->getPixelWidth());
-
-				// Draw flow part background
-				mpActiveEntityBackground->getShader()->fillValue("matrix", activeEntityBackgroundDrawMatrix);
-				mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
-
-				// Draw it
-				mpActiveEntityBackground->draw();
-			}
-			
 		}
 
 		// *** TEXT FLOW ***
@@ -461,18 +445,10 @@ namespace eyegui
 		if (auto spActiveEntity = mwpActiveEntity.lock())
 		{
 			// Recieve offset from flow part
-			if (spActiveEntity->hasFlowParts())
+			if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
 			{
-				if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
-				{
-					cursorX = spFlowPart->getX() + spFlowPart->getXOffset(mCursorLetterIndex);
-					cursorY = spFlowPart->getY();
-				}
-			}
-			else // no flow parts, use entity information
-			{
-				cursorX = spActiveEntity->getX();
-				cursorY = spActiveEntity->getY();
+				cursorX = spFlowPart->getX() + spFlowPart->getXOffset(mCursorLetterIndex);
+				cursorY = spFlowPart->getY();
 			}
 		}
 
@@ -504,7 +480,7 @@ namespace eyegui
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
 
-		// Set cursor to end
+		// Set cursor to start
 		mwpActiveEntity = std::weak_ptr<FlowEntity>(); // reset active entity to be sure of valid state
 		moveCursorToEnd();
     }
@@ -543,30 +519,32 @@ namespace eyegui
 
 	void TextEdit::setActiveEntity(std::weak_ptr<const FlowEntity> wpFlowEntity, bool setCursorToEnd)
 	{
-		// Only proceed when entity exists
-		if (auto spActiveEntity = mwpActiveEntity.lock())
+		// Save active entity in members
+		mwpActiveEntity = wpFlowEntity;
+		mActiveEntityFading = 0.f; // reset fading
+
+		// Set cursor
+		mCursorFlowPartIndex = 0;
+		mCursorLetterIndex = -1;
+		if (setCursorToEnd)
 		{
-			// Save active entity in members
-			mwpActiveEntity = wpFlowEntity;
-			mActiveEntityFading = 0.f; // reset fading
-
-			// Set cursor
-			mCursorFlowPartIndex = spActiveEntity->hasFlowParts() ? 0 : -1;
-			mCursorLetterIndex = spActiveEntity->hasFlowParts() ? -1 : 0; // when there is no flow part, set letter index to 0
-
-			// Set cursor to end when indicated and flow parts are available
-			if (setCursorToEnd && spActiveEntity->hasFlowParts())
+			if (auto spActiveEntity = mwpActiveEntity.lock())
 			{
-					mCursorFlowPartIndex = (int)spActiveEntity->getFlowPartCount() - 1;
+				// Set cursor position behind active flow entity
+				if (spActiveEntity->getFlowPartCount() >= 1)
+				{
+					mCursorFlowPartIndex = (uint)((int)spActiveEntity->getFlowPartCount() - 1);
+
 					if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
 					{
 						mCursorLetterIndex = (int)(spFlowPart->getLetterCount()) - 1;
 					}
+				}
 			}
+		}
 
-			// Reset cursor pulse to make it directly visible
-			mCursorPulse = 0.f;
-		}		
+		// Reset cursor pulse to make it directly visible
+		mCursorPulse = 0.f;
 	}
 
     void TextEdit::moveCursorOverLettersRightward(int letterCount)
@@ -577,82 +555,53 @@ namespace eyegui
             // Repeat it as indicated
             for (int i = 0; i < letterCount; i++)
             {
-				int flowPartIndex = mCursorFlowPartIndex;
+				uint flowPartIndex = mCursorFlowPartIndex;
 				int letterIndex = mCursorLetterIndex;
 
                 // Try to increment just letter index
 				letterIndex++;
 
                 // Check whether still in range of flow part
-				if (spActiveEntity->hasFlowParts())
+				if (auto spFlowPart = spActiveEntity->getFlowPart(flowPartIndex).lock())
 				{
-					if (auto spFlowPart = spActiveEntity->getFlowPart(flowPartIndex).lock())
+					if (letterIndex >= (int)spFlowPart->getLetterCount()) // exceeds letter count and has to move in front of next flow part or entity
 					{
-						if (letterIndex >= (int)spFlowPart->getLetterCount()) // exceeds letter count and has to move in front of next flow part or entity
+						// Try for next flow part
+                        if ((int)flowPartIndex < (int)spActiveEntity->getFlowPartCount() - 1) // there is another flow part
 						{
-							// Try for next flow part
-							if ((int)flowPartIndex < (int)spActiveEntity->getFlowPartCount() - 1) // there is another flow part
-							{
-								mCursorFlowPartIndex = flowPartIndex + 1;
-								mCursorLetterIndex = -1; // front of flow part
-							}
-							else // no further flow part
-							{
-								// Try for next entity
-								int index = spActiveEntity->getIndex();
-								index++;
-								if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
-								{
-									// Check for non-whitespace. Should overstep that
-									while (spEntity->isWhitespace())
-									{
-										index++;
-										auto spNextEntity = mupTextFlow->getFlowEntity(index).lock();
-										if (!spNextEntity)
-										{
-											break; // ok, no further. Just use the found space
-										}
-										else
-										{
-											spEntity = spNextEntity;
-										}
-									}
-
-									// Let everything do set by method
-									setActiveEntity(spEntity, false);
-								}
-							}
+							mCursorFlowPartIndex = flowPartIndex + 1;
+							mCursorLetterIndex = -1; // front of flow part
 						}
-						else // ok just to move within flow part
+						else // no further flow part
 						{
-							mCursorLetterIndex = letterIndex;
+							// Try for next entity
+							int index = spActiveEntity->getIndex();
+							index++;
+							if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
+							{
+								// Check for non-whitespace. Should overstep that
+								while (spEntity->isWhitespace())
+								{
+									index++;
+									auto spNextEntity = mupTextFlow->getFlowEntity(index).lock();
+									if (!spNextEntity)
+									{
+										break; // ok, no further. Just use the found space
+									}
+									else
+									{
+										spEntity = spNextEntity;
+									}
+								}
+
+								// Let everything do set by method
+								setActiveEntity(spEntity, false);
+							}
 						}
 					}
-				}
-				else // has no flow parts
-				{
-					// Try for next entity
-					int index = spActiveEntity->getIndex();
-					index++;
-					if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
+					else // ok just to move within flow part
 					{
-						// Check for non-whitespace. Should overstep that
-						while (spEntity->isWhitespace())
-						{
-							index++;
-							auto spNextEntity = mupTextFlow->getFlowEntity(index).lock();
-							if (!spNextEntity)
-							{
-								break; // ok, no further. Just use the found space
-							}
-							else
-							{
-								spEntity = spNextEntity;
-							}
-						}
-
-						// Let everything do set by method
-						setActiveEntity(spEntity, false);
+						mCursorLetterIndex = letterIndex;
 					}
 				}
             }
@@ -667,82 +616,53 @@ namespace eyegui
 			// Repeat it as indicated
 			for (int i = 0; i < letterCount; i++)
 			{
-				int flowPartIndex = mCursorFlowPartIndex;
+				uint flowPartIndex = mCursorFlowPartIndex;
 				int letterIndex = mCursorLetterIndex;
 
 				// Try to decrement just letter index
 				letterIndex--;
 
 				// Check whether still in range of flow part
-				if (spActiveEntity->hasFlowParts())
+				if (auto spFlowPart = spActiveEntity->getFlowPart(flowPartIndex).lock())
 				{
-					if (auto spFlowPart = spActiveEntity->getFlowPart(flowPartIndex).lock())
+					if (letterIndex < -1) // in front of front, so check for other flow part or flow entity before
 					{
-						if (letterIndex < -1) // in front of front, so check for other flow part or flow entity before
+						// Try for previous flow part
+						if (flowPartIndex > 0) // there is another flow part
 						{
-							// Try for previous flow part
-							if (flowPartIndex > 0) // there is another flow part
-							{
-								mCursorFlowPartIndex = ((int)flowPartIndex - 1);
-								mCursorLetterIndex = spFlowPart->getLetterCount() - 1; // front of flow part
-							}
-							else // no previous flow part
-							{
-								// Try for previous entity
-								int index = spActiveEntity->getIndex();
-								index--;
-								if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
-								{
-									// Check for non-whitespace. Should overstep that
-									while (spEntity->isWhitespace())
-									{
-										index--;
-										auto spPreviousEntity = mupTextFlow->getFlowEntity(index).lock();
-										if (!spPreviousEntity)
-										{
-											break; // ok, no further. Just use the found space
-										}
-										else
-										{
-											spEntity = spPreviousEntity;
-										}
-									}
-
-									// Let everything do set by method
-									setActiveEntity(spEntity, true);
-								}
-							}
+							mCursorFlowPartIndex = (uint)((int)flowPartIndex - 1);
+							mCursorLetterIndex = spFlowPart->getLetterCount() - 1; // front of flow part
 						}
-						else // ok just to move within flow part
+						else // no previous flow part
 						{
-							mCursorLetterIndex = letterIndex;
+							// Try for previous entity
+							int index = spActiveEntity->getIndex();
+							index--;
+							if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
+							{
+								// Check for non-whitespace. Should overstep that
+								while (spEntity->isWhitespace())
+								{
+									index--;
+									auto spPreviousEntity = mupTextFlow->getFlowEntity(index).lock();
+									if (!spPreviousEntity)
+									{
+										break; // ok, no further. Just use the found space
+									}
+									else
+									{
+										spEntity = spPreviousEntity;
+									}
+								}
+
+								// Let everything do set by method
+								setActiveEntity(spEntity, true);
+							}
 						}
 					}
-				}
-				else // has no flow parts
-				{
-					// Try for previous entity
-					int index = spActiveEntity->getIndex();
-					index--;
-					if (auto spEntity = mupTextFlow->getFlowEntity(index).lock())
+					else // ok just to move within flow part
 					{
-						// Check for non-whitespace. Should overstep that
-						while (spEntity->isWhitespace())
-						{
-							index--;
-							auto spPreviousEntity = mupTextFlow->getFlowEntity(index).lock();
-							if (!spPreviousEntity)
-							{
-								break; // ok, no further. Just use the found space
-							}
-							else
-							{
-								spEntity = spPreviousEntity;
-							}
-						}
-
-						// Let everything do set by method
-						setActiveEntity(spEntity, true);
+						mCursorLetterIndex = letterIndex;
 					}
 				}
 			}
