@@ -123,7 +123,7 @@ namespace eyegui
 		// Getter for index where represented string starts in content of text flow
         uint getContentStartIndex() const { return mContentStartIndex; }
 
-        // Getter for index of flow entity within entities vector of text flow object
+        // Getter for index of flow entity within entities vector of text flow
         uint getIndex() const { return mIndex; }
 
 		// Check whether flow entity represents whitespace

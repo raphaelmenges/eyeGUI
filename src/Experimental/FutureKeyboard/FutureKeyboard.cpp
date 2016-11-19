@@ -657,10 +657,10 @@ namespace eyegui
 		int keyOffsetY = mMode == Mode::MANY_SUGGESTION_LINES ? (int)(0.27f * mHeight) : (int)(0.4f * mHeight); // defines where keys start
 
 		// Offset for suggestions and keys to start
-		int xMargin = (int) (mWidth - (10.f * keyWidth + 9.f * keySpace)) / 2.f;
+		int xMargin = (int) ((float)mWidth - (10.f * (float)keyWidth + 9.f * (float)keySpace)) / 2.f;
 
 		// Values for suggestion line
-		int suggestionWidth = (int)((mWidth - ((2.f * xMargin) + (2.f * keySpace))) / 3.f);
+		int suggestionWidth = (int)(((float)mWidth - ((2.f * (float)xMargin) + (2.f * (float)keySpace))) / 3.f);
 		int suggestionHeight, suggestionOffsetY;
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
 		{

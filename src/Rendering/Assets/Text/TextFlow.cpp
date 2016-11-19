@@ -346,7 +346,7 @@ namespace eyegui
 		// *** COLLECT ENTITIES REPRESENTING TEXT ***
 
         // Get entities out of content
-        uint letterCount = streamlinedContent.size();
+        uint letterCount = (uint)streamlinedContent.size();
         uint index = 0;
         while(index < letterCount)
 		{
@@ -357,7 +357,7 @@ namespace eyegui
             std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
             spFlowEntity->mType = type;
             spFlowEntity->mContentStartIndex = index;
-            spFlowEntity->mIndex = mFlowEntities.size();
+            spFlowEntity->mIndex = (uint)mFlowEntities.size();
 
             switch(spFlowEntity->mType)
             {
@@ -477,7 +477,7 @@ namespace eyegui
 			// Go over lines
 			while (
 				hasNext // entities left for new line
-				&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
+				&& (glm::abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
 			{
                 // Initial flow part index for line
                 initialFlowPartIndex = nextFlowPartIndex;
@@ -660,7 +660,7 @@ namespace eyegui
                     if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only one, so equal to first part's
                     {
                         spFlowEntity->mX = (int)xPixelPen;
-                        spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                        spFlowEntity->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
                     } 
 
                     // Go over flow parts which are in line
@@ -682,13 +682,13 @@ namespace eyegui
 
                             // Save position in flow part
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
                         }
 						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
 						{
                             // Save position in flow part (different from other entities!)
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xOffset;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen- lineHeight) - lineHeight));
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen- lineHeight) - lineHeight));
 						}
                         else // word or mark
                         {
@@ -715,7 +715,7 @@ namespace eyegui
 
                             // Save position in flow part
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
                         }
 
                         // Advance xPen
