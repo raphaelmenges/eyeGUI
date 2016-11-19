@@ -6,8 +6,8 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Element for text editing. Delegates rendering to text flow asset. Saves
 // a pointer to the active entity and highlights it for the user. Within the
-// active entity, a cursor position is set, which is used for deleting and
-// inserting new content to the text that is edited.
+// active entity, a cursor position is set, which is used for deletion and
+// insertion new content to the text that is edited.
 
 #ifndef TEXT_EDIT_H_
 #define TEXT_EDIT_H_
@@ -40,7 +40,7 @@ namespace eyegui
 		// Add content behind cursor position
 		void addContentAtCursor(std::u16string content);
 
-		// Set complete content and set cursor after end of content
+		// Replace complete content and set cursor after end of content
 		void setContent(std::u16string content);
 
 		// Get complete content
@@ -52,7 +52,7 @@ namespace eyegui
 		// Getter for content in active entity. Returns empty string if there is no
 		std::u16string getActiveEntityContent() const;
 
-		// Replace active entity with other content
+		// Replace active entity with new content
 		void setActiveEntityContent(std::u16string content);
 
     protected:
