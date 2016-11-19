@@ -26,7 +26,6 @@
 - HelloWorld project crashes on my desktop computer (somewhere at pixel texture creation)
 - Ubuntu: Debug NanoSVG
 - Config file is not usable for one time setters because seems to have delayed read or so...
-- Two new line in text flow do not create empty line
 
 ## Wiki
 - Dictionary
