@@ -15,6 +15,8 @@
 
 #include <cmath>
 
+#include <iostream>
+
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -533,54 +535,66 @@ namespace eyegui
                     uint flowPartIndex = line.empty() ? initialFlowPartIndex : 0;
 
                     // Go over parts and check for each whether fits into line
-                    while (
-                        flowPartIndex < flowPartCount // still within entity
-                        && (lineWidth +
-                            spFlowEntity->mFlowParts.at(flowPartIndex)
-                            ->getPixelWidth()) <= mWidth) // still space left
-                    {
-                        // New line width including flow part
-                        float newLineWidth = lineWidth + spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+					if (spFlowEntity->hasFlowParts())
+					{
+						while (
+							flowPartIndex < flowPartCount // still within entity
+							&& (lineWidth +
+								spFlowEntity->mFlowParts.at(flowPartIndex)
+								->getPixelWidth()) <= mWidth) // still space left
+						{
+							// New line width including flow part
+							float newLineWidth = lineWidth + spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
 
-                        // If currently processed entity is a word and next entity is a mark and both would not fit
-                        // into current line, start next line
-                        if (spFlowEntity->getType() == FlowEntity::Type::Word // is word
-                            && entityIndex + 1 < mFlowEntities.size() // there is next entity
-                            && mFlowEntities.at(entityIndex + 1)->getType() == FlowEntity::Type::Mark // next entity would be a mark
-                            && newLineWidth + mFlowEntities.at(entityIndex + 1)->getPixelWidth() > mWidth // mark would not fit in same line
-                            && !line.empty()) // word would be not alone in line. If alone in line and shifted to next, infinite loop would happen
-                        {
-                            // Do break to start again in next line
-                            break;
-                        }
-                        //else
-                        {
-                            addEntityToLine = true; // remember to add entity to line but only one time
-                            lineWidth = newLineWidth;
-                            endFlowPartIndex = flowPartIndex;
-                            flowPartIndex++;
-                        }
+							// If currently processed entity is a word and next entity is a mark and both would not fit
+							// into current line, start next line
+							if (spFlowEntity->getType() == FlowEntity::Type::Word // is word
+								&& entityIndex + 1 < mFlowEntities.size() // there is next entity
+								&& mFlowEntities.at(entityIndex + 1)->getType() == FlowEntity::Type::Mark // next entity would be a mark
+								&& newLineWidth + mFlowEntities.at(entityIndex + 1)->getPixelWidth() > mWidth // mark would not fit in same line
+								&& !line.empty()) // word would be not alone in line. If alone in line and shifted to next, infinite loop would happen
+							{
+								// Do break to start again in next line
+								break;
+							}
+							//else
+							{
+								addEntityToLine = true; // remember to add entity to line but only one time
+								lineWidth = newLineWidth;
+								endFlowPartIndex = flowPartIndex;
+								flowPartIndex++;
+							}
 
-                        // Spaces must be remembered
-                        if (spFlowEntity->getType() == FlowEntity::Type::Space)
-                        {
-                            spaceFlowPartCount++;
-                        }
-                    }
+							// Spaces must be remembered
+							if (spFlowEntity->getType() == FlowEntity::Type::Space)
+							{
+								spaceFlowPartCount++;
+							}
+						}
 
-                    // Check whether complete block of text is drawn or some flow part is left
-                    if (flowPartIndex == flowPartCount)
-                    {
-                        // Complete block drawn
-                        nextFlowPartIndex = 0;
-                        entityIndex++;
-                    }
-                    else
-                    {
-                        // Flow parts in block are left
-                        nextFlowPartIndex = flowPartIndex;
-                        spaceLeft = false;
-                    }
+						// Check whether complete block of text is drawn or some flow part is left
+						if (flowPartIndex == flowPartCount)
+						{
+							// Complete block drawn
+							nextFlowPartIndex = 0;
+							entityIndex++;
+						}
+						else
+						{
+							// Flow parts in block are left
+							nextFlowPartIndex = flowPartIndex;
+							spaceLeft = false;
+						}
+					}
+					else // has no flow parts
+					{
+						// Just reset flow part stuff and add entity to line
+						initialFlowPartIndex = 0;
+						endFlowPartIndex = 0;
+						nextFlowPartIndex = 0;
+						addEntityToLine = true;
+						entityIndex++;
+					}
 
                     // Add entity to line since at least some flow parts of it is drawn
                     if (addEntityToLine) { line.push_back(spFlowEntity); }
@@ -667,8 +681,16 @@ namespace eyegui
                     // Fill position
                     if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only once, so equal to first part's values
                     {
-                        spFlowEntity->mX = (int)xPixelPen;
-                        spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+						if (spFlowEntity->getType() != FlowEntity::Type::NewLine)
+						{
+							spFlowEntity->mX = (int)xPixelPen;
+							spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+						}
+						else
+						{
+							spFlowEntity->mX = 0;
+							spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen)));
+						}
                     }
 
                     // Go over flow parts which are in line

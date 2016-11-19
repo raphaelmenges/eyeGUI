@@ -544,7 +544,7 @@ namespace eyegui
 	void TextEdit::setActiveEntity(std::weak_ptr<const FlowEntity> wpFlowEntity, bool setCursorToEnd)
 	{
 		// Only proceed when entity exists
-		if (auto spActiveEntity = mwpActiveEntity.lock())
+		if (auto spActiveEntity = wpFlowEntity.lock())
 		{
 			// Save active entity in members
 			mwpActiveEntity = wpFlowEntity;
@@ -557,16 +557,16 @@ namespace eyegui
 			// Set cursor to end when indicated and flow parts are available
 			if (setCursorToEnd && spActiveEntity->hasFlowParts())
 			{
-					mCursorFlowPartIndex = (int)spActiveEntity->getFlowPartCount() - 1;
-					if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
-					{
-						mCursorLetterIndex = (int)(spFlowPart->getLetterCount()) - 1;
-					}
+				mCursorFlowPartIndex = (int)spActiveEntity->getFlowPartCount() - 1;
+				if (auto spFlowPart = spActiveEntity->getFlowPart(mCursorFlowPartIndex).lock())
+				{
+					mCursorLetterIndex = (int)(spFlowPart->getLetterCount()) - 1;
+				}
 			}
 
 			// Reset cursor pulse to make it directly visible
 			mCursorPulse = 0.f;
-		}		
+		}
 	}
 
     void TextEdit::moveCursorOverLettersRightward(int letterCount)
