@@ -357,7 +357,7 @@ namespace eyegui
             std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
             spFlowEntity->mType = type;
             spFlowEntity->mContentStartIndex = index;
-            spFlowEntity->mIndex = streamlinedContent.size();
+            spFlowEntity->mIndex = mFlowEntities.size();
 
             switch(spFlowEntity->mType)
             {
