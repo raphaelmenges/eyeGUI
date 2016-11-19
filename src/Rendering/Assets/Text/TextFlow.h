@@ -231,8 +231,7 @@ namespace eyegui
 			return pixelWidth;
 		}
 
-		// Getter for position within text flow.
-		// Is equal to position of first flow part
+		// Getter for position within text flow
 		int getX() const { return mX; }
 		int getY() const { return mY; }
 

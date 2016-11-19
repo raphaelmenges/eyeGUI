@@ -687,7 +687,7 @@ namespace eyegui
 						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
 						{
                             // Save position in flow part (different from other entities!)
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xOffset;
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = 0;
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen- lineHeight) - lineHeight));
 						}
                         else // word or mark
