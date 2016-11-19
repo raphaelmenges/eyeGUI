@@ -69,7 +69,7 @@ namespace eyegui
 
 			if (mupRenderWord != nullptr)
 			{
-				if (offsetIndex < mupRenderWord->xOffsets.size()) // index found
+				if (offsetIndex < (int)mupRenderWord->xOffsets.size()) // index found
 				{
 					return mupRenderWord->xOffsets.at(offsetIndex);
 				}

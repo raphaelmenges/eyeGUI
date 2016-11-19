@@ -12,6 +12,8 @@
 #include "src/Layout.h"
 #include "src/Rendering/ScissorStack.h"
 
+#include <limits>
+
 namespace eyegui
 {
     Keyboard::Keyboard(
@@ -132,17 +134,17 @@ namespace eyegui
         // Radius stuff is given in key radii (since normalized with that value)
 
         // Some parameters which may or may not be defineable in config file
-        float GAZE_DELTA_WEIGHT_RADIUS = 1.0f; // Radius in which gaze has to be so that zoom is increased
-        float ZOOM_INCREASE_DURATION = 0.25f; // Duration of zoom to become one (depending very much on other parameters)
+        float GAZE_DELTA_WEIGHT_RADIUS = 1.5f; // Radius in which gaze has to be so that zoom is increased
+        float ZOOM_INCREASE_DURATION = 0.175f; // Duration of zoom to become full. Not to take as "real" seconds since depending on other values as well
 
-        // Not that important parameters
-        float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
-        float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
+        // Other parameters
+        float GAZE_FILTER_RADIUS = 3.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
+        float GAZE_FILTER_DURATION = 0.5f; // Time for smoothed gaze (within filter radius) to interpolate towards current raw gaze value
         float PRESSED_KEY_SCALING_MULTIPLIER = 2.f; // Just animation scale of pressed key which is moving and fading towards user
-        float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of zoom after pressing
+        float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.4f; // Decrease of zoom after pressing
         float ZOOM_DECREASE_DURATION = 1.f; // General decrease duration of zoom if no gaze is upon element
         float FOCUS_RADIUS = 3.5f; // Radius of gaze affected keys (in the center bigger, else smaller). Normalized by standard key size
-        float MINIMAL_KEY_SIZE = 0.5f; // Cap minimal key size for those in outer focus area
+        float MINIMAL_KEY_SIZE = 0.25f; // Cap minimal key size for those in outer focus area
 
         // Some adjustments for fast typing
         if (mUseFastTyping)
@@ -213,16 +215,14 @@ namespace eyegui
         // Filter only, when delta is small
         float gazeFilterRadius = GAZE_FILTER_RADIUS * initialKeySize;
         float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
-        float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, GAZE_DIRECT_USAGE_MULTIPLIER * tpf);
+        float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * (tpf / GAZE_FILTER_DURATION);
         mGazePosition += gazeFilter * rawGazeDelta;
 
         // Use gaze delta as weight for zoom (is one if low delta in gaze)
         float gazeDelta = glm::abs(glm::length(rawGazeDelta)); // In pixels!
         float gazeDeltaWeight = 1.f - clamp(gazeDelta / (GAZE_DELTA_WEIGHT_RADIUS * initialKeySize), 0, 1); // Key size used for normalization
 
-        // *** CHECK FOR PENETRATION ***
-
-        // Zoom
+        // *** UPDATE ZOOM ***
         if (mKeyboardRecovers)
         {
             mZoom.update(-tpf / ZOOM_DECREASE_AFTER_PRESS_DURATION);
@@ -244,7 +244,7 @@ namespace eyegui
         if(penetrated)
         {
             // Go over keys and search nearest
-            float minDistance = 1000000;
+            float minDistance = std::numeric_limits<float>::max();
             int newFocusedKeyRow = -1;
             int newFocusedKeyColumn = -1;
             for(uint i = 0; i < pKeys->size(); i++)
@@ -338,7 +338,7 @@ namespace eyegui
                 // Transform and size
                 (*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
 
-                // Updating
+                // Actual updating
                 bool pressed = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated); // do not calculate penetration for each key but use one from elements
 
                 // Check for "key pressed"
