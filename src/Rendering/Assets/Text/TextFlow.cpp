@@ -158,16 +158,16 @@ namespace eyegui
 		return mContent;
 	}
 
-    std::u16string TextFlow::getContent(uint index, uint letterCount) const
+    std::u16string TextFlow::getContent(uint contentIndex, uint letterCount) const
     {
-        return mContent.substr(index, letterCount);
+        return mContent.substr(contentIndex, letterCount);
     }
 
-    std::weak_ptr<const FlowEntity> TextFlow::getFlowEntity(uint index) const
+    std::weak_ptr<const FlowEntity> TextFlow::getFlowEntity(uint entityIndex) const
     {
-        if(index < mFlowEntities.size())
+        if(entityIndex < mFlowEntities.size())
         {
-            return mFlowEntities.at(index);
+            return mFlowEntities.at(entityIndex);
         }
         else
         {
@@ -179,15 +179,25 @@ namespace eyegui
 	{
         for (const auto& rFlowEntity : mFlowEntities)
 		{
-            for (const auto& rFlowPart : rFlowEntity->mFlowParts)
-            {
-                // Check whether coordinates are inside flow part of flow entity. Do not use pixel width of complete flow entity because
-				// it may be distibuted over multiple lines and the pixel width calculation ignores this possibility. Do is for each flow part
-                if(insideRect(rFlowPart->getX(), rFlowPart->getY(), (int)rFlowPart->getPixelWidth(), (int)getLineHeight(), x, y))
-                {
-                    return rFlowEntity;
-                }
-            }
+			if (rFlowEntity->hasFlowParts())
+			{
+				for (const auto& rFlowPart : rFlowEntity->mFlowParts)
+				{
+					// Check whether coordinates are inside flow part of flow entity. Do not use pixel width of complete flow entity because
+					// it may be distibuted over multiple lines and the pixel width calculation ignores this possibility. Do it for each flow part
+					if (insideRect(rFlowPart->getX(), rFlowPart->getY(), (int)rFlowPart->getPixelWidth(), (int)getLineHeight(), x, y))
+					{
+						return rFlowEntity;
+					}
+				}
+			}
+			else
+			{
+				if (insideRect(rFlowEntity->getX(), rFlowEntity->getY(), (int)rFlowEntity->getPixelWidth(), (int)getLineHeight(), x, y))
+				{
+					return rFlowEntity;
+				}
+			}  
 		}
 
         // Fallback
@@ -196,7 +206,7 @@ namespace eyegui
 
      std::weak_ptr<const FlowEntity> TextFlow::getFlowEntityAndIndices(
             int contentIndex,
-            uint& rFlowPartIndex,
+            int& rFlowPartIndex,
             int& rLetterIndex) const
     {
 		// Check whether there are flow entities
@@ -205,10 +215,12 @@ namespace eyegui
 			// Special case of front
 			if (contentIndex == -1)
 			{
+				auto spFlowEntity = mFlowEntities.front();
+
 				// Set references and return weak pointer
-				rFlowPartIndex = 0;
+				rFlowPartIndex = spFlowEntity->hasFlowParts() ? 0 : -1;
 				rLetterIndex = -1;
-				return mFlowEntities.front();
+				return spFlowEntity;
 			}
 
 			// Check, whether there are enough letters in content for that index
@@ -227,8 +239,7 @@ namespace eyegui
 				std::shared_ptr<const FlowEntity> spFlowEntity = mFlowEntities.at(flowEntityIndex);
 
 				// Fill flow part index and letter index
-				uint flowPartIndex = 0;
-				int letterIndex = -1;
+				int flowPartIndex, letterIndex; // initialization done by getIndices
 				if (spFlowEntity->getIndices(contentIndex - spFlowEntity->getContentStartIndex(), flowPartIndex, letterIndex))
 				{
 					// Set references and return weak pointer
@@ -243,7 +254,7 @@ namespace eyegui
         return std::weak_ptr<const FlowEntity>();
     }
 
-    std::weak_ptr<const FlowEntity> TextFlow::insertContent(uint index, std::u16string content, uint& rFlowPartIndex, int& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::insertContent(uint index, std::u16string content, int& rFlowPartIndex, int& rLetterIndex)
     {
         // Index has to be advanced by one to be inserted after given index
         uint contentIndex = index + 1;
@@ -266,7 +277,7 @@ namespace eyegui
         return std::weak_ptr<const FlowEntity>();
 	}
 
-    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, int letterCount, uint& rFlowPartIndex, int& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, int letterCount, int& rFlowPartIndex, int& rLetterIndex)
     {
         if(!mContent.empty())
         {
@@ -341,14 +352,14 @@ namespace eyegui
         bool failure = false;
 
         // Go over lines and draw single ones (pens are in local pixel coordinate system with origin in lower left corner of element)
-        float yPixelPen = -lineHeight; // first line should be also inside flow and not on top
+        float yPixelPen = -lineHeight; // first line should be inside flow and not on top
 
 		// *** COLLECT ENTITIES REPRESENTING TEXT ***
 
-        // Get entities out of content
+        // Get entities out of given content
         uint letterCount = streamlinedContent.size();
         uint index = 0;
-        while(index < letterCount)
+        while(index < letterCount) // go over each letter
 		{
             // Determine type
             FlowEntity::Type type = classifyLetter(streamlinedContent.at(index));
@@ -388,10 +399,7 @@ namespace eyegui
 
 			case FlowEntity::Type::NewLine:
 			{
-				// Add empty flow part for the new line
-				std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-				upFlowPart->mPixelWidth = 0;
-				spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
+				// No flow part
 
 				// Go one letter further
 				index++;
@@ -402,7 +410,7 @@ namespace eyegui
             {
                 // Add one flow part for the mark
                 std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-                upFlowPart->mupWord = std::unique_ptr<RenderWord>(
+                upFlowPart->mupRenderWord = std::unique_ptr<RenderWord>(
                     new RenderWord(calculateWord(streamlinedContent.at(index), mScale)));
                 spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
 
@@ -431,7 +439,7 @@ namespace eyegui
                 for (const auto& rFitWord : fitWords)
                 {                       
                     std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-                    upFlowPart->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
+                    upFlowPart->mupRenderWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
                     spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
                 }
 
@@ -657,71 +665,68 @@ namespace eyegui
                     std::shared_ptr<FlowEntity> spFlowEntity = line.at(lineIndex);
 
                     // Fill position
-                    if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only one, so equal to first part's
+                    if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only once, so equal to first part's values
                     {
                         spFlowEntity->mX = (int)xPixelPen;
                         spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
-                    } 
+                    }
 
                     // Go over flow parts which are in line
-                    uint flowPartCount = lineIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(lineIndex)->getFlowPartCount();
-                    uint flowPartIndex = lineIndex == 0 ? initialFlowPartIndex : 0;
-                    for (; flowPartIndex < flowPartCount; flowPartIndex++)
-                    {
-                        if(spFlowEntity->getType() == FlowEntity::Type::Space) // space
-                        {
-                            // Set pixel with of space flow part as fallback
-                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
-                            {
-                                spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
-                            }
-                            else
-                            {
-                                spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
-                            }
-
-                            // Save position in flow part
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
-                        }
-						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
+					if (spFlowEntity->getType() != FlowEntity::Type::NewLine)
+					{
+						uint flowPartCount = lineIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(lineIndex)->getFlowPartCount();
+						uint flowPartIndex = lineIndex == 0 ? initialFlowPartIndex : 0;
+						for (; flowPartIndex < flowPartCount; flowPartIndex++)
 						{
-                            // Save position in flow part (different from other entities!)
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xOffset;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen- lineHeight) - lineHeight));
-						}
-                        else // word or mark
-                        {
-                            // Draw word of flow part
-                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupWord != nullptr)
-                            {
-                                const auto* pWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupWord.get();
+							if (spFlowEntity->getType() == FlowEntity::Type::Space) // space
+							{
+								// Set pixel with of space flow part as fallback
+								if (spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
+								{
+									spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
+								}
+								else
+								{
+									spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
+								}
 
-                                // Push back positions and texture coordinates
-                                for (uint i = 0; i < pWord->spVertices->size(); i++)
-                                {
-                                    const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
-                                    rVertices.push_back(
-                                        std::make_pair(
-                                            glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
-                                            glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
-                                }
-                            }
-                            else
-                            {
-                                throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
-                                failure |= true;
-                            }
+								// Save position in flow part
+								spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
+								spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+							}
+							else // word or mark
+							{
+								// Draw word of flow part
+								if (spFlowEntity->mFlowParts.at(flowPartIndex)->mupRenderWord != nullptr)
+								{
+									const auto* pRenderWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupRenderWord.get();
 
-                            // Save position in flow part
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
-                        }
+									// Push back positions and texture coordinates
+									for (uint i = 0; i < pRenderWord->spVertices->size(); i++)
+									{
+										const std::pair<glm::vec3, glm::vec2>& rVertex = pRenderWord->spVertices->at(i);
+										rVertices.push_back(
+											std::make_pair(
+												glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
+												glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
+									}
+								}
+								else
+								{
+									throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
+									failure |= true;
+								}
 
-                        // Advance xPen
-                        xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+								// Save position in flow part
+								spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
+								spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+							}
 
-                    } // end of flow part iteration
+							// Advance xPen
+							xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+
+						} // end of flow part iteration
+					} // check whether no new line entity
 
                     // Update previous filled entity
                     pPreviousFilledEntity = spFlowEntity.get();
@@ -737,6 +742,9 @@ namespace eyegui
             } // end of lines
         }
 
+		// Get height of all lines
+		mFlowHeight = (int)glm::abs(yPixelPen);
+
         // If failure appeared, clean up
         if (failure)
         {
@@ -746,11 +754,6 @@ namespace eyegui
 			mFlowHeight = 0;
 			mFlowEntities.clear();
         }
-		else
-		{
-			// Get height of all lines
-			mFlowHeight = (int)glm::abs(yPixelPen);
-		}
     }
 
     std::vector<RenderWord> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
