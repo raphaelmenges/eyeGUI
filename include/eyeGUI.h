@@ -805,7 +805,7 @@ namespace eyegui
 	*/
 	void setProgress(Layout* pLayout, std::string id, float progress);
 
-	//! Move cursor over given amount of letters in text edit element. If content is exceeded, cursor is placed at last valid position.
+	//! Move cursor over given amount of letters in text edit element. If content is exceeded, cursor is placed at last valid position. Whitespace is skipped.
 	/*!
 	\param pLayout pointer to layout.
 	\param id is the unique id of an element.
