@@ -313,6 +313,7 @@ namespace eyegui
 	/*!
 	\param pGUI pointer to GUI.
 	\param key defines where to look up in localization file.
+	\return localization if available. Empty string else.
 	*/
 	std::u16string fetchLocalization(GUI const * pGUI, std::string key);
 
