@@ -24,17 +24,17 @@ namespace eyegui
 	public:
 
 		// Constructor takes initial value
-		StyleValue(T value) { mValue = value; }
+		StyleValue(T value) { this->mValue = value; }
 
 		// Setter for value
 		virtual void setValue(T value)
 		{
 			// Just store the value
-			mValue = value;
+			this->mValue = value;
 		}
 
 		// Getter for value
-		T getValue() const { return mValue; }
+		T getValue() const { return this->mValue; }
 
 	protected:
 
@@ -53,23 +53,23 @@ namespace eyegui
 
 		// Constructor takes initial value
 		NumericStyleValue(T value) : StyleValue<T>(value) {}
-		NumericStyleValue(T value, T min) { setMin(min); mValue = glm::max(value, min); }
-		NumericStyleValue(T value, T min, T max) { setMin(min); setMax(max); mValue = glm::clamp(value, min, max); }
+		NumericStyleValue(T value, T min) { setMin(min); this->mValue = glm::max(value, min); }
+		NumericStyleValue(T value, T min, T max) { setMin(min); setMax(max); this->mValue = glm::clamp(value, min, max); }
 
 		// Setter for value. Includes clamping
 		virtual void setValue(T value) override
 		{
 			if (mMinimumSet && mMaximumSet)
 			{
-				mValue = glm::clamp(value, mMinimum, mMaximum);
+				this->mValue = glm::clamp(value, mMinimum, mMaximum);
 			}
 			else if (mMinimumSet)
 			{
-				mValue = glm::max(value, mMinimum);
+				this->mValue = glm::max(value, mMinimum);
 			}
 			else
 			{
-				mValue = value;
+				this->mValue = value;
 			}
 		}
 
