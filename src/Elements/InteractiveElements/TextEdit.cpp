@@ -69,7 +69,7 @@ namespace eyegui
 			TextFlowAlignment::LEFT,
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
-			u"Hi, this is test.\nNewLine.\n\nCheck?",
+			u"",
             true,
 			false));
 	}
@@ -480,7 +480,7 @@ namespace eyegui
 		// Tell text flow about transformation
 		mupTextFlow->transformAndSize(mX, mY, mWidth, mHeight);
 
-		// Set cursor to start
+		// Set cursor to end
 		mwpActiveEntity = std::weak_ptr<FlowEntity>(); // reset active entity to be sure of valid state
 		moveCursorToEnd();
     }

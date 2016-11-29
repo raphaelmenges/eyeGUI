@@ -27,7 +27,7 @@ namespace eyegui
         // Try to load image
 		std::vector<unsigned char> data;
         int width, height, channelCount;
-		loadImageFile(filepath, data, width, height, channelCount, suspectedChannels);
+		loadImageFile(filepath, data, width, height, channelCount, true, suspectedChannels);
 
 		// Decide format
 		GLenum glFormat;

@@ -576,7 +576,7 @@ namespace eyegui
         }
 
         // Build floating point
-        int numbersCount = numbers.size();
+        int numbersCount = (int)numbers.size();
         if(dotIndex < 0) { dotIndex = numbersCount; }
         float result = 0;
         for(int i = numbersCount - 1; i >= 0 ; i--)

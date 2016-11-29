@@ -158,16 +158,16 @@ namespace eyegui
 		return mContent;
 	}
 
-    std::u16string TextFlow::getContent(uint index, uint letterCount) const
+    std::u16string TextFlow::getContent(uint contentIndex, uint letterCount) const
     {
-        return mContent.substr(index, letterCount);
+        return mContent.substr(contentIndex, letterCount);
     }
 
-    std::weak_ptr<const FlowEntity> TextFlow::getFlowEntity(uint index) const
+    std::weak_ptr<const FlowEntity> TextFlow::getFlowEntity(uint entityIndex) const
     {
-        if(index < mFlowEntities.size())
+        if(entityIndex < mFlowEntities.size())
         {
-            return mFlowEntities.at(index);
+            return mFlowEntities.at(entityIndex);
         }
         else
         {
@@ -243,30 +243,30 @@ namespace eyegui
         return std::weak_ptr<const FlowEntity>();
     }
 
-    std::weak_ptr<const FlowEntity> TextFlow::insertContent(uint index, std::u16string content, uint& rFlowPartIndex, int& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::insertContent(int contentIndex, std::u16string content, uint& rFlowPartIndex, int& rLetterIndex)
     {
         // Index has to be advanced by one to be inserted after given index
-        uint contentIndex = index + 1;
-        if (contentIndex < mContent.size())
+        uint index = contentIndex + 1;
+        if (index < mContent.size())
 		{
             // Insert at given index
-            mContent.insert(contentIndex, content);
+            mContent.insert(index, content);
 			calculateMesh();
-            return getFlowEntityAndIndices(index + (int)content.length(), rFlowPartIndex, rLetterIndex);
+            return getFlowEntityAndIndices(contentIndex + (int)content.length(), rFlowPartIndex, rLetterIndex);
         }
-        else if(contentIndex == mContent.size())
+        else if(index == mContent.size())
         {
             // Append to existing content
             mContent.append(content);
             calculateMesh();
-            return getFlowEntityAndIndices(index + (int)content.length(), rFlowPartIndex, rLetterIndex);
+            return getFlowEntityAndIndices(contentIndex + (int)content.length(), rFlowPartIndex, rLetterIndex);
         }
 
         // Fallback
         return std::weak_ptr<const FlowEntity>();
 	}
 
-    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int index, int letterCount, uint& rFlowPartIndex, int& rLetterIndex)
+    std::weak_ptr<const FlowEntity> TextFlow::eraseContent(int contentIndex, int letterCount, uint& rFlowPartIndex, int& rLetterIndex)
     {
         if(!mContent.empty())
         {
@@ -276,32 +276,32 @@ namespace eyegui
 				int absLetterCount = glm::abs(letterCount);
 
                 // Move index to start of deletion and clamp it
-                int clampedIndex = glm::max(0, (index - absLetterCount) + 1); // plus one because letter at original index should be deleted too
+                int clampedIndex = glm::max(0, (contentIndex - absLetterCount) + 1); // plus one because letter at original index should be deleted too
 
                 // New letter count
-                letterCount = (int)glm::max(0, (index - clampedIndex) + 1);
+                letterCount = (int)glm::max(0, (contentIndex - clampedIndex) + 1);
 
                 // Overwrite index
-                index = clampedIndex;
+				contentIndex = clampedIndex;
             }
 
             // Clamp length
-            if (index + letterCount >= (int)mContent.size())
+            if (contentIndex + letterCount >= (int)mContent.size())
             {
-                letterCount = (int)glm::max(0, (int)mContent.size() - index);
+                letterCount = (int)glm::max(0, (int)mContent.size() - contentIndex);
             }
 
             // Apply it
-            mContent.erase(index, letterCount);
+            mContent.erase(contentIndex, letterCount);
 
             // Recalulate mesh
             calculateMesh();
 
 			// Calculate index to set (range is -1 .. mContent.size() - 1)
-			index = glm::max(-1, glm::min(index - 1, (int)mContent.size() - 1)); // subtract -1 from index because the letter at it has been erased
+			contentIndex = glm::max(-1, glm::min(contentIndex - 1, (int)mContent.size() - 1)); // subtract -1 from index because the letter at it has been erased
 
             // Set indices
-            return getFlowEntityAndIndices(index, rFlowPartIndex, rLetterIndex);
+            return getFlowEntityAndIndices(contentIndex, rFlowPartIndex, rLetterIndex);
         }
 
         // Fallback
@@ -346,7 +346,7 @@ namespace eyegui
 		// *** COLLECT ENTITIES REPRESENTING TEXT ***
 
         // Get entities out of content
-        uint letterCount = streamlinedContent.size();
+        uint letterCount = (uint)streamlinedContent.size();
         uint index = 0;
         while(index < letterCount)
 		{
@@ -357,7 +357,7 @@ namespace eyegui
             std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
             spFlowEntity->mType = type;
             spFlowEntity->mContentStartIndex = index;
-            spFlowEntity->mIndex = streamlinedContent.size();
+            spFlowEntity->mIndex = (uint)mFlowEntities.size();
 
             switch(spFlowEntity->mType)
             {
@@ -402,7 +402,7 @@ namespace eyegui
             {
                 // Add one flow part for the mark
                 std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-                upFlowPart->mupWord = std::unique_ptr<RenderWord>(
+                upFlowPart->mupRenderWord = std::unique_ptr<RenderWord>(
                     new RenderWord(calculateWord(streamlinedContent.at(index), mScale)));
                 spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
 
@@ -431,7 +431,7 @@ namespace eyegui
                 for (const auto& rFitWord : fitWords)
                 {                       
                     std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
-                    upFlowPart->mupWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
+                    upFlowPart->mupRenderWord = std::unique_ptr<RenderWord>(new RenderWord(rFitWord)); // copy fit word
                     spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
                 }
 
@@ -477,7 +477,7 @@ namespace eyegui
 			// Go over lines
 			while (
 				hasNext // entities left for new line
-				&& (abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
+				&& (glm::abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
 			{
                 // Initial flow part index for line
                 initialFlowPartIndex = nextFlowPartIndex;
@@ -660,7 +660,7 @@ namespace eyegui
                     if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only one, so equal to first part's
                     {
                         spFlowEntity->mX = (int)xPixelPen;
-                        spFlowEntity->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                        spFlowEntity->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
                     } 
 
                     // Go over flow parts which are in line
@@ -682,25 +682,25 @@ namespace eyegui
 
                             // Save position in flow part
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
                         }
 						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
 						{
                             // Save position in flow part (different from other entities!)
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xOffset;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen- lineHeight) - lineHeight));
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = 0;
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen- lineHeight) - lineHeight));
 						}
                         else // word or mark
                         {
                             // Draw word of flow part
-                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupWord != nullptr)
+                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupRenderWord != nullptr)
                             {
-                                const auto* pWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupWord.get();
+                                const auto* pRenderWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupRenderWord.get();
 
                                 // Push back positions and texture coordinates
-                                for (uint i = 0; i < pWord->spVertices->size(); i++)
+                                for (uint i = 0; i < pRenderWord->spVertices->size(); i++)
                                 {
-                                    const std::pair<glm::vec3, glm::vec2>& rVertex = pWord->spVertices->at(i);
+                                    const std::pair<glm::vec3, glm::vec2>& rVertex = pRenderWord->spVertices->at(i);
                                     rVertices.push_back(
                                         std::make_pair(
                                             glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
@@ -715,7 +715,7 @@ namespace eyegui
 
                             // Save position in flow part
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(abs(yPixelPen) - lineHeight));
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
                         }
 
                         // Advance xPen

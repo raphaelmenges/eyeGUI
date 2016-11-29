@@ -313,6 +313,7 @@ namespace eyegui
 	/*!
 	\param pGUI pointer to GUI.
 	\param key defines where to look up in localization file.
+	\return localization if available. Empty string else.
 	*/
 	std::u16string fetchLocalization(GUI const * pGUI, std::string key);
 
@@ -805,7 +806,7 @@ namespace eyegui
 	*/
 	void setProgress(Layout* pLayout, std::string id, float progress);
 
-	//! Move cursor over given amount of letters in text edit element. If content is exceeded, cursor is placed at last valid position.
+	//! Move cursor over given amount of letters in text edit element. If content is exceeded, cursor is placed at last valid position. Whitespace is skipped.
 	/*!
 	\param pLayout pointer to layout.
 	\param id is the unique id of an element.

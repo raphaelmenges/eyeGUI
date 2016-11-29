@@ -12,6 +12,8 @@
 #include "src/Layout.h"
 #include "src/Rendering/ScissorStack.h"
 
+#include <limits>
+
 namespace eyegui
 {
     Keyboard::Keyboard(
@@ -131,25 +133,18 @@ namespace eyegui
 
         // Radius stuff is given in key radii (since normalized with that value)
 
-        // Some parameters which may or may not be defineable in config file
-        float GAZE_DELTA_WEIGHT_RADIUS = 1.0f; // Radius in which gaze has to be so that zoom is increased
-        float ZOOM_INCREASE_DURATION = 0.25f; // Duration of zoom to become one (depending very much on other parameters)
+        // Parameters of gaze smoothing
+        float GAZE_FILTER_DURATION = 0.25f; // Time for smoothed gaze to interpolate towards current raw gaze value. Applied when zoom gets higher
 
-        // Not that important parameters
-        float GAZE_FILTER_RADIUS = 5.f; // Radius in which the gaze is filtered. Outside of that radius, gaze data is took raw
-        float GAZE_DIRECT_USAGE_MULTIPLIER = 10.f; // Multiplier for usage of raw gaze when outside filter area (take look at GAZE_FILTER_RADIUS)
-        float PRESSED_KEY_SCALING_MULTIPLIER = 2.f; // Just animation scale of pressed key which is moving and fading towards user
-        float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.2f; // Decrease of zoom after pressing
+        // Parameters of zooming
+        float ZOOM_INCREASE_DURATION = 0.75f; // Duration of zoom to become full. Not to take as "real" seconds since depending on other values as well
+        float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.4f; // Decrease of zoom after pressing
         float ZOOM_DECREASE_DURATION = 1.f; // General decrease duration of zoom if no gaze is upon element
-        float FOCUS_RADIUS = 3.5f; // Radius of gaze affected keys (in the center bigger, else smaller). Normalized by standard key size
-        float MINIMAL_KEY_SIZE = 0.5f; // Cap minimal key size for those in outer focus area
 
-        // Some adjustments for fast typing
-        if (mUseFastTyping)
-        {
-            GAZE_DELTA_WEIGHT_RADIUS *= 0.3f;
-            ZOOM_INCREASE_DURATION *= 1.5f;
-        }
+        // Parameters of visualization
+        float FOCUS_RADIUS = 3.5f; // Radius of gaze affected keys (in the center bigger, else smaller). Normalized by standard key size
+        float MINIMAL_KEY_SIZE = 0.25f; // Cap minimal key size for those in outer focus area
+        float PRESSED_KEY_SCALING_MULTIPLIER = 2.f; // Just animation scale of pressed key which is moving and fading towards user
 
         // Use speed multiplier
         ZOOM_INCREASE_DURATION /= mpLayout->getConfig()->keyboardZoomSpeedMultiplier;
@@ -210,19 +205,13 @@ namespace eyegui
             rawGazeDelta = glm::vec2(pInput->gazeX, pInput->gazeY) - mGazePosition;
         }
 
-        // Filter only, when delta is small
-        float gazeFilterRadius = GAZE_FILTER_RADIUS * initialKeySize;
-        float rawGazeFilter = std::min(1.f, glm::abs(glm::length(rawGazeDelta)) / gazeFilterRadius); // 0 when filtering and 1 when direkt usage of gaze
-        float gazeFilter = rawGazeFilter + (1.f - rawGazeFilter) * std::min(1.f, GAZE_DIRECT_USAGE_MULTIPLIER * tpf);
+        // Filter only, when zoom is higher
+        float sqrtZoom = glm::sin(mZoom.getValue() * 3.14f * 0.5f); // Make starting and ending of function smoother
+        float gazeFilter = (1.f - sqrtZoom) + sqrtZoom * (tpf / GAZE_FILTER_DURATION);
         mGazePosition += gazeFilter * rawGazeDelta;
 
-        // Use gaze delta as weight for zoom (is one if low delta in gaze)
-        float gazeDelta = glm::abs(glm::length(rawGazeDelta)); // In pixels!
-        float gazeDeltaWeight = 1.f - clamp(gazeDelta / (GAZE_DELTA_WEIGHT_RADIUS * initialKeySize), 0, 1); // Key size used for normalization
+        // *** UPDATE ZOOM ***
 
-        // *** CHECK FOR PENETRATION ***
-
-        // Zoom
         if (mKeyboardRecovers)
         {
             mZoom.update(-tpf / ZOOM_DECREASE_AFTER_PRESS_DURATION);
@@ -233,7 +222,7 @@ namespace eyegui
         }
         else if (penetrated)
         {
-			mZoom.update((tpf * (gazeDeltaWeight - 0.8f)) / ZOOM_INCREASE_DURATION);
+            mZoom.update(tpf / ZOOM_INCREASE_DURATION);
         }
         else
         {
@@ -244,7 +233,7 @@ namespace eyegui
         if(penetrated)
         {
             // Go over keys and search nearest
-            float minDistance = 1000000;
+            float minDistance = std::numeric_limits<float>::max();
             int newFocusedKeyRow = -1;
             int newFocusedKeyColumn = -1;
             for(uint i = 0; i < pKeys->size(); i++)
@@ -307,19 +296,24 @@ namespace eyegui
         {
             for(uint j = 0; j < (*pKeys)[i].size(); j++)
             {
+                // Clamp position to borders of element
+                glm::vec2 clampledGazePosition(
+                    glm::clamp(mGazePosition.x, (float)mX, (float)(mX + mWidth)),
+                    glm::clamp(mGazePosition.y, (float)mY, (float)(mY + mHeight)));
+
                 // Get delta between position of initial key position and gaze position
-                glm::vec2 positionDelta = (*pInitialKeyPositions)[i][j] - mGazePosition;
+                glm::vec2 positionDelta = (*pInitialKeyPositions)[i][j] - clampledGazePosition;
 
                 // Radius of focus
                 float focusWeight = 1.f - glm::length(positionDelta) / (FOCUS_RADIUS * initialKeySize); // key size used for normalization
                 focusWeight = clamp(focusWeight, 0, 1); // so between zero and one
 
                 // Only near keys have to be moved
-				positionDelta *= 0.4f; // scale position delta
+                positionDelta *= 0.3f; // scale position delta
                 positionDelta *= focusWeight; // only use it within focus
 
                 // Calculate delta of size
-				float sizeDelta = glm::length((*pKeys)[i][j]->getPosition() - mGazePosition);
+                float sizeDelta = glm::length((*pKeys)[i][j]->getPosition() - clampledGazePosition);
 				sizeDelta /= initialKeySize; // normalize using key size
 				sizeDelta *= 25.f; // scale it (makes keys smaller later)
 				sizeDelta = -sizeDelta; // make outer keys smaller
@@ -338,7 +332,7 @@ namespace eyegui
                 // Transform and size
                 (*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
 
-                // Updating
+                // Actual updating
                 bool pressed = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated); // do not calculate penetration for each key but use one from elements
 
                 // Check for "key pressed"
