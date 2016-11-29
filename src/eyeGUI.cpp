@@ -13,6 +13,9 @@
 #include "src/Utilities/PathBuilder.h"
 #include "src/Rendering/Textures/PixelTexture.h"
 
+// TODO: Testing
+#include "src/TestingArea.h"
+
 // Version
 static const std::string VERSION_STRING = "0.9";
 
@@ -20,6 +23,9 @@ namespace eyegui
 {
     GUI* GUIBuilder::construct() const
     {
+		// TODO: Testing
+		testingMain();
+
         return new GUI(
             width,
             height,
