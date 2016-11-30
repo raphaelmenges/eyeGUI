@@ -13,7 +13,9 @@
 #define StyleValueMemberMin(name, type, value, min) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, min));
 #define StyleValueMemberMinMax(name, type, value, min, max) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, min, max));
 
+#include "src/Defines.h"
 #include "externals/GLM/glm/glm.hpp"
+#include <map>
 
 namespace eyegui
 {
@@ -107,7 +109,7 @@ namespace eyegui
         float sensorPenetrationDecreaseDuration = 1.5f;
         float buttonThresholdIncreaseDuration = 1.0f;
         float buttonThresholdDecreaseDuration = 2.0f;
-		float buttonPressingDuration = 0.3f;
+		StyleValueMemberMin		(buttonPressingDuration, float, 0.3f, MINIMAL_DURATION_VALUE);
         float sensorInteractionPenetrationAmount = 0.5f;
         float dimIncreaseDuration = 1.5f;
         float dimDecreaseDuration = 0.25f;
@@ -135,9 +137,9 @@ namespace eyegui
 		float futureKeyboardBackspaceKeyThresholdMultiplier = 1.f;
 		float futureKeyboardSuggestionLineThresholdMultiplier = 1.f;
 
-		StyleValueMember(mspTest, float, 0.1f);
-		StyleValueMemberMin(mspTest2, float, 0.1f, 0.2f);
-		StyleValueMemberMinMax(mspTest3, float, 0.1f, 0.2f, 0.3f);
+		StyleValueMember		(mspTest, float, 0.1f);
+		StyleValueMemberMin		(mspTest2, float, 0.1f, 0.2f);
+		StyleValueMemberMinMax	(mspTest3, float, 0.1f, 0.2f, 0.3f);
     };
 }
 

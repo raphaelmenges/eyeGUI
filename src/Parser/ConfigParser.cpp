@@ -123,7 +123,7 @@ namespace eyegui
             }
             else if (attribute == "button-pressing-duration")
             {
-                rConfig.buttonPressingDuration = stringToFloat(value);
+				rConfig.buttonPressingDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "sensor-interaction-penetration-amount")
             {

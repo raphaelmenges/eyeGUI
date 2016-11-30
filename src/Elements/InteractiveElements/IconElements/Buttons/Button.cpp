@@ -159,11 +159,11 @@ namespace eyegui
         // Pressing animation
         if (mIsDown && mPressing.getValue() < 1)
         {
-            mPressing.update(tpf / mpLayout->getConfig()->buttonPressingDuration);
+            mPressing.update(tpf / mpLayout->getConfig()->buttonPressingDuration->getValue());
         }
         else if (!mIsDown && mPressing.getValue() > 0)
         {
-            mPressing.update(-tpf / mpLayout->getConfig()->buttonPressingDuration);
+            mPressing.update(-tpf / mpLayout->getConfig()->buttonPressingDuration->getValue());
         }
 
         // If pressed and no switch, go back (do it each frame and not only at end of going down,
