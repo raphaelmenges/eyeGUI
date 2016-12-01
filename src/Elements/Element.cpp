@@ -403,7 +403,7 @@ namespace eyegui
 
     float Element::getDynamicScale() const
     {
-        return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->maximalAdaptiveScaleIncrease);
+        return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->maximalAdaptiveScaleIncrease->getValue());
     }
 
     float Element::getRelativeScale() const
@@ -426,7 +426,7 @@ namespace eyegui
         // *** OWN UPDATING ***
 
         // Activity animation
-        mActivity.update(tpf / mpLayout->getConfig()->animationDuration, !mActive);
+        mActivity.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !mActive);
 
         // Save current alpha (already animated by layout or other element)
         mAlpha = alpha;
@@ -438,19 +438,19 @@ namespace eyegui
         if (mForceUndim)
         {
             // Undim it
-            mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration);
+            mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration->getValue());
         }
         else if (mDimming)
         {
             if (penetrated)
             {
                 // Undim it
-                mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration);
+                mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration->getValue());
             }
             else
             {
                 // Dim it
-                mDim.update(tpf / mpLayout->getConfig()->dimIncreaseDuration);
+                mDim.update(tpf / mpLayout->getConfig()->dimIncreaseDuration->getValue());
             }
         }
         else
@@ -462,7 +462,7 @@ namespace eyegui
 		// Flashing
 		if (mFlash.getValue() > 0.f)
 		{
-			mFlash.update(-tpf / mpLayout->getConfig()->flashDuration);
+			mFlash.update(-tpf / mpLayout->getConfig()->flashDuration->getValue());
 		}
 
         // Adaptive scaling
@@ -472,28 +472,28 @@ namespace eyegui
             if (penetrated)
             {
                 // Scale it up
-                mAdaptiveScale.update(tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration);
+                mAdaptiveScale.update(tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration->getValue());
             }
             else
             {
                 // Scale it down
-                mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
+                mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration->getValue());
             }
         }
         else
         {
             // Scale it down, because could have been set by using scale from special update (children!)
-            mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration);
+            mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration->getValue());
         }
 
         // Marking
-        mMark.update(tpf / mpLayout->getConfig()->animationDuration, !mMarking);
+        mMark.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !mMarking);
 
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
         {
             float replacedAlpha = mAlpha * (mupReplacedElement->getAlpha()
-                - (tpf / mpLayout->getConfig()->animationDuration));
+                - (tpf / mpLayout->getConfig()->animationDuration->getValue()));
             replacedAlpha = clamp(replacedAlpha, 0, 1);
             mupReplacedElement->update(tpf, replacedAlpha, NULL, mDim.getValue());
 

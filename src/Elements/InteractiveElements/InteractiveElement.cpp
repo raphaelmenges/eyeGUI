@@ -111,10 +111,10 @@ namespace eyegui
     float InteractiveElement::specialUpdate(float tpf, Input* pInput)
     {
         // Highlight
-        mHighlight.update(tpf / mpLayout->getConfig()->animationDuration, !mIsHighlighted);
+        mHighlight.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !mIsHighlighted);
 
         // Selection
-        mSelection.update(tpf / mpLayout->getConfig()->animationDuration, !mIsSelected);
+        mSelection.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !mIsSelected);
 
         // Instant interaction
         bool penetrated = penetratedByInput(pInput);

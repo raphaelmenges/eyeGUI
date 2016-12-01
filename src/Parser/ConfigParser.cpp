@@ -103,23 +103,23 @@ namespace eyegui
             // Go through the cases
             if (attribute == "animation-duration")
             {
-                rConfig.animationDuration = stringToFloat(value);
+                rConfig.animationDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "sensor-penetration-increase-duration")
             {
-                rConfig.sensorPenetrationIncreaseDuration = stringToFloat(value);
+                rConfig.sensorPenetrationIncreaseDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "sensor-penetration-decrease-duration")
             {
-                rConfig.sensorPenetrationDecreaseDuration = stringToFloat(value);
+                rConfig.sensorPenetrationDecreaseDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "button-threshold-increase-duration")
             {
-                rConfig.buttonThresholdIncreaseDuration = stringToFloat(value);
+                rConfig.buttonThresholdIncreaseDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "button-threshold-decrease-duration")
             {
-                rConfig.buttonThresholdDecreaseDuration = stringToFloat(value);
+                rConfig.buttonThresholdDecreaseDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "button-pressing-duration")
             {
@@ -127,71 +127,71 @@ namespace eyegui
             }
             else if (attribute == "sensor-interaction-penetration-amount")
             {
-                rConfig.sensorInteractionPenetrationAmount = stringToFloat(value);
+                rConfig.sensorInteractionPenetrationAmount->setValue(stringToFloat(value));
             }
             else if (attribute == "dim-increase-duration")
             {
-                rConfig.dimIncreaseDuration = stringToFloat(value);
+                rConfig.dimIncreaseDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "dim-decrease-duration")
             {
-                rConfig.dimDecreaseDuration = stringToFloat(value);
+                rConfig.dimDecreaseDuration->setValue(stringToFloat(value));
             }
 			else if (attribute == "flash-duration")
 			{
-				rConfig.flashDuration = stringToFloat(value);
+				rConfig.flashDuration->setValue(stringToFloat(value));
 			}
             else if (attribute == "maximal-adaptive-scale-increase")
             {
-                rConfig.maximalAdaptiveScaleIncrease = stringToFloat(value);
+                rConfig.maximalAdaptiveScaleIncrease->setValue(stringToFloat(value));
             }
             else if (attribute == "adaptive-scale-increase-duration")
             {
-                rConfig.adaptiveScaleIncreaseDuration = stringToFloat(value);
+                rConfig.adaptiveScaleIncreaseDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "adaptive-scale-decrease-duration")
             {
-                rConfig.adaptiveScaleDecreaseDuration = stringToFloat(value);
+                rConfig.adaptiveScaleDecreaseDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "gaze-visualization-color")
             {
-                rConfig.gazeVisualizationColor = parseColor(value);
+                rConfig.gazeVisualizationColor->setValue(parseColor(value));
             }
             else if (attribute == "gaze-visualization-fade-duration")
             {
-                rConfig.gazeVisualizationFadeDuration = stringToFloat(value);
+                rConfig.gazeVisualizationFadeDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "gaze-visualization-focus-duration")
             {
-                rConfig.gazeVisualizationFocusDuration = stringToFloat(value);
+                rConfig.gazeVisualizationFocusDuration->setValue(stringToFloat(value));
             }
             else if (attribute == "gaze-visualization-reject-threshold")
             {
-                rConfig.gazeVisualizationRejectThreshold = stringToFloat(value);
+                rConfig.gazeVisualizationRejectThreshold->setValue(stringToFloat(value));
             }
             else if (attribute == "gaze-visualization-min-size")
             {
-                rConfig.gazeVisualizationMinSize = stringToFloat(value);
+                rConfig.gazeVisualizationMinSize->setValue(stringToFloat(value));
             }
             else if (attribute == "gaze-visualization-max-size")
             {
-                rConfig.gazeVisualizationMaxSize = stringToFloat(value);
+                rConfig.gazeVisualizationMaxSize->setValue(stringToFloat(value));
             }
             else if (attribute == "keyboard-zoom-speed-multiplier")
             {
-                rConfig.keyboardZoomSpeedMultiplier = stringToFloat(value);
+                rConfig.keyboardZoomSpeedMultiplier->setValue(stringToFloat(value));
             }
 			else if (attribute == "keyboard-key-press-duration")
 			{
-				rConfig.keyboardKeyPressDuration = stringToFloat(value);
+				rConfig.keyboardKeyPressDuration->setValue(stringToFloat(value));
 			}
             else if (attribute == "flow-speed-multiplier")
             {
-                rConfig.flowSpeedMultiplier = stringToFloat(value);
+                rConfig.flowSpeedMultiplier->setValue(stringToFloat(value));
             }
 			else if (attribute == "text-edit-scroll-speed-multiplier")
 			{
-				rConfig.textEditScrollSpeedMultiplier = stringToFloat(value);
+				rConfig.textEditScrollSpeedMultiplier->setValue(stringToFloat(value));
 			}
             else if (attribute == "future-keyboard-press-duration")
             {

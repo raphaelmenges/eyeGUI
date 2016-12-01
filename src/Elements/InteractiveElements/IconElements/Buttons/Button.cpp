@@ -180,7 +180,7 @@ namespace eyegui
             && penetrated // penetration
             && !(!mIsSwitch && mPressing.getValue() > 0)) // avoids to add threshold for none switch when at down position
         {
-            mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration);
+            mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration->getValue());
 
             if (mThreshold.getValue() >= 1)
             {
@@ -190,7 +190,7 @@ namespace eyegui
         }
         else
         {
-            mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration);
+            mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration->getValue());
         }
 
         return adaptiveScale;

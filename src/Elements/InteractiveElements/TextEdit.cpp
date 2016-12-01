@@ -286,7 +286,7 @@ namespace eyegui
 		// Update active entity's fading
 		if (!mwpActiveEntity.expired())
 		{
-			mActiveEntityFading = glm::min(mActiveEntityFading + tpf, mpLayout->getConfig()->animationDuration);
+			mActiveEntityFading = glm::min(mActiveEntityFading + tpf, mpLayout->getConfig()->animationDuration->getValue());
 		}
 
 		// *** UPDATE OF TEXT FLOW ***
@@ -316,7 +316,7 @@ namespace eyegui
 			}
 
 			// Update relative offset
-			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier);
+			mTextFlowYOffset.update(offsetSpeed * tpf * mpLayout->getConfig()->textEditScrollSpeedMultiplier->getValue());
 
 			/* TODO: CHECK WHETHER THIS KIND OF INTERACTION MAKES SENSE
 
@@ -417,7 +417,7 @@ namespace eyegui
 
 					// Draw flow part background
 					mpActiveEntityBackground->getShader()->fillValue("matrix", activeEntityBackgroundDrawMatrix);
-					mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration) * getMultipliedDimmedAlpha());
+					mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / mpLayout->getConfig()->animationDuration->getValue()) * getMultipliedDimmedAlpha());
 
 					// Draw it
 					mpActiveEntityBackground->draw();

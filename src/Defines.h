@@ -63,6 +63,9 @@ namespace eyegui
 	static const float TEXT_EDIT_CURSOR_PULSE_DURATION = 1.0f;
 	static const float TEXT_EDIT_CURSOR_RELATIVE_WIDTH = 0.2f;
 	static const float MINIMAL_DURATION_VALUE = 0.0001f;
+	static const std::string STYLE_BASE_CLASS_NAME = "base";
+	static const glm::vec4 VEC_4_ZERO = glm::vec4(0, 0, 0, 0);
+	static const glm::vec4 VEC_4_ONE = glm::vec4(1, 1, 1, 1);
 }
 
 #endif // DEFINES_H_

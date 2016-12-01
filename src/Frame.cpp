@@ -90,7 +90,7 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update own alpha
-        mFrameAlpha.update(tpf / mpLayout->getConfig()->animationDuration, !mVisible);
+        mFrameAlpha.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !mVisible);
 
         // Combine own alpha with layout's
         mCombinedAlpha = mFrameAlpha.getValue() * mRemovedFadingAlpha * alpha;

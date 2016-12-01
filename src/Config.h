@@ -9,9 +9,10 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define StyleValueMember(name, type, value) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new StyleValue<type>(value));
-#define StyleValueMemberMin(name, type, value, min) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, min));
-#define StyleValueMemberMinMax(name, type, value, min, max) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, min, max));
+// Fancy macros for saving lot of writing and preserving overview. Should be only used within this header file
+#define StyleValueMember(name, type, value) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new StyleValue<type>(value, STYLE_BASE_CLASS_NAME));
+#define StyleValueMemberMin(name, type, value, min) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, STYLE_BASE_CLASS_NAME, min));
+#define StyleValueMemberMinMax(name, type, value, min, max) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, STYLE_BASE_CLASS_NAME, min, max));
 
 #include "src/Defines.h"
 #include "externals/GLM/glm/glm.hpp"
@@ -25,8 +26,8 @@ namespace eyegui
 	{
 	public:
 
-		// Constructor takes initial value
-		StyleValue(T value) { this->mValue = value; }
+		// Constructor takes initial value and name of style class which introduced the value
+		StyleValue(T value, std::string styleClass) { this->mValue = value; this->mStyleClass = styleClass; }
 
 		// Setter for value
 		virtual void setValue(T value)
@@ -45,6 +46,9 @@ namespace eyegui
 
 		// Value
 		T mValue;
+
+		// Name of style class which introduced this value
+		std::string mStyleClass;
 	};
 
 	// Numeric style value (which can be clamped)
@@ -54,9 +58,9 @@ namespace eyegui
 	public:
 
 		// Constructor takes initial value
-		NumericStyleValue(T value) : StyleValue<T>(value) {}
-		NumericStyleValue(T value, T min) { setMin(min); this->mValue = glm::max(value, min); }
-		NumericStyleValue(T value, T min, T max) { setMin(min); setMax(max); this->mValue = glm::clamp(value, min, max); }
+		NumericStyleValue(T value, std::string styleClass) : StyleValue<T>(value, styleClass) {}
+		NumericStyleValue(T value, std::string styleClass, T min) { setMin(min); this->mValue = glm::max(value, min); this->mStyleClass = styleClass; }
+		NumericStyleValue(T value, std::string styleClass, T min, T max) { setMin(min); setMax(max); this->mValue = glm::clamp(value, min, max); this->mStyleClass = styleClass; }
 
 		// Setter for value. Includes clamping
 		virtual void setValue(T value) override
@@ -100,33 +104,35 @@ namespace eyegui
 		bool mMaximumSet = false;
 	};
 
-    struct Config
+    class Config
     {
+	public:
+
         // Initialize with fallback values
         std::string filepath;
-        float animationDuration = 0.1f;
-        float sensorPenetrationIncreaseDuration = 3.0f;
-        float sensorPenetrationDecreaseDuration = 1.5f;
-        float buttonThresholdIncreaseDuration = 1.0f;
-        float buttonThresholdDecreaseDuration = 2.0f;
-		StyleValueMemberMin		(buttonPressingDuration, float, 0.3f, MINIMAL_DURATION_VALUE);
-        float sensorInteractionPenetrationAmount = 0.5f;
-        float dimIncreaseDuration = 1.5f;
-        float dimDecreaseDuration = 0.25f;
-		float flashDuration = 2.0f;
-        float maximalAdaptiveScaleIncrease = 0.5f;
-        float adaptiveScaleIncreaseDuration = 1.0f;
-        float adaptiveScaleDecreaseDuration = 1.0f;
-        glm::vec4 gazeVisualizationColor = glm::vec4(0,0,1,0.5f);
-        float gazeVisualizationFadeDuration = 4.0f;
-        float gazeVisualizationFocusDuration = 2.0f;
-        float gazeVisualizationRejectThreshold = 0.125f;
-        float gazeVisualizationMinSize = 0.02f;
-        float gazeVisualizationMaxSize = 0.075f;
-        float keyboardZoomSpeedMultiplier = 1.0f;
-		float keyboardKeyPressDuration = 1.25f;
-        float flowSpeedMultiplier = 1.0f;
-		float textEditScrollSpeedMultiplier = 5.0f;
+		StyleValueMemberMin		(animationDuration,					float,		0.1f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(sensorPenetrationIncreaseDuration, float,		3.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(sensorPenetrationDecreaseDuration, float,		1.5f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(buttonThresholdIncreaseDuration,	float,		1.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(buttonThresholdDecreaseDuration,	float,		2.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(buttonPressingDuration,			float,		0.3f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(sensorInteractionPenetrationAmount, float,		0.5f, 0);
+		StyleValueMemberMin		(dimIncreaseDuration,				float,		1.5f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(dimDecreaseDuration,				float,		0.25f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(flashDuration,						float,		2.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(maximalAdaptiveScaleIncrease,		float,		0.5f, 0);
+		StyleValueMemberMin		(adaptiveScaleIncreaseDuration,		float,		1.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(adaptiveScaleDecreaseDuration,		float,		1.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMinMax	(gazeVisualizationColor,			glm::vec4,	glm::vec4(0, 0, 1.f, 0.5f), VEC_4_ZERO, VEC_4_ONE);
+		StyleValueMemberMin		(gazeVisualizationFadeDuration,		float,		4.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(gazeVisualizationFocusDuration,	float,		2.0f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(gazeVisualizationRejectThreshold,	float,		0.125f, 0);
+		StyleValueMemberMin		(gazeVisualizationMinSize,			float,		0.02f, 0);
+		StyleValueMemberMin		(gazeVisualizationMaxSize,			float,		0.075f, 0);
+		StyleValueMemberMin		(keyboardZoomSpeedMultiplier,		float,		1.0f, 0);
+		StyleValueMemberMin		(keyboardKeyPressDuration,			float,		1.25f, MINIMAL_DURATION_VALUE);
+		StyleValueMemberMin		(flowSpeedMultiplier,				float,		1.0f, 0);
+		StyleValueMemberMin		(textEditScrollSpeedMultiplier,		float,		1.0f, 0);
 
         // Experimental
         float futureKeyboardPressDuration = 0.5f;
@@ -137,9 +143,9 @@ namespace eyegui
 		float futureKeyboardBackspaceKeyThresholdMultiplier = 1.f;
 		float futureKeyboardSuggestionLineThresholdMultiplier = 1.f;
 
-		StyleValueMember		(mspTest, float, 0.1f);
-		StyleValueMemberMin		(mspTest2, float, 0.1f, 0.2f);
-		StyleValueMemberMinMax	(mspTest3, float, 0.1f, 0.2f, 0.3f);
+	protected:
+
+		std::string mName = STYLE_BASE_CLASS_NAME; // todo make common superclass for both base style and style (and get rid of name "config")
     };
 }
 
