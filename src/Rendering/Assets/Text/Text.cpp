@@ -101,6 +101,10 @@ namespace eyegui
         int backgroundWidth = extraPixels + textWidth;
         int backgroundHeight = extraPixels + textHeight;
 
+		// Limit both width and height by element size
+		backgroundWidth = glm::min(width, (uint)backgroundWidth);
+		backgroundHeight = glm::min(height, (uint)backgroundHeight);
+
         // Determine which
         glm::mat4 backgroundMatrix = calculateDrawMatrix(
             mpGUI->getWindowWidth(),
