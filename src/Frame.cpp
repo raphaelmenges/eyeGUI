@@ -23,8 +23,8 @@ namespace eyegui
     {
         // Initialize members
         mpLayout = pLayout;
-        mFrameAlpha.setValue(1);
-        mCombinedAlpha = 1;
+        mFrameAlpha.setValue(0);
+        mCombinedAlpha = 0;
         mRemovedFadingAlpha = 1;
         mVisible = true;
         mupRoot = NULL;
