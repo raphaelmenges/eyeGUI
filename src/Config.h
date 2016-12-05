@@ -9,6 +9,39 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+enum class StyleValue_float
+{
+	AnimationDuration,
+	SensorPenetrationIncreaseDuration,
+	SensorPenetrationDecreaseDuration,
+	ButtonThresholdIncreaseDuration,
+	ButtonThresholdDecreaseDuration,
+	ButtonPressingDuration,
+	SensorInteractionPenetrationAmount,
+	DimIncreaseDuration,
+	DimDecreaseDuration,
+	FlashDuration,
+	MaximalAdaptiveScaleIncrease,
+	AdaptiveScaleIncreaseDuration,
+	AdaptiveScaleDecreaseDuration,
+	
+	GazeVisualizationFadeDuration,
+	GazeVisualizationFocusDuration,
+	GazeVisualizationRejectThreshold,
+	GazeVisualizationMinSize,
+	GazeVisualizationMaxSize,
+	KeyboardZoomSpeedMultiplier,
+	KeyboardKeyPressDuration,
+	FlowSpeedMultiplier,
+	TextEditScrollSpeedMultiplier
+};
+
+enum class StyleValue_vec4
+{
+	GazeVisualizationColor
+};
+
+
 // Fancy macros for saving lot of writing and preserving overview. Should be only used within this header file
 #define StyleValueMember(name, type, value) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new StyleValue<type>(value, STYLE_BASE_CLASS_NAME));
 #define StyleValueMemberMin(name, type, value, min) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, STYLE_BASE_CLASS_NAME, min));
@@ -108,8 +141,56 @@ namespace eyegui
     {
 	public:
 
+		// Constructor
+		Config()
+		{
+			// Initialize float values
+			typedef StyleValue_float sFloat; // simplify enum access
+			typedef std::shared_ptr<StyleValue<float> > spFloat; // simplify shared pointer creation
+			std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat styleValueType, spFloat styleValue) // simplify map insertion
+			{
+				mFloatMap.insert(std::make_pair(styleValueType, styleValue));
+			};
+			floatInsert(sFloat::AnimationDuration,					spFloat(new NumericStyleValue<float>(0.1f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::SensorPenetrationIncreaseDuration,	spFloat(new NumericStyleValue<float>(3.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::SensorPenetrationDecreaseDuration,	spFloat(new NumericStyleValue<float>(1.5f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::ButtonThresholdIncreaseDuration,	spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::ButtonThresholdDecreaseDuration,	spFloat(new NumericStyleValue<float>(2.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::ButtonPressingDuration,				spFloat(new NumericStyleValue<float>(0.3f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new NumericStyleValue<float>(0.5f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::DimIncreaseDuration,				spFloat(new NumericStyleValue<float>(1.5f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::DimDecreaseDuration,				spFloat(new NumericStyleValue<float>(0.25f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::FlashDuration,						spFloat(new NumericStyleValue<float>(2.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::MaximalAdaptiveScaleIncrease,		spFloat(new NumericStyleValue<float>(0.5f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::AdaptiveScaleIncreaseDuration,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::AdaptiveScaleDecreaseDuration,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::GazeVisualizationFadeDuration,		spFloat(new NumericStyleValue<float>(4.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::GazeVisualizationFocusDuration,		spFloat(new NumericStyleValue<float>(2.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::GazeVisualizationRejectThreshold,	spFloat(new NumericStyleValue<float>(0.125f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::GazeVisualizationMinSize,			spFloat(new NumericStyleValue<float>(0.02f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::GazeVisualizationMaxSize,			spFloat(new NumericStyleValue<float>(0.075f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::KeyboardZoomSpeedMultiplier,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::KeyboardKeyPressDuration,			spFloat(new NumericStyleValue<float>(1.25f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::FlowSpeedMultiplier,				spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
+
+			// Initialize vec4 values
+			typedef StyleValue_vec4 v4Float; // simplify enum access
+			typedef std::shared_ptr<StyleValue<glm::vec4> > spVec4; // simplify shared pointer creation
+			std::function<void(v4Float, spVec4)> vec4Insert = [&](v4Float styleValueType, spVec4 styleValue) // simplify map insertion
+			{
+				mVec4Map.insert(std::make_pair(styleValueType, styleValue));
+			};
+			vec4Insert(v4Float::GazeVisualizationColor,				spVec4(new NumericStyleValue<glm::vec4>(glm::vec4(0, 0, 1.f, 0.5f), STYLE_BASE_CLASS_NAME, VEC_4_ZERO, VEC_4_ONE)));
+		}
+
+		// Get a value
+		std::shared_ptr<const StyleValue<float> > getValue(StyleValue_float type) const { return mFloatMap.at(type); }
+		std::shared_ptr<const StyleValue<glm::vec4> > getValue(StyleValue_vec4 type) const { return mVec4Map.at(type); }
+
         // Initialize with fallback values
         std::string filepath;
+		/*
 		StyleValueMemberMin		(animationDuration,					float,		0.1f, MINIMAL_DURATION_VALUE);
 		StyleValueMemberMin		(sensorPenetrationIncreaseDuration, float,		3.0f, MINIMAL_DURATION_VALUE);
 		StyleValueMemberMin		(sensorPenetrationDecreaseDuration, float,		1.5f, MINIMAL_DURATION_VALUE);
@@ -133,6 +214,10 @@ namespace eyegui
 		StyleValueMemberMin		(keyboardKeyPressDuration,			float,		1.25f, MINIMAL_DURATION_VALUE);
 		StyleValueMemberMin		(flowSpeedMultiplier,				float,		1.0f, 0);
 		StyleValueMemberMin		(textEditScrollSpeedMultiplier,		float,		1.0f, 0);
+		*/
+
+		std::map < StyleValue_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
+		std::map < StyleValue_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
 
         // Experimental
         float futureKeyboardPressDuration = 0.5f;

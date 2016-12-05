@@ -100,6 +100,7 @@ namespace eyegui
 
         void fillValue(Config& rConfig, std::string attribute, std::string value, std::string filepath)
         {
+			/* // TODO: reimplement
             // Go through the cases
             if (attribute == "animation-duration")
             {
@@ -225,6 +226,7 @@ namespace eyegui
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);
             }
+			*/
         }
     }
 }
