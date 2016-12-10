@@ -10,12 +10,12 @@
 #include "Defines.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/Helper.h"
-#include "ParserHelper.h"
 #include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
 #include <fstream>
 #include <set>
+#include <sstream>
 
 namespace eyegui
 {
@@ -234,39 +234,39 @@ namespace eyegui
             // Assign value to correct field of struct
             if (attribute == "color")
             {
-                rStyle.color = parseColor(value);
+                rStyle.color = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "background-color")
             {
-                rStyle.backgroundColor = parseColor(value);
+                rStyle.backgroundColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "highlight-color")
             {
-                rStyle.highlightColor = parseColor(value);
+                rStyle.highlightColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "separator-color")
             {
-                rStyle.separatorColor = parseColor(value);
+                rStyle.separatorColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "selection-color")
             {
-                rStyle.selectionColor = parseColor(value);
+                rStyle.selectionColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "icon-color")
             {
-                rStyle.iconColor = parseColor(value);
+                rStyle.iconColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "font-color")
             {
-                rStyle.fontColor = parseColor(value);
+                rStyle.fontColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "dim-color")
             {
-                rStyle.dimColor = parseColor(value);
+                rStyle.dimColor = stringHexRGBAToVec4RGBA(value);
             }
 			else if (attribute == "flash-color")
 			{
-				rStyle.flashColor = parseColor(value);
+				rStyle.flashColor = stringHexRGBAToVec4RGBA(value);
 			}
 			else if (attribute == "dim-alpha")
 			{
@@ -274,15 +274,15 @@ namespace eyegui
 			}
             else if (attribute == "mark-color")
             {
-                rStyle.markColor = parseColor(value);
+                rStyle.markColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "pick-color")
             {
-                rStyle.pickColor = parseColor(value);
+                rStyle.pickColor = stringHexRGBAToVec4RGBA(value);
             }
             else if (attribute == "threshold-color")
             {
-                rStyle.thresholdColor = parseColor(value);
+                rStyle.thresholdColor = stringHexRGBAToVec4RGBA(value);
             }
             else
             {

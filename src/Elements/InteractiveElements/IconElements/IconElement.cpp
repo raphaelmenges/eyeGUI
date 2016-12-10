@@ -135,7 +135,7 @@ namespace eyegui
 			descriptionVisible = false;
 		}
 
-        mDescriptionAlpha.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !descriptionVisible);
+        mDescriptionAlpha.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::AnimationDuration)->get(), !descriptionVisible);
 
         return adaptiveScale;
     }

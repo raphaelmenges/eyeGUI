@@ -9,6 +9,12 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#include "src/Utilities/Helper.h"
+#include "src/Defines.h"
+#include "externals/GLM/glm/glm.hpp"
+
+#include <map>
+
 enum class StyleValue_float
 {
 	AnimationDuration,
@@ -46,10 +52,6 @@ enum class StyleValue_vec4
 #define StyleValueMemberMin(name, type, value, min) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, STYLE_BASE_CLASS_NAME, min));
 #define StyleValueMemberMinMax(name, type, value, min, max) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, STYLE_BASE_CLASS_NAME, min, max));
 
-#include "src/Defines.h"
-#include "externals/GLM/glm/glm.hpp"
-#include <map>
-
 namespace eyegui
 {
 	// General style value
@@ -62,7 +64,7 @@ namespace eyegui
 		StyleValue(T initialValue, std::string styleClass) { this->mValue = initialValue; this->mStyleClass = styleClass; }
 
 		// Setter for value
-		virtual void setValue(T value)
+		virtual void set(T value)
 		{
 			// Just store the value
 			this->mValue = value;
@@ -72,10 +74,10 @@ namespace eyegui
 		}
 
 		// Getter for value
-		T getValue() const { return this->mValue; }
+		T get() const { return this->mValue; }
 
 		// Check whether value has been actively set
-		bool valueSet() const { return this->mValueSet; }
+		bool isSet() const { return this->mValueSet; }
 
 	protected:
 
@@ -104,7 +106,7 @@ namespace eyegui
 		NumericStyleValue(T initialValue, std::string styleClass, T min, T max) { setMin(min); setMax(max); this->mValue = glm::clamp(initialValue, min, max); this->mStyleClass = styleClass; }
 
 		// Setter for value. Includes clamping
-		virtual void setValue(T value) override
+		virtual void set(T value) override
 		{
 			if (mMinimumSet && mMaximumSet)
 			{
@@ -196,13 +198,17 @@ namespace eyegui
 		std::shared_ptr<const StyleValue<float> > getValue(StyleValue_float type) const { return mFloatMap.at(type); }
 		std::shared_ptr<const StyleValue<glm::vec4> > getValue(StyleValue_vec4 type) const { return mVec4Map.at(type); }
 
+		// Set a value
+		void setValue(StyleValue_float type, std::string value) { mFloatMap.at(type)->set(stringToFloat(value)); };
+		void setValue(StyleValue_vec4 type, std::string value) { mVec4Map.at(type)->set(stringHexRGBAToVec4RGBA(value)); };
+
         // Initialize with fallback values
         std::string filepath;
 
 		std::map < StyleValue_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
 		std::map < StyleValue_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
 
-        // Experimental
+        // Experimental (TODO: change to new system too)
         float futureKeyboardPressDuration = 0.5f;
         float futureKeyboardRetriggerDelay = 0.5f;
         float futureKeyboardThresholdDuration = 1.f;

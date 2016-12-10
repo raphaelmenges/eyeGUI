@@ -7,7 +7,11 @@
 
 #include "Helper.h"
 
+#include "src/Defines.h"
 #include "externals/utf8rewind/include/utf8rewind/utf8rewind.h"
+#include "externals/GLM/glm/glm.hpp"
+
+#include <sstream>
 #include <vector>
 
 namespace eyegui
@@ -590,6 +594,21 @@ namespace eyegui
         // Return result
         return result;
     }
+
+	glm::vec4 stringHexRGBAToVec4RGBA(std::string value)
+	{
+		uint hexInt;
+		std::stringstream ss;
+		ss << std::hex << value;
+		ss >> hexInt;
+
+		float red = ((float)((hexInt & 0xFF000000) >> 24)) / (255.0f);
+		float green = ((float)((hexInt & 0x00FF0000) >> 16)) / (255.0f);
+		float blue = ((float)((hexInt & 0x0000FF00) >> 8)) / (255.0f);
+		float alpha = ((float)((hexInt & 0x000000FF) >> 0)) / (255.0f);
+
+		return glm::vec4(red, green, blue, alpha);
+	}
 
     bool insideRect(int rectX, int rectY, int width, int height, int x, int y)
     {

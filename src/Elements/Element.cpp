@@ -403,7 +403,7 @@ namespace eyegui
 
     float Element::getDynamicScale() const
     {
-        return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->maximalAdaptiveScaleIncrease->getValue());
+        return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->getValue(StyleValue_float::MaximalAdaptiveScaleIncrease)->get());
     }
 
     float Element::getRelativeScale() const
@@ -426,7 +426,7 @@ namespace eyegui
         // *** OWN UPDATING ***
 
         // Activity animation
-        mActivity.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !mActive);
+        mActivity.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::AnimationDuration)->get(), !mActive);
 
         // Save current alpha (already animated by layout or other element)
         mAlpha = alpha;
@@ -438,19 +438,19 @@ namespace eyegui
         if (mForceUndim)
         {
             // Undim it
-            mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration->getValue());
+            mDim.update(-tpf / mpLayout->getConfig()->getValue(StyleValue_float::DimDecreaseDuration)->get());
         }
         else if (mDimming)
         {
             if (penetrated)
             {
                 // Undim it
-                mDim.update(-tpf / mpLayout->getConfig()->dimDecreaseDuration->getValue());
+                mDim.update(-tpf / mpLayout->getConfig()->getValue(StyleValue_float::DimDecreaseDuration)->get());
             }
             else
             {
                 // Dim it
-                mDim.update(tpf / mpLayout->getConfig()->dimIncreaseDuration->getValue());
+                mDim.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::DimIncreaseDuration)->get());
             }
         }
         else
@@ -462,7 +462,7 @@ namespace eyegui
 		// Flashing
 		if (mFlash.getValue() > 0.f)
 		{
-			mFlash.update(-tpf / mpLayout->getConfig()->flashDuration->getValue());
+			mFlash.update(-tpf / mpLayout->getConfig()->getValue(StyleValue_float::FlashDuration)->get());
 		}
 
         // Adaptive scaling
@@ -472,28 +472,28 @@ namespace eyegui
             if (penetrated)
             {
                 // Scale it up
-                mAdaptiveScale.update(tpf / mpLayout->getConfig()->adaptiveScaleIncreaseDuration->getValue());
+                mAdaptiveScale.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::AdaptiveScaleIncreaseDuration)->get());
             }
             else
             {
                 // Scale it down
-                mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration->getValue());
+                mAdaptiveScale.update(-tpf / mpLayout->getConfig()->getValue(StyleValue_float::AdaptiveScaleDecreaseDuration)->get());
             }
         }
         else
         {
             // Scale it down, because could have been set by using scale from special update (children!)
-            mAdaptiveScale.update(-tpf / mpLayout->getConfig()->adaptiveScaleDecreaseDuration->getValue());
+            mAdaptiveScale.update(-tpf / mpLayout->getConfig()->getValue(StyleValue_float::AdaptiveScaleDecreaseDuration)->get());
         }
 
         // Marking
-        mMark.update(tpf / mpLayout->getConfig()->animationDuration->getValue(), !mMarking);
+        mMark.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::AnimationDuration)->get(), !mMarking);
 
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
         {
             float replacedAlpha = mAlpha * (mupReplacedElement->getAlpha()
-                - (tpf / mpLayout->getConfig()->animationDuration->getValue()));
+                - (tpf / mpLayout->getConfig()->getValue(StyleValue_float::AnimationDuration)->get()));
             replacedAlpha = clamp(replacedAlpha, 0, 1);
             mupReplacedElement->update(tpf, replacedAlpha, NULL, mDim.getValue());
 

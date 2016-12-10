@@ -7,10 +7,9 @@
 
 #include "ConfigParser.h"
 
-#include "Defines.h"
+#include "src/Defines.h"
 #include "src/Utilities/Helper.h"
 #include "src/Utilities/OperationNotifier.h"
-#include "ParserHelper.h"
 #include "src/Utilities/PathBuilder.h"
 
 #include <algorithm>
@@ -100,100 +99,100 @@ namespace eyegui
 
         void fillValue(Config& rConfig, std::string attribute, std::string value, std::string filepath)
         {
-			/* // TODO: reimplement
             // Go through the cases
             if (attribute == "animation-duration")
             {
-                rConfig.animationDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::AnimationDuration, value);
             }
             else if (attribute == "sensor-penetration-increase-duration")
             {
-                rConfig.sensorPenetrationIncreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::SensorPenetrationIncreaseDuration, value);
             }
             else if (attribute == "sensor-penetration-decrease-duration")
             {
-                rConfig.sensorPenetrationDecreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::SensorPenetrationDecreaseDuration, value);
             }
             else if (attribute == "button-threshold-increase-duration")
             {
-                rConfig.buttonThresholdIncreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::ButtonThresholdIncreaseDuration, value);
             }
             else if (attribute == "button-threshold-decrease-duration")
             {
-                rConfig.buttonThresholdDecreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::ButtonThresholdDecreaseDuration, value);
             }
             else if (attribute == "button-pressing-duration")
             {
-				rConfig.buttonPressingDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::ButtonPressingDuration, value);
             }
             else if (attribute == "sensor-interaction-penetration-amount")
             {
-                rConfig.sensorInteractionPenetrationAmount->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::SensorInteractionPenetrationAmount, value);
             }
             else if (attribute == "dim-increase-duration")
             {
-                rConfig.dimIncreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::DimIncreaseDuration, value);
             }
             else if (attribute == "dim-decrease-duration")
             {
-                rConfig.dimDecreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::DimDecreaseDuration, value);
             }
 			else if (attribute == "flash-duration")
 			{
-				rConfig.flashDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::FlashDuration, value);
 			}
             else if (attribute == "maximal-adaptive-scale-increase")
             {
-                rConfig.maximalAdaptiveScaleIncrease->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::MaximalAdaptiveScaleIncrease, value);
             }
             else if (attribute == "adaptive-scale-increase-duration")
             {
-                rConfig.adaptiveScaleIncreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::AdaptiveScaleIncreaseDuration, value);
             }
             else if (attribute == "adaptive-scale-decrease-duration")
             {
-                rConfig.adaptiveScaleDecreaseDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::AdaptiveScaleDecreaseDuration, value);
             }
             else if (attribute == "gaze-visualization-color")
             {
-                rConfig.gazeVisualizationColor->setValue(parseColor(value));
+				rConfig.setValue(StyleValue_vec4::GazeVisualizationColor, value);
             }
             else if (attribute == "gaze-visualization-fade-duration")
             {
-                rConfig.gazeVisualizationFadeDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::GazeVisualizationFadeDuration, value);
             }
             else if (attribute == "gaze-visualization-focus-duration")
             {
-                rConfig.gazeVisualizationFocusDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::GazeVisualizationFocusDuration, value);
             }
             else if (attribute == "gaze-visualization-reject-threshold")
             {
-                rConfig.gazeVisualizationRejectThreshold->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::GazeVisualizationRejectThreshold, value);
             }
             else if (attribute == "gaze-visualization-min-size")
             {
-                rConfig.gazeVisualizationMinSize->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::GazeVisualizationMinSize, value);
             }
             else if (attribute == "gaze-visualization-max-size")
             {
-                rConfig.gazeVisualizationMaxSize->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::GazeVisualizationMaxSize, value);
             }
             else if (attribute == "keyboard-zoom-speed-multiplier")
             {
-                rConfig.keyboardZoomSpeedMultiplier->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::KeyboardZoomSpeedMultiplier, value);
             }
 			else if (attribute == "keyboard-key-press-duration")
 			{
-				rConfig.keyboardKeyPressDuration->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::KeyboardKeyPressDuration, value);
 			}
             else if (attribute == "flow-speed-multiplier")
             {
-                rConfig.flowSpeedMultiplier->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::FlowSpeedMultiplier, value);
             }
 			else if (attribute == "text-edit-scroll-speed-multiplier")
 			{
-				rConfig.textEditScrollSpeedMultiplier->setValue(stringToFloat(value));
+				rConfig.setValue(StyleValue_float::TextEditScrollSpeedMultiplier, value);
 			}
+			/* TODO: Reintegrate config of future keyboard? Otherwise config is not loaded for it...
             else if (attribute == "future-keyboard-press-duration")
             {
                 rConfig.futureKeyboardPressDuration = stringToFloat(value);
@@ -222,11 +221,11 @@ namespace eyegui
 			{
 				rConfig.futureKeyboardSuggestionLineThresholdMultiplier = stringToFloat(value);
 			}
+			*/
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown value on left side of '=': " + attribute, filepath);
             }
-			*/
         }
     }
 }

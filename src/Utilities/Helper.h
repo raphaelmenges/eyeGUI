@@ -63,6 +63,9 @@ namespace eyegui
     // String to float converter. Returns -1 at failure
     float stringToFloat(std::string value);
 
+	// String hex RGBA to vec4 RGBA (TODO: maybe return bool at failure or so)
+	glm::vec4 stringHexRGBAToVec4RGBA(std::string value);
+
     // Check whether coordinate within rectangle
     bool insideRect(int rectX, int rectY, int width, int height, int x, int y);
 }

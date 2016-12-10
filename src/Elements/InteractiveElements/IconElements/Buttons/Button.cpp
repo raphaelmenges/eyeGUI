@@ -159,11 +159,11 @@ namespace eyegui
         // Pressing animation
         if (mIsDown && mPressing.getValue() < 1)
         {
-            mPressing.update(tpf / mpLayout->getConfig()->buttonPressingDuration->getValue());
+            mPressing.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::ButtonPressingDuration)->get());
         }
         else if (!mIsDown && mPressing.getValue() > 0)
         {
-            mPressing.update(-tpf / mpLayout->getConfig()->buttonPressingDuration->getValue());
+            mPressing.update(-tpf / mpLayout->getConfig()->getValue(StyleValue_float::ButtonPressingDuration)->get());
         }
 
         // If pressed and no switch, go back (do it each frame and not only at end of going down,
@@ -180,7 +180,7 @@ namespace eyegui
             && penetrated // penetration
             && !(!mIsSwitch && mPressing.getValue() > 0)) // avoids to add threshold for none switch when at down position
         {
-            mThreshold.update(tpf / mpLayout->getConfig()->buttonThresholdIncreaseDuration->getValue());
+            mThreshold.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::ButtonThresholdIncreaseDuration)->get());
 
             if (mThreshold.getValue() >= 1)
             {
@@ -190,7 +190,7 @@ namespace eyegui
         }
         else
         {
-            mThreshold.update(-tpf / mpLayout->getConfig()->buttonThresholdDecreaseDuration->getValue());
+            mThreshold.update(-tpf / mpLayout->getConfig()->getValue(StyleValue_float::ButtonThresholdDecreaseDuration)->get());
         }
 
         return adaptiveScale;

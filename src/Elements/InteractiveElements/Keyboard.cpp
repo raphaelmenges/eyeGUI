@@ -147,7 +147,7 @@ namespace eyegui
         float PRESSED_KEY_SCALING_MULTIPLIER = 2.f; // Just animation scale of pressed key which is moving and fading towards user
 
         // Use speed multiplier
-        ZOOM_INCREASE_DURATION /= mpLayout->getConfig()->keyboardZoomSpeedMultiplier->getValue();
+        ZOOM_INCREASE_DURATION /= mpLayout->getConfig()->getValue(StyleValue_float::KeyboardZoomSpeedMultiplier)->get();
 
         // *** SETUP ***
 
