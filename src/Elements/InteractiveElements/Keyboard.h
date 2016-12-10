@@ -23,7 +23,7 @@ namespace eyegui
     public:
 
         // Notes
-        // - icon color is used here for font rendering
+        // - icon color is used here for font coloring
 
         // Destructor
         virtual ~Keyboard();
@@ -138,10 +138,10 @@ namespace eyegui
         LerpValue mZoom;
         int mFocusedKeyRow;
         int mFocusedKeyColumn;
-        glm::vec2 mGazePosition; // gaze position in pixels
+        glm::vec2 mFilteredGazePosition; // filtered gaze position in pixels
         std::u16string mLastPressedKeyValue;
 		bool mKeyboardRecovers; //  key has been pressed and keyboard goes back to initial state
-        std::vector<PressedKey> mPressedKeys;  // Alpha [0..1] and copy of key
+        std::vector<PressedKey> mPressedKeys;  // alpha [0..1] and copy of key
         bool mUseFastTyping;
         std::u16string mFastBuffer;
         std::vector<Keymap> mKeymaps;
