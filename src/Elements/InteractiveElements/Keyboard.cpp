@@ -94,6 +94,9 @@ namespace eyegui
             mBigCharactersActive = true;
         break;
         }
+
+        // Reset state
+        resetKeymapsAndState();
     }
 
     uint Keyboard::getCountOfKeymaps() const
