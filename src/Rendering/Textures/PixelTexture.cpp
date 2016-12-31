@@ -75,11 +75,11 @@ namespace eyegui
 		{
 		case ColorFormat::RGBA:
 			glFormat = GL_RGBA;
-			glInternalFormat = GL_RGBA;
+			glInternalFormat = GL_RGBA8;
 			break;
 		case ColorFormat::BGRA:
 			glFormat = GL_BGRA;
-			glInternalFormat = GL_RGBA;
+			glInternalFormat = GL_RGBA8;
 			break;
 		}
 
