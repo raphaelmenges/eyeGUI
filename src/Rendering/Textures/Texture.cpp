@@ -91,16 +91,6 @@ namespace eyegui
             break;
         }
 
-        // Load it to GPU
-		if (flipY)
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat , mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, flippedData.data());
-		}
-		else
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, pData);
-		}
-
         // Filtering
         switch (filtering)
         {
@@ -114,6 +104,16 @@ namespace eyegui
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             break;
         }
+
+		// Load it to GPU
+		if (flipY)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, flippedData.data());
+		}
+		else
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, pData);
+		}
 
         // Unbind texture
         glBindTexture(GL_TEXTURE_2D, 0);
