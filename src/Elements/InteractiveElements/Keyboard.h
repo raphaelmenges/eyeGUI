@@ -43,6 +43,9 @@ namespace eyegui
         // Tries to fetch next interactive element for selecting, returns NULL if fails
         virtual InteractiveElement* internalNextInteractiveElement(Element const * pChildCaller);
 
+		// Classify currently selected key. If no key is selected, nothing happens
+		void classifyKey(bool accept);
+
     protected:
 
 		// Factory is friend
@@ -81,6 +84,9 @@ namespace eyegui
         virtual void specialPipeNotification(NotificationType notification, Layout* pLayout);
 
     private:
+
+		// Enum for classification of selection
+		enum class Classification {NO_SELECTION, PENDING, ACCEPT, REJECT };
 
         // Typedefs
         typedef std::pair<float, std::unique_ptr<Key> > PressedKey; // Alpha and copy of key
@@ -131,7 +137,7 @@ namespace eyegui
         void resetKeymapsAndState();
 
         // Press key
-        void pressKey(SubKeymap* pKeys, int i, int j);
+        void pressKey(Key* pKey);
 
         // Members
         RenderItem const * mpBackground;
@@ -149,6 +155,8 @@ namespace eyegui
         bool mBigCharactersActive;
         int mLastFastKeyRow;
         int mLastFastKeyColumn;
+		Key* mpSelectedKey;
+		Classification mSelectionClassification;
     };
 }
 

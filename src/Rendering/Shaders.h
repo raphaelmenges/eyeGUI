@@ -267,6 +267,17 @@ namespace eyegui
             "   float value = texture(atlas, uv).r;\n"
             "   fragColor = vec4(color.rgb, color.a * value);\n"
             "}\n";
+
+		static const char* pKeySelectionFragmentShader =
+			"#version 330 core\n"
+			"out vec4 fragColor;\n"
+			"in vec2 uv;\n"
+			"uniform vec4 selectionColor = vec4(1,0,0,0.5);\n"
+			"uniform float alpha = 1;\n"
+			"void main() {\n"
+			"   float gradient = length(2*uv-1);\n" // simple gradient as base
+			"	fragColor = vec4(1.0, 1.0, 1.0, alpha * pow(gradient,2) * (1.0 - floor(min(1.0, abs(length(2.0*uv-1.0)))))) * selectionColor;\n"
+			"}\n";
     }
 }
 

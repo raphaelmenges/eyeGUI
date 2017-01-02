@@ -43,7 +43,7 @@ namespace eyegui
     static const float KEYBOARD_HORIZONTAL_KEY_DISTANCE = 0.15f;
     static const ImageAlignment STANDARD_IMAGE_ALIGNMENT = ImageAlignment::ZOOMED;
     static const float KEY_FOCUS_DURATION = 0.3f;
-    static const float KEY_SELECT_DURATION = 0.1f;
+    static const float KEY_PICK_DURATION = 0.1f;
     static const float KEY_MIN_SCALE = 0.5f;
     static const char16_t FONT_FALLBACK_CHARACTER = u' ';
     static const float FONT_KEYBOARD_SIZE = 0.1f; // percentage of screen height

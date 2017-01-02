@@ -41,7 +41,7 @@ namespace eyegui
         // Set position of center and size of key
         virtual void transformAndSize(int x, int y, int size);
 
-        // Update. Returns whether has been pressed
+        // Update. Returns whether has been selected by user
         virtual bool update(float tpf, bool penetrated);
 
         // Draw
@@ -50,6 +50,7 @@ namespace eyegui
 			glm::vec4 pickColor,
 			glm::vec4 iconColor,
 			glm::vec4 thresholdColor,
+			glm::vec4 selectionColor,
 			float alpha) const = 0;
 
         // Reset
@@ -79,6 +80,12 @@ namespace eyegui
         // Get value
         virtual std::u16string getValue() const = 0;
 
+		// Get selected
+		bool isSelected() const;
+
+		// Unselect
+		void unselect();
+
     protected:
 
         // Draw circle
@@ -92,6 +99,11 @@ namespace eyegui
 			glm::vec4 thresholdColor,
 			float alpha) const;
 
+		// Draw selection
+		void drawSelection(
+			glm::vec4 selectionColor,
+			float alpha) const;
+
         // Members
         int mX;
         int mY;
@@ -100,12 +112,14 @@ namespace eyegui
         AssetManager* mpAssetManager;
         RenderItem const * mpCircleRenderItem;
 		RenderItem const * mpThresholdItem;
+		RenderItem const * mpSelectionItem;
         bool mFocused;
         LerpValue mFocus;
         bool mPicked;
         LerpValue mPick;
         glm::mat4 mCircleMatrix;
 		LerpValue mThreshold;
+		bool mSelected;
     };
 }
 

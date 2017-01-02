@@ -203,6 +203,9 @@ namespace eyegui
         // Set keymap of keyboard by index
         void setKeymapOfKeyboard(std::string id, uint keymapIndex);
 
+		// Classify currently selected key
+		void classifyKey(std::string id, bool accept);
+
         // Suggest words
         void suggestWords(std::string id, std::u16string input, uint dictionaryIndex, std::u16string& rBestSuggestion);
         void suggestWords(std::string id, std::string input, uint dictionaryIndex, std::string& rBestSuggestion);

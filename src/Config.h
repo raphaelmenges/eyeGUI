@@ -36,7 +36,7 @@ enum class StyleValue_float
 	GazeVisualizationMinSize,
 	GazeVisualizationMaxSize,
 	KeyboardZoomSpeedMultiplier,
-	KeyboardKeyPressDuration,
+	KeyboardKeySelectionDuration,
 	FlowSpeedMultiplier,
 	TextEditScrollSpeedMultiplier
 };
@@ -180,7 +180,7 @@ namespace eyegui
 			floatInsert(sFloat::GazeVisualizationMinSize,			spFloat(new NumericStyleValue<float>(0.02f, STYLE_BASE_CLASS_NAME, 0)));
 			floatInsert(sFloat::GazeVisualizationMaxSize,			spFloat(new NumericStyleValue<float>(0.075f, STYLE_BASE_CLASS_NAME, 0)));
 			floatInsert(sFloat::KeyboardZoomSpeedMultiplier,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::KeyboardKeyPressDuration,			spFloat(new NumericStyleValue<float>(1.25f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::KeyboardKeySelectionDuration,		spFloat(new NumericStyleValue<float>(1.25f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
 			floatInsert(sFloat::FlowSpeedMultiplier,				spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
 			floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
 

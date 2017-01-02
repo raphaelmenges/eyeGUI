@@ -130,230 +130,270 @@ namespace eyegui
         return NULL;
     }
 
-    float Keyboard::specialUpdate(float tpf, Input* pInput)
-    {
-        // *** SET UP PARAMETERS ***
+	void Keyboard::classifyKey(bool accept)
+	{
+		if (mSelectionClassification == Classification::PENDING)
+		{
+			if (accept)
+			{
+				mSelectionClassification = Classification::ACCEPT;
+			}
+			else
+			{
+				mSelectionClassification = Classification::REJECT;
+			}
+		}
+	}
 
-        // Radius stuff is given in key radii (since normalized with that value)
+	float Keyboard::specialUpdate(float tpf, Input* pInput)
+	{
+		// *** SET UP PARAMETERS ***
 
-        // Parameters of gaze smoothing
-        float GAZE_FILTER_DURATION = 0.25f; // Time for smoothed gaze to interpolate towards current raw gaze value. Applied when zoom gets higher
+		// Radius stuff is given in key radii (since normalized with that value)
 
-        // Parameters of zooming
-        float ZOOM_INCREASE_DURATION = 0.75f; // Duration of zoom to become full. Not to take as "real" seconds since depending on other values as well
-        float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.4f; // Decrease duration of zoom after pressing
-        float ZOOM_DECREASE_DURATION = 1.f; // General decrease duration of zoom if no gaze is upon element
+		// Parameters of gaze smoothing
+		float GAZE_FILTER_DURATION = 0.25f; // Time for smoothed gaze to interpolate towards current raw gaze value. Applied when zoom gets higher
 
-        // Parameters of visualization
-        float FOCUS_RADIUS = 3.5f; // Radius of gaze affected keys (in the center bigger, else smaller). Normalized by standard key size
-        float MINIMAL_KEY_SIZE = 0.25f; // Cap minimal key size for those in outer focus area
-        float PRESSED_KEY_SCALING_MULTIPLIER = 2.5f; // Just animation scale of pressed key which is moving and fading towards user
+		// Parameters of zooming
+		float ZOOM_INCREASE_DURATION = 0.75f; // Duration of zoom to become full. Not to take as "real" seconds since depending on other values as well
+		float ZOOM_DECREASE_AFTER_PRESS_DURATION = 0.4f; // Decrease duration of zoom after pressing
+		float ZOOM_DECREASE_DURATION = 1.f; // General decrease duration of zoom if no gaze is upon element
 
-        // Use speed multiplier
-        ZOOM_INCREASE_DURATION /= mpLayout->getConfig()->getValue(StyleValue_float::KeyboardZoomSpeedMultiplier)->get();
+		// Parameters of visualization
+		float FOCUS_RADIUS = 3.5f; // Radius of gaze affected keys (in the center bigger, else smaller). Normalized by standard key size
+		float MINIMAL_KEY_SIZE = 0.25f; // Cap minimal key size for those in outer focus area
+		float PRESSED_KEY_SCALING_MULTIPLIER = 2.5f; // Just animation scale of pressed key which is moving and fading towards user
 
-        // *** SETUP ***
+		// Use speed multiplier
+		ZOOM_INCREASE_DURATION /= mpLayout->getConfig()->getValue(StyleValue_float::KeyboardZoomSpeedMultiplier)->get();
 
-        // Call super
-        float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
+		// *** SETUP ***
 
-        // Check for penetration by input
-        bool penetrated = penetratedByInput(pInput);
+		// Call super
+		float adaptiveScale = InteractiveElement::specialUpdate(tpf, pInput);
 
-        // Get pointers from currently active keymap
-        SubKeymap* pKeys = NULL;
-        PositionMap* pInitialKeyPositions = &(mKeymaps[mCurrentKeymapIndex].initialKeyPositions);
-        float initialKeySize = mKeymaps[mCurrentKeymapIndex].initialKeySize;
-        if (mBigCharactersActive)
-        {
-            pKeys = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
-        }
-        else
-        {
-            pKeys = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
-        }
+		// Check for penetration by input
+		bool penetrated = penetratedByInput(pInput);
 
-        // *** UPDATE ANIMATED PRESSED KEYES ***
-        std::vector<int> dyingPressedKeys;
-        for (uint i = 0; i < mPressedKeys.size(); i++)
-        {
-            // Update alpha and size
-            mPressedKeys[i].first -= tpf / INTERACTION_FADING_DURATION;
-            Key* pKey = mPressedKeys[i].second.get();
-            pKey->transformAndSize(
-                (int)pKey->getPosition().x,
-                (int)pKey->getPosition().y,
-                (int)
-                    ((float)initialKeySize // using initial size as base
-                    + (float)initialKeySize * PRESSED_KEY_SCALING_MULTIPLIER
-                        * (1.f - mPressedKeys[i].first)));
+		// Get pointers from currently active keymap
+		SubKeymap* pKeys = NULL;
+		PositionMap* pInitialKeyPositions = &(mKeymaps[mCurrentKeymapIndex].initialKeyPositions);
+		float initialKeySize = mKeymaps[mCurrentKeymapIndex].initialKeySize;
+		if (mBigCharactersActive)
+		{
+			pKeys = &(mKeymaps[mCurrentKeymapIndex].bigKeys);
+		}
+		else
+		{
+			pKeys = &(mKeymaps[mCurrentKeymapIndex].smallKeys);
+		}
 
-            // Check, whether still visible
-            if (mPressedKeys[i].first <= 0)
-            {
-                dyingPressedKeys.push_back(i);
-            }
-        }
+		// If something is selected, wait for reaction from application
+		if (mSelectionClassification != Classification::NO_SELECTION)
+		{
+			// Wait for application to classify selection
+			if (mSelectionClassification == Classification::ACCEPT) // accept
+			{
+				// Press the key
+				pressKey(mpSelectedKey);
 
-        // Delete dying pressed keys (go backwards through it)
-        for (int i = (int)dyingPressedKeys.size()-1; i >= 0; i--)
-        {
-            mPressedKeys.erase(mPressedKeys.begin() + dyingPressedKeys[i]);
-        }
+				// Reset selection
+				mpSelectedKey->unselect();
+				mSelectionClassification = Classification::NO_SELECTION;
+				mpSelectedKey = nullptr;
+			}
+			else if (mSelectionClassification == Classification::REJECT) // reject
+			{
+				// Reset selection
+				mpSelectedKey->unselect();
+				mSelectionClassification = Classification::NO_SELECTION;
+				mpSelectedKey = nullptr;
 
-        // *** FILTER USER'S GAZE ***
-        glm::vec2 rawGazeDelta = glm::vec2(0,0);
-        if (pInput != NULL)
-        {
-            rawGazeDelta = glm::vec2(pInput->gazeX, pInput->gazeY) - mFilteredGazePosition;
-        }
+			} // else: pending
+		}
+		else
+		{
+			// *** UPDATE ANIMATED PRESSED KEYES ***
+			std::vector<int> dyingPressedKeys;
+			for (uint i = 0; i < mPressedKeys.size(); i++)
+			{
+				// Update alpha and size
+				mPressedKeys[i].first -= tpf / INTERACTION_FADING_DURATION;
+				Key* pKey = mPressedKeys[i].second.get();
+				pKey->transformAndSize(
+					(int)pKey->getPosition().x,
+					(int)pKey->getPosition().y,
+					(int)
+					((float)initialKeySize // using initial size as base
+						+ (float)initialKeySize * PRESSED_KEY_SCALING_MULTIPLIER
+						* (1.f - mPressedKeys[i].first)));
 
-        // Filter only, when zoom is higher
-        float sqrtZoom = glm::sin(mZoom.getValue() * 3.14f * 0.5f); // make starting and ending of function smoother
-        float gazeFilter = (1.f - sqrtZoom) + sqrtZoom * (tpf / GAZE_FILTER_DURATION);
-        mFilteredGazePosition += gazeFilter * rawGazeDelta; // update filtered gaze position
+				// Check, whether still visible
+				if (mPressedKeys[i].first <= 0)
+				{
+					dyingPressedKeys.push_back(i);
+				}
+			}
 
-        // *** UPDATE ZOOM ***
-        if (mKeyboardRecovers)
-        {
-            mZoom.update(-tpf / ZOOM_DECREASE_AFTER_PRESS_DURATION);
-            if (mZoom.getValue() <= 0)
-            {
-				mKeyboardRecovers = false;
-            }
-        }
-        else if (penetrated)
-        {
-            mZoom.update(tpf / ZOOM_INCREASE_DURATION);
-        }
-        else
-        {
-			mZoom.update(-tpf / ZOOM_DECREASE_DURATION);
-        }
+			// Delete dying pressed keys (go backwards through it)
+			for (int i = (int)dyingPressedKeys.size() - 1; i >= 0; i--)
+			{
+				mPressedKeys.erase(mPressedKeys.begin() + dyingPressedKeys[i]);
+			}
 
-        // *** DETERMINE FOCUSED KEY ***
-        if(penetrated)
-        {
-            // Go over keys and search nearest
-            float minDistance = std::numeric_limits<float>::max();
-            int newFocusedKeyRow = -1;
-            int newFocusedKeyColumn = -1;
-            for(uint i = 0; i < pKeys->size(); i++)
-            {
-                for(uint j = 0; j < (*pKeys)[i].size(); j++)
-                {
-                    // Use position in keys to get position after last update
-                    float currentDistance = glm::abs(glm::distance(mFilteredGazePosition, (*pKeys)[i][j]->getPosition()));
-                    if(currentDistance < minDistance)
-                    {
-                        minDistance = currentDistance;
-                        newFocusedKeyRow = i;
-                        newFocusedKeyColumn = j;
-                    }
-                }
-            }
+			// *** FILTER USER'S GAZE ***
+			glm::vec2 rawGazeDelta = glm::vec2(0, 0);
+			if (pInput != NULL)
+			{
+				rawGazeDelta = glm::vec2(pInput->gazeX, pInput->gazeY) - mFilteredGazePosition;
+			}
 
-            // Set focus if necessary
-            if(newFocusedKeyRow != mFocusedKeyRow || newFocusedKeyColumn != mFocusedKeyColumn)
-            {
-                // Unset old focus
-                if(mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
-                {
-                    (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
-                    (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setPicked(false);
+			// Filter only, when zoom is higher
+			float sqrtZoom = glm::sin(mZoom.getValue() * 3.14f * 0.5f); // make starting and ending of function smoother
+			float gazeFilter = (1.f - sqrtZoom) + sqrtZoom * (tpf / GAZE_FILTER_DURATION);
+			mFilteredGazePosition += gazeFilter * rawGazeDelta; // update filtered gaze position
 
-                    // Notify interaction
-                    notifyInteraction("LEAVE_KEY", convertUTF16ToUTF8((*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->getValue()));
-                }
+			// *** UPDATE ZOOM ***
+			if (mKeyboardRecovers)
+			{
+				mZoom.update(-tpf / ZOOM_DECREASE_AFTER_PRESS_DURATION);
+				if (mZoom.getValue() <= 0)
+				{
+					mKeyboardRecovers = false;
+				}
+			}
+			else if (penetrated)
+			{
+				mZoom.update(tpf / ZOOM_INCREASE_DURATION);
+			}
+			else
+			{
+				mZoom.update(-tpf / ZOOM_DECREASE_DURATION);
+			}
 
-                // Set new focus
-                mFocusedKeyRow = newFocusedKeyRow;
-                mFocusedKeyColumn = newFocusedKeyColumn;
-                (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
+			// *** DETERMINE FOCUSED KEY ***
+			if (penetrated)
+			{
+				// Go over keys and search nearest
+				float minDistance = std::numeric_limits<float>::max();
+				int newFocusedKeyRow = -1;
+				int newFocusedKeyColumn = -1;
+				for (uint i = 0; i < pKeys->size(); i++)
+				{
+					for (uint j = 0; j < (*pKeys)[i].size(); j++)
+					{
+						// Use position in keys to get position after last update
+						float currentDistance = glm::abs(glm::distance(mFilteredGazePosition, (*pKeys)[i][j]->getPosition()));
+						if (currentDistance < minDistance)
+						{
+							minDistance = currentDistance;
+							newFocusedKeyRow = i;
+							newFocusedKeyColumn = j;
+						}
+					}
+				}
 
-                // Notify interaction
-                notifyInteraction("ENTER_KEY", convertUTF16ToUTF8((*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->getValue()));
-            }
+				// Set focus if necessary
+				if (newFocusedKeyRow != mFocusedKeyRow || newFocusedKeyColumn != mFocusedKeyColumn)
+				{
+					// Unset old focus
+					if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
+					{
+						(*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(false);
+						(*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setPicked(false);
 
-            // Pick focused key when using fast typing
-            if (mUseFastTyping && mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
-            {
-                Key* pFocusedKey = (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn].get();
-                if (!pFocusedKey->isPicked() && pFocusedKey->getFocusValue() >= 1.f)
-                {
-                    pFocusedKey->setPicked(true);
+						// Notify interaction
+						notifyInteraction("LEAVE_KEY", convertUTF16ToUTF8((*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->getValue()));
+					}
 
-                    // Add picked key's value to buffer (only adds new picked keys)
-                    mFastBuffer += pFocusedKey->getValue();
-                    mLastFastKeyRow = mFocusedKeyRow;
-                    mLastFastKeyColumn = mFocusedKeyColumn;
-                }
-            }
-        }
+					// Set new focus
+					mFocusedKeyRow = newFocusedKeyRow;
+					mFocusedKeyColumn = newFocusedKeyColumn;
+					(*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->setFocus(true);
 
-        // *** UPDATE KEY POSITIONS ***
+					// Notify interaction
+					notifyInteraction("ENTER_KEY", convertUTF16ToUTF8((*pKeys)[mFocusedKeyRow][mFocusedKeyColumn]->getValue()));
+				}
 
-        // Update keys (they have to be transformed and sized each update)
-        for(uint i = 0; i < pKeys->size(); i++)
-        {
-            for(uint j = 0; j < (*pKeys)[i].size(); j++)
-            {
-                // Clamp position to borders of element
-                glm::vec2 clampledGazePosition(
-                    glm::clamp(mFilteredGazePosition.x, (float)mX, (float)(mX + mWidth)),
-                    glm::clamp(mFilteredGazePosition.y, (float)mY, (float)(mY + mHeight)));
+				// Pick focused key when using fast typing
+				if (mUseFastTyping && mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
+				{
+					Key* pFocusedKey = (*pKeys)[mFocusedKeyRow][mFocusedKeyColumn].get();
+					if (!pFocusedKey->isPicked() && pFocusedKey->getFocusValue() >= 1.f)
+					{
+						pFocusedKey->setPicked(true);
 
-                // Get delta between position of initial key position and gaze position
-                glm::vec2 positionDelta = (*pInitialKeyPositions)[i][j] - clampledGazePosition;
+						// Add picked key's value to buffer (only adds new picked keys)
+						mFastBuffer += pFocusedKey->getValue();
+						mLastFastKeyRow = mFocusedKeyRow;
+						mLastFastKeyColumn = mFocusedKeyColumn;
+					}
+				}
+			}
 
-                // Radius of focus
-                float focusWeight = 1.f - (glm::length(positionDelta) / (FOCUS_RADIUS * initialKeySize)); // key size used for normalization
-                focusWeight = clamp(focusWeight, 0, 1); // between zero and one
+			// *** UPDATE KEY POSITIONS ***
 
-                // Only near keys have to be moved
-				positionDelta *= 0.25f; // scale it
-                positionDelta *= focusWeight; // only use it within focus
+			// Update keys (they have to be transformed and sized each update)
+			for (uint i = 0; i < pKeys->size(); i++)
+			{
+				for (uint j = 0; j < (*pKeys)[i].size(); j++)
+				{
+					// Clamp position to borders of element
+					glm::vec2 clampledGazePosition(
+						glm::clamp(mFilteredGazePosition.x, (float)mX, (float)(mX + mWidth)),
+						glm::clamp(mFilteredGazePosition.y, (float)mY, (float)(mY + mHeight)));
 
-                // Calculate delta of size (use already calculated position delta as basis)
-                float sizeDelta = glm::length(positionDelta); // length of position delta
-				sizeDelta *= 2.f; // scale it
-				sizeDelta = -sizeDelta; // make outer keys smaller, not bigger
-				sizeDelta += 0.5f * initialKeySize * glm::sin(0.5f * 3.14f * focusWeight); // make inner keys bigger
+					// Get delta between position of initial key position and gaze position
+					glm::vec2 positionDelta = (*pInitialKeyPositions)[i][j] - clampledGazePosition;
 
-                // Weight with zoom
-                positionDelta *= mZoom.getValue();
-                sizeDelta *= mZoom.getValue();
+					// Radius of focus
+					float focusWeight = 1.f - (glm::length(positionDelta) / (FOCUS_RADIUS * initialKeySize)); // key size used for normalization
+					focusWeight = clamp(focusWeight, 0, 1); // between zero and one
 
-                // Calc stuff for key
-                int keyPositionX = (int)((*pInitialKeyPositions)[i][j].x + positionDelta.x);
-                int keyPositionY = (int)((*pInitialKeyPositions)[i][j].y + positionDelta.y);
-                int keySize = (int)(glm::max(MINIMAL_KEY_SIZE, initialKeySize + sizeDelta));
+					// Only near keys have to be moved
+					positionDelta *= 0.25f; // scale it
+					positionDelta *= focusWeight; // only use it within focus
 
-                // Transform and size
-                (*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
+					// Calculate delta of size (use already calculated position delta as basis)
+					float sizeDelta = glm::length(positionDelta); // length of position delta
+					sizeDelta *= 2.f; // scale it
+					sizeDelta = -sizeDelta; // make outer keys smaller, not bigger
+					sizeDelta += 0.5f * initialKeySize * glm::sin(0.5f * 3.14f * focusWeight); // make inner keys bigger
 
-                // Actual updating
-                bool pressed = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated); // do not calculate penetration for each key but use one from elements
+					// Weight with zoom
+					positionDelta *= mZoom.getValue();
+					sizeDelta *= mZoom.getValue();
 
-                // Check for "key pressed"
-                if(pressed) // && (*pKeys)[i][j]->isFocused())
-                {
-                    // Check, whether gaze is really on focused key
-                    /*
-                    if(
-                        glm::abs(
-                            glm::distance(
-                                glm::vec2(keyPositionX, keyPositionY),
-                                mFilteredGazePosition))
-                        < keySize / 2)
-                    */
-                    {
-                        // Press key
-                        pressKey(pKeys, i, j);
-                    }
-                }
-            }
-        }
+					// Calc stuff for key
+					int keyPositionX = (int)((*pInitialKeyPositions)[i][j].x + positionDelta.x);
+					int keyPositionY = (int)((*pInitialKeyPositions)[i][j].y + positionDelta.y);
+					int keySize = (int)(glm::max(MINIMAL_KEY_SIZE, initialKeySize + sizeDelta));
+
+					// Transform and size
+					(*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
+
+					// Actual updating
+					bool selected = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated); // do not calculate penetration for each key but use one from elements
+
+					// Check for "key selected"
+					if (selected) // && (*pKeys)[i][j]->isFocused())
+					{
+						// Save selection
+						mSelectionClassification = Classification::PENDING;
+						mpSelectedKey = (*pKeys)[i][j].get();
+
+						// Just a reminder for the zoom to decrease
+						mKeyboardRecovers = true;
+
+						// Inform listener after updating
+						mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_SELECTED);
+
+						// Interaction notification
+						notifyInteraction("KEY_SELECTED");
+					}
+				}
+			}
+		} // nothing selected
 
         return adaptiveScale;
     }
@@ -398,6 +438,7 @@ namespace eyegui
                     getStyle()->iconColor,
                     getStyle()->thresholdColor,
                     // mThreshold.getValue() * rupKey->getFocusValue(),
+					getStyle()->selectionColor,
                     getMultipliedDimmedAlpha());
             }
         }
@@ -410,6 +451,7 @@ namespace eyegui
                 getStyle()->pickColor,
                 getStyle()->iconColor,
                 getStyle()->thresholdColor,
+				getStyle()->selectionColor,
                 getMultipliedDimmedAlpha() * rPressedKey.first);
         }
 
@@ -495,7 +537,7 @@ namespace eyegui
 
         resetKeymapsAndState();
 
-        // Following should be probably not reset
+        // Following should probably be not reset
         // mCurrentKeymapIndex = 0;
         // mBigCharactersActive = false;
     }
@@ -507,11 +549,11 @@ namespace eyegui
         {
             if (mBigCharactersActive)
             {
-                pressKey(&mKeymaps[mCurrentKeymapIndex].bigKeys, mFocusedKeyRow, mFocusedKeyColumn);
+                pressKey(mKeymaps[mCurrentKeymapIndex].bigKeys[mFocusedKeyRow][mFocusedKeyColumn].get());
             }
             else
             {
-                pressKey(&mKeymaps[mCurrentKeymapIndex].smallKeys, mFocusedKeyRow, mFocusedKeyColumn);
+                pressKey(mKeymaps[mCurrentKeymapIndex].smallKeys[mFocusedKeyRow][mFocusedKeyColumn].get());
             }
         }
     }
@@ -521,6 +563,12 @@ namespace eyegui
         // Pipe notifications to notifier template including own data
         switch (notification)
         {
+		case NotificationType::KEYBOARD_KEY_SELECTED:
+		{
+			// Notify listener about selection
+			notifyListener(&KeyboardListener::keySelected, pLayout, getId());
+			break;
+		}
         case NotificationType::KEYBOARD_KEY_PRESSED:
         {
             // Notify listener method with UTF-16 string
@@ -651,6 +699,8 @@ namespace eyegui
         mFastBuffer = u"";
         mLastFastKeyRow = -1;
         mLastFastKeyColumn = -1;
+		mpSelectedKey = nullptr;
+		mSelectionClassification = Classification::NO_SELECTION;
 
         // Reset keys on all keymaps
         for (const auto& rKeymap : mKeymaps)
@@ -675,10 +725,10 @@ namespace eyegui
         }
     }
 
-    void Keyboard::pressKey(SubKeymap* pKeys, int i, int j)
+    void Keyboard::pressKey(Key* pKey)
     {
         // Get value of pressed key
-        std::u16string pressedValue = (*pKeys)[i][j]->getValue();
+        std::u16string pressedValue = pKey->getValue();
 
         if (mUseFastTyping)
         {
@@ -686,7 +736,7 @@ namespace eyegui
             mLastPressedKeyValue = mFastBuffer;
 
             // Check whether one has to add pressed key as well, because only picked keys were added so far
-            if ((int)i != mLastFastKeyRow && (int)j != mLastFastKeyColumn)
+            if (mFocusedKeyRow != mLastFastKeyRow && mFocusedKeyColumn != mLastFastKeyColumn)
             {
                 mLastPressedKeyValue.append(pressedValue);
             }
@@ -702,14 +752,11 @@ namespace eyegui
         mLastFastKeyRow = -1;
         mLastFastKeyColumn = -1;
 
-        // Just a reminder for the zoom to decrease
-		mKeyboardRecovers = true;
-
         // Inform listener after updating
         mpNotificationQueue->enqueue(getId(), NotificationType::KEYBOARD_KEY_PRESSED);
 
         // Save pressed key for nice animation
-        std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)((*pKeys)[i][j].get())));
+        std::unique_ptr<Key> upPressedKey = std::unique_ptr<Key>(new CharacterKey(*(CharacterKey*)(pKey)));
         upPressedKey->transformAndSize();
         mPressedKeys.push_back(PressedKey(1.f, std::move(upPressedKey)));
 

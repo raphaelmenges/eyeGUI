@@ -132,6 +132,13 @@ namespace eyegui
 		//! Destructor.
 		virtual ~KeyboardListener() = 0;
 
+		//! Callback for selecting keys of keyboard.
+		/*!
+		\param pLayout pointer to layout from which callback is coming.
+		\param id is the unique id of the keyboard which causes the callback.
+		*/
+		void virtual keySelected(Layout* pLayout, std::string id) = 0;
+
 		//! Callback for pressing keys of keyboard.
 		/*!
 		  \param pLayout pointer to layout from which callback is coming.
@@ -744,6 +751,14 @@ namespace eyegui
 	  \param keymapIndex is index of keymap.
 	*/
 	void setKeymapOfKeyboard(Layout* pLayout, std::string id, unsigned int keymapIndex);
+
+	//! Classify currently selected key on keyboard. If no key selected, nothing happens.
+	/*!
+	  \param pLayout pointer to layout.
+	  \param id is the unique id of an element.
+	  \param accept if true and reject selection when false.
+	*/
+	void classifyKey(Layout* pLayout, std::string id, bool accept);
 
 	//! Give input to word suggest element.
 	/*!

@@ -19,6 +19,7 @@ namespace eyegui
         // Initialize members
         mpLayout = pLayout;
         mpAssetManager = pAssetManager;
+		mSelected = false;
 
         // TransformAndSize has to be called before usage
         mX = 0;
@@ -38,6 +39,11 @@ namespace eyegui
 		mpThresholdItem = mpAssetManager->fetchRenderItem(
 			shaders::Type::CIRCLE_THRESHOLD,
 			meshes::Type::QUAD);
+
+		// Fetch render item for selection visualization
+		mpSelectionItem = mpAssetManager->fetchRenderItem(
+			shaders::Type::KEY_SELECTION,
+			meshes::Type::QUAD);
     }
 
     Key::Key(const Key& rOtherKey)
@@ -54,6 +60,8 @@ namespace eyegui
         mPick.setValue(rOtherKey.mPick.getValue());
         mpCircleRenderItem = rOtherKey.mpCircleRenderItem;
 		mpThresholdItem = rOtherKey.mpThresholdItem;
+		mpSelectionItem = rOtherKey.mpSelectionItem;
+		mSelected = rOtherKey.mSelected;
 		mThreshold.setValue(0); // reset threshold at copying
     }
 
@@ -86,26 +94,27 @@ namespace eyegui
     bool Key::update(float tpf, bool penetrated)
     {
         mFocus.update(tpf / KEY_FOCUS_DURATION, !mFocused);
-        mPick.update(tpf / KEY_SELECT_DURATION, !mPicked);
+        mPick.update(tpf / KEY_PICK_DURATION, !mPicked);
 
 		// Use focus for updating threshold
-		mThreshold.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::KeyboardKeyPressDuration)->get(), !mFocused || !penetrated);
+		mThreshold.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::KeyboardKeySelectionDuration)->get(), !mFocused || !penetrated || mSelected);
 
-		// Check whether pressed
-		bool pressed = mThreshold.getValue() >= 1.f;
+		// Check whether selected
+		mSelected |= mThreshold.getValue() >= 1.f;
 
-		// If pressed, reset threshold
-		if (pressed)
+		// If selected, reset threshold
+		if (mSelected)
 		{
 			mThreshold.setValue(0.f);
 		}
 
-		// Return whether pressed
-		return pressed;
+		// Return whether selected
+		return mSelected;
     }
 
     void Key::reset()
     {
+		mSelected = false;
         mFocused = false;
         mFocus.setValue(0);
         mPicked = false;
@@ -148,6 +157,16 @@ namespace eyegui
         return mSize;
     }
 
+	bool Key::isSelected() const
+	{
+		return mSelected;
+	}
+
+	void Key::unselect()
+	{
+		mSelected = false;
+	}
+
     void Key::drawCircle(
             glm::vec4 color,
             glm::vec4 pickColor,
@@ -183,6 +202,20 @@ namespace eyegui
 			mpThresholdItem->getShader()->fillValue("alpha", alpha);
 			mpThresholdItem->getShader()->fillValue("mask", 0); // mask is always in slot 0
 			mpThresholdItem->draw();
+		}
+	}
+
+	void Key::drawSelection(
+		glm::vec4 selectionColor,
+		float alpha) const
+	{
+		if (mSelected)
+		{
+			mpSelectionItem->bind();
+			mpSelectionItem->getShader()->fillValue("matrix", mCircleMatrix);
+			mpSelectionItem->getShader()->fillValue("selectionColor", selectionColor);
+			mpSelectionItem->getShader()->fillValue("alpha", alpha);
+			mpSelectionItem->draw();
 		}
 	}
 }

@@ -246,6 +246,9 @@ namespace eyegui
             case shaders::Type::CHARACTER_KEY:
                 rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pCharacterKeyFragmentShader));
                 break;
+			case shaders::Type::KEY_SELECTION:
+				rupShader = std::unique_ptr<Shader>(new Shader(shaders::pStaticVertexShader, shaders::pKeySelectionFragmentShader));
+				break;
             default:
                 throwError(OperationNotifier::Operation::BUG, "Shader does not exist");
             }

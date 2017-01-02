@@ -180,9 +180,9 @@ namespace eyegui
             {
 				rConfig.setValue(StyleValue_float::KeyboardZoomSpeedMultiplier, value);
             }
-			else if (attribute == "keyboard-key-press-duration")
+			else if (attribute == "keyboard-key-selection-duration")
 			{
-				rConfig.setValue(StyleValue_float::KeyboardKeyPressDuration, value);
+				rConfig.setValue(StyleValue_float::KeyboardKeySelectionDuration, value);
 			}
             else if (attribute == "flow-speed-multiplier")
             {

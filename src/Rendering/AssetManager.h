@@ -48,7 +48,8 @@ namespace eyegui
 		TEXT,
 		IMAGE,
 		KEY,
-		CHARACTER_KEY};
+		CHARACTER_KEY,
+		KEY_SELECTION};
 	}
     namespace meshes { enum class Type { QUAD, LINE }; }
     namespace graphics { enum class Type { CIRCLE, BOX, NOT_FOUND }; }

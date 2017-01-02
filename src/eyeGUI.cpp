@@ -391,6 +391,11 @@ namespace eyegui
         pLayout->setKeymapOfKeyboard(id, keymapIndex);
     }
 
+	void classifyKey(Layout* pLayout, std::string id, bool accept)
+	{
+		pLayout->classifyKey(id, accept);
+	}
+
     void suggestWords(Layout* pLayout, std::string id, std::u16string input, unsigned int dictionaryIndex)
     {
         std::u16string bestSuggestion;

@@ -665,6 +665,19 @@ namespace eyegui
         }
     }
 
+	void Layout::classifyKey(std::string id, bool accept)
+	{
+		Keyboard* pKeyboard = toKeyboard(fetchElement(id));
+		if (pKeyboard != NULL)
+		{
+			pKeyboard->classifyKey(accept);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find keyboard with id: " + id);
+		}
+	}
+
     void Layout::suggestWords(std::string id, std::u16string input, uint dictionaryIndex, std::u16string& rBestSuggestion)
     {
         WordSuggest* pWordSuggest = toWordSuggest(fetchElement(id));
