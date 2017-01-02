@@ -544,7 +544,7 @@ namespace eyegui
 
     void Keyboard::specialInteract()
     {
-        // Either currently focused key or the one with highest combination of focus and zoom...first idea used here
+        // TODO: Interact with selected one, only.
         if (mFocusedKeyRow >= 0 && mFocusedKeyColumn >= 0)
         {
             if (mBigCharactersActive)
@@ -555,6 +555,15 @@ namespace eyegui
             {
                 pressKey(mKeymaps[mCurrentKeymapIndex].smallKeys[mFocusedKeyRow][mFocusedKeyColumn].get());
             }
+
+			// Reset selection
+			mKeyboardRecovers = true;
+			if (mSelectionClassification != Classification::NO_SELECTION)
+			{
+				mpSelectedKey->unselect();
+				mSelectionClassification = Classification::NO_SELECTION;
+				mpSelectedKey = nullptr;
+			}
         }
     }
 
