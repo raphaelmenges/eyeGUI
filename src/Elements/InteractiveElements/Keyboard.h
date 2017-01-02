@@ -63,7 +63,8 @@ namespace eyegui
 			float relativeScale,
 			float border,
 			bool dimming,
-			bool adaptiveScaling);
+			bool adaptiveScaling,
+			bool instantPress);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
@@ -140,6 +141,7 @@ namespace eyegui
         void pressKey(Key* pKey);
 
         // Members
+		bool mInstantPress;
         RenderItem const * mpBackground;
         LerpValue mZoom;
         int mFocusedKeyRow;

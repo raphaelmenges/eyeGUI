@@ -770,6 +770,9 @@ namespace eyegui
 
         std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::string styleName, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
         {
+			// Show background?
+			bool instantPress = parseBoolAttribute("instantpress", xmlKeyboard);
+
             // Create keyboard
 			ElementFactory fac;
 			auto upKeyboard = fac.build<Keyboard>(
@@ -783,7 +786,8 @@ namespace eyegui
 				relativeScale,
 				border,
 				dimming,
-				adaptiveScaling);
+				adaptiveScaling,
+				instantPress);
             
 			// Return keyboard
 			return (std::move(upKeyboard));

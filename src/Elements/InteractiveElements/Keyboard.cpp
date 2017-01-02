@@ -27,7 +27,8 @@ namespace eyegui
         float relativeScale,
         float border,
         bool dimming,
-        bool adaptiveScaling) : InteractiveElement(
+        bool adaptiveScaling,
+		bool instantPress) : InteractiveElement(
             id,
             styleName,
             pParent,
@@ -42,6 +43,9 @@ namespace eyegui
             adaptiveScaling)
     {
         mType = Type::KEYBOARD;
+
+		// Fill members
+		mInstantPress = instantPress;
 
         // Initialize members
         mCurrentKeymapIndex = 0;
@@ -192,7 +196,7 @@ namespace eyegui
 		if (mSelectionClassification != Classification::NO_SELECTION)
 		{
 			// Wait for application to classify selection
-			if (mSelectionClassification == Classification::ACCEPT) // accept
+			if (mInstantPress || mSelectionClassification == Classification::ACCEPT) // accept
 			{
 				// Press the key
 				pressKey(mpSelectedKey);
