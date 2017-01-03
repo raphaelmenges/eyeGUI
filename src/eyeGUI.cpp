@@ -752,8 +752,7 @@ namespace eyegui
 
     void setRootFilepath(std::string rootFilepath)
     {
-        // Set root filepath as friend of path builder
-        PathBuilder::rootFilepath = rootFilepath;
+		PathBuilder::setRootFilepath(rootFilepath);
     }
 }
 

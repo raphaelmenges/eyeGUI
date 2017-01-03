@@ -22,8 +22,11 @@ namespace eyegui
     {
     public:
 
-        // Only friend may set root filepath
-        friend void setRootFilepath(std::string rootFilepath);
+		// Set root filepath
+		static void setRootFilepath(std::string rootFilepath)
+		{
+			getInstance()->rootFilepath = rootFilepath;
+		}
 
         // Build full filepath
         static std::string buildFullFilepath(std::string filepath)
@@ -33,16 +36,16 @@ namespace eyegui
 
     private:
 
-        // Check for instance existence
-        static PathBuilder* getInstance()
-        {
-            if (pInstance == NULL)
-            {
-                static PathBuilder pathBuilder;
-                pInstance = &pathBuilder;
-            }
-            return pInstance;
-        }
+		// Check for instance existence
+		static PathBuilder* getInstance()
+		{
+			if (pInstance == NULL)
+			{
+				static PathBuilder pathBuilder;
+				pInstance = &pathBuilder;
+			}
+			return pInstance;
+		}
 
         // Internal function to build full filepath
         std::string internalBuildFullFilepath(std::string filepath)
