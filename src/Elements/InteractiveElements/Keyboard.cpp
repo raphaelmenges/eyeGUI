@@ -578,8 +578,22 @@ namespace eyegui
         {
 		case NotificationType::KEYBOARD_KEY_SELECTED:
 		{
-			// Notify listener about selection
-			notifyListener(&KeyboardListener::keySelected, pLayout, getId());
+			// Check, whether there is still a selected key
+			if (mpSelectedKey != nullptr)
+			{
+				// Get value of selected key
+				std::u16string selectedKeyValue16 = mpSelectedKey->getValue();
+
+				// Notify listener about selection with UTF-16 string
+				notifyListener(&KeyboardListener::keySelected, pLayout, getId(), selectedKeyValue16);
+
+				// Convert selected key's value to UTF-8 string
+				std::string selectedKeyValue8;
+				convertUTF16ToUTF8(selectedKeyValue16, selectedKeyValue8);
+
+				// Notify listener about selection with UTF-8 string
+				notifyListener(&KeyboardListener::keySelected, pLayout, getId(), selectedKeyValue8);
+			}
 			break;
 		}
         case NotificationType::KEYBOARD_KEY_PRESSED:

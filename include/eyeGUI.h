@@ -136,8 +136,17 @@ namespace eyegui
 		/*!
 		\param pLayout pointer to layout from which callback is coming.
 		\param id is the unique id of the keyboard which causes the callback.
+		\param value is the u16string given by selected key.
 		*/
-		void virtual keySelected(Layout* pLayout, std::string id) = 0;
+		void virtual keySelected(Layout* pLayout, std::string id, std::u16string value) = 0;
+
+		//! Callback for selecting keys of keyboard.
+		/*!
+		\param pLayout pointer to layout from which callback is coming.
+		\param id is the unique id of the keyboard which causes the callback.
+		\param value is the string given by selected key.
+		*/
+		void virtual keySelected(Layout* pLayout, std::string id, std::string value) = 0;
 
 		//! Callback for pressing keys of keyboard.
 		/*!
