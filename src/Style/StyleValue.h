@@ -13,6 +13,7 @@
 
 #include <string>
 #include <memory>
+#include <functional>
 
 namespace eyegui
 {
@@ -55,14 +56,19 @@ namespace eyegui
 	{
 	public:
 
-		// Constructor takes initial value and pointer to style class that holds this value
-		StyleValue(std::weak_ptr<const StyleClass> wpStyleClass, T value) { this->mwpStyleClass = wpStyleClass; this->mValue = value; }
+		// Constructor pointer to class thats owns the value and an initial value. Optionally can be added a constraint that is checked at set
+		StyleValue(std::weak_ptr<const StyleClass> wpStyleClass, T value, std::function<T(T)> constraint = [](T value) {return value; })
+		{
+			this->mwpStyleClass = wpStyleClass;
+			this->mConstraint = std::move(constraint);
+			this->mValue = this->mConstraint(value);
+		}
 
 		// Getter for style class that holds this
 		std::weak_ptr<const StyleClass> getStyleClass() const {	return mwpStyleClass; };
 
 		// Setter for value
-		virtual void set(T value) {	this->mValue = value; }
+		virtual void set(T value) { this->mValue = this->mConstraint(value); }
 
 		// Getter for value
 		T get() const { return this->mValue; }
@@ -74,6 +80,9 @@ namespace eyegui
 
 		// Value
 		T mValue;
+
+		// Constraint function
+		std::function<T(T)> mConstraint;
 	};
 }
 
