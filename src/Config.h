@@ -26,12 +26,12 @@ namespace eyegui
 		// Constructor
 		Config()
 		{
-			// TODO: will break runtime for the moment since maps are empty
+			// TODO: delete this class
 		}
 
 		// Get a value
-		std::shared_ptr<const StyleValue<float> > getValue(StyleType_float type) const { return mFloatMap.at(type); }
-		std::shared_ptr<const StyleValue<glm::vec4> > getValue(StyleType_vec4 type) const { return mVec4Map.at(type); }
+		std::shared_ptr<const StyleValue<float> > getValue(StyleType_float type) const { return std::shared_ptr<StyleValue<float> >(new StyleValue<float>(std::shared_ptr<const StyleClass>(), 1.0f)); }
+		std::shared_ptr<const StyleValue<glm::vec4> > getValue(StyleType_vec4 type) const { return std::shared_ptr<StyleValue<glm::vec4> >(new StyleValue<glm::vec4>(std::shared_ptr<const StyleClass>(), glm::vec4(1.0f))); }
 
 		// Set a value
 		void setValue(StyleType_float type, std::string value) { mFloatMap.at(type)->set(stringToFloat(value)); };

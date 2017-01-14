@@ -22,14 +22,21 @@ namespace eyegui
 		StyleTree();
 
 		// Add style class class
-		std::shared_ptr<const StyleClass> addStyleClass(std::string name, std::string parentName);
+		std::shared_ptr<const StyleClass> addStyleClass(std::string name, std::string parentName = STYLE_BASE_CLASS_NAME);
 
 		// Fetch style class
 		std::shared_ptr<const StyleClass> fetchStyleClass(std::string name) const;
 
 		// Set value by name of style class (must have been added before calling this)
 		template<typename Type>
-		void setValue(std::string styleClass, Type styleType, std::string value);
+		void setValue(std::string styleClass, Type styleType, std::string value)
+		{
+			// Fetch style class
+			if (auto spStyleClass = mspRoot->fetchThisOrChild(styleClass))
+			{
+				spStyleClass->setValue(styleType, value);
+			}
+		}
 
 	private:
 

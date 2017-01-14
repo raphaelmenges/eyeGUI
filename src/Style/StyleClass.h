@@ -18,6 +18,7 @@
 
 namespace eyegui
 {
+	// Style class
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
 	public:

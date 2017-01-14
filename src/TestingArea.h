@@ -10,14 +10,30 @@
 #ifndef TESTING_AREA_H_
 #define TESTING_AREA_H_
 
-#include "src/Style/StyleClass.h"
+#include "src/Style/StyleTree.h"
 #include <iostream>
 
 namespace eyegui
 {
 	void testingMain()
 	{
-		// TODO: test style tree
+		// TODO
+		StyleTree styleTree;
+		auto header = styleTree.addStyleClass("header");
+		auto headerButton = styleTree.addStyleClass("headerButton", "header");
+		auto footer = styleTree.addStyleClass("footer");
+
+		
+		std::cout << header->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+
+		styleTree.setValue("headerButton", StyleType_float::AnimationDuration, "0.2");
+		std::cout << header->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+
+		styleTree.setValue("header", StyleType_float::AnimationDuration, "0.2");
+		std::cout << header->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
 	}
 }
 

@@ -41,14 +41,4 @@ namespace eyegui
 	{
 		return mspRoot->fetchThisOrChild(name);
 	}
-
-	template<typename Type>
-	void StyleTree::setValue(std::string styleClass, Type styleType, std::string value)
-	{
-		// Fetch style class
-		if (auto spStyleClass = mspRoot->fetchThisOrChild(parentName))
-		{
-			spStyleClass->setValue(styleType, value);
-		}
-	}
 }
