@@ -102,95 +102,95 @@ namespace eyegui
             // Go through the cases
             if (attribute == "animation-duration")
             {
-				rConfig.setValue(StyleValue_float::AnimationDuration, value);
+				rConfig.setValue(StyleType_float::AnimationDuration, value);
             }
             else if (attribute == "sensor-penetration-increase-duration")
             {
-				rConfig.setValue(StyleValue_float::SensorPenetrationIncreaseDuration, value);
+				rConfig.setValue(StyleType_float::SensorPenetrationIncreaseDuration, value);
             }
             else if (attribute == "sensor-penetration-decrease-duration")
             {
-				rConfig.setValue(StyleValue_float::SensorPenetrationDecreaseDuration, value);
+				rConfig.setValue(StyleType_float::SensorPenetrationDecreaseDuration, value);
             }
             else if (attribute == "button-threshold-increase-duration")
             {
-				rConfig.setValue(StyleValue_float::ButtonThresholdIncreaseDuration, value);
+				rConfig.setValue(StyleType_float::ButtonThresholdIncreaseDuration, value);
             }
             else if (attribute == "button-threshold-decrease-duration")
             {
-				rConfig.setValue(StyleValue_float::ButtonThresholdDecreaseDuration, value);
+				rConfig.setValue(StyleType_float::ButtonThresholdDecreaseDuration, value);
             }
             else if (attribute == "button-pressing-duration")
             {
-				rConfig.setValue(StyleValue_float::ButtonPressingDuration, value);
+				rConfig.setValue(StyleType_float::ButtonPressingDuration, value);
             }
             else if (attribute == "sensor-interaction-penetration-amount")
             {
-				rConfig.setValue(StyleValue_float::SensorInteractionPenetrationAmount, value);
+				rConfig.setValue(StyleType_float::SensorInteractionPenetrationAmount, value);
             }
             else if (attribute == "dim-increase-duration")
             {
-				rConfig.setValue(StyleValue_float::DimIncreaseDuration, value);
+				rConfig.setValue(StyleType_float::DimIncreaseDuration, value);
             }
             else if (attribute == "dim-decrease-duration")
             {
-				rConfig.setValue(StyleValue_float::DimDecreaseDuration, value);
+				rConfig.setValue(StyleType_float::DimDecreaseDuration, value);
             }
 			else if (attribute == "flash-duration")
 			{
-				rConfig.setValue(StyleValue_float::FlashDuration, value);
+				rConfig.setValue(StyleType_float::FlashDuration, value);
 			}
             else if (attribute == "maximal-adaptive-scale-increase")
             {
-				rConfig.setValue(StyleValue_float::MaximalAdaptiveScaleIncrease, value);
+				rConfig.setValue(StyleType_float::MaximalAdaptiveScaleIncrease, value);
             }
             else if (attribute == "adaptive-scale-increase-duration")
             {
-				rConfig.setValue(StyleValue_float::AdaptiveScaleIncreaseDuration, value);
+				rConfig.setValue(StyleType_float::AdaptiveScaleIncreaseDuration, value);
             }
             else if (attribute == "adaptive-scale-decrease-duration")
             {
-				rConfig.setValue(StyleValue_float::AdaptiveScaleDecreaseDuration, value);
+				rConfig.setValue(StyleType_float::AdaptiveScaleDecreaseDuration, value);
             }
             else if (attribute == "gaze-visualization-color")
             {
-				rConfig.setValue(StyleValue_vec4::GazeVisualizationColor, value);
+				rConfig.setValue(StyleType_vec4::GazeVisualizationColor, value);
             }
             else if (attribute == "gaze-visualization-fade-duration")
             {
-				rConfig.setValue(StyleValue_float::GazeVisualizationFadeDuration, value);
+				rConfig.setValue(StyleType_float::GazeVisualizationFadeDuration, value);
             }
             else if (attribute == "gaze-visualization-focus-duration")
             {
-				rConfig.setValue(StyleValue_float::GazeVisualizationFocusDuration, value);
+				rConfig.setValue(StyleType_float::GazeVisualizationFocusDuration, value);
             }
             else if (attribute == "gaze-visualization-reject-threshold")
             {
-				rConfig.setValue(StyleValue_float::GazeVisualizationRejectThreshold, value);
+				rConfig.setValue(StyleType_float::GazeVisualizationRejectThreshold, value);
             }
             else if (attribute == "gaze-visualization-min-size")
             {
-				rConfig.setValue(StyleValue_float::GazeVisualizationMinSize, value);
+				rConfig.setValue(StyleType_float::GazeVisualizationMinSize, value);
             }
             else if (attribute == "gaze-visualization-max-size")
             {
-				rConfig.setValue(StyleValue_float::GazeVisualizationMaxSize, value);
+				rConfig.setValue(StyleType_float::GazeVisualizationMaxSize, value);
             }
             else if (attribute == "keyboard-zoom-speed-multiplier")
             {
-				rConfig.setValue(StyleValue_float::KeyboardZoomSpeedMultiplier, value);
+				rConfig.setValue(StyleType_float::KeyboardZoomSpeedMultiplier, value);
             }
 			else if (attribute == "keyboard-key-selection-duration")
 			{
-				rConfig.setValue(StyleValue_float::KeyboardKeySelectionDuration, value);
+				rConfig.setValue(StyleType_float::KeyboardKeySelectionDuration, value);
 			}
             else if (attribute == "flow-speed-multiplier")
             {
-				rConfig.setValue(StyleValue_float::FlowSpeedMultiplier, value);
+				rConfig.setValue(StyleType_float::FlowSpeedMultiplier, value);
             }
 			else if (attribute == "text-edit-scroll-speed-multiplier")
 			{
-				rConfig.setValue(StyleValue_float::TextEditScrollSpeedMultiplier, value);
+				rConfig.setValue(StyleType_float::TextEditScrollSpeedMultiplier, value);
 			}
 			/* TODO: Reintegrate config of future keyboard? Otherwise config is not loaded for it...
             else if (attribute == "future-keyboard-press-duration")

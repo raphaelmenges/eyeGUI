@@ -7,10 +7,10 @@
 
 #include "Layout.h"
 
-#include "GUI.h"
+#include "src/GUI.h"
 #include "src/Utilities/Helper.h"
-#include "Elements/ElementCasting.h"
-#include "Defines.h"
+#include "src/Elements/ElementCasting.h"
+#include "src/Defines.h"
 #include "src/Utilities/OperationNotifier.h"
 
 #include <algorithm>
@@ -68,7 +68,7 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update alpha
-        mAlpha.update(tpf / mpGUI->getConfig()->getValue(StyleValue_float::AnimationDuration)->get(), !mVisible);
+        mAlpha.update(tpf / mpGUI->getConfig()->getValue(StyleType_float::AnimationDuration)->get(), !mVisible);
 
         // *** UPDATE FRAMES ***
 
@@ -92,7 +92,7 @@ namespace eyegui
                     if (pFrame->isRemoved())
                     {
                         // Do fading of removed frame
-                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / mpGUI->getConfig()->getValue(StyleValue_float::AnimationDuration)->get());
+                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / mpGUI->getConfig()->getValue(StyleType_float::AnimationDuration)->get());
                         fadingAlpha = clamp(fadingAlpha, 0, 1);
                         pFrame->setRemovedFadingAlpha(fadingAlpha);
 

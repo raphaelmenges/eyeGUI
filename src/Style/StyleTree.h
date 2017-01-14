@@ -5,12 +5,12 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // TODO
+// names must be unique
 
 #ifndef STYLE_TREE_H_
 #define STYLE_TREE_H_
 
 #include "src/Style/StyleClass.h"
-#include "src/Style/StyleNode.h"
 
 namespace eyegui
 {
@@ -21,21 +21,20 @@ namespace eyegui
 		// Constructor
 		StyleTree();
 
-		// Get style (searches recursively in tree)
-		std::shared_ptr<const StyleValue<float> > fetchValue(std::string styleClass, StyleValue_float styleType) const;
-		std::shared_ptr<const StyleValue<glm::vec4> > fetchValue(std::string styleClass, StyleValue_vec4 styleType) const;
+		// Add style class class
+		std::shared_ptr<const StyleClass> addStyleClass(std::string name, std::string parentName);
 
-		// Add class
-		void addStyleClass(std::string name, std::string parentName);
+		// Fetch style class
+		std::shared_ptr<const StyleClass> fetchStyleClass(std::string name) const;
 
-		// Set value (class must be added before calling this)
-		template<typename T>
-		void setValue(std::string styleClass, T styleType, std::string value);
+		// Set value by name of style class (must have been added before calling this)
+		template<typename Type>
+		void setValue(std::string styleClass, Type styleType, std::string value);
 
 	private:
 
 		// Root node of style tree
-		std::shared_ptr<StyleNode> mspRootNode;
+		std::shared_ptr<StyleClass> mspRoot;
 	};
 }
 

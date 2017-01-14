@@ -10,16 +10,14 @@
 #ifndef TESTING_AREA_H_
 #define TESTING_AREA_H_
 
-#include "externals/GLM/glm/glm.hpp"
-#include <memory>
+#include "src/Style/StyleClass.h"
 #include <iostream>
 
 namespace eyegui
 {
-
 	void testingMain()
 	{
-		// Nothing here right now
+		// TODO: test style tree
 	}
 }
 

@@ -18,75 +18,161 @@
 
 namespace eyegui
 {
-	class StyleClass
+	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
 	public:
 
-		// Constructor, takes name of style class
-		StyleClass(std::string name)
-		{
-			// Fill members
-			mName = name;
+		// Constructor. Parent for base class is zero
+		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent);
 
-			// Initialize float values
-			typedef StyleValue_float sFloat; // simplify enum access
-			typedef std::shared_ptr<StyleValue<float> > spFloat; // simplify shared pointer creation
-			std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat styleValueType, spFloat styleValue) // simplify map insertion
-			{
-				mFloatMap.insert(std::make_pair(styleValueType, styleValue));
-			};
-			floatInsert(sFloat::AnimationDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.1f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::SensorPenetrationIncreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 3.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::SensorPenetrationDecreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.5f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::ButtonThresholdIncreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::ButtonThresholdDecreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 2.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::ButtonPressingDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.3f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.5f, 0)));
-			floatInsert(sFloat::DimIncreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.5f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::DimDecreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.25f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::FlashDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 2.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::MaximalAdaptiveScaleIncrease, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.5f, 0)));
-			floatInsert(sFloat::AdaptiveScaleIncreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::AdaptiveScaleDecreaseDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::GazeVisualizationFadeDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 4.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::GazeVisualizationFocusDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 2.0f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::GazeVisualizationRejectThreshold, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.125f, 0)));
-			floatInsert(sFloat::GazeVisualizationMinSize, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.02f, 0)));
-			floatInsert(sFloat::GazeVisualizationMaxSize, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.075f, 0)));
-			floatInsert(sFloat::KeyboardZoomSpeedMultiplier, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f, 0)));
-			floatInsert(sFloat::KeyboardKeySelectionDuration, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.25f, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::FlowSpeedMultiplier, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f, 0)));
-			floatInsert(sFloat::TextEditScrollSpeedMultiplier, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f, 0)));
+		// Add child
+		std::shared_ptr<StyleClass> addChild(std::string name);
 
-			// Initialize vec4 values
-			typedef StyleValue_vec4 v4Float; // simplify enum access
-			typedef std::shared_ptr<StyleValue<glm::vec4> > spVec4; // simplify shared pointer creation
-			std::function<void(v4Float, spVec4)> vec4Insert = [&](v4Float styleValueType, spVec4 styleValue) // simplify map insertion
-			{
-				mVec4Map.insert(std::make_pair(styleValueType, styleValue));
-			};
-			vec4Insert(v4Float::GazeVisualizationColor, spVec4(new NumericStyleValue<glm::vec4>(STYLE_BASE_CLASS_NAME, glm::vec4(0, 0, 1.f, 0.5f), VEC_4_ZERO, VEC_4_ONE)));
-		}
+		// Fetch float value
+		std::shared_ptr<const StyleValue<float> > fetchValue(StyleType_float type) const;
 
-		// Get a value
-		std::shared_ptr<const StyleValue<float> > getValue(StyleValue_float type) const { return mFloatMap.at(type); }
-		std::shared_ptr<const StyleValue<glm::vec4> > getValue(StyleValue_vec4 type) const { return mVec4Map.at(type); }
+		// Fetch vec4 value
+		std::shared_ptr<const StyleValue<glm::vec4> > fetchValue(StyleType_vec4 type) const;
 
-		// Set a value
-		void setValue(StyleValue_float type, std::string value) { mFloatMap.at(type)->set(stringToFloat(value)); };
-		void setValue(StyleValue_vec4 type, std::string value) { mVec4Map.at(type)->set(stringHexRGBAToVec4RGBA(value)); };
+		// Set float value, propagated to children
+		void setValue(StyleType_float type, std::string value) { setValue(type, stringToFloat(value)); }
+		void setValue(StyleType_float type, float rawValue);
+		
+		// Set vec4 value, propagated to children
+		void setValue(StyleType_vec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
+		void setValue(StyleType_vec4 type, glm::vec4 rawValue);
+
+		// Fetch this or child by name. Return empty pointer if not found
+		std::shared_ptr<StyleClass> fetchThisOrChild(std::string name);
+
+		// Must be only called on base style class and before any children are added!
+		void fillWithBaseValues();
 
 		// Get name
-		std::string getName() const { return mName; }
+		std::string getName() const;
 
 	private:
 
-		// Maps with values
-		std::map<StyleValue_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
-		std::map<StyleValue_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
+		// ###################
+		// ### MAPS GETTER ###
+		// ###################
+
+		// Template to get maps in templates at compile time
+		template<typename RawType, typename Type>
+		std::map<Type, std::shared_ptr<StyleValue<RawType> > >& getMapReference()
+		{
+			// Does break when called (reference to local variable)
+			return std::map<Type, std::shared_ptr<StyleValue<RawType> > >();
+		}
+
+		// Specialization for float map
+		template<>
+		std::map<StyleType_float, std::shared_ptr<StyleValue<float> > >& getMapReference()
+		{
+			return mFloatMap;
+		}
+
+		// Specialization for vec4 map
+		template<>
+		std::map<StyleType_vec4, std::shared_ptr<StyleValue<glm::vec4> > >& getMapReference()
+		{
+			return mVec4Map;
+		}
+
+		// ####################
+		// ### VALUE SETTER ###
+		// ####################
+
+		// Set value as template implementation
+		template<typename RawType, typename Type, typename RawValue>
+		void setValue(Type type, RawValue rawValue)
+		{
+			// Get map reference
+			auto& rMap = getMapReference<RawType, Type>();
+
+			// Check whether value is owned by me
+			auto spValue = rMap.at(type);
+			auto spValueStyleClass = spValue->getStyleClass().lock();
+			auto spThisStyleClass = mwpParent.lock();
+			bool owned = false;
+			if (spValueStyleClass && spThisStyleClass)
+			{
+				// Compare raw pointers
+				owned = spValueStyleClass.get() == spThisStyleClass.get();
+			}
+
+			// Set value by either creating a value or just changing it
+			if (owned)
+			{
+				// Just set it
+				spValue->set(rawValue);
+			}
+			else
+			{
+				// Add value
+				spValue = std::shared_ptr<StyleValue<RawType> >(new StyleValue<RawType>(shared_from_this(), rawValue));
+				rMap[type] = spValue;
+
+				// Propagate it to children
+				for (auto& rspChild : mChildren)
+				{
+					rspChild->propagateValue<RawType, Type>(type, spValue);
+				}
+			}
+		}
+
+		// #########################
+		// ### VALUE PROPAGATION ###
+		// #########################
+
+		// Propagate value from parent to this and children
+		template<typename RawType, typename Type>
+		void propagateValue(Type type, std::shared_ptr<StyleValue<RawType> > spValue)
+		{
+			// Get map reference
+			auto& rMap = getMapReference<RawType, Type>();
+
+			// Check whether value is owned by me
+			auto spStoredValue = rMap.at(type);
+			auto spStoredValueStyleClass = spStoredValue->getStyleClass().lock();
+			auto spThisStyleClass = mwpParent.lock();
+			bool owned = false;
+			if (spStoredValueStyleClass && spThisStyleClass)
+			{
+				// Compare raw pointers
+				owned = spStoredValueStyleClass.get() == spThisStyleClass.get();
+			}
+
+			// Only store and pass to children if no custom one owned by me
+			if (!owned)
+			{
+				// Store pointer to value
+				rMap[type] = spValue;
+
+				// Propagate it to children
+				for (auto& rspChild : mChildren)
+				{
+					rspChild->propagateValue(type, spValue);
+				}
+			}
+		}
+
+		// ###############
+		// ### MEMBERS ###
+		// ###############
+
+		// Maps with pointers to values
+		std::map<StyleType_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
+		std::map<StyleType_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
 
 		// Name
 		std::string mName = "";
+
+		// Parent
+		std::weak_ptr<const StyleClass> mwpParent;
+
+		// Children
+		std::vector<std::shared_ptr<StyleClass> > mChildren;
 	};
 }
 

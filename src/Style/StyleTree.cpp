@@ -11,31 +11,44 @@ namespace eyegui
 {
 	StyleTree::StyleTree()
 	{
-		// Create root of tree with empty parent pointer
-		mspRootNode = std::shared_ptr<StyleNode>(new StyleNode(STYLE_BASE_CLASS_NAME, std::shared_ptr<const StyleNode>()));
+		// Create root of tree with empty parent pointer, so weak pointer is invalid after constructor call
+		mspRoot = std::shared_ptr<StyleClass>(new StyleClass(STYLE_BASE_CLASS_NAME, std::shared_ptr<const StyleClass>()));
+
+		// Fill root with base / inital values
+		mspRoot->fillWithBaseValues();
+	}
+
+	std::shared_ptr<const StyleClass> StyleTree::addStyleClass(std::string name, std::string parentName)
+	{
+		// Check, whether class does already exist
+		if (auto spStyleClass = mspRoot->fetchThisOrChild(name))
+		{
+			// TODO: warning, that class exists, maybe under different parent
+			return spStyleClass;
+		}
+
+		// Go through tree and search for parent class
+		auto spParent = mspRoot->fetchThisOrChild(parentName);
+		if (!spParent)
+		{
+			// TODO: warning, about attachment to root
+			spParent = mspRoot;
+		}
+		return spParent->addChild(name);
 	}
 	
-	std::shared_ptr<const StyleValue<float> > StyleTree::fetchValue(std::string styleClass, StyleValue_float styleType) const
+	std::shared_ptr<const StyleClass> StyleTree::fetchStyleClass(std::string name) const
 	{
-		return std::shared_ptr<const StyleValue<float> >(); // TODO
+		return mspRoot->fetchThisOrChild(name);
 	}
 
-	std::shared_ptr<const StyleValue<glm::vec4> > StyleTree::fetchValue(std::string styleClass, StyleValue_vec4 styleType) const
+	template<typename Type>
+	void StyleTree::setValue(std::string styleClass, Type styleType, std::string value)
 	{
-		return std::shared_ptr<const StyleValue<glm::vec4> >(); // TODO
-	}
-
-	void StyleTree::addStyleClass(std::string name, std::string parentName)
-	{
-		// Go through tree and search for parent class
-
-
-		// Add style class to parent as new child node
-	}
-
-	template<typename T>
-	void StyleTree::setValue(std::string styleClass, T styleType, std::string value)
-	{
-		// TODO
+		// Fetch style class
+		if (auto spStyleClass = mspRoot->fetchThisOrChild(parentName))
+		{
+			spStyleClass->setValue(styleType, value);
+		}
 	}
 }

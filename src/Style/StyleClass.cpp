@@ -1,0 +1,130 @@
+// Distributed under the MIT License. (See accompanying file LICENSE
+// or copy at https://github.com/raphaelmenges/eyeGUI/blob/master/src/LICENSE)
+//============================================================================
+
+// Author: Raphael Menges (https://github.com/raphaelmenges)
+
+#include "StyleClass.h"
+
+namespace eyegui
+{
+	StyleClass::StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent)
+	{
+		// Store name
+		mName = name;
+
+		// Store pointer to parent
+		mwpParent = wpParent;
+
+		// Fill all pointers in map initially with the ones from parent class
+		if (auto spParent = mwpParent.lock()) // does not work for base class
+		{
+			// Copy maps with pointers, not values itself
+			mFloatMap = spParent->mFloatMap;
+			mVec4Map = spParent->mVec4Map;
+		}
+	}
+
+	std::shared_ptr<StyleClass> StyleClass::addChild(std::string name)
+	{
+		auto spChild = std::shared_ptr<StyleClass>(new StyleClass(name, shared_from_this()));
+		mChildren.push_back(spChild);
+		return spChild;
+	}
+
+	std::shared_ptr<const StyleValue<float> > StyleClass::fetchValue(StyleType_float type) const
+	{
+		return mFloatMap.at(type);
+	}
+
+	std::shared_ptr<const StyleValue<glm::vec4> > StyleClass::fetchValue(StyleType_vec4 type) const
+	{
+		return mVec4Map.at(type);
+	}
+
+	void StyleClass::setValue(StyleType_float type, float rawValue)
+	{
+		// Pass to template
+		setValue<float>(type, rawValue);
+	}
+
+	void StyleClass::setValue(StyleType_vec4 type, glm::vec4 rawValue)
+	{
+		// Pass to template
+		setValue<glm::vec4>(type, rawValue);
+	}
+
+	std::shared_ptr<StyleClass> StyleClass::fetchThisOrChild(std::string name)
+	{
+		// Ok, this is the searched class since name is equal to searched one
+		if (mName == name)
+		{
+			return shared_from_this();
+		}
+		else
+		{
+			// Go over children
+			for (auto& rspChild : mChildren)
+			{
+				// Return result if it is something found
+				auto result = rspChild->fetchThisOrChild(name);
+				if (result)
+				{
+					return result;
+				}
+			}
+		}
+
+		// Return empty pointer as fallback
+		return std::shared_ptr<StyleClass>();
+	}
+
+	void StyleClass::fillWithBaseValues()
+	{
+		// TODO Note: ADD INITIAL VALUES OF NEW VALUES HERE!
+
+		// Initialize float values
+		typedef StyleType_float sFloat; // simplify enum access
+		typedef std::shared_ptr<StyleValue<float> > spFloat; // simplify shared pointer creation
+		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat value) // simplify map insertion
+		{
+			mFloatMap[type] = value;
+		};
+		floatInsert(sFloat::AnimationDuration, spFloat(new StyleValue<float>(shared_from_this(), 0.1f)));
+		floatInsert(sFloat::SensorPenetrationIncreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 3.0f)));
+		floatInsert(sFloat::SensorPenetrationDecreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 1.5f)));
+		floatInsert(sFloat::ButtonThresholdIncreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 1.0f)));
+		floatInsert(sFloat::ButtonThresholdDecreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 2.0f)));
+		floatInsert(sFloat::ButtonPressingDuration, spFloat(new StyleValue<float>(shared_from_this(), 0.3f)));
+		floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new StyleValue<float>(shared_from_this(), 0.5f)));
+		floatInsert(sFloat::DimIncreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 1.5f)));
+		floatInsert(sFloat::DimDecreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 0.25f)));
+		floatInsert(sFloat::FlashDuration, spFloat(new StyleValue<float>(shared_from_this(), 2.0f)));
+		floatInsert(sFloat::MaximalAdaptiveScaleIncrease, spFloat(new StyleValue<float>(shared_from_this(), 0.5f)));
+		floatInsert(sFloat::AdaptiveScaleIncreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 1.0f)));
+		floatInsert(sFloat::AdaptiveScaleDecreaseDuration, spFloat(new StyleValue<float>(shared_from_this(), 1.0f)));
+		floatInsert(sFloat::GazeVisualizationFadeDuration, spFloat(new StyleValue<float>(shared_from_this(), 4.0f)));
+		floatInsert(sFloat::GazeVisualizationFocusDuration, spFloat(new StyleValue<float>(shared_from_this(), 2.0f)));
+		floatInsert(sFloat::GazeVisualizationRejectThreshold, spFloat(new StyleValue<float>(shared_from_this(), 0.125f)));
+		floatInsert(sFloat::GazeVisualizationMinSize, spFloat(new StyleValue<float>(shared_from_this(), 0.02f)));
+		floatInsert(sFloat::GazeVisualizationMaxSize, spFloat(new StyleValue<float>(shared_from_this(), 0.075f)));
+		floatInsert(sFloat::KeyboardZoomSpeedMultiplier, spFloat(new StyleValue<float>(shared_from_this(), 1.0f)));
+		floatInsert(sFloat::KeyboardKeySelectionDuration, spFloat(new StyleValue<float>(shared_from_this(), 1.25f)));
+		floatInsert(sFloat::FlowSpeedMultiplier, spFloat(new StyleValue<float>(shared_from_this(), 1.0f)));
+		floatInsert(sFloat::TextEditScrollSpeedMultiplier, spFloat(new StyleValue<float>(shared_from_this(), 1.0)));
+
+		// Initialize vec4 values
+		typedef StyleType_vec4 v4Float; // simplify enum access
+		typedef std::shared_ptr<StyleValue<glm::vec4> > spVec4; // simplify shared pointer creation
+		std::function<void(v4Float, spVec4)> vec4Insert = [&](v4Float type, spVec4 value) // simplify map insertion
+		{
+			mVec4Map[type] = value;
+		};
+		vec4Insert(v4Float::GazeVisualizationColor, spVec4(new StyleValue<glm::vec4>(shared_from_this(), glm::vec4(0, 0, 1.f, 0.5f))));
+	}
+
+	std::string StyleClass::getName() const
+	{
+		return mName;
+	}
+}

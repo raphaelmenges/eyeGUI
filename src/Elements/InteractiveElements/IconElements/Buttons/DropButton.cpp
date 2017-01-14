@@ -159,7 +159,7 @@ namespace eyegui
         float adaptiveScale = BoxButton::specialUpdate(tpf, pInput);
 
         // Update alpha of inner element
-        mInnerAlpha.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::AnimationDuration)->get(), !mInnerElementVisible);
+        mInnerAlpha.update(tpf / mpLayout->getConfig()->getValue(StyleType_float::AnimationDuration)->get(), !mInnerElementVisible);
 		mpFrame->setFrontElementAlpha(mupInnerElement.get(), mInnerAlpha.getValue() * mAlpha);
 
         return adaptiveScale;

@@ -97,7 +97,7 @@ namespace eyegui
         mPick.update(tpf / KEY_PICK_DURATION, !mPicked);
 
 		// Use focus for updating threshold
-		mThreshold.update(tpf / mpLayout->getConfig()->getValue(StyleValue_float::KeyboardKeySelectionDuration)->get(), !mFocused || !penetrated || mSelected);
+		mThreshold.update(tpf / mpLayout->getConfig()->getValue(StyleType_float::KeyboardKeySelectionDuration)->get(), !mFocused || !penetrated || mSelected);
 
 		// Check whether selected
 		mSelected |= mThreshold.getValue() >= 1.f;
