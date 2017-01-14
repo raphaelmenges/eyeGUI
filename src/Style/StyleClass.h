@@ -97,7 +97,7 @@ namespace eyegui
 			{
 				// Add new owned value while copying constraint from it since it is of the same type
 				spStoredValue = std::shared_ptr<StyleValue<RawType> >(new StyleValue<RawType>(shared_from_this(), rawValue, spStoredValue->getConstraint()));
-				setStyleValue(type, spStoredValue);
+				this->setStyleValue(type, spStoredValue);
 
 				// Propagate it to children
 				for (auto& rspChild : this->mChildren)
@@ -129,7 +129,7 @@ namespace eyegui
 			if (!owned)
 			{
 				// Store pointer to value
-				setStyleValue(type, spValue);
+				this->setStyleValue(type, spValue);
 
 				// Propagate it to children
 				for (auto& rspChild : this->mChildren)
