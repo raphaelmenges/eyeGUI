@@ -4,8 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
-// names must be unique
+// Tree of style classes with single root. Guarantees that name of style
+// classes is unique. Returns only const pointers to style classes,
+// for value setting the corresponding method must be called.
 
 #ifndef STYLE_TREE_H_
 #define STYLE_TREE_H_

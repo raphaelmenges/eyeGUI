@@ -6,7 +6,6 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Testing area for new structures.
 
-
 #ifndef TESTING_AREA_H_
 #define TESTING_AREA_H_
 

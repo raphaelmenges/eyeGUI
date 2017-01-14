@@ -27,6 +27,7 @@ namespace eyegui
 
 	std::shared_ptr<StyleClass> StyleClass::addChild(std::string name)
 	{
+		// Just push back to vector. It must be checked by tree if name is globally unique!
 		auto spChild = std::shared_ptr<StyleClass>(new StyleClass(name, shared_from_this()));
 		mChildren.push_back(spChild);
 		return spChild;
@@ -136,7 +137,7 @@ namespace eyegui
 		{
 			mVec4Map[type] = value;
 		};
-		vec4Insert(v4Float::GazeVisualizationColor,				spVec4(new StyleValue<glm::vec4>(shared_from_this(), glm::vec4(0, 0, 1.f, 0.5f), colorConstraint)));
+		vec4Insert(v4Float::GazeVisualizationColor,				spVec4(new StyleValue<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
 	}
 
 	std::string StyleClass::getName() const

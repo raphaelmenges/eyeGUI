@@ -4,7 +4,10 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO
+// Style class holds map of style value pointers. Some of those values
+// are just references to values from other classes and some are held
+// by this. If a value is held, propagation of values of its type
+// from parent class is stopped.
 
 #ifndef STYLE_CLASS_H_
 #define STYLE_CLASS_H_
@@ -26,7 +29,7 @@ namespace eyegui
 		// Constructor. Parent for base class is zero
 		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent);
 
-		// Add child
+		// Add child. Tree must check whether name is globally unique
 		std::shared_ptr<StyleClass> addChild(std::string name);
 
 		// Fetch float value

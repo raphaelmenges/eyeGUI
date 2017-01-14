@@ -4,7 +4,8 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// TODO: Constraints
+// Singe style value. Applies given constraint on itself when value is set.
+// Has pointer to holder of the value.
 
 #ifndef STYLE_VALUE_H_
 #define STYLE_VALUE_H_
