@@ -57,31 +57,17 @@ namespace eyegui
 
 	private:
 
-		// ###################
-		// ### MAPS GETTER ###
-		// ###################
+		// #################################
+		// ### MAPS HELPER FOR TEMPLATES ###
+		// #################################
 
-		// Template to get maps in templates at compile time
-		template<typename RawType, typename Type>
-		std::map<Type, std::shared_ptr<StyleValue<RawType> > >& getMapReference()
-		{
-			// Does break when called (reference to local variable)
-			return std::map<Type, std::shared_ptr<StyleValue<RawType> > >();
-		}
+		// Get style class of value
+		std::shared_ptr<StyleValue<float> > getStyleValue(StyleType_float type) { return this->mFloatMap[type]; }
+		std::shared_ptr<StyleValue<glm::vec4> > getStyleValue(StyleType_vec4 type) { return this->mVec4Map[type]; }
 
-		// Specialization for float map
-		template<>
-		std::map<StyleType_float, std::shared_ptr<StyleValue<float> > >& getMapReference()
-		{
-			return mFloatMap;
-		}
-
-		// Specialization for vec4 map
-		template<>
-		std::map<StyleType_vec4, std::shared_ptr<StyleValue<glm::vec4> > >& getMapReference()
-		{
-			return mVec4Map;
-		}
+		// Set raw value of value in map
+		void setStyleValue(StyleType_float type, std::shared_ptr<StyleValue<float> > spValue) { this->mFloatMap[type] = spValue; }
+		void setStyleValue(StyleType_vec4 type, std::shared_ptr<StyleValue<glm::vec4> > spValue) { this->mVec4Map[type] = spValue; }
 
 		// ####################
 		// ### VALUE SETTER ###
@@ -91,36 +77,32 @@ namespace eyegui
 		template<typename RawType, typename Type, typename RawValue>
 		void setValue(Type type, RawValue rawValue)
 		{
-			// Get map reference
-			auto& rMap = getMapReference<RawType, Type>();
-
 			// Check whether value is owned by me
-			auto spValue = rMap.at(type);
-			auto spValueStyleClass = spValue->getStyleClass().lock();
-			auto spThisStyleClass = mwpParent.lock();
+			auto spStoredValue = this->getStyleValue(type);
+			auto spStoredValueStyleClass = spStoredValue->getStyleClass().lock();
 			bool owned = false;
-			if (spValueStyleClass && spThisStyleClass)
+			if (spStoredValueStyleClass)
 			{
 				// Compare raw pointers
-				owned = spValueStyleClass.get() == spThisStyleClass.get();
+				owned = spStoredValueStyleClass.get() == this;
 			}
 
 			// Set value by either creating a value or just changing it
 			if (owned)
 			{
 				// Just set it
-				spValue->set(rawValue);
+				spStoredValue->set(rawValue);
 			}
 			else
 			{
-				// Add value
-				spValue = std::shared_ptr<StyleValue<RawType> >(new StyleValue<RawType>(shared_from_this(), rawValue));
-				rMap[type] = spValue;
+				// Add new owned value
+				spStoredValue = std::shared_ptr<StyleValue<RawType> >(new StyleValue<RawType>(shared_from_this(), rawValue));
+				setStyleValue(type, spStoredValue);
 
 				// Propagate it to children
-				for (auto& rspChild : mChildren)
+				for (auto& rspChild : this->mChildren)
 				{
-					rspChild->propagateValue<RawType, Type>(type, spValue);
+					rspChild->propagateValue<RawType, Type>(type, spStoredValue);
 				}
 			}
 		}
@@ -133,28 +115,24 @@ namespace eyegui
 		template<typename RawType, typename Type>
 		void propagateValue(Type type, std::shared_ptr<StyleValue<RawType> > spValue)
 		{
-			// Get map reference
-			auto& rMap = getMapReference<RawType, Type>();
-
 			// Check whether value is owned by me
-			auto spStoredValue = rMap.at(type);
+			auto spStoredValue = this->getStyleValue(type);
 			auto spStoredValueStyleClass = spStoredValue->getStyleClass().lock();
-			auto spThisStyleClass = mwpParent.lock();
 			bool owned = false;
-			if (spStoredValueStyleClass && spThisStyleClass)
+			if (spStoredValueStyleClass)
 			{
 				// Compare raw pointers
-				owned = spStoredValueStyleClass.get() == spThisStyleClass.get();
+				owned = spStoredValueStyleClass.get() == this;
 			}
 
 			// Only store and pass to children if no custom one owned by me
 			if (!owned)
 			{
 				// Store pointer to value
-				rMap[type] = spValue;
+				setStyleValue(type, spValue);
 
 				// Propagate it to children
-				for (auto& rspChild : mChildren)
+				for (auto& rspChild : this->mChildren)
 				{
 					rspChild->propagateValue(type, spValue);
 				}
@@ -165,12 +143,12 @@ namespace eyegui
 		// ### MEMBERS ###
 		// ###############
 
-		// Maps with pointers to values
-		std::map<StyleType_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
-		std::map<StyleType_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
-
 		// Name
 		std::string mName = "";
+
+		// Maps
+		std::map<StyleType_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
+		std::map<StyleType_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
 
 		// Parent
 		std::weak_ptr<const StyleClass> mwpParent;
