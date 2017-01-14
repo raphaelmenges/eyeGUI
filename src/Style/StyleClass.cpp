@@ -46,19 +46,19 @@ namespace eyegui
 	void StyleClass::setValue(StyleType_float type, float rawValue)
 	{
 		// Pass to template
-		setValue<float>(type, rawValue);
+		genericSetValue<float>(type, rawValue);
 	}
 
 	void StyleClass::setValue(StyleType_vec4 type, glm::vec4 rawValue)
 	{
 		// Pass to template
-		setValue<glm::vec4>(type, rawValue);
+		genericSetValue<glm::vec4>(type, rawValue);
 	}
 
 	std::shared_ptr<StyleClass> StyleClass::fetchThisOrChild(std::string name)
 	{
 		// Ok, this is the searched class since name is equal to searched one
-		if (mName == name)
+		if (this->mName == name)
 		{
 			return shared_from_this();
 		}

@@ -4,9 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Style class holds map of style value pointers. Some of those values
-// are just references to values from other classes and some are held
-// by this. If a value is held, propagation of values of its type
+// Style class has maps of style value pointers. Some of those values
+// are just references to values from other classes and some are owned
+// by this. If a value is owned, propagation of values of its type
 // from parent class is stopped.
 
 #ifndef STYLE_CLASS_H_
@@ -38,11 +38,11 @@ namespace eyegui
 		// Fetch vec4 value
 		std::shared_ptr<const StyleValue<glm::vec4> > fetchValue(StyleType_vec4 type) const;
 
-		// Set float value, propagated to children
+		// Set float value, propagate to children
 		void setValue(StyleType_float type, std::string value) { setValue(type, stringToFloat(value)); }
 		void setValue(StyleType_float type, float rawValue);
 		
-		// Set vec4 value, propagated to children
+		// Set vec4 value, propagate to children
 		void setValue(StyleType_vec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
 		void setValue(StyleType_vec4 type, glm::vec4 rawValue);
 
@@ -75,7 +75,7 @@ namespace eyegui
 
 		// Set value as template implementation
 		template<typename RawType, typename Type, typename RawValue>
-		void setValue(Type type, RawValue rawValue)
+		void genericSetValue(Type type, RawValue rawValue)
 		{
 			// Check whether value is owned by me
 			auto spStoredValue = this->getStyleValue(type);
@@ -95,14 +95,14 @@ namespace eyegui
 			}
 			else
 			{
-				// Add new owned value
-				spStoredValue = std::shared_ptr<StyleValue<RawType> >(new StyleValue<RawType>(shared_from_this(), rawValue));
+				// Add new owned value while copying constraint from it since it is of the same type
+				spStoredValue = std::shared_ptr<StyleValue<RawType> >(new StyleValue<RawType>(shared_from_this(), rawValue, spStoredValue->getConstraint()));
 				setStyleValue(type, spStoredValue);
 
 				// Propagate it to children
 				for (auto& rspChild : this->mChildren)
 				{
-					rspChild->propagateValue<RawType, Type>(type, spStoredValue);
+					rspChild->genericPropagateValue<RawType, Type>(type, spStoredValue);
 				}
 			}
 		}
@@ -113,7 +113,7 @@ namespace eyegui
 
 		// Propagate value from parent to this and children
 		template<typename RawType, typename Type>
-		void propagateValue(Type type, std::shared_ptr<StyleValue<RawType> > spValue)
+		void genericPropagateValue(Type type, std::shared_ptr<StyleValue<RawType> > spValue)
 		{
 			// Check whether value is owned by me
 			auto spStoredValue = this->getStyleValue(type);
@@ -134,7 +134,7 @@ namespace eyegui
 				// Propagate it to children
 				for (auto& rspChild : this->mChildren)
 				{
-					rspChild->propagateValue(type, spValue);
+					rspChild->genericPropagateValue(type, spValue);
 				}
 			}
 		}

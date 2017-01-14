@@ -5,7 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Singe style value. Applies given constraint on itself when value is set.
-// Has pointer to holder of the value.
+// Has pointer to owner of the value.
 
 #ifndef STYLE_VALUE_H_
 #define STYLE_VALUE_H_
@@ -65,14 +65,17 @@ namespace eyegui
 			this->mValue = this->mConstraint(value);
 		}
 
-		// Getter for style class that holds this
+		// Get style class that owns this
 		std::weak_ptr<const StyleClass> getStyleClass() const {	return mwpStyleClass; };
 
-		// Setter for value
+		// Set value
 		virtual void set(T value) { this->mValue = this->mConstraint(value); }
 
-		// Getter for value
+		// Get value
 		T get() const { return this->mValue; }
+
+		// Get constraint
+		std::function<T(T)> getConstraint() const { return this->mConstraint; }
 
 	protected:
 
