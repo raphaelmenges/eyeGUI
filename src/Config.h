@@ -11,142 +11,14 @@
 
 #include "src/Utilities/Helper.h"
 #include "src/Defines.h"
+#include "src/Style/StyleValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <map>
 
-enum class StyleValue_float
-{
-	AnimationDuration,
-	SensorPenetrationIncreaseDuration,
-	SensorPenetrationDecreaseDuration,
-	ButtonThresholdIncreaseDuration,
-	ButtonThresholdDecreaseDuration,
-	ButtonPressingDuration,
-	SensorInteractionPenetrationAmount,
-	DimIncreaseDuration,
-	DimDecreaseDuration,
-	FlashDuration,
-	MaximalAdaptiveScaleIncrease,
-	AdaptiveScaleIncreaseDuration,
-	AdaptiveScaleDecreaseDuration,
-	GazeVisualizationFadeDuration,
-	GazeVisualizationFocusDuration,
-	GazeVisualizationRejectThreshold,
-	GazeVisualizationMinSize,
-	GazeVisualizationMaxSize,
-	KeyboardZoomSpeedMultiplier,
-	KeyboardKeySelectionDuration,
-	FlowSpeedMultiplier,
-	TextEditScrollSpeedMultiplier
-};
-
-enum class StyleValue_vec4
-{
-	GazeVisualizationColor
-};
-
-
-// Fancy macros for saving lot of writing and preserving overview. Should be only used within this header file
-#define StyleValueMember(name, type, value) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new StyleValue<type>(value, STYLE_BASE_CLASS_NAME));
-#define StyleValueMemberMin(name, type, value, min) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, STYLE_BASE_CLASS_NAME, min));
-#define StyleValueMemberMinMax(name, type, value, min, max) std::shared_ptr<StyleValue<type> > name = std::shared_ptr<StyleValue<type> >(new NumericStyleValue<type>(value, STYLE_BASE_CLASS_NAME, min, max));
-
 namespace eyegui
 {
-	// General style value
-	template<typename T>
-	class StyleValue
-	{
-	public:
-
-		// Constructor takes initial value and name of style class which introduced the value
-		StyleValue(T initialValue, std::string styleClass) { this->mValue = initialValue; this->mStyleClass = styleClass; }
-
-		// Setter for value
-		virtual void set(T value)
-		{
-			// Just store the value
-			this->mValue = value;
-
-			// Remember that value has been actively set
-			mValueSet = true;
-		}
-
-		// Getter for value
-		T get() const { return this->mValue; }
-
-		// Check whether value has been actively set
-		bool isSet() const { return this->mValueSet; }
-
-	protected:
-
-		// Protected default constructor called by subclass
-		StyleValue() {}
-
-		// Value
-		T mValue;
-
-		// Indicator whether value has been actively set
-		bool mValueSet = false;
-
-		// Name of style class which introduced this value
-		std::string mStyleClass;
-	};
-
-	// Numeric style value (which can be clamped)
-	template<typename T>
-	class NumericStyleValue : public StyleValue<T>
-	{
-	public:
-
-		// Constructor takes initial value
-		NumericStyleValue(T initialValue, std::string styleClass) : StyleValue<T>(initialValue, styleClass) {}
-		NumericStyleValue(T initialValue, std::string styleClass, T min) { setMin(min); this->mValue = glm::max(initialValue, min); this->mStyleClass = styleClass; }
-		NumericStyleValue(T initialValue, std::string styleClass, T min, T max) { setMin(min); setMax(max); this->mValue = glm::clamp(initialValue, min, max); this->mStyleClass = styleClass; }
-
-		// Setter for value. Includes clamping
-		virtual void set(T value) override
-		{
-			if (mMinimumSet && mMaximumSet)
-			{
-				this->mValue = glm::clamp(value, mMinimum, mMaximum);
-			}
-			else if (mMinimumSet)
-			{
-				this->mValue = glm::max(value, mMinimum);
-			}
-			else
-			{
-				this->mValue = value;
-			}
-		}
-
-	protected:
-
-		// Set minimum
-		void setMin(T min)
-		{
-			mMinimum = min;
-			mMinimumSet = true;
-		}
-
-		// Set maximum
-		void setMax(T max)
-		{
-			mMaximum = max;
-			mMaximumSet = true;
-		}
-
-		// Minimum
-		T mMinimum;
-		bool mMinimumSet = false;
-
-		// Maximum
-		T mMaximum;
-		bool mMaximumSet = false;
-	};
-
+	// Deprecated
     class Config
     {
 	public:
@@ -161,28 +33,28 @@ namespace eyegui
 			{
 				mFloatMap.insert(std::make_pair(styleValueType, styleValue));
 			};
-			floatInsert(sFloat::AnimationDuration,					spFloat(new NumericStyleValue<float>(0.1f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::SensorPenetrationIncreaseDuration,	spFloat(new NumericStyleValue<float>(3.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::SensorPenetrationDecreaseDuration,	spFloat(new NumericStyleValue<float>(1.5f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::ButtonThresholdIncreaseDuration,	spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::ButtonThresholdDecreaseDuration,	spFloat(new NumericStyleValue<float>(2.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::ButtonPressingDuration,				spFloat(new NumericStyleValue<float>(0.3f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new NumericStyleValue<float>(0.5f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::DimIncreaseDuration,				spFloat(new NumericStyleValue<float>(1.5f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::DimDecreaseDuration,				spFloat(new NumericStyleValue<float>(0.25f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::FlashDuration,						spFloat(new NumericStyleValue<float>(2.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::MaximalAdaptiveScaleIncrease,		spFloat(new NumericStyleValue<float>(0.5f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::AdaptiveScaleIncreaseDuration,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::AdaptiveScaleDecreaseDuration,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::GazeVisualizationFadeDuration,		spFloat(new NumericStyleValue<float>(4.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::GazeVisualizationFocusDuration,		spFloat(new NumericStyleValue<float>(2.0f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::GazeVisualizationRejectThreshold,	spFloat(new NumericStyleValue<float>(0.125f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::GazeVisualizationMinSize,			spFloat(new NumericStyleValue<float>(0.02f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::GazeVisualizationMaxSize,			spFloat(new NumericStyleValue<float>(0.075f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::KeyboardZoomSpeedMultiplier,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::KeyboardKeySelectionDuration,		spFloat(new NumericStyleValue<float>(1.25f, STYLE_BASE_CLASS_NAME, MINIMAL_DURATION_VALUE)));
-			floatInsert(sFloat::FlowSpeedMultiplier,				spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
-			floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new NumericStyleValue<float>(1.0f, STYLE_BASE_CLASS_NAME, 0)));
+			floatInsert(sFloat::AnimationDuration,					spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.1f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::SensorPenetrationIncreaseDuration,	spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 3.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::SensorPenetrationDecreaseDuration,	spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.5f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::ButtonThresholdIncreaseDuration,	spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::ButtonThresholdDecreaseDuration,	spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 2.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::ButtonPressingDuration,				spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.3f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.5f,	0)));
+			floatInsert(sFloat::DimIncreaseDuration,				spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.5f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::DimDecreaseDuration,				spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.25f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::FlashDuration,						spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 2.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::MaximalAdaptiveScaleIncrease,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.5f,	0)));
+			floatInsert(sFloat::AdaptiveScaleIncreaseDuration,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::AdaptiveScaleDecreaseDuration,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::GazeVisualizationFadeDuration,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 4.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::GazeVisualizationFocusDuration,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 2.0f,	MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::GazeVisualizationRejectThreshold,	spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.125f,	0)));
+			floatInsert(sFloat::GazeVisualizationMinSize,			spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.02f,  0)));
+			floatInsert(sFloat::GazeVisualizationMaxSize,			spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 0.075f, 0)));
+			floatInsert(sFloat::KeyboardZoomSpeedMultiplier,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f,	0)));
+			floatInsert(sFloat::KeyboardKeySelectionDuration,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.25f,  MINIMAL_DURATION_VALUE)));
+			floatInsert(sFloat::FlowSpeedMultiplier,				spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f,	0)));
+			floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new NumericStyleValue<float>(STYLE_BASE_CLASS_NAME, 1.0f,	0)));
 
 			// Initialize vec4 values
 			typedef StyleValue_vec4 v4Float; // simplify enum access
@@ -191,7 +63,7 @@ namespace eyegui
 			{
 				mVec4Map.insert(std::make_pair(styleValueType, styleValue));
 			};
-			vec4Insert(v4Float::GazeVisualizationColor,				spVec4(new NumericStyleValue<glm::vec4>(glm::vec4(0, 0, 1.f, 0.5f), STYLE_BASE_CLASS_NAME, VEC_4_ZERO, VEC_4_ONE)));
+			vec4Insert(v4Float::GazeVisualizationColor,				spVec4(new NumericStyleValue<glm::vec4>(STYLE_BASE_CLASS_NAME, glm::vec4(0, 0, 1.f, 0.5f), VEC_4_ZERO, VEC_4_ONE)));
 		}
 
 		// Get a value
@@ -205,6 +77,7 @@ namespace eyegui
         // Initialize with fallback values
         std::string filepath;
 
+		// Maps with values
 		std::map < StyleValue_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
 		std::map < StyleValue_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
 
@@ -219,7 +92,7 @@ namespace eyegui
 
 	protected:
 
-		std::string mName = STYLE_BASE_CLASS_NAME; // todo make common superclass for both base style and style (and get rid of name "config")
+		std::string mName = STYLE_BASE_CLASS_NAME;
     };
 }
 
