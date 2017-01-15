@@ -60,7 +60,7 @@ namespace eyegui
         // Decide about dimming
         mDimming = dimming;
 
-        // Fetch style from layout
+        // Fetch style from layout (TODO DELETE)
         mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
 
         if(mpStyle == NULL)
@@ -70,6 +70,9 @@ namespace eyegui
             // Ok, try to rescue by getting default style. Should be NEVER necessary
             mpStyle = mpLayout->getStyleFromStylesheet(DEFAULT_STYLE_NAME);
         }
+
+		// Fetch style class
+		mspStyleClass = mpLayout->fetchStyleClass(styleName);
 
         // Render items
         mpActivityItem = mpAssetManager->fetchRenderItem(shaders::Type::ACTIVITY, meshes::Type::QUAD);
@@ -403,7 +406,7 @@ namespace eyegui
 
     float Element::getDynamicScale() const
     {
-        return mRelativeScale + (mAdaptiveScale.getValue() * mpLayout->getConfig()->getValue(StylePropertyFloat::MaximalAdaptiveScaleIncrease)->get());
+        return mRelativeScale + (mAdaptiveScale.getValue() * getStyleValue(StylePropertyFloat::MaximalAdaptiveScaleIncrease));
     }
 
     float Element::getRelativeScale() const
@@ -426,7 +429,7 @@ namespace eyegui
         // *** OWN UPDATING ***
 
         // Activity animation
-        mActivity.update(tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::AnimationDuration)->get(), !mActive);
+        mActivity.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mActive);
 
         // Save current alpha (already animated by layout or other element)
         mAlpha = alpha;
@@ -438,19 +441,19 @@ namespace eyegui
         if (mForceUndim)
         {
             // Undim it
-            mDim.update(-tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::DimDecreaseDuration)->get());
+            mDim.update(-tpf / getStyleValue(StylePropertyFloat::DimDecreaseDuration));
         }
         else if (mDimming)
         {
             if (penetrated)
             {
                 // Undim it
-                mDim.update(-tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::DimDecreaseDuration)->get());
+                mDim.update(-tpf / getStyleValue(StylePropertyFloat::DimDecreaseDuration));
             }
             else
             {
                 // Dim it
-                mDim.update(tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::DimIncreaseDuration)->get());
+                mDim.update(tpf / getStyleValue(StylePropertyFloat::DimIncreaseDuration));
             }
         }
         else
@@ -462,7 +465,7 @@ namespace eyegui
 		// Flashing
 		if (mFlash.getValue() > 0.f)
 		{
-			mFlash.update(-tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::FlashDuration)->get());
+			mFlash.update(-tpf / getStyleValue(StylePropertyFloat::FlashDuration));
 		}
 
         // Adaptive scaling
@@ -472,28 +475,28 @@ namespace eyegui
             if (penetrated)
             {
                 // Scale it up
-                mAdaptiveScale.update(tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::AdaptiveScaleIncreaseDuration)->get());
+                mAdaptiveScale.update(tpf / getStyleValue(StylePropertyFloat::AdaptiveScaleIncreaseDuration));
             }
             else
             {
                 // Scale it down
-                mAdaptiveScale.update(-tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::AdaptiveScaleDecreaseDuration)->get());
+                mAdaptiveScale.update(-tpf / getStyleValue(StylePropertyFloat::AdaptiveScaleDecreaseDuration));
             }
         }
         else
         {
             // Scale it down, because could have been set by using scale from special update (children!)
-            mAdaptiveScale.update(-tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::AdaptiveScaleDecreaseDuration)->get());
+            mAdaptiveScale.update(-tpf / getStyleValue(StylePropertyFloat::AdaptiveScaleDecreaseDuration));
         }
 
         // Marking
-        mMark.update(tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::AnimationDuration)->get(), !mMarking);
+        mMark.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mMarking);
 
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
         {
             float replacedAlpha = mAlpha * (mupReplacedElement->getAlpha()
-                - (tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::AnimationDuration)->get()));
+                - (tpf / getStyleValue(StylePropertyFloat::AnimationDuration)));
             replacedAlpha = clamp(replacedAlpha, 0, 1);
             mupReplacedElement->update(tpf, replacedAlpha, NULL, mDim.getValue());
 
@@ -766,6 +769,16 @@ namespace eyegui
     {
         return mAlpha * glm::mix(1.0f , getStyle()->dimAlpha, mDim.getValue());
     }
+
+	float Element::getStyleValue(StylePropertyFloat type) const
+	{
+		return std::move(getStyleValue(type));
+	}
+
+	glm::vec4 Element::getStyleValue(StylePropertyVec4 type) const
+	{
+		return std::move(getStyleValue(type));
+	}
 
     void Element::notifyInteraction(std::string interactionType, std::string interactionInfoA) const
     {

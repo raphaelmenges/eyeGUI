@@ -68,7 +68,7 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update alpha
-        mAlpha.update(tpf / mpGUI->getConfig()->getValue(StylePropertyFloat::AnimationDuration)->get(), !mVisible);
+        mAlpha.update(tpf / fetchStyleClass(STYLE_BASE_CLASS_NAME)->getValue(StylePropertyFloat::AnimationDuration), !mVisible);
 
         // *** UPDATE FRAMES ***
 
@@ -92,7 +92,7 @@ namespace eyegui
                     if (pFrame->isRemoved())
                     {
                         // Do fading of removed frame
-                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / mpGUI->getConfig()->getValue(StylePropertyFloat::AnimationDuration)->get());
+                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / fetchStyleClass(STYLE_BASE_CLASS_NAME)->getValue(StylePropertyFloat::AnimationDuration));
                         fadingAlpha = clamp(fadingAlpha, 0, 1);
                         pFrame->setRemovedFadingAlpha(fadingAlpha);
 
@@ -167,9 +167,9 @@ namespace eyegui
         return mupNotificationQueue.get();
     }
 
-    Config const * Layout::getConfig() const
+	std::shared_ptr<const StyleClass> Layout::fetchStyleClass(std::string name) const
     {
-        return mpGUI->getConfig();
+		return mpGUI->fetchStyleTree()->fetchStyleClass(name);
     }
 
     CharacterSet Layout::getCharacterSet() const

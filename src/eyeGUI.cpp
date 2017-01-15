@@ -83,9 +83,9 @@ namespace eyegui
         pGUI->resize(width, height);
     }
 
-    void loadConfig(GUI* pGUI, std::string filepath)
+    void loadStyleSheet(GUI* pGUI, std::string filepath)
     {
-        pGUI->loadConfig(filepath);
+		pGUI->loadStyleSheet(filepath);
     }
 
     void setGazeVisualizationDrawing(GUI* pGUI, bool draw)

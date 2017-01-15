@@ -23,6 +23,7 @@
 #include "src/Elements/ElementFactory.h"
 #include "src/Rendering/AssetManager.h"
 #include "src/Style.h"
+#include "src/Style/StyleClass.h"
 #include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
 
@@ -36,7 +37,7 @@ namespace eyegui
     class Layout;
     class NotificationQueue;
     class Frame;
-    class InteractiveElement;
+	class InteractiveElement;
 
     class Element : public Object
     {
@@ -224,7 +225,7 @@ namespace eyegui
 		// Protected constructor
 		Element(
 			std::string id,
-			std::string styleName,
+			std::string styleName, // TODO: rename to style class
 			Element* pParent,
 			Layout const * pLayout,
 			Frame* pFrame,
@@ -261,6 +262,10 @@ namespace eyegui
         float getDim() const;
         float getMultipliedDimmedAlpha() const;
 
+		// Get style property value
+		float getStyleValue(StylePropertyFloat type) const;
+		glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+
         // Notify about interaction with element
         void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;
 
@@ -287,8 +292,9 @@ namespace eyegui
         Element* mpParent;
         float mBorder; // [0..1]
         Orientation mOrientation;
-        std::string mStyleName;
-        Style const * mpStyle;
+        std::string mStyleName; // TODO: delete
+        Style const * mpStyle; // TODO: delete
+		std::shared_ptr<const StyleClass> mspStyleClass; // filled at construction
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
         RenderingMask mRenderingMask;

@@ -15,7 +15,6 @@
 #include "include/eyeGUI.h"
 
 #include "src/Layer.h"
-#include "src/Parser/ConfigParser.h"
 #include "src/Parser/LocalizationParser.h"
 #include "src/Rendering/AssetManager.h"
 #include "src/Rendering/GLSetup.h"
@@ -105,7 +104,7 @@ namespace eyegui
         float getAccPeriodicTime() const;
 
         // Get pointer to style tree of this GUI
-        StyleTree const * getStyleTree() const;
+        std::shared_ptr<const StyleTree> fetchStyleTree() const;
 
         // Get used character set
         CharacterSet getCharacterSet() const;
@@ -167,19 +166,6 @@ namespace eyegui
             bool mToFront; // otherwise to back
         };
 
-        // Job to load style sheeet
-        class LoadStyleSheetJob : public GUIJob
-        {
-        public:
-
-			LoadStyleSheetJob(GUI* pGUI, std::string filepath);
-            virtual void execute();
-
-        protected:
-
-            std::string mFilepath;
-        };
-
         // Job to add layout
         class AddLayoutJob : public GUIJob
         {
@@ -238,7 +224,7 @@ namespace eyegui
         CharacterSet mCharacterSet;
         std::unique_ptr<AssetManager> mupAssetManager;
         float mAccPeriodicTime;
-        StyleTree mStyleTree;
+        std::shared_ptr<StyleTree> mspStyleTree;
         Font const * mpDefaultFont;
         bool mResizing;
         float mResizeWaitTime;

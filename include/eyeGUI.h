@@ -324,12 +324,12 @@ namespace eyegui
 	*/
 	void resizeGUI(GUI* pGUI, int width, int height);
 
-	//! Load config. Is executed at update call.
+	//! Load stylesheet. Is directly executed
 	/*!
 	  \param pGUI pointer to GUI.
-	  \param filepath is path to config file.
+	  \param filepath is path to stylesheet file.
 	*/
-	void loadConfig(GUI* pGUI, std::string filepath);
+	void loadStyleSheet(GUI* pGUI, std::string filepath);
 
 	//! Set gaze visualization drawing.
 	/*!

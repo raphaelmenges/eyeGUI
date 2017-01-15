@@ -38,9 +38,19 @@ namespace eyegui
 		return mFloatMap.at(type);
 	}
 
+	float StyleClass::getValue(StylePropertyFloat type) const
+	{
+		return mFloatMap.at(type)->get();
+	}
+
 	std::shared_ptr<const StyleProperty<glm::vec4> > StyleClass::fetchProperty(StylePropertyVec4 type) const
 	{
 		return mVec4Map.at(type);
+	}
+
+	glm::vec4 StyleClass::getValue(StylePropertyVec4 type) const
+	{
+		return mVec4Map.at(type)->get();
 	}
 
 	void StyleClass::setValue(StylePropertyFloat type, float value)
@@ -87,7 +97,7 @@ namespace eyegui
 
 	void StyleClass::fill(StyleClassConstructionType constructionType)
 	{
-		// TODO Note: ADD INITIAL VALUES AND CONSTRAINTS OF NEW VALUES HERE!
+		// TODO NOTE: ADD INITIAL VALUES AND CONSTRAINTS OF NEW PROPERTIES HERE! Also remember to add string mapping in StyleParser.cpp
 
 		// Float constraints
 		const std::function<float(float)> durationConstraint = [](float value)

@@ -11,6 +11,7 @@
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Rendering/ScissorStack.h"
 #include "src/Parser/LayoutParser.h"
+#include "src/Parser/StyleParser.h"
 #include "externals/GLM/glm/gtc/matrix_transform.hpp"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
 
@@ -73,6 +74,9 @@ namespace eyegui
 
         // Fetch render item for resize blending
         mpResizeBlend = mupAssetManager->fetchRenderItem(shaders::Type::COLOR, meshes::Type::QUAD);
+
+		// Create style tree
+		mspStyleTree = std::shared_ptr<StyleTree>(new StyleTree());
     }
 
     GUI::~GUI()
@@ -255,7 +259,8 @@ namespace eyegui
 
     void GUI::loadStyleSheet(std::string filepath)
     {
-        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new LoadStyleSheetJob(this, filepath))));
+		// Attach content of file to style tree (TODO: could be executed while updating. not good)
+		style_parser::parse(mspStyleTree, filepath);
     }
 
     void GUI::setGazeVisualizationDrawing(bool draw)
@@ -310,9 +315,9 @@ namespace eyegui
         return mAccPeriodicTime;
     }
 
-    StyleTree const * GUI::getStyleTree() const
+	std::shared_ptr<const StyleTree> GUI::fetchStyleTree() const
     {
-        return &mStyleTree;
+		return mspStyleTree;
     }
 
     CharacterSet GUI::getCharacterSet() const
@@ -462,18 +467,6 @@ namespace eyegui
         }
     }
 
-    GUI::LoadStyleSheetJob::LoadStyleSheetJob(GUI *pGUI, std::string filepath) : GUIJob(pGUI)
-    {
-        mFilepath = filepath;
-    }
-
-    void GUI::LoadStyleSheetJob::execute()
-    {
-		/* TODO
-        mpGUI->mStyleSheet = config_parser::parse(mFilepath);
-		*/
-    }
-
     GUI::AddLayoutJob::AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout, int layer) : GUIJob(pGUI)
     {
         mupLayout = std::move(upLayout);
@@ -553,6 +546,7 @@ namespace eyegui
         // TODO: Remove layer if empty
     }
 
+	/* TODO
     GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, std::string value) : GUIJob(pGUI)
     {
         mAttribute = attribute;
@@ -563,4 +557,5 @@ namespace eyegui
     {
         config_parser::fillValue(mpGUI->mConfig, mAttribute, mValue, mpGUI->mConfig.filepath);
     }
+	*/
 }

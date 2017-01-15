@@ -35,8 +35,14 @@ namespace eyegui
 		// Fetch float property
 		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
 
+		// Get float value from property (TODO: const reference?)
+		float getValue(StylePropertyFloat type) const;
+
 		// Fetch vec4 property
 		std::shared_ptr<const StyleProperty<glm::vec4> > fetchProperty(StylePropertyVec4 type) const;
+
+		// Get vec4 value from property (TODO: const reference?)
+		glm::vec4 getValue(StylePropertyVec4 type) const;
 
 		// Set value of float porperty and propagate to children
 		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }

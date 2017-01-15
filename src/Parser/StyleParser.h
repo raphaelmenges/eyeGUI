@@ -4,24 +4,21 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Parser for configuration files.
+// Parser for style sheet files.
 
-#ifndef CONFIG_PARSER_H_
-#define CONFIG_PARSER_H_
+#ifndef STYLE_PARSER_H_
+#define STYLE_PARSER_H_
 
 #include "include/eyeGUI.h"
-#include "Config.h"
+#include "src/Style/StyleTree.h"
 
 namespace eyegui
 {
-    namespace config_parser
+    namespace style_parser
     {
-        // Parsing
-        Config parse(std::string filepath);
-
-        // Fill value
-        void fillValue(Config& rConfig, std::string attribute, std::string value, std::string filepath);
+        // Parse file and attach to existing style tree
+        void parse(std::shared_ptr<StyleTree> spStyleTree, std::string filepath);
     }
 }
 
-#endif // CONFIG_PARSER_H_
+#endif // STYLE_PARSER_H_

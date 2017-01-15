@@ -144,7 +144,7 @@ namespace eyegui
             matrix = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f) * matrix;
 
             mpLine->getShader()->fillValue("matrix", matrix);
-            mpLine->getShader()->fillValue("color", mpGUI->getConfig()->getValue(StylePropertyVec4::GazeVisualizationColor)->get());
+            mpLine->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::GazeVisualizationColor));
             mpLine->getShader()->fillValue("alpha", mPoints[i].alpha.getValue());
             mpLine->draw(GL_LINES);
         }

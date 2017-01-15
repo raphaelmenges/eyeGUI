@@ -14,12 +14,11 @@
 #define LAYOUT_H_
 
 #include "include/eyeGUI.h"
-#include "Frame.h"
-#include "Style.h"
-#include "Config.h"
-#include "Parser/StylesheetParser.h"
-#include "Parser/BrickParser.h"
-#include "NotificationQueue.h"
+#include "src/Frame.h"
+#include "src/Style.h"
+#include "src/Parser/StylesheetParser.h"
+#include "src/Parser/BrickParser.h"
+#include "src/NotificationQueue.h"
 #include "src/Utilities/LerpValue.h"
 
 #include <memory>
@@ -31,6 +30,7 @@ namespace eyegui
 {
     // Forward declaration
     class GUI;
+	class StyleClass;
 
     class Layout
     {
@@ -65,8 +65,8 @@ namespace eyegui
         // Get notificaton queue
         NotificationQueue* getNotificationQueue() const;
 
-        // Get pointer to config of owning GUI
-        Config const * getConfig() const;
+        // Fetch style class from style tree
+        std::shared_ptr<const StyleClass> fetchStyleClass(std::string name) const;
 
         // Get used character set
         CharacterSet getCharacterSet() const;
