@@ -21,39 +21,6 @@ namespace eyegui
 	// Forward declaration
 	class StyleClass;
 
-	// Float types
-	enum class StyleType_float
-	{
-		AnimationDuration,
-		SensorPenetrationIncreaseDuration,
-		SensorPenetrationDecreaseDuration,
-		ButtonThresholdIncreaseDuration,
-		ButtonThresholdDecreaseDuration,
-		ButtonPressingDuration,
-		SensorInteractionPenetrationAmount,
-		DimIncreaseDuration,
-		DimDecreaseDuration,
-		FlashDuration,
-		MaximalAdaptiveScaleIncrease,
-		AdaptiveScaleIncreaseDuration,
-		AdaptiveScaleDecreaseDuration,
-		GazeVisualizationFadeDuration,
-		GazeVisualizationFocusDuration,
-		GazeVisualizationRejectThreshold,
-		GazeVisualizationMinSize,
-		GazeVisualizationMaxSize,
-		KeyboardZoomSpeedMultiplier,
-		KeyboardKeySelectionDuration,
-		FlowSpeedMultiplier,
-		TextEditScrollSpeedMultiplier
-	};
-
-	// Vec4 types
-	enum class StyleType_vec4
-	{
-		GazeVisualizationColor
-	};
-
 	// Style property
 	template<typename T>
 	class StyleProperty

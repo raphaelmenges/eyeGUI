@@ -33,23 +33,23 @@ namespace eyegui
 		return spChild;
 	}
 
-	std::shared_ptr<const StyleProperty<float> > StyleClass::fetchProperty(StyleType_float type) const
+	std::shared_ptr<const StyleProperty<float> > StyleClass::fetchProperty(StylePropertyFloat type) const
 	{
 		return mFloatMap.at(type);
 	}
 
-	std::shared_ptr<const StyleProperty<glm::vec4> > StyleClass::fetchProperty(StyleType_vec4 type) const
+	std::shared_ptr<const StyleProperty<glm::vec4> > StyleClass::fetchProperty(StylePropertyVec4 type) const
 	{
 		return mVec4Map.at(type);
 	}
 
-	void StyleClass::setValue(StyleType_float type, float value)
+	void StyleClass::setValue(StylePropertyFloat type, float value)
 	{
 		// Pass to template
 		genericSetValue(type, value);
 	}
 
-	void StyleClass::setValue(StyleType_vec4 type, glm::vec4 value)
+	void StyleClass::setValue(StylePropertyVec4 type, glm::vec4 value)
 	{
 		// Pass to template
 		genericSetValue(type, value);
@@ -100,7 +100,7 @@ namespace eyegui
 		};
 
 		// Initialize float properties
-		typedef StyleType_float sFloat; // simplify enum access
+		typedef StylePropertyFloat sFloat; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<float> > spFloat; // simplify shared pointer creation
 		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat value) // simplify map insertion
 		{
@@ -143,7 +143,7 @@ namespace eyegui
 		};
 
 		// Initialize vec4 properties
-		typedef StyleType_vec4 sVec4; // simplify enum access
+		typedef StylePropertyVec4 sVec4; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<glm::vec4> > spVec4; // simplify shared pointer creation
 		std::function<void(sVec4, spVec4)> vec4Insert = [&](sVec4 type, spVec4 value) // simplify map insertion
 		{

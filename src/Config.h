@@ -30,19 +30,19 @@ namespace eyegui
 		}
 
 		// Get a value
-		std::shared_ptr<const StyleProperty<float> > getValue(StyleType_float type) const { return std::shared_ptr<StyleProperty<float> >(new StyleProperty<float>(std::shared_ptr<const StyleClass>(), 1.0f)); }
-		std::shared_ptr<const StyleProperty<glm::vec4> > getValue(StyleType_vec4 type) const { return std::shared_ptr<StyleProperty<glm::vec4> >(new StyleProperty<glm::vec4>(std::shared_ptr<const StyleClass>(), glm::vec4(1.0f))); }
+		std::shared_ptr<const StyleProperty<float> > getValue(StylePropertyFloat type) const { return std::shared_ptr<StyleProperty<float> >(new StyleProperty<float>(std::shared_ptr<const StyleClass>(), 1.0f)); }
+		std::shared_ptr<const StyleProperty<glm::vec4> > getValue(StylePropertyVec4 type) const { return std::shared_ptr<StyleProperty<glm::vec4> >(new StyleProperty<glm::vec4>(std::shared_ptr<const StyleClass>(), glm::vec4(1.0f))); }
 
 		// Set a value
-		void setValue(StyleType_float type, std::string value) { mFloatMap.at(type)->set(stringToFloat(value)); };
-		void setValue(StyleType_vec4 type, std::string value) { mVec4Map.at(type)->set(stringHexRGBAToVec4RGBA(value)); };
+		void setValue(StylePropertyFloat type, std::string value) { mFloatMap.at(type)->set(stringToFloat(value)); };
+		void setValue(StylePropertyVec4 type, std::string value) { mVec4Map.at(type)->set(stringHexRGBAToVec4RGBA(value)); };
 
         // Initialize with fallback values
         std::string filepath;
 
 		// Maps with values
-		std::map < StyleType_float, std::shared_ptr<StyleProperty<float> > > mFloatMap;
-		std::map < StyleType_vec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
+		std::map < StylePropertyFloat, std::shared_ptr<StyleProperty<float> > > mFloatMap;
+		std::map < StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
 
         // Experimental (TODO: change to new system too)
         float futureKeyboardPressDuration = 0.5f;

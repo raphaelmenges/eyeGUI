@@ -23,20 +23,20 @@ namespace eyegui
 		auto footer = styleTree.addStyleClass("footer");
 
 		
-		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << header->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
 
-		styleTree.setValue("headerButton", StyleType_float::AnimationDuration, "0.2");
-		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		styleTree.setValue("headerButton", StylePropertyFloat::AnimationDuration, "0.2");
+		std::cout << header->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
 
-		styleTree.setValue("header", StyleType_float::AnimationDuration, "0.2");
-		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		styleTree.setValue("header", StylePropertyFloat::AnimationDuration, "0.2");
+		std::cout << header->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
 
-		styleTree.setValue("header", StyleType_float::AnimationDuration, "0");
-		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		styleTree.setValue("header", StylePropertyFloat::AnimationDuration, "0");
+		std::cout << header->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
 	}
 }
 

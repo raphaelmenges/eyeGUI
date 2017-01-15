@@ -33,18 +33,18 @@ namespace eyegui
 		std::shared_ptr<StyleClass> addChild(std::string name);
 
 		// Fetch float property
-		std::shared_ptr<const StyleProperty<float> > fetchProperty(StyleType_float type) const;
+		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
 
 		// Fetch vec4 property
-		std::shared_ptr<const StyleProperty<glm::vec4> > fetchProperty(StyleType_vec4 type) const;
+		std::shared_ptr<const StyleProperty<glm::vec4> > fetchProperty(StylePropertyVec4 type) const;
 
 		// Set value of float porperty and propagate to children
-		void setValue(StyleType_float type, std::string value) { setValue(type, stringToFloat(value)); }
-		void setValue(StyleType_float type, float value);
+		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }
+		void setValue(StylePropertyFloat type, float value);
 		
 		// Set vec4 value and propagate to children
-		void setValue(StyleType_vec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
-		void setValue(StyleType_vec4 type, glm::vec4 value);
+		void setValue(StylePropertyVec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
+		void setValue(StylePropertyVec4 type, glm::vec4 value);
 
 		// Fetch this or child by name. Return empty pointer if not found
 		std::shared_ptr<StyleClass> fetchThisOrChild(std::string name);
@@ -74,12 +74,12 @@ namespace eyegui
 		// #################################
 
 		// Get style property pointer by type
-		std::shared_ptr<StyleProperty<float> > getStyleProperty(StyleType_float type) { return this->mFloatMap[type]; }
-		std::shared_ptr<StyleProperty<glm::vec4> > getStyleProperty(StyleType_vec4 type) { return this->mVec4Map[type]; }
+		std::shared_ptr<StyleProperty<float> > getStyleProperty(StylePropertyFloat type) { return this->mFloatMap[type]; }
+		std::shared_ptr<StyleProperty<glm::vec4> > getStyleProperty(StylePropertyVec4 type) { return this->mVec4Map[type]; }
 
 		// Set property pointer in map
-		void setMapValue(StyleType_float type, std::shared_ptr<StyleProperty<float> > spProperty) { this->mFloatMap[type] = spProperty; }
-		void setMapValue(StyleType_vec4 type, std::shared_ptr<StyleProperty<glm::vec4> > spProperty) { this->mVec4Map[type] = spProperty; }
+		void setMapValue(StylePropertyFloat type, std::shared_ptr<StyleProperty<float> > spProperty) { this->mFloatMap[type] = spProperty; }
+		void setMapValue(StylePropertyVec4 type, std::shared_ptr<StyleProperty<glm::vec4> > spProperty) { this->mVec4Map[type] = spProperty; }
 
 		// ####################
 		// ### VALUE SETTER ###
@@ -159,8 +159,8 @@ namespace eyegui
 		std::string mName = "";
 
 		// Maps
-		std::map<StyleType_float, std::shared_ptr<StyleProperty<float> > > mFloatMap;
-		std::map<StyleType_vec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
+		std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<float> > > mFloatMap;
+		std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
 
 		// Parent
 		std::weak_ptr<const StyleClass> mwpParent;

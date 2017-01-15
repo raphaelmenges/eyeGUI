@@ -44,6 +44,39 @@ namespace eyegui
 	class Layout;
 	class Frame;
 
+	//! Enumeration style properties float types
+	enum class StylePropertyFloat
+	{
+		AnimationDuration,
+		SensorPenetrationIncreaseDuration,
+		SensorPenetrationDecreaseDuration,
+		ButtonThresholdIncreaseDuration,
+		ButtonThresholdDecreaseDuration,
+		ButtonPressingDuration,
+		SensorInteractionPenetrationAmount,
+		DimIncreaseDuration,
+		DimDecreaseDuration,
+		FlashDuration,
+		MaximalAdaptiveScaleIncrease,
+		AdaptiveScaleIncreaseDuration,
+		AdaptiveScaleDecreaseDuration,
+		GazeVisualizationFadeDuration,
+		GazeVisualizationFocusDuration,
+		GazeVisualizationRejectThreshold,
+		GazeVisualizationMinSize,
+		GazeVisualizationMaxSize,
+		KeyboardZoomSpeedMultiplier,
+		KeyboardKeySelectionDuration,
+		FlowSpeedMultiplier,
+		TextEditScrollSpeedMultiplier
+	};
+
+	//! Enumeration style properties vec4 types
+	enum class StylePropertyVec4
+	{
+		GazeVisualizationColor
+	};
+
 	//! Enumeration of possible character sets for font rendering.
 	enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH };
 
