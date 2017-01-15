@@ -4,15 +4,15 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Style class has maps of style value pointers. Some of those values
-// are just references to values from other classes and some are owned
-// by this. If a value is owned, propagation of values of its type
+// Style class has maps of style property pointers. Some of those properties
+// are just references to properties from other classes and some are owned
+// by this. If a property is owned, propagation of values of its type
 // from parent class is stopped.
 
 #ifndef STYLE_CLASS_H_
 #define STYLE_CLASS_H_
 
-#include "src/Style/StyleValue.h"
+#include "src/Style/StyleProperty.h"
 #include "src/Utilities/Helper.h"
 #include "src/Defines.h"
 
@@ -29,27 +29,27 @@ namespace eyegui
 	{
 	public:
 
-		// Add child. Tree must check whether name is globally unique
+		// Add child. Caller must check whether name is globally unique
 		std::shared_ptr<StyleClass> addChild(std::string name);
 
-		// Fetch float value
-		std::shared_ptr<const StyleValue<float> > fetchValue(StyleType_float type) const;
+		// Fetch float property
+		std::shared_ptr<const StyleProperty<float> > fetchProperty(StyleType_float type) const;
 
-		// Fetch vec4 value
-		std::shared_ptr<const StyleValue<glm::vec4> > fetchValue(StyleType_vec4 type) const;
+		// Fetch vec4 property
+		std::shared_ptr<const StyleProperty<glm::vec4> > fetchProperty(StyleType_vec4 type) const;
 
-		// Set float value, propagate to children
+		// Set value of float porperty and propagate to children
 		void setValue(StyleType_float type, std::string value) { setValue(type, stringToFloat(value)); }
-		void setValue(StyleType_float type, float rawValue);
+		void setValue(StyleType_float type, float value);
 		
-		// Set vec4 value, propagate to children
+		// Set vec4 value and propagate to children
 		void setValue(StyleType_vec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
-		void setValue(StyleType_vec4 type, glm::vec4 rawValue);
+		void setValue(StyleType_vec4 type, glm::vec4 value);
 
 		// Fetch this or child by name. Return empty pointer if not found
 		std::shared_ptr<StyleClass> fetchThisOrChild(std::string name);
 
-		// Get name
+		// Get name of this style class
 		std::string getName() const;
 
 	private:
@@ -73,48 +73,48 @@ namespace eyegui
 		// ### MAPS HELPER FOR TEMPLATES ###
 		// #################################
 
-		// Get style class of value
-		std::shared_ptr<StyleValue<float> > getStyleValue(StyleType_float type) { return this->mFloatMap[type]; }
-		std::shared_ptr<StyleValue<glm::vec4> > getStyleValue(StyleType_vec4 type) { return this->mVec4Map[type]; }
+		// Get style property pointer by type
+		std::shared_ptr<StyleProperty<float> > getStyleProperty(StyleType_float type) { return this->mFloatMap[type]; }
+		std::shared_ptr<StyleProperty<glm::vec4> > getStyleProperty(StyleType_vec4 type) { return this->mVec4Map[type]; }
 
-		// Set raw value of value in map
-		void setStyleValue(StyleType_float type, std::shared_ptr<StyleValue<float> > spValue) { this->mFloatMap[type] = spValue; }
-		void setStyleValue(StyleType_vec4 type, std::shared_ptr<StyleValue<glm::vec4> > spValue) { this->mVec4Map[type] = spValue; }
+		// Set property pointer in map
+		void setMapValue(StyleType_float type, std::shared_ptr<StyleProperty<float> > spProperty) { this->mFloatMap[type] = spProperty; }
+		void setMapValue(StyleType_vec4 type, std::shared_ptr<StyleProperty<glm::vec4> > spProperty) { this->mVec4Map[type] = spProperty; }
 
 		// ####################
 		// ### VALUE SETTER ###
 		// ####################
 
-		// Set value as template implementation
-		template<typename RawType, typename Type, typename RawValue>
-		void genericSetValue(Type type, RawValue rawValue)
+		// Set value as template implementation. Does create new property if not existing in instance
+		template<typename Type, typename Value>
+		void genericSetValue(Type type, Value value)
 		{
-			// Check whether value is owned by me
-			auto spStoredValue = this->getStyleValue(type);
-			auto spStoredValueStyleClass = spStoredValue->getStyleClass().lock();
+			// Check whether property is owned by me
+			auto spStoredProperty = this->getStyleProperty(type);
+			auto spStoredPropertyStyleClass = spStoredProperty->getStyleClass().lock();
 			bool owned = false;
-			if (spStoredValueStyleClass)
+			if (spStoredPropertyStyleClass)
 			{
 				// Compare raw pointers
-				owned = spStoredValueStyleClass.get() == this;
+				owned = spStoredPropertyStyleClass.get() == this;
 			}
 
-			// Set value by either creating a value or just changing it
+			// Set value by either creating a property or just changing it
 			if (owned)
 			{
 				// Just set it
-				spStoredValue->set(rawValue);
+				spStoredProperty->set(value);
 			}
 			else
 			{
-				// Add new owned value while copying constraint from it since it is of the same type
-				spStoredValue = std::shared_ptr<StyleValue<RawType> >(new StyleValue<RawType>(shared_from_this(), rawValue, spStoredValue->getConstraint()));
-				this->setStyleValue(type, spStoredValue);
+				// Add new owned property while copying constraint from existing since it is of the same type
+				spStoredProperty = std::shared_ptr<StyleProperty<Value> >(new StyleProperty<Value>(shared_from_this(), value, spStoredProperty->getConstraint()));
+				this->setMapValue(type, spStoredProperty);
 
 				// Propagate it to children
 				for (auto& rspChild : this->mChildren)
 				{
-					rspChild->genericPropagateValue<RawType, Type>(type, spStoredValue);
+					rspChild->genericPropagateProperty(type, spStoredProperty);
 				}
 			}
 		}
@@ -124,31 +124,31 @@ namespace eyegui
 		// #########################
 
 		// Propagate value from parent to this and children
-		template<typename RawType, typename Type>
-		void genericPropagateValue(Type type, std::shared_ptr<StyleValue<RawType> > spValue)
+		template<typename Type, typename ValueType>
+		void genericPropagateProperty(Type type, std::shared_ptr<StyleProperty<ValueType> > spProperty)
 		{
-			// Check whether value is owned by me
-			auto spStoredValue = this->getStyleValue(type);
-			auto spStoredValueStyleClass = spStoredValue->getStyleClass().lock();
+			// Check whether property is owned by me
+			auto spStoredProperty = this->getStyleProperty(type);
+			auto spStoredPropertyStyleClass = spStoredProperty->getStyleClass().lock();
 			bool owned = false;
-			if (spStoredValueStyleClass)
+			if (spStoredPropertyStyleClass)
 			{
 				// Compare raw pointers
-				owned = spStoredValueStyleClass.get() == this;
+				owned = spStoredPropertyStyleClass.get() == this;
 			}
 
 			// Only store and pass to children if no custom one owned by me
 			if (!owned)
 			{
-				// Store pointer to value
-				this->setStyleValue(type, spValue);
+				// Store pointer to property
+				this->setMapValue(type, spProperty);
 
 				// Propagate it to children
 				for (auto& rspChild : this->mChildren)
 				{
-					rspChild->genericPropagateValue(type, spValue);
+					rspChild->genericPropagateProperty(type, spProperty);
 				}
-			}
+			} // else: stop propagation here
 		}
 
 		// ###############
@@ -159,8 +159,8 @@ namespace eyegui
 		std::string mName = "";
 
 		// Maps
-		std::map<StyleType_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
-		std::map<StyleType_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
+		std::map<StyleType_float, std::shared_ptr<StyleProperty<float> > > mFloatMap;
+		std::map<StyleType_vec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
 
 		// Parent
 		std::weak_ptr<const StyleClass> mwpParent;

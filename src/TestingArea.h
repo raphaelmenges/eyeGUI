@@ -23,20 +23,20 @@ namespace eyegui
 		auto footer = styleTree.addStyleClass("footer");
 
 		
-		std::cout << header->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
 
 		styleTree.setValue("headerButton", StyleType_float::AnimationDuration, "0.2");
-		std::cout << header->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
 
 		styleTree.setValue("header", StyleType_float::AnimationDuration, "0.2");
-		std::cout << header->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
 
 		styleTree.setValue("header", StyleType_float::AnimationDuration, "0");
-		std::cout << header->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
-		std::cout << headerButton->fetchValue(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << header->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
+		std::cout << headerButton->fetchProperty(StyleType_float::AnimationDuration)->get() << std::endl;
 	}
 }
 

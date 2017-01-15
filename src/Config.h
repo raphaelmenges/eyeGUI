@@ -11,7 +11,7 @@
 
 #include "src/Utilities/Helper.h"
 #include "src/Defines.h"
-#include "src/Style/StyleValue.h"
+#include "src/Style/StyleProperty.h"
 #include "externals/GLM/glm/glm.hpp"
 
 #include <map>
@@ -30,8 +30,8 @@ namespace eyegui
 		}
 
 		// Get a value
-		std::shared_ptr<const StyleValue<float> > getValue(StyleType_float type) const { return std::shared_ptr<StyleValue<float> >(new StyleValue<float>(std::shared_ptr<const StyleClass>(), 1.0f)); }
-		std::shared_ptr<const StyleValue<glm::vec4> > getValue(StyleType_vec4 type) const { return std::shared_ptr<StyleValue<glm::vec4> >(new StyleValue<glm::vec4>(std::shared_ptr<const StyleClass>(), glm::vec4(1.0f))); }
+		std::shared_ptr<const StyleProperty<float> > getValue(StyleType_float type) const { return std::shared_ptr<StyleProperty<float> >(new StyleProperty<float>(std::shared_ptr<const StyleClass>(), 1.0f)); }
+		std::shared_ptr<const StyleProperty<glm::vec4> > getValue(StyleType_vec4 type) const { return std::shared_ptr<StyleProperty<glm::vec4> >(new StyleProperty<glm::vec4>(std::shared_ptr<const StyleClass>(), glm::vec4(1.0f))); }
 
 		// Set a value
 		void setValue(StyleType_float type, std::string value) { mFloatMap.at(type)->set(stringToFloat(value)); };
@@ -41,8 +41,8 @@ namespace eyegui
         std::string filepath;
 
 		// Maps with values
-		std::map < StyleType_float, std::shared_ptr<StyleValue<float> > > mFloatMap;
-		std::map < StyleType_vec4, std::shared_ptr<StyleValue<glm::vec4> > > mVec4Map;
+		std::map < StyleType_float, std::shared_ptr<StyleProperty<float> > > mFloatMap;
+		std::map < StyleType_vec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
 
         // Experimental (TODO: change to new system too)
         float futureKeyboardPressDuration = 0.5f;

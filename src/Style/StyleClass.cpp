@@ -33,26 +33,26 @@ namespace eyegui
 		return spChild;
 	}
 
-	std::shared_ptr<const StyleValue<float> > StyleClass::fetchValue(StyleType_float type) const
+	std::shared_ptr<const StyleProperty<float> > StyleClass::fetchProperty(StyleType_float type) const
 	{
 		return mFloatMap.at(type);
 	}
 
-	std::shared_ptr<const StyleValue<glm::vec4> > StyleClass::fetchValue(StyleType_vec4 type) const
+	std::shared_ptr<const StyleProperty<glm::vec4> > StyleClass::fetchProperty(StyleType_vec4 type) const
 	{
 		return mVec4Map.at(type);
 	}
 
-	void StyleClass::setValue(StyleType_float type, float rawValue)
+	void StyleClass::setValue(StyleType_float type, float value)
 	{
 		// Pass to template
-		genericSetValue<float>(type, rawValue);
+		genericSetValue(type, value);
 	}
 
-	void StyleClass::setValue(StyleType_vec4 type, glm::vec4 rawValue)
+	void StyleClass::setValue(StyleType_vec4 type, glm::vec4 value)
 	{
 		// Pass to template
-		genericSetValue<glm::vec4>(type, rawValue);
+		genericSetValue(type, value);
 	}
 
 	std::shared_ptr<StyleClass> StyleClass::fetchThisOrChild(std::string name)
@@ -99,9 +99,9 @@ namespace eyegui
 			return glm::max(0.f, value);
 		};
 
-		// Initialize float values
+		// Initialize float properties
 		typedef StyleType_float sFloat; // simplify enum access
-		typedef std::shared_ptr<StyleValue<float> > spFloat; // simplify shared pointer creation
+		typedef std::shared_ptr<StyleProperty<float> > spFloat; // simplify shared pointer creation
 		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat value) // simplify map insertion
 		{
 			if (constructionType == StyleClassConstructionType::STYLE_TREE_ROOT)
@@ -113,28 +113,28 @@ namespace eyegui
 				mFloatMap[type] = spFloat(); // create empty pointer for style class in element
 			}
 		};
-		floatInsert(sFloat::AnimationDuration,					spFloat(new StyleValue<float>(shared_from_this(), 0.1f, durationConstraint)));
-		floatInsert(sFloat::SensorPenetrationIncreaseDuration,	spFloat(new StyleValue<float>(shared_from_this(), 3.0f, durationConstraint)));
-		floatInsert(sFloat::SensorPenetrationDecreaseDuration,	spFloat(new StyleValue<float>(shared_from_this(), 1.5f, durationConstraint)));
-		floatInsert(sFloat::ButtonThresholdIncreaseDuration,	spFloat(new StyleValue<float>(shared_from_this(), 1.0f, durationConstraint)));
-		floatInsert(sFloat::ButtonThresholdDecreaseDuration,	spFloat(new StyleValue<float>(shared_from_this(), 2.0f, durationConstraint)));
-		floatInsert(sFloat::ButtonPressingDuration,				spFloat(new StyleValue<float>(shared_from_this(), 0.3f, durationConstraint)));
-		floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new StyleValue<float>(shared_from_this(), 0.5f, positiveConstraint)));
-		floatInsert(sFloat::DimIncreaseDuration,				spFloat(new StyleValue<float>(shared_from_this(), 1.5f, durationConstraint)));
-		floatInsert(sFloat::DimDecreaseDuration,				spFloat(new StyleValue<float>(shared_from_this(), 0.25f, durationConstraint)));
-		floatInsert(sFloat::FlashDuration,						spFloat(new StyleValue<float>(shared_from_this(), 2.0f, durationConstraint)));
-		floatInsert(sFloat::MaximalAdaptiveScaleIncrease,		spFloat(new StyleValue<float>(shared_from_this(), 0.5f, positiveConstraint)));
-		floatInsert(sFloat::AdaptiveScaleIncreaseDuration,		spFloat(new StyleValue<float>(shared_from_this(), 1.0f, durationConstraint)));
-		floatInsert(sFloat::AdaptiveScaleDecreaseDuration,		spFloat(new StyleValue<float>(shared_from_this(), 1.0f, durationConstraint)));
-		floatInsert(sFloat::GazeVisualizationFadeDuration,		spFloat(new StyleValue<float>(shared_from_this(), 4.0f, durationConstraint)));
-		floatInsert(sFloat::GazeVisualizationFocusDuration,		spFloat(new StyleValue<float>(shared_from_this(), 2.0f, durationConstraint)));
-		floatInsert(sFloat::GazeVisualizationRejectThreshold,	spFloat(new StyleValue<float>(shared_from_this(), 0.125f, positiveConstraint)));
-		floatInsert(sFloat::GazeVisualizationMinSize,			spFloat(new StyleValue<float>(shared_from_this(), 0.02f, positiveConstraint)));
-		floatInsert(sFloat::GazeVisualizationMaxSize,			spFloat(new StyleValue<float>(shared_from_this(), 0.075f, positiveConstraint)));
-		floatInsert(sFloat::KeyboardZoomSpeedMultiplier,		spFloat(new StyleValue<float>(shared_from_this(), 1.0f, positiveConstraint)));
-		floatInsert(sFloat::KeyboardKeySelectionDuration,		spFloat(new StyleValue<float>(shared_from_this(), 1.25f, durationConstraint)));
-		floatInsert(sFloat::FlowSpeedMultiplier,				spFloat(new StyleValue<float>(shared_from_this(), 1.0f, positiveConstraint)));
-		floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new StyleValue<float>(shared_from_this(), 1.0, positiveConstraint)));
+		floatInsert(sFloat::AnimationDuration,					spFloat(new StyleProperty<float>(shared_from_this(), 0.1f, durationConstraint)));
+		floatInsert(sFloat::SensorPenetrationIncreaseDuration,	spFloat(new StyleProperty<float>(shared_from_this(), 3.0f, durationConstraint)));
+		floatInsert(sFloat::SensorPenetrationDecreaseDuration,	spFloat(new StyleProperty<float>(shared_from_this(), 1.5f, durationConstraint)));
+		floatInsert(sFloat::ButtonThresholdIncreaseDuration,	spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint)));
+		floatInsert(sFloat::ButtonThresholdDecreaseDuration,	spFloat(new StyleProperty<float>(shared_from_this(), 2.0f, durationConstraint)));
+		floatInsert(sFloat::ButtonPressingDuration,				spFloat(new StyleProperty<float>(shared_from_this(), 0.3f, durationConstraint)));
+		floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint)));
+		floatInsert(sFloat::DimIncreaseDuration,				spFloat(new StyleProperty<float>(shared_from_this(), 1.5f, durationConstraint)));
+		floatInsert(sFloat::DimDecreaseDuration,				spFloat(new StyleProperty<float>(shared_from_this(), 0.25f, durationConstraint)));
+		floatInsert(sFloat::FlashDuration,						spFloat(new StyleProperty<float>(shared_from_this(), 2.0f, durationConstraint)));
+		floatInsert(sFloat::MaximalAdaptiveScaleIncrease,		spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint)));
+		floatInsert(sFloat::AdaptiveScaleIncreaseDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint)));
+		floatInsert(sFloat::AdaptiveScaleDecreaseDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint)));
+		floatInsert(sFloat::GazeVisualizationFadeDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 4.0f, durationConstraint)));
+		floatInsert(sFloat::GazeVisualizationFocusDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 2.0f, durationConstraint)));
+		floatInsert(sFloat::GazeVisualizationRejectThreshold,	spFloat(new StyleProperty<float>(shared_from_this(), 0.125f, positiveConstraint)));
+		floatInsert(sFloat::GazeVisualizationMinSize,			spFloat(new StyleProperty<float>(shared_from_this(), 0.02f, positiveConstraint)));
+		floatInsert(sFloat::GazeVisualizationMaxSize,			spFloat(new StyleProperty<float>(shared_from_this(), 0.075f, positiveConstraint)));
+		floatInsert(sFloat::KeyboardZoomSpeedMultiplier,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
+		floatInsert(sFloat::KeyboardKeySelectionDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 1.25f, durationConstraint)));
+		floatInsert(sFloat::FlowSpeedMultiplier,				spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
+		floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0, positiveConstraint)));
 
 		// Vec4 constraints
 		const std::function<glm::vec4(glm::vec4)> colorConstraint = [](glm::vec4 value)
@@ -142,9 +142,9 @@ namespace eyegui
 			return glm::clamp(value, VEC_4_ZERO, VEC_4_ONE);
 		};
 
-		// Initialize vec4 values
+		// Initialize vec4 properties
 		typedef StyleType_vec4 sVec4; // simplify enum access
-		typedef std::shared_ptr<StyleValue<glm::vec4> > spVec4; // simplify shared pointer creation
+		typedef std::shared_ptr<StyleProperty<glm::vec4> > spVec4; // simplify shared pointer creation
 		std::function<void(sVec4, spVec4)> vec4Insert = [&](sVec4 type, spVec4 value) // simplify map insertion
 		{
 			if (constructionType == StyleClassConstructionType::STYLE_TREE_ROOT)
@@ -156,7 +156,7 @@ namespace eyegui
 				mVec4Map[type] = spVec4(); // create empty pointer for style class in element
 			}
 		};
-		vec4Insert(sVec4::GazeVisualizationColor,				spVec4(new StyleValue<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
+		vec4Insert(sVec4::GazeVisualizationColor,				spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
 	}
 
 	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, StyleClassConstructionType type) const

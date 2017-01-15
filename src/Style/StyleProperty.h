@@ -4,11 +4,11 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Singe style value. Applies given constraint on itself when value is set.
-// Has pointer to owner of the value.
+// Single style property. Applies given constraint on itself when value is set.
+// Has pointer to style class who owns this property.
 
-#ifndef STYLE_VALUE_H_
-#define STYLE_VALUE_H_
+#ifndef STYLE_PROPERTY_H_
+#define STYLE_PROPERTY_H_
 
 #include "externals/GLM/glm/glm.hpp"
 
@@ -21,6 +21,7 @@ namespace eyegui
 	// Forward declaration
 	class StyleClass;
 
+	// Float types
 	enum class StyleType_float
 	{
 		AnimationDuration,
@@ -47,18 +48,20 @@ namespace eyegui
 		TextEditScrollSpeedMultiplier
 	};
 
+	// Vec4 types
 	enum class StyleType_vec4
 	{
 		GazeVisualizationColor
 	};
 
+	// Style property
 	template<typename T>
-	class StyleValue
+	class StyleProperty
 	{
 	public:
 
-		// Constructor pointer to class thats owns the value and an initial value. Optionally can be added a constraint that is checked at set
-		StyleValue(std::weak_ptr<const StyleClass> wpStyleClass, T value, std::function<T(T)> constraint = [](T value) {return value; })
+		// Constructor takes pointer to class thats owns the property and an initial value. Optionally a constraint that is checked at set can be added 
+		StyleProperty(std::weak_ptr<const StyleClass> wpStyleClass, T value, std::function<T(T)> constraint = [](T value) {return value; })
 		{
 			this->mwpStyleClass = wpStyleClass;
 			this->mConstraint = std::move(constraint);
@@ -68,18 +71,18 @@ namespace eyegui
 		// Get style class that owns this
 		std::weak_ptr<const StyleClass> getStyleClass() const {	return mwpStyleClass; };
 
-		// Set value
+		// Set value while applying the constraint
 		virtual void set(T value) { this->mValue = this->mConstraint(value); }
 
 		// Get value
 		T get() const { return this->mValue; }
 
-		// Get constraint
+		// Get copy of constraint
 		std::function<T(T)> getConstraint() const { return this->mConstraint; }
 
 	protected:
 
-		// Pointer to style class that holds this value
+		// Pointer to style class that holds this property. Might be an invalid pointer
 		std::weak_ptr<const StyleClass> mwpStyleClass;
 
 		// Value
@@ -90,4 +93,4 @@ namespace eyegui
 	};
 }
 
-#endif // STYLE_VALUE_H_
+#endif // STYLE_PROPERTY_H_
