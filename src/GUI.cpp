@@ -7,7 +7,7 @@
 
 #include "GUI.h"
 
-#include "Defines.h"
+#include "src/Defines.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Rendering/ScissorStack.h"
 #include "src/Parser/LayoutParser.h"
@@ -253,9 +253,9 @@ namespace eyegui
         mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new MoveLayoutJob(this, pLayout, false))));
     }
 
-    void GUI::loadConfig(std::string filepath)
+    void GUI::loadStyleSheet(std::string filepath)
     {
-        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new LoadConfigJob(this, filepath))));
+        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new LoadStyleSheetJob(this, filepath))));
     }
 
     void GUI::setGazeVisualizationDrawing(bool draw)
@@ -274,10 +274,12 @@ namespace eyegui
         mupAssetManager->fetchTexture(filepath);
     }
 
+	/* TODO
     void GUI::setValueOfConfigAttribute(std::string attribute, std::string value)
     {
         mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
     }
+	*/
 
     uint GUI::addDictionary(std::string filepath)
     {
@@ -308,9 +310,9 @@ namespace eyegui
         return mAccPeriodicTime;
     }
 
-    Config const * GUI::getConfig() const
+    StyleTree const * GUI::getStyleTree() const
     {
-        return &mConfig;
+        return &mStyleTree;
     }
 
     CharacterSet GUI::getCharacterSet() const
@@ -460,14 +462,16 @@ namespace eyegui
         }
     }
 
-    GUI::LoadConfigJob::LoadConfigJob(GUI *pGUI, std::string filepath) : GUIJob(pGUI)
+    GUI::LoadStyleSheetJob::LoadStyleSheetJob(GUI *pGUI, std::string filepath) : GUIJob(pGUI)
     {
         mFilepath = filepath;
     }
 
-    void GUI::LoadConfigJob::execute()
+    void GUI::LoadStyleSheetJob::execute()
     {
-        mpGUI->mConfig = config_parser::parse(mFilepath);
+		/* TODO
+        mpGUI->mStyleSheet = config_parser::parse(mFilepath);
+		*/
     }
 
     GUI::AddLayoutJob::AddLayoutJob(GUI* pGUI, std::unique_ptr<Layout> upLayout, int layer) : GUIJob(pGUI)

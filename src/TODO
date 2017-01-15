@@ -3,13 +3,12 @@
 ## New features
 - Ring Container (optional)
 - Style Tree
- - Every element has copy of all style values
- - When element is created, all custom style values are read and set by itself and forwarded to potential children
- - for all map entries which are empty, class information used
- - class is forwarded to children like styles are forwarded
- - built up styletree is used to fill further values. this can be done indepently by all nodes
- - if neither element of style tree give value, fallback value is used (which is already defined in value object)
-
+ - Make it member of GUI
+ - Implement it in Element
+ - Adapt parser
+ - Replace also current styling with new style tree
+ - implement direct element styling
+ 
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed

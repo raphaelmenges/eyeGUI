@@ -14,14 +14,14 @@
 
 #include "include/eyeGUI.h"
 
-#include "Layer.h"
-#include "Parser/ConfigParser.h"
-#include "Parser/LocalizationParser.h"
-#include "Rendering/AssetManager.h"
-#include "Rendering/GLSetup.h"
-#include "Config.h"
-#include "Rendering/GazeDrawer.h"
-#include "Utilities/Dictionary.h"
+#include "src/Layer.h"
+#include "src/Parser/ConfigParser.h"
+#include "src/Parser/LocalizationParser.h"
+#include "src/Rendering/AssetManager.h"
+#include "src/Rendering/GLSetup.h"
+#include "src/Style/StyleTree.h"
+#include "src/Rendering/GazeDrawer.h"
+#include "src/Utilities/Dictionary.h"
 
 #include <memory>
 #include <vector>
@@ -74,8 +74,8 @@ namespace eyegui
         // Move layout to back in its layer
         void moveLayoutToBack(Layout* pLayout);
 
-        // Load a config
-        void loadConfig(std::string filepath);
+        // Load a style sheet
+        void loadStyleSheet(std::string filepath);
 
         // Set gaze visualization drawing
         void setGazeVisualizationDrawing(bool draw);
@@ -86,8 +86,8 @@ namespace eyegui
         // Prefatch image to avoid lag
         void prefetchImage(std::string filepath);
 
-        // Set value of config attribute
-        void setValueOfConfigAttribute(std::string attribute, std::string value);
+        // Set value of config attribute (TODO with style tree)
+        // void setValueOfConfigAttribute(std::string attribute, std::string value);
 
         // Add dictionary. Returns index as handle
         uint addDictionary(std::string filepath);
@@ -104,8 +104,8 @@ namespace eyegui
         // Get time since start (gets reset if too big)
         float getAccPeriodicTime() const;
 
-        // Get pointer to config of this GUI
-        Config const * getConfig() const;
+        // Get pointer to style tree of this GUI
+        StyleTree const * getStyleTree() const;
 
         // Get used character set
         CharacterSet getCharacterSet() const;
@@ -167,12 +167,12 @@ namespace eyegui
             bool mToFront; // otherwise to back
         };
 
-        // Job to load config
-        class LoadConfigJob : public GUIJob
+        // Job to load style sheeet
+        class LoadStyleSheetJob : public GUIJob
         {
         public:
 
-            LoadConfigJob(GUI* pGUI, std::string filepath);
+			LoadStyleSheetJob(GUI* pGUI, std::string filepath);
             virtual void execute();
 
         protected:
@@ -207,7 +207,8 @@ namespace eyegui
             Layout const * mpLayout;
         };
 
-        // Job to change value of config attribute
+        // Job to change value of config attribute TODO
+		/*
         class SetValueOfConfigAttributeJob : public GUIJob
         {
         public:
@@ -220,6 +221,7 @@ namespace eyegui
             std::string mAttribute;
             std::string mValue;
         };
+		*/
 
         // #####################################################################
 
@@ -236,7 +238,7 @@ namespace eyegui
         CharacterSet mCharacterSet;
         std::unique_ptr<AssetManager> mupAssetManager;
         float mAccPeriodicTime;
-        Config mConfig;
+        StyleTree mStyleTree;
         Font const * mpDefaultFont;
         bool mResizing;
         float mResizeWaitTime;
