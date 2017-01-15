@@ -80,7 +80,12 @@ namespace eyegui
 		return std::shared_ptr<StyleClass>();
 	}
 
-	void StyleClass::fillWithBaseValues()
+	std::string StyleClass::getName() const
+	{
+		return mName;
+	}
+
+	void StyleClass::fill(StyleClassConstructionType constructionType)
 	{
 		// TODO Note: ADD INITIAL VALUES AND CONSTRAINTS OF NEW VALUES HERE!
 
@@ -99,7 +104,14 @@ namespace eyegui
 		typedef std::shared_ptr<StyleValue<float> > spFloat; // simplify shared pointer creation
 		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat value) // simplify map insertion
 		{
-			mFloatMap[type] = value;
+			if (constructionType == StyleClassConstructionType::STYLE_TREE_ROOT)
+			{
+				mFloatMap[type] = value; // use value for style class in root node
+			}
+			else
+			{
+				mFloatMap[type] = spFloat(); // create empty pointer for style class in element
+			}
 		};
 		floatInsert(sFloat::AnimationDuration,					spFloat(new StyleValue<float>(shared_from_this(), 0.1f, durationConstraint)));
 		floatInsert(sFloat::SensorPenetrationIncreaseDuration,	spFloat(new StyleValue<float>(shared_from_this(), 3.0f, durationConstraint)));
@@ -131,17 +143,26 @@ namespace eyegui
 		};
 
 		// Initialize vec4 values
-		typedef StyleType_vec4 v4Float; // simplify enum access
+		typedef StyleType_vec4 sVec4; // simplify enum access
 		typedef std::shared_ptr<StyleValue<glm::vec4> > spVec4; // simplify shared pointer creation
-		std::function<void(v4Float, spVec4)> vec4Insert = [&](v4Float type, spVec4 value) // simplify map insertion
+		std::function<void(sVec4, spVec4)> vec4Insert = [&](sVec4 type, spVec4 value) // simplify map insertion
 		{
-			mVec4Map[type] = value;
+			if (constructionType == StyleClassConstructionType::STYLE_TREE_ROOT)
+			{
+				mVec4Map[type] = value; // use value for style class in root node
+			}
+			else
+			{
+				mVec4Map[type] = spVec4(); // create empty pointer for style class in element
+			}
 		};
-		vec4Insert(v4Float::GazeVisualizationColor,				spVec4(new StyleValue<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
+		vec4Insert(sVec4::GazeVisualizationColor,				spVec4(new StyleValue<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
 	}
 
-	std::string StyleClass::getName() const
+	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, StyleClassConstructionType type) const
 	{
-		return mName;
+		auto spStyleClass = std::shared_ptr<StyleClass>(new StyleClass(name, std::shared_ptr<const StyleClass>()));
+		spStyleClass->fill(type);
+		return spStyleClass;
 	}
 }

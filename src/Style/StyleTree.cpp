@@ -7,15 +7,14 @@
 
 #include "StyleTree.h"
 
+#include "src/Utilities/OperationNotifier.h"
+
 namespace eyegui
 {
 	StyleTree::StyleTree()
 	{
-		// Create root of tree with empty parent pointer, so weak pointer is invalid after constructor call
-		mspRoot = std::shared_ptr<StyleClass>(new StyleClass(STYLE_BASE_CLASS_NAME, std::shared_ptr<const StyleClass>()));
-
-		// Fill root with base / inital values
-		mspRoot->fillWithBaseValues();
+		// Create root of tree with empty parent pointer
+		mspRoot = StyleClassBuilder().construct(STYLE_BASE_CLASS_NAME, StyleClassConstructionType::STYLE_TREE_ROOT);
 	}
 
 	std::shared_ptr<const StyleClass> StyleTree::addStyleClass(std::string name, std::string parentName)
@@ -23,7 +22,8 @@ namespace eyegui
 		// Check, whether class does already exist
 		if (auto spStyleClass = mspRoot->fetchThisOrChild(name))
 		{
-			// TODO: warning, that class exists, maybe under different parent
+			// Does already exist
+			throwWarning(OperationNotifier::Operation::PARSING, "Style class already exists and value is set there: " + name);
 			return spStyleClass;
 		}
 
@@ -31,7 +31,8 @@ namespace eyegui
 		auto spParent = mspRoot->fetchThisOrChild(parentName);
 		if (!spParent)
 		{
-			// TODO: warning, about attachment to root
+			// Suggested parent not found
+			throwWarning(OperationNotifier::Operation::PARSING, "Suggested parent of style class not found. Using root: " + name);
 			spParent = mspRoot;
 		}
 		return spParent->addChild(name);

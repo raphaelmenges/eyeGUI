@@ -21,13 +21,13 @@
 
 namespace eyegui
 {
-	// Style class
+	// Enumeration to decide type of construction via builder
+	enum class StyleClassConstructionType { STYLE_TREE_ROOT, ELEMENT_STYLE };
+
+	// Style class, must be built by builder
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
 	public:
-
-		// Constructor. Parent for base class is zero
-		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent);
 
 		// Add child. Tree must check whether name is globally unique
 		std::shared_ptr<StyleClass> addChild(std::string name);
@@ -49,13 +49,25 @@ namespace eyegui
 		// Fetch this or child by name. Return empty pointer if not found
 		std::shared_ptr<StyleClass> fetchThisOrChild(std::string name);
 
-		// Must be only called on base style class and before any children are added!
-		void fillWithBaseValues();
-
 		// Get name
 		std::string getName() const;
 
 	private:
+
+		// Builder is friend class
+		friend class StyleClassBuilder;
+
+		// Constructor
+		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent);
+
+		// Private copy constuctor
+		StyleClass(StyleClass const&) {}
+
+		// Private assignment operator
+		StyleClass& operator = (StyleClass const&) { return *this; }
+
+		// Called only by builder
+		void fill(StyleClassConstructionType constructionType);
 
 		// #################################
 		// ### MAPS HELPER FOR TEMPLATES ###
@@ -155,6 +167,15 @@ namespace eyegui
 
 		// Children
 		std::vector<std::shared_ptr<StyleClass> > mChildren;
+	};
+
+	// Builder for style class. Takes care of some prerequisites
+	class StyleClassBuilder
+	{
+	public:
+
+		// Construct a style class
+		std::shared_ptr<StyleClass> construct(std::string name, StyleClassConstructionType type) const;
 	};
 }
 
