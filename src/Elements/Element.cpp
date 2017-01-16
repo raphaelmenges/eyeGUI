@@ -18,7 +18,7 @@ namespace eyegui
 {
     Element::Element(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -60,7 +60,7 @@ namespace eyegui
         mDimming = dimming;
 
 		// Fetch style class
-		mspStyleClass = mpLayout->fetchStyleClass(styleName);
+		mspStyleClass = mpLayout->fetchStyleClass(styles.at(0)); // TODO: multiple. guarantee one
 
         // Render items
         mpActivityItem = mpAssetManager->fetchRenderItem(shaders::Type::ACTIVITY, meshes::Type::QUAD);
@@ -178,9 +178,10 @@ namespace eyegui
         return mId;
     }
 
-	std::string Element::getStyleClassName() const
+	std::vector<std::string> Element::getStyleClassesNames() const
 	{
-		return mspStyleClass->getName();
+		// TODO: implement for multiple ones
+		return{ mspStyleClass->getName() };
 	}
 
     Element* Element::getParent() const

@@ -16,7 +16,7 @@ namespace eyegui
 {
     Sensor::Sensor(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -30,7 +30,7 @@ namespace eyegui
         std::u16string desc,
         std::string descKey) : IconElement(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

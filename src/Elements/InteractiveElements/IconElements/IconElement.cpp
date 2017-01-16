@@ -14,7 +14,7 @@ namespace eyegui
 {
     IconElement::IconElement(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -29,7 +29,7 @@ namespace eyegui
         std::u16string desc,
         std::string descKey) : InteractiveElement(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

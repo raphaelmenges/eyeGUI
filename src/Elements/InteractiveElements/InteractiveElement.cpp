@@ -14,7 +14,7 @@ namespace eyegui
 {
     InteractiveElement::InteractiveElement(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -26,7 +26,7 @@ namespace eyegui
         bool dimming,
         bool adaptiveScaling) : NotifierElement(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

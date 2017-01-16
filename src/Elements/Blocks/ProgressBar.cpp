@@ -13,7 +13,7 @@ namespace eyegui
 {
     ProgressBar::ProgressBar(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -29,7 +29,7 @@ namespace eyegui
         float innerBorder,
         Direction direction) : Block(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

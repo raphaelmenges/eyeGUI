@@ -11,7 +11,7 @@ namespace eyegui
 {
     BoxButton::BoxButton(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -26,7 +26,7 @@ namespace eyegui
 		std::string descKey,
         bool isSwitch) : Button(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

@@ -17,7 +17,7 @@ namespace eyegui
 {
 	FutureKeyboard::FutureKeyboard(
 		std::string id,
-		std::string styleName,
+		std::vector<std::string> styles,
 		Element* pParent,
 		Layout const * pLayout,
 		Frame* pFrame,
@@ -29,7 +29,7 @@ namespace eyegui
 		bool adaptiveScaling,
 		Mode mode) : InteractiveElement(
 			id,
-			styleName,
+			styles,
 			pParent,
 			pLayout,
 			pFrame,

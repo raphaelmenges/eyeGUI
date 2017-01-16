@@ -18,7 +18,7 @@ namespace eyegui
 {
     Keyboard::Keyboard(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -30,7 +30,7 @@ namespace eyegui
         bool adaptiveScaling,
 		bool instantPress) : InteractiveElement(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

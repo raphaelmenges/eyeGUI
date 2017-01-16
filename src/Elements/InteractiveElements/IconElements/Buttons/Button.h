@@ -40,7 +40,7 @@ namespace eyegui
 		// Protected constructor
 		Button(
 			std::string id,
-			std::string styleName,
+			std::vector<std::string> styles,
 			Element* pParent,
 			Layout const * pLayout,
 			Frame* pFrame,

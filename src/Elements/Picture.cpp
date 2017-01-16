@@ -11,7 +11,7 @@ namespace eyegui
 {
     Picture::Picture(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -24,7 +24,7 @@ namespace eyegui
         std::string filepath,
         ImageAlignment alignment) : Element(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

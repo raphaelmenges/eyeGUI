@@ -14,7 +14,7 @@ namespace eyegui
 {
     Stack::Stack(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -35,7 +35,7 @@ namespace eyegui
         float padding,
         float separator) : Container(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

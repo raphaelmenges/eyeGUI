@@ -102,7 +102,7 @@ namespace eyegui
         std::string getId() const;
 
 		// Style getter
-		std::string getStyleClassName() const;
+		std::vector<std::string> getStyleClassesNames() const;
 
         // Parent
         Element* getParent() const;
@@ -217,7 +217,7 @@ namespace eyegui
 		// Protected constructor
 		Element(
 			std::string id,
-			std::string styleName, // TODO: rename to style class
+			std::vector<std::string> styles,
 			Element* pParent,
 			Layout const * pLayout,
 			Frame* pFrame,

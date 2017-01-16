@@ -15,7 +15,7 @@ namespace eyegui
 {
     DropButton::DropButton(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -30,7 +30,7 @@ namespace eyegui
 		std::string descKey,
         float space) : BoxButton(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

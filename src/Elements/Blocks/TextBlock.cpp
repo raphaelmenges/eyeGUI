@@ -14,7 +14,7 @@ namespace eyegui
 {
     TextBlock::TextBlock(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -35,7 +35,7 @@ namespace eyegui
         std::u16string content,
         std::string key) : Block(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

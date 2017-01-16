@@ -11,7 +11,7 @@ namespace eyegui
 {
     Container::Container(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -27,7 +27,7 @@ namespace eyegui
         float innerBorder,
         bool showBackground) : Block(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,

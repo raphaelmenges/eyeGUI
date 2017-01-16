@@ -13,7 +13,7 @@ namespace eyegui
 {
     Grid::Grid(
         std::string id,
-        std::string styleName,
+        std::vector<std::string> styles,
         Element* pParent,
         Layout const * pLayout,
         Frame* pFrame,
@@ -30,7 +30,7 @@ namespace eyegui
         bool showBackground,
         int rows) : Container(
             id,
-            styleName,
+            styles,
             pParent,
             pLayout,
             pFrame,
