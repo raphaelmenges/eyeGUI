@@ -340,12 +340,22 @@ namespace eyegui
 	*/
 	void resizeGUI(GUI* pGUI, int width, int height);
 
-	//! Load stylesheet. Is directly executed
+	//! Load stylesheet. Is directly executed.
 	/*!
 	  \param pGUI pointer to GUI.
 	  \param filepath is path to stylesheet file.
 	*/
 	void loadStyleSheet(GUI* pGUI, std::string filepath);
+
+	//! Set value of style property in style class.
+	/*!
+	\param pGUI pointer to GUI.
+	\param styleClass is name of style class where property exists.
+	\param styleProperty is property which value is set.
+	\param value is encoded value.
+	*/
+	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value);
+	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value);
 
 	//! Set gaze visualization drawing.
 	/*!

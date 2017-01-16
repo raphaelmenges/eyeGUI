@@ -88,6 +88,16 @@ namespace eyegui
 		pGUI->loadStyleSheet(filepath);
     }
 
+	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value)
+	{
+		pGUI->setStylePropertyValue(styleClass, stylePropertyType, value);
+	}
+
+	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value)
+	{
+		pGUI->setStylePropertyValue(styleClass, stylePropertyType, value);
+	}
+
     void setGazeVisualizationDrawing(GUI* pGUI, bool draw)
     {
         pGUI->setGazeVisualizationDrawing(draw);

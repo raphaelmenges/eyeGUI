@@ -259,9 +259,19 @@ namespace eyegui
 
     void GUI::loadStyleSheet(std::string filepath)
     {
-		// Attach content of file to style tree (TODO: could be executed while updating. not good)
+		// Attach content of file to style tree (TODO: could be executed while updating. not good). But if delayed to update, no layout / element can be added...
 		style_parser::parse(mspStyleTree, filepath);
     }
+
+	void GUI::setStylePropertyValue(std::string styleClass, StylePropertyFloat styleType, std::string value)
+	{
+		mspStyleTree->setValue(styleClass, styleType, value);
+	}
+
+	void GUI::setStylePropertyValue(std::string styleClass, StylePropertyVec4 styleType, std::string value)
+	{
+		mspStyleTree->setValue(styleClass, styleType, value);
+	}
 
     void GUI::setGazeVisualizationDrawing(bool draw)
     {
