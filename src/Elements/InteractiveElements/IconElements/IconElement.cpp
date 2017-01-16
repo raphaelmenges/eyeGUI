@@ -146,7 +146,7 @@ namespace eyegui
         if (mupDescriptionFlow != NULL && mDescriptionAlpha.getValue() > 0)
         {
             // Drawing of text flow
-            mupDescriptionFlow->draw(getStyle()->fontColor, mDescriptionAlpha.getValue() * mAlpha, true);
+            mupDescriptionFlow->draw(getStyleValue(StylePropertyVec4::FontColor), mDescriptionAlpha.getValue() * mAlpha, true);
         }
 
         // Draw stuff like highlighting

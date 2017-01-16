@@ -610,9 +610,9 @@ namespace eyegui
 		for (const auto& rspSuggestion : mSuggestionList)
 		{
 			rspSuggestion->draw(
-				getStyle()->backgroundColor,
-				getStyle()->fontColor,
-				getStyle()->thresholdColor,
+				getStyleValue(StylePropertyVec4::BackgroundColor),
+				getStyleValue(StylePropertyVec4::FontColor),
+				getStyleValue(StylePropertyVec4::ThresholdColor),
 				getMultipliedDimmedAlpha());
 		}
 
@@ -620,10 +620,10 @@ namespace eyegui
         for(const auto& rspKey : mKeyList)
         {
             rspKey->draw(
-                getStyle()->color,
-                getStyle()->fontColor,
-                getStyle()->backgroundColor,
-                getStyle()->thresholdColor,
+				getStyleValue(StylePropertyVec4::Color),
+				getStyleValue(StylePropertyVec4::FontColor),
+				getStyleValue(StylePropertyVec4::BackgroundColor),
+				getStyleValue(StylePropertyVec4::ThresholdColor),
                 getMultipliedDimmedAlpha());
         }
 
@@ -635,7 +635,7 @@ namespace eyegui
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
 		{
 			mpEmptySuggestion->bind();
-			mpEmptySuggestion->getShader()->fillValue("color", getStyle()->backgroundColor);
+			mpEmptySuggestion->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
 			mpEmptySuggestion->getShader()->fillValue("alpha", mAlpha);
 
 			// Draw all six placeholders

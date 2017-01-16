@@ -3,9 +3,10 @@
 ## New features
 - Ring Container (optional)
 - Style Tree
- - Replace also current styling with new style tree
- - implement direct element styling
- - Note: layout / frame uses base class
+ - multi classes per element
+ - element level style tree
+ - set value interface function
+ - decide what to do with layout / frame
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)

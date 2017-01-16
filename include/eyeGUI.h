@@ -390,17 +390,6 @@ namespace eyegui
 	*/
 	unsigned int addDictionary(GUI* pGUI, std::string filepath);
 
-	//! Sets value of config attribute. Is executed at update call.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param attribute is name of attribute which shall be changed.
-	  \param value is new value of attribute.
-	*/
-	void setValueOfConfigAttribute(
-		GUI* pGUI,
-		std::string attribute,
-		std::string value);
-
 	//! Move layout to front. Is executed at update call.
 	/*!
 	  \param pGUI pointer to GUI.
@@ -511,17 +500,6 @@ namespace eyegui
 		bool marking,
 		int depth = 0);
 
-	//! Set style of element.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param stlye is name of style in stylesheet of layout.
-	*/
-	void setStyleOfElement(
-		Layout* pLayout,
-		std::string id,
-		std::string style);
-
 	//! Get whether element is dimming.
 	/*!
 	  \param pLayout pointer to layout.
@@ -586,19 +564,6 @@ namespace eyegui
 	  \return true if interactive element with given id is highlighted.
 	*/
 	bool isInteractiveElementHighlighted(Layout const * pLayout, std::string id);
-
-	//! Sets value of style attribute.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param styleName is name of style in used stylesheet.
-	  \param attribute is name of attribute which shall be changed.
-	  \param value is string like used in stylesheet.
-	*/
-	void setValueOfStyleAttribute(
-		Layout* pLayout,
-		std::string styleName,
-		std::string attribute,
-		std::string value);
 
 	//! Set icon of icon element.
 	/*!
@@ -1024,137 +989,6 @@ namespace eyegui
 		Layout* pLayout,
 		std::string id,
 		std::weak_ptr<WordSuggestListener> wpListener);
-
-	//! Replace element with block.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param consumeInput indicates, whether block consumes given input.
-	  \param backgroundFilepath is path to image rendered in background.
-			 Use empty string to indicate no background image.
-	  \param backgroundAlignment indicates alignment of background image.
-	  \param fade indicates, whether replaced element should fade.
-	*/
-	void replaceElementWithBlock(
-		Layout* pLayout,
-		std::string id,
-		bool consumeInput,
-		std::string backgroundFilepath = "",
-		ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,
-		bool fade = false);
-
-	//! Replace element with picture.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param filepath is the path to the image used in the picture element.
-	  \param alignment is the alignment of the picture.
-	  \param fade indicates, whether replaced element should fade.
-	*/
-	void replaceElementWithPicture(
-		Layout* pLayout,
-		std::string id,
-		std::string filepath,
-		ImageAlignment alignment,
-		bool fade = false);
-
-	//! Replace element with blank.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param fade indicates, whether replaced element should fade.
-	*/
-	void replaceElementWithBlank(
-		Layout* pLayout,
-		std::string id,
-		bool fade = false);
-
-	//! Replace element with circle button.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param iconFilepath path to image which should be used as icon.
-	  \param desc is fallback for description.
-	  \param descKey is key for lookup in localization file for description.
-	  \param isSwitch indicates, whether button should be a switch.
-	  \param fade indicates, whether replaced element should fade.
-	*/
-	void replaceElementWithCircleButton(
-		Layout* pLayout,
-		std::string id,
-		std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
-		bool isSwitch = false,
-		bool fade = false);
-
-	//! Replace element with box button.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param iconFilepath path to image which should be used as icon.
-	  \param desc is fallback for description.
-	  \param descKey is key for lookup in localization file for description.
-	  \param isSwitch indicates, whether button should be a switch.
-	  \param fade indicates, whether replaced element should fade.
-	*/
-	void replaceElementWithBoxButton(
-		Layout* pLayout,
-		std::string id,
-		std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
-		bool isSwitch = false,
-		bool fade = false);
-
-	//! Replace element with sensor.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param iconFilepath path to image which should be used as icon.
-	  \param desc is fallback for description.
-	  \param descKey is key for lookup in localization file for description.
-	  \param fade indicates, whether replaced element should fade.
-	*/
-	void replaceElementWithSensor(
-		Layout* pLayout,
-		std::string id,
-		std::string iconFilepath,
-		std::u16string desc,
-		std::string descKey,
-		bool fade = false);
-
-	//! Replace element with text block.
-	/*!
-	  \param pLayout pointer to layout.
-	  \param id is the unique id of an element.
-	  \param consumeInput indicates, whether block consumes given input.
-	  \param fontSize is size of used font.
-	  \param alignment is alignment of text.
-	  \param verticalAlignment is vertical alignment of text.
-	  \param content is the content of the displayed text.
-	  \param innerBorder is space between border and text.
-	  \param textScale is scale of text.
-	  \param key is used for localization.
-	  \param backgroundFilepath is path to image rendered in background.
-			 Use empty string to indicate no background image.
-	  \param backgroundAlignment indicates alignment of background image.
-	  \param fade indicates, whether replaced element should fade.
-	*/
-	void replaceElementWithTextBlock(
-		Layout* pLayout,
-		std::string id,
-		bool consumeInput,
-		FontSize fontSize,
-		TextFlowAlignment alignment,
-		TextFlowVerticalAlignment verticalAlignment,
-		std::u16string content,
-		float innerBorder = 0.0f,
-		float textScale = 1.0f,
-		std::string key = "",
-		std::string backgroundFilepath = "",
-		ImageAlignment backgroundAlignment = ImageAlignment::ZOOMED,
-		bool fade = false);
 
 	//! Replace element with brick.
 	/*!

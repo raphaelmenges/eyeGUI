@@ -107,8 +107,8 @@ namespace eyegui
         mpIcon->bind(1);
         mpSensorItem->bind();
         mpSensorItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpSensorItem->getShader()->fillValue("color", getStyle()->color);
-        mpSensorItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
+        mpSensorItem->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::Color));
+        mpSensorItem->getShader()->fillValue("iconColor", getStyleValue(StylePropertyVec4::IconColor));
         mpSensorItem->getShader()->fillValue("penetration", mPenetration.getValue());
         mpSensorItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
         mpSensorItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());

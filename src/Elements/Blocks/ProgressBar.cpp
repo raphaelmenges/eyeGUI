@@ -119,7 +119,7 @@ namespace eyegui
 
             mpProgressItem->bind();
             mpProgressItem->getShader()->fillValue("matrix", progressDrawMatrix);
-            mpProgressItem->getShader()->fillValue("color", getStyle()->color);
+            mpProgressItem->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::Color));
             mpProgressItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpProgressItem->draw();
         }

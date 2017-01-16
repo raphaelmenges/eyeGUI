@@ -362,12 +362,12 @@ namespace eyegui
     void TextEdit::specialDraw() const
     {
         // *** BACKGROUND ***
-        if (getStyle()->backgroundColor.a > 0)
+        if (getStyleValue(StylePropertyVec4::BackgroundColor).a > 0)
         {
             // Bind, fill and draw background
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
+            mpBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
             mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
@@ -401,7 +401,7 @@ namespace eyegui
 
 		// Draw background behind active entity
 		mpActiveEntityBackground->bind();
-		mpActiveEntityBackground->getShader()->fillValue("color", getStyle()->markColor); // TODO: marked color used. Maybe use some custom
+		mpActiveEntityBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::MarkColor)); // TODO: marked color used. Maybe use some custom
 
 		// Draw currently active one
 		if (auto spActiveEntity = mwpActiveEntity.lock())
@@ -429,7 +429,7 @@ namespace eyegui
 
 		// Drawing of text flow
 		mupTextFlow->draw(
-			getStyle()->fontColor,
+			getStyleValue(StylePropertyVec4::FontColor),
 			mAlpha,
 			false,
 			0,
@@ -464,7 +464,7 @@ namespace eyegui
 		// Draw pulsing cursor over text
 		mpCursor->bind();
 		mpCursor->getShader()->fillValue("matrix", cursorDrawMatrix);
-		mpCursor->getShader()->fillValue("color", getStyle()->fontColor);
+		mpCursor->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::FontColor));
 		mpCursor->getShader()->fillValue("alpha", getMultipliedDimmedAlpha() * (glm::cos(mCursorPulse) * 0.5f) + 0.5f);
 		mpCursor->draw();
 

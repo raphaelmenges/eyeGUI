@@ -32,7 +32,7 @@ namespace eyegui
 		if (!spParent)
 		{
 			// Suggested parent not found
-			throwWarning(OperationNotifier::Operation::PARSING, "Suggested parent of style class not found. Using root: " + name);
+			throwWarning(OperationNotifier::Operation::PARSING, "Suggested parent of style class not found: " + name + ". Using base instead");
 			spParent = mspRoot;
 		}
 		return spParent->addChild(name);
@@ -41,7 +41,11 @@ namespace eyegui
 	std::shared_ptr<const StyleClass> StyleTree::fetchStyleClass(std::string name) const
 	{
 		auto spStyleClass = mspRoot->fetchThisOrChild(name);
-		if (!spStyleClass) { spStyleClass = mspRoot; };
-		return std::move(spStyleClass);
+		if (!spStyleClass)
+		{
+			throwWarning(OperationNotifier::Operation::PARSING, "Style class not found: " + name + ". Using base instead");
+			spStyleClass = mspRoot;
+		};
+		return spStyleClass;
 	}
 }

@@ -242,12 +242,12 @@ namespace eyegui
     void WordSuggest::specialDraw() const
     {
         // *** BACKGROUND ***
-        if (getStyle()->backgroundColor.a > 0)
+        if (getStyleValue(StylePropertyVec4::BackgroundColor).a > 0)
         {
             // Bind, fill and draw background
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
+            mpBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
             mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
@@ -261,7 +261,7 @@ namespace eyegui
             // Draw suggestions
             for (const std::unique_ptr<TextSimple>& rSuggestion : mSuggestions)
             {
-                rSuggestion->draw(getStyle()->fontColor, mAlpha);
+                rSuggestion->draw(getStyleValue(StylePropertyVec4::FontColor), mAlpha);
             }
 
             // Draw thresholds (should be same number as suggestions
@@ -286,7 +286,7 @@ namespace eyegui
                     // Draw threshold
                     mpThresholdItem->bind();
                     mpThresholdItem->getShader()->fillValue("matrix", matrix);
-                    mpThresholdItem->getShader()->fillValue("thresholdColor", getStyle()->thresholdColor);
+                    mpThresholdItem->getShader()->fillValue("thresholdColor", getStyleValue(StylePropertyVec4::ThresholdColor));
                     mpThresholdItem->getShader()->fillValue("threshold", threshold);
                     mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
                     mpThresholdItem->getShader()->fillValue("orientation", 1.f); // vertical threshold
@@ -298,7 +298,7 @@ namespace eyegui
             // Draw chosen suggestions
             for (const auto& rChosenSuggestion : mChosenSuggestions)
             {
-                rChosenSuggestion.upText->draw(getStyle()->fontColor, rChosenSuggestion.alpha);
+                rChosenSuggestion.upText->draw(getStyleValue(StylePropertyVec4::FontColor), rChosenSuggestion.alpha);
             }
 
 			// Pop own scissor from stack

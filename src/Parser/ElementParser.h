@@ -64,7 +64,7 @@ namespace eyegui
 
         // Other parsing
         float parseRelativeScale(tinyxml2::XMLElement const * xmlElement);
-        std::string parseStyleName(tinyxml2::XMLElement const * xmlElement, Element const * pParent, const std::set<std::string>& rNamesOfAvailableStyles, std::string filepath);
+        std::string parseStyleName(tinyxml2::XMLElement const * xmlElement, Element const * pParent, std::string filepath);
 
         // Attribute parsing
         std::string parseStringAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, std::string fallback = EMPTY_STRING_ATTRIBUTE);

@@ -38,7 +38,6 @@ namespace eyegui
         mOrientation = Element::Orientation::VERTICAL;
         mType = Type::ELEMENT;
         mId = id;
-        mStyleName = styleName;
         mpParent = pParent;
         mpLayout = pLayout;
         mpFrame = pFrame;
@@ -59,17 +58,6 @@ namespace eyegui
 
         // Decide about dimming
         mDimming = dimming;
-
-        // Fetch style from layout (TODO DELETE)
-        mpStyle = mpLayout->getStyleFromStylesheet(mStyleName);
-
-        if(mpStyle == NULL)
-        {
-            throwError(OperationNotifier::Operation::BUG, "Cannot find style with name at initialization of element: " + styleName);
-
-            // Ok, try to rescue by getting default style. Should be NEVER necessary
-            mpStyle = mpLayout->getStyleFromStylesheet(DEFAULT_STYLE_NAME);
-        }
 
 		// Fetch style class
 		mspStyleClass = mpLayout->fetchStyleClass(styleName);
@@ -190,6 +178,11 @@ namespace eyegui
         return mId;
     }
 
+	std::string Element::getStyleClassName() const
+	{
+		return mspStyleClass->getName();
+	}
+
     Element* Element::getParent() const
     {
         return mpParent;
@@ -203,30 +196,6 @@ namespace eyegui
     Element::Orientation Element::getOrientation() const
     {
         return mOrientation;
-    }
-
-    Style const * Element::getStyle() const
-    {
-        return mpStyle;
-    }
-
-    void Element::setStyle(std::string styleName)
-    {
-        Style const * pStyle = mpLayout->getStyleFromStylesheet(styleName);
-
-        if(pStyle != NULL)
-        {
-            mpStyle = pStyle;
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find style with name: " + styleName);
-        }
-    }
-
-    std::string Element::getStyleName() const
-    {
-        return mStyleName;
     }
 
     void Element::setAlpha(float alpha)
@@ -587,7 +556,7 @@ namespace eyegui
             {
                 mpMarkItem->bind();
                 mpMarkItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-                mpMarkItem->getShader()->fillValue("markColor", getStyle()->markColor);
+                mpMarkItem->getShader()->fillValue("markColor", getStyleValue(StylePropertyVec4::MarkColor));
                 mpMarkItem->getShader()->fillValue("mark", mMark.getValue());
                 mpMarkItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
@@ -610,7 +579,7 @@ namespace eyegui
             {
                 mpDimItem->bind();
                 mpDimItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-                mpDimItem->getShader()->fillValue("dimColor", getStyle()->dimColor);
+                mpDimItem->getShader()->fillValue("dimColor", getStyleValue(StylePropertyVec4::DimColor));
                 mpDimItem->getShader()->fillValue("dim", mDim.getValue());
                 mpDimItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
@@ -622,7 +591,7 @@ namespace eyegui
 			{
 				mpFlashItem->bind();
 				mpFlashItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-				mpFlashItem->getShader()->fillValue("flashColor", getStyle()->flashColor);
+				mpFlashItem->getShader()->fillValue("flashColor", getStyleValue(StylePropertyVec4::FlashColor));
 				mpFlashItem->getShader()->fillValue("flash", mFlash.getValue());
 				mpFlashItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
 				mpFlashItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
@@ -767,17 +736,17 @@ namespace eyegui
 
     float Element::getMultipliedDimmedAlpha() const
     {
-        return mAlpha * glm::mix(1.0f , getStyle()->dimAlpha, mDim.getValue());
+        return mAlpha * glm::mix(1.0f , getStyleValue(StylePropertyFloat::DimAlpha), mDim.getValue());
     }
 
 	float Element::getStyleValue(StylePropertyFloat type) const
 	{
-		return std::move(mspStyleClass->getValue(type));
+		return mspStyleClass->getValue(type);
 	}
 
 	glm::vec4 Element::getStyleValue(StylePropertyVec4 type) const
 	{
-		return std::move(mspStyleClass->getValue(type));
+		return mspStyleClass->getValue(type);
 	}
 
     void Element::notifyInteraction(std::string interactionType, std::string interactionInfoA) const

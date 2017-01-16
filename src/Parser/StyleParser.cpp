@@ -88,8 +88,10 @@ namespace eyegui
 			std::string right = line;
 
 			// Fill it into style property
-			auto iterator = FLOAT_TYPE_MAP.find(left);
-			if (iterator != FLOAT_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, iterator->second, right); }
+			auto floatIterator = FLOAT_TYPE_MAP.find(left);
+			if (floatIterator != FLOAT_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, floatIterator->second, right); }
+			auto vec4Iterator = VEC4_TYPE_MAP.find(left);
+			if (vec4Iterator != VEC4_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, vec4Iterator->second, right); }
 		}
 
 		void parse(std::shared_ptr<StyleTree> spStyleTree, std::string filepath)
@@ -177,6 +179,9 @@ namespace eyegui
 								copyline.erase(0, pos + delimiter.length());
 								parent = copyline;
 							}
+
+							// Do not proceed if name is empty (no empty style class name allowed)
+							if(name.empty()) { continue; }
 
 							// Add style class to tree
 							if (parent.empty())

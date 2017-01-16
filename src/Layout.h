@@ -6,17 +6,14 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Layout manages frames with elements. There is one main frame which is
 // screen filling and a free number of floating frames. Does mapping of id to
-// element pointer. Is owner of the stylesheet used by the roots in frames
-// and all their children. Has notification queue where elements in frames
-// can enqueue their notifications.
+// element pointer. Has notification queue where elements in frames can enqueue
+// their notifications.
 
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
 
 #include "include/eyeGUI.h"
 #include "src/Frame.h"
-#include "src/Style.h"
-#include "src/Parser/StylesheetParser.h"
 #include "src/Parser/BrickParser.h"
 #include "src/NotificationQueue.h"
 #include "src/Utilities/LerpValue.h"
@@ -40,7 +37,7 @@ namespace eyegui
         friend class NotificationQueue;
 
         // Constructor
-        Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath);
+        Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager);
 
         // Destructor
         virtual ~Layout();
@@ -81,14 +78,8 @@ namespace eyegui
         // Get time from GUI
         float getAccPeriodicTime() const;
 
-        // Get pointer to styles of this layout. Returns NULL if not found
-        Style const * getStyleFromStylesheet(std::string styleName) const;
-
         // Get string content from localization
         std::u16string getContentFromLocalization(std::string key) const;
-
-        // Returns set of names of the available styles for this layout
-        std::set<std::string> getNamesOfAvailableStyles() const;
 
         // Set visibility
         void setVisibility(bool visible, bool fade);
@@ -122,9 +113,6 @@ namespace eyegui
 
         // Check whether element is marking
         bool isElementMarking(std::string id) const;
-
-        // Set style of element
-        void setStyleOfElement(std::string id, std::string style);
 
         // Set interactive element as highlighted
         void highlightInteractiveElement(std::string id, bool doHighlight);
@@ -294,47 +282,6 @@ namespace eyegui
         // Check whether element is highlighted
         bool isInteractiveElementHighlighted(std::string id) const;
 
-        // Change value of style attribute
-        void setValueOfStyleAttribute(std::string styleName, std::string attribute, std::string value);
-
-        // Replace any element with block
-        void replaceElementWithBlock(
-            std::string id,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            bool fade);
-
-        // Replace any element with picture
-        void replaceElementWithPicture(std::string id, std::string filepath, ImageAlignment alignment, bool fade);
-
-        // Replace any element with blank
-        void replaceElementWithBlank(std::string id, bool fade);
-
-        // Replace any element with circle button
-        void replaceElementWithCircleButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade);
-
-        // Replace any element with box button
-        void replaceElementWithBoxButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade);
-
-        // Replace any element with sensor
-        void replaceElementWithSensor(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool fade);
-
-        // Replace any element with text block
-        void replaceElementWithTextBlock(
-            std::string id,
-            bool consumeInput,
-            std::string backgroundFilepath,
-            ImageAlignment backgroundAlignment,
-            FontSize fontSize,
-            TextFlowAlignment alignment,
-            TextFlowVerticalAlignment verticalAlignment,
-            float textScale,
-            std::u16string content,
-            float innerBorder,
-            std::string key,
-            bool fade);
-
         // Replace any element with a brick of elements
         void replaceElementWithBrick(std::string id, std::string filepath, std::map<std::string, std::string> idMapper, bool fade);
 
@@ -453,7 +400,6 @@ namespace eyegui
         bool mVisible;
         bool mResizeNecessary;
         bool mUseInput;
-        std::unique_ptr<std::map<std::string, Style> > mupStyles;
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<NotificationQueue> mupNotificationQueue;
         bool mForceResize;

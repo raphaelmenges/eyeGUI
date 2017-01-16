@@ -61,8 +61,8 @@ namespace eyegui
         mpIcon->bind(1);
         mpBoxButtonItem->bind();
         mpBoxButtonItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpBoxButtonItem->getShader()->fillValue("color", getStyle()->color);
-        mpBoxButtonItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
+        mpBoxButtonItem->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::Color));
+        mpBoxButtonItem->getShader()->fillValue("iconColor", getStyleValue(StylePropertyVec4::IconColor));
         mpBoxButtonItem->getShader()->fillValue("pressing", getPressing());
         mpBoxButtonItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
         mpBoxButtonItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());

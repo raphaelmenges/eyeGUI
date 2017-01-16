@@ -59,14 +59,13 @@ namespace eyegui
         mpIcon->bind(1);
         mpCircleButtonItem->bind();
         mpCircleButtonItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpCircleButtonItem->getShader()->fillValue("color", getStyle()->color);
-        mpCircleButtonItem->getShader()->fillValue("iconColor", getStyle()->iconColor);
+        mpCircleButtonItem->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::Color));
+        mpCircleButtonItem->getShader()->fillValue("iconColor", getStyleValue(StylePropertyVec4::IconColor));
         mpCircleButtonItem->getShader()->fillValue("pressing", getPressing());
         mpCircleButtonItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
         mpCircleButtonItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
         mpCircleButtonItem->getShader()->fillValue("icon", 1);
         mpCircleButtonItem->draw();
-
 
         // Super call
         Button::specialDraw();

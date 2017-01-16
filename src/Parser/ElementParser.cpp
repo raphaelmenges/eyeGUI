@@ -35,8 +35,8 @@ namespace eyegui
 
         std::unique_ptr<Element> parseElement(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
-            // Name of style of element (if xmlElement == NULL, get style of parent if available)
-            std::string styleName = parseStyleName(xmlElement, pParent, pLayout->getNamesOfAvailableStyles(), filepath);
+            // Name of style class of element (if xmlElement == NULL, get style of parent if available)
+            std::string styleName = parseStyleName(xmlElement, pParent, filepath);
 
             if (xmlElement == NULL)
             {
@@ -1116,44 +1116,29 @@ namespace eyegui
             }
         }
 
-        std::string parseStyleName(tinyxml2::XMLElement const * xmlElement, Element const * pParent, const std::set<std::string>& rNamesOfAvailableStyles, std::string filepath)
+        std::string parseStyleName(tinyxml2::XMLElement const * xmlElement, Element const * pParent, std::string filepath)
         {
             if (xmlElement == NULL)
             {
-                return DEFAULT_STYLE_NAME;
+				// No style given, use the one from parent
+                return pParent->getStyleClassName();
             }
             else
             {
                 std::string styleName = parseStringAttribute("style", xmlElement);
-                if (styleName == EMPTY_STRING_ATTRIBUTE)
-                {
-                    // No style found, try to get one from parent
-                    if (pParent != NULL)
-                    {
-                        styleName = pParent->getStyleName();
-                    }
-                    else
-                    {
-                        // Otherwise, set default as style
-                        styleName = DEFAULT_STYLE_NAME;
-                    }
-                }
-
-                // Check, whether found name is ok
-                bool check = false;
-                for (const std::string& rName : rNamesOfAvailableStyles)
-                {
-                    if (rName == styleName)
-                    {
-                        check = true;
-                    }
-                }
-
-                if (!check)
-                {
-                    // Trying to use style, which is not defined
-                    throwError(OperationNotifier::Operation::PARSING, "Following style is tried to be used but not defined in stylesheet: " + styleName, filepath);
-                }
+				if (styleName == EMPTY_STRING_ATTRIBUTE)
+				{
+					// No style found, try to get one from parent
+					if (pParent != NULL)
+					{
+						styleName = pParent->getStyleClassName();
+					}
+					else
+					{
+						// Otherwise, set default as style
+						styleName = STYLE_BASE_CLASS_NAME;
+					}
+				}
 
                 return styleName;
             }

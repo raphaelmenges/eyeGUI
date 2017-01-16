@@ -26,7 +26,6 @@ namespace eyegui
     static const int EMPTY_INT_ATTRIBUTE = 0;
     static const float EMPTY_PERCENTAGE_ATTRIBUTE = 0;
     static const bool EMPTY_BOOL_ATTRIBUTE = false;
-    static const std::string DEFAULT_STYLE_NAME = "default";
     static const std::string LAYOUT_EXTENSION = "xeyegui";
     static const std::string BRICK_EXTENSION = "beyegui";
     static const std::string CONFIG_EXTENSION = "ceyegui";

@@ -17,7 +17,7 @@
 
 namespace eyegui
 {
-    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::string stylesheetFilepath)
+    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager)
     {
         // Initialize members
         mName = name;
@@ -32,9 +32,6 @@ namespace eyegui
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
         mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
         mForceResize = false;
-
-        // Parse style file
-        mupStyles = stylesheet_parser::parse(stylesheetFilepath);
     }
 
     Layout::~Layout()
@@ -197,35 +194,9 @@ namespace eyegui
         return mpGUI->getAccPeriodicTime();
     }
 
-    Style const * Layout::getStyleFromStylesheet(std::string styleName) const
-    {
-        // Search for style
-        auto it = mupStyles->find(styleName);
-
-        if (it != mupStyles->end())
-        {
-            return &(it->second);
-        }
-        else
-        {
-            return NULL;
-        }
-    }
-
     std::u16string Layout::getContentFromLocalization(std::string key) const
     {
         return mpGUI->getContentFromLocalization(key);
-    }
-
-    std::set<std::string> Layout::getNamesOfAvailableStyles() const
-    {
-        std::set<std::string> names;
-        for (const std::pair<std::string, Style>& pair : *(mupStyles.get()))
-        {
-            names.insert(pair.first);
-        }
-
-        return names;
     }
 
     void Layout::setVisibility(bool visible, bool fade)
@@ -351,19 +322,6 @@ namespace eyegui
         if (pElement != NULL)
         {
             pElement->setHiding(hidden);
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
-    }
-
-    void Layout::setStyleOfElement(std::string id, std::string style)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            pElement->setStyle(style);
         }
         else
         {
@@ -1156,303 +1114,6 @@ namespace eyegui
 
         }
         return false;
-    }
-
-    void Layout::setValueOfStyleAttribute(std::string styleName, std::string attribute, std::string value)
-    {
-        // Check, whether style exists
-        auto it = mupStyles->find(styleName);
-
-        if (it != mupStyles->end())
-        {
-            stylesheet_parser::fillValue(it->second, attribute, value);
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find style with name: " + styleName);
-        }
-    }
-
-    void Layout::replaceElementWithBlock(
-        std::string id,
-        bool consumeInput,
-        std::string backgroundFilepath,
-        ImageAlignment backgroundAlignment,
-        bool fade)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            // Create new block
-			ElementFactory fac;
-			auto upBlock = fac.build<Block>(
-                pElement->getId(),
-                pElement->getStyleName(),
-                pElement->getParent(),
-                pElement->getLayout(),
-                pElement->getFrame(),
-                pElement->getAssetManager(),
-                pElement->getNotificationQueue(),
-                pElement->getRelativeScale(),
-                pElement->getBorder(),
-                pElement->isDimming(),
-                pElement->getAdaptiveScaling(),
-                consumeInput,
-                backgroundFilepath,
-                backgroundAlignment);
-                // innerBorder is 0 by default and not necessary for block
-
-            Element* pBlock = upBlock.get();
-
-            // Replace target with it
-            if (replaceElement(pElement, std::move(upBlock), fade))
-            {
-                insertId(pBlock);
-            }
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
-    }
-
-    void Layout::replaceElementWithPicture(std::string id, std::string filepath, ImageAlignment alignment, bool fade)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            // Create new picture
-			ElementFactory fac;
-			auto upPicture = fac.build<Picture>(
-                pElement->getId(),
-                pElement->getStyleName(),
-                pElement->getParent(),
-                pElement->getLayout(),
-                pElement->getFrame(),
-                pElement->getAssetManager(),
-                pElement->getNotificationQueue(),
-                pElement->getRelativeScale(),
-                pElement->getBorder(),
-                pElement->isDimming(),
-                pElement->getAdaptiveScaling(),
-                filepath,
-                alignment);
-
-            Element* pPicture = upPicture.get();
-
-            // Replace target with it
-            if (replaceElement(pElement, std::move(upPicture), fade))
-            {
-                insertId(pPicture);
-            }
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
-    }
-
-    void Layout::replaceElementWithBlank(std::string id, bool fade)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            // Create new blank
-			ElementFactory fac;
-			auto upBlank = fac.build<Blank>(
-                pElement->getId(),
-                pElement->getStyleName(),
-                pElement->getParent(),
-                pElement->getLayout(),
-                pElement->getFrame(),
-                pElement->getAssetManager(),
-                pElement->getNotificationQueue(),
-                pElement->getRelativeScale(),
-                pElement->getBorder(),
-                pElement->isDimming(),
-                pElement->getAdaptiveScaling());
-
-            Element* pBlank = upBlank.get();
-
-            // Replace target with it
-            if (replaceElement(pElement, std::move(upBlank), fade))
-            {
-                insertId(pBlank);
-            }
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
-    }
-
-    void Layout::replaceElementWithCircleButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            // Create new picture
-			ElementFactory fac;
-			auto upCircleButton = fac.build<CircleButton>(
-                pElement->getId(),
-                pElement->getStyleName(),
-                pElement->getParent(),
-                pElement->getLayout(),
-                pElement->getFrame(),
-                pElement->getAssetManager(),
-                pElement->getNotificationQueue(),
-                pElement->getRelativeScale(),
-                pElement->getBorder(),
-                pElement->isDimming(),
-                pElement->getAdaptiveScaling(),
-                iconFilepath,
-                desc,
-                descKey,
-                isSwitch);
-
-            Element* pCircleButton = upCircleButton.get();
-
-            // Replace target with it
-            if (replaceElement(pElement, std::move(upCircleButton), fade))
-            {
-                insertId(pCircleButton);
-            }
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
-    }
-
-    void Layout::replaceElementWithBoxButton(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool isSwitch, bool fade)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            // Create box button
-			ElementFactory fac;
-			auto upBoxButton = fac.build<BoxButton>(
-                pElement->getId(),
-                pElement->getStyleName(),
-                pElement->getParent(),
-                pElement->getLayout(),
-                pElement->getFrame(),
-                pElement->getAssetManager(),
-                pElement->getNotificationQueue(),
-                pElement->getRelativeScale(),
-                pElement->getBorder(),
-                pElement->isDimming(),
-                pElement->getAdaptiveScaling(),
-                iconFilepath,
-                desc,
-                descKey,
-                isSwitch);
-
-            Element* pBoxButton = upBoxButton.get();
-
-            // Replace target with it
-            if (replaceElement(pElement, std::move(upBoxButton), fade))
-            {
-                insertId(pBoxButton);
-            }
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
-    }
-
-    void Layout::replaceElementWithSensor(std::string id, std::string iconFilepath, std::u16string desc, std::string descKey, bool fade)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            // Create sensor
-			ElementFactory fac;
-			auto upSensor = fac.build<Sensor>(
-                pElement->getId(),
-                pElement->getStyleName(),
-                pElement->getParent(),
-                pElement->getLayout(),
-                pElement->getFrame(),
-                pElement->getAssetManager(),
-                pElement->getNotificationQueue(),
-                pElement->getRelativeScale(),
-                pElement->getBorder(),
-                pElement->isDimming(),
-                pElement->getAdaptiveScaling(),
-                iconFilepath,
-                desc,
-                descKey);
-
-            Element* pSensor = upSensor.get();
-
-            // Replace target with it
-            if (replaceElement(pElement, std::move(upSensor), fade))
-            {
-                insertId(pSensor);
-            }
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
-    }
-
-    void Layout::replaceElementWithTextBlock(
-        std::string id,
-        bool consumeInput,
-        std::string backgroundFilepath,
-        ImageAlignment backgroundAlignment,
-        FontSize fontSize,
-        TextFlowAlignment alignment,
-        TextFlowVerticalAlignment verticalAlignment,
-        float textScale,
-        std::u16string content,
-        float innerBorder,
-        std::string key,
-        bool fade)
-    {
-        Element* pElement = fetchElement(id);
-        if (pElement != NULL)
-        {
-            // Create text block
-			ElementFactory fac;
-			auto upTextBlock = fac.build<TextBlock>(
-                pElement->getId(),
-                pElement->getStyleName(),
-                pElement->getParent(),
-                pElement->getLayout(),
-                pElement->getFrame(),
-                pElement->getAssetManager(),
-                pElement->getNotificationQueue(),
-                pElement->getRelativeScale(),
-                pElement->getBorder(),
-                pElement->isDimming(),
-                pElement->getAdaptiveScaling(),
-                consumeInput,
-                backgroundFilepath,
-                backgroundAlignment,
-                innerBorder,
-                fontSize,
-                alignment,
-                verticalAlignment,
-                textScale,
-                content,
-                key);
-
-            Element* pTextBlock = upTextBlock.get();
-
-            // Replace target with it
-            if (replaceElement(pElement, std::move(upTextBlock), fade))
-            {
-                insertId(pTextBlock);
-            }
-        }
-        else
-        {
-            throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
-        }
     }
 
     void Layout::replaceElementWithBrick(std::string id, std::string filepath, std::map<std::string, std::string> idMapper, bool fade)

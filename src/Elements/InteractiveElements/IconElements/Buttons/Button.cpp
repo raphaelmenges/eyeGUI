@@ -202,7 +202,7 @@ namespace eyegui
         {
             mpThresholdItem->bind();
             mpThresholdItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpThresholdItem->getShader()->fillValue("thresholdColor", getStyle()->thresholdColor);
+            mpThresholdItem->getShader()->fillValue("thresholdColor", getStyleValue(StylePropertyVec4::ThresholdColor));
             mpThresholdItem->getShader()->fillValue("threshold", mThreshold.getValue());
             mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
             if(!mUseCircleThreshold)

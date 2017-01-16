@@ -8,8 +8,7 @@
 // of pointers to specialized variants. Has vector holding unique pointer to
 // child elements but this construct is only used when necessary, for example
 // in stack, grid or drop button. Elements have an unique id inside the layout
-// they belong to. Style is saved as string and set to a default value by parser
-// when none is defined and the parent has no set style. Element can have only
+// they belong to. Style classes are saved as pointers. Element can have only
 // one parent element which is set to null for the root element of the frame.
 // Transformation and size is calculated using a mechanism first asking the
 // children with "evaluateSize" how much of the available space they would use
@@ -22,7 +21,6 @@
 #include "src/Object.h"
 #include "src/Elements/ElementFactory.h"
 #include "src/Rendering/AssetManager.h"
-#include "src/Style.h"
 #include "src/Style/StyleClass.h"
 #include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
@@ -103,6 +101,9 @@ namespace eyegui
         // Id getter
         std::string getId() const;
 
+		// Style getter
+		std::string getStyleClassName() const;
+
         // Parent
         Element* getParent() const;
 
@@ -111,15 +112,6 @@ namespace eyegui
 
         // Orientation
         Orientation getOrientation() const;
-
-        // Getter for style
-        Style const * getStyle() const;
-
-        // Setter for style
-        void setStyle(std::string styleName);
-
-        // Getter for name of style
-        std::string getStyleName() const;
 
         // Setter for alpha
         void setAlpha(float alpha);
@@ -292,9 +284,7 @@ namespace eyegui
         Element* mpParent;
         float mBorder; // [0..1]
         Orientation mOrientation;
-        std::string mStyleName; // TODO: delete
-        Style const * mpStyle; // TODO: delete
-		std::shared_ptr<const StyleClass> mspStyleClass; // filled at construction
+		std::shared_ptr<const StyleClass> mspStyleClass; // TODO: vector for multi classes
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
         RenderingMask mRenderingMask;

@@ -405,12 +405,12 @@ namespace eyegui
     void Keyboard::specialDraw() const
     {
         // *** BACKGROUND ***
-        if (getStyle()->backgroundColor.a > 0)
+        if (getStyleValue(StylePropertyVec4::BackgroundColor).a > 0)
         {
             // Bind, fill and draw background
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", getStyle()->backgroundColor);
+            mpBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
             mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
@@ -437,12 +437,12 @@ namespace eyegui
             for(const auto& rupKey : rLine)
             {
                 rupKey->draw(
-                    getStyle()->color,
-                    getStyle()->pickColor,
-                    getStyle()->iconColor,
-                    getStyle()->thresholdColor,
+					getStyleValue(StylePropertyVec4::Color),
+					getStyleValue(StylePropertyVec4::PickColor),
+					getStyleValue(StylePropertyVec4::IconColor),
+					getStyleValue(StylePropertyVec4::ThresholdColor),
                     // mThreshold.getValue() * rupKey->getFocusValue(),
-					getStyle()->selectionColor,
+					getStyleValue(StylePropertyVec4::SelectionColor),
                     getMultipliedDimmedAlpha());
             }
         }
@@ -451,11 +451,11 @@ namespace eyegui
         for (const auto& rPressedKey : mPressedKeys)
         {
             rPressedKey.second->draw(
-                getStyle()->color,
-                getStyle()->pickColor,
-                getStyle()->iconColor,
-                getStyle()->thresholdColor,
-				getStyle()->selectionColor,
+                getStyleValue(StylePropertyVec4::Color),
+                getStyleValue(StylePropertyVec4::PickColor),
+                getStyleValue(StylePropertyVec4::IconColor),
+                getStyleValue(StylePropertyVec4::ThresholdColor),
+				getStyleValue(StylePropertyVec4::SelectionColor),
                 getMultipliedDimmedAlpha() * rPressedKey.first);
         }
 

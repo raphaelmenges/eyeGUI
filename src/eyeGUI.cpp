@@ -118,15 +118,6 @@ namespace eyegui
         return pGUI->addDictionary(filepath);
     }
 
-    void setValueOfConfigAttribute(
-        GUI* pGUI,
-        std::string attribute,
-        std::string value)
-    {
-		// TODO: reimplement for new style tree
-        // pGUI->setValueOfConfigAttribute(attribute, value);
-    }
-
     void moveLayoutToFront(GUI* pGUI, Layout* pLayout)
     {
         pGUI->moveLayoutToFront(pLayout);
@@ -136,7 +127,6 @@ namespace eyegui
     {
         pGUI->moveLayoutToBack(pLayout);
     }
-
 
     void setInputUsageOfLayout(Layout* pLayout, bool useInput)
     {
@@ -199,14 +189,6 @@ namespace eyegui
         pLayout->setElementMarking(id, marking, depth);
     }
 
-    void setStyleOfElement(
-        Layout* pLayout,
-        std::string id,
-        std::string style)
-    {
-        pLayout->setStyleOfElement(id, style);
-    }
-
     bool isElementDimming(Layout const * pLayout, std::string id)
     {
         return pLayout->isElementDimming(id);
@@ -245,15 +227,6 @@ namespace eyegui
     bool isInteractiveElementHighlighted(Layout const * pLayout, std::string id)
     {
         return pLayout->isInteractiveElementHighlighted(id);
-    }
-
-    void setValueOfStyleAttribute(
-        Layout* pLayout,
-        std::string styleName,
-        std::string attribute,
-        std::string value)
-    {
-        pLayout->setValueOfStyleAttribute(styleName, attribute, value);
     }
 
     void setIconOfIconElement(Layout* pLayout, std::string id, std::string iconFilepath)
@@ -520,93 +493,6 @@ namespace eyegui
     void registerWordSuggestListener(Layout* pLayout, std::string id, std::weak_ptr<WordSuggestListener> wpListener)
     {
         pLayout->registerWordSuggestListener(id, wpListener);
-    }
-
-    void replaceElementWithBlock(
-        Layout* pLayout,
-        std::string id,
-        bool consumeInput,
-        std::string backgroundFilepath,
-        ImageAlignment backgroundAlignment,
-        bool fade)
-    {
-        pLayout->replaceElementWithBlock(id, consumeInput, backgroundFilepath, backgroundAlignment, fade);
-    }
-
-    void replaceElementWithPicture(Layout* pLayout, std::string id, std::string filepath, ImageAlignment alignment, bool fade)
-    {
-        pLayout->replaceElementWithPicture(id, filepath, alignment, fade);
-    }
-
-    void replaceElementWithBlank(Layout* pLayout, std::string id, bool fade)
-    {
-        pLayout->replaceElementWithBlank(id, fade);
-    }
-
-    void replaceElementWithCircleButton(
-        Layout* pLayout,
-        std::string id,
-        std::string iconFilepath,
-        std::u16string desc,
-        std::string descKey,
-        bool isSwitch,
-        bool fade)
-    {
-        pLayout->replaceElementWithCircleButton(id, iconFilepath, desc, descKey, isSwitch, fade);
-    }
-
-    void replaceElementWithBoxButton(
-        Layout* pLayout,
-        std::string id,
-        std::string
-        iconFilepath,
-        std::u16string desc,
-        std::string descKey,
-        bool isSwitch,
-        bool fade)
-    {
-        pLayout->replaceElementWithBoxButton(id, iconFilepath, desc, descKey, isSwitch, fade);
-    }
-
-    void replaceElementWithSensor(
-        Layout* pLayout,
-        std::string id,
-        std::string iconFilepath,
-        std::u16string desc,
-        std::string descKey,
-        bool fade)
-    {
-        pLayout->replaceElementWithSensor(id, iconFilepath, desc, descKey, fade);
-    }
-
-    void replaceElementWithTextBlock(
-        Layout* pLayout,
-        std::string id,
-        bool consumeInput,
-        FontSize fontSize,
-        TextFlowAlignment alignment,
-        TextFlowVerticalAlignment verticalAlignment,
-        std::u16string content,
-        float innerBorder,
-        float textScale,
-        std::string key,
-        std::string backgroundFilepath,
-        ImageAlignment backgroundAlignment,
-        bool fade)
-    {
-        pLayout->replaceElementWithTextBlock(
-            id,
-            consumeInput,
-            backgroundFilepath,
-            backgroundAlignment,
-            fontSize,
-            alignment,
-            verticalAlignment,
-            textScale,
-            content,
-            innerBorder,
-            key,
-            fade);
     }
 
     void replaceElementWithBrick(Layout* pLayout, std::string id, std::string filepath, bool fade)
