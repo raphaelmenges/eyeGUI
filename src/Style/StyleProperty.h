@@ -47,6 +47,9 @@ namespace eyegui
 		// Get copy of constraint
 		std::function<T(T)> getConstraint() const { return this->mConstraint; }
 
+		// Mark as property
+		void markBase() { mIsBase = true; }
+
 	protected:
 
 		// Pointer to style class that holds this property. Might be an invalid pointer
@@ -57,6 +60,9 @@ namespace eyegui
 
 		// Constraint function
 		std::function<T(T)> mConstraint;
+
+		// Marker for being property in base class
+		bool mIsBase = false;
 	};
 }
 

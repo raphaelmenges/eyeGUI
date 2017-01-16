@@ -120,6 +120,7 @@ namespace eyegui
 		{
 			if (constructionType == StyleClassConstructionType::BASE_CLASS)
 			{
+				value->markBase(); // tell property that is in base style class
 				mFloatMap[type] = value; // use value for style class in base
 			}
 			else
@@ -168,6 +169,7 @@ namespace eyegui
 		{
 			if (constructionType == StyleClassConstructionType::BASE_CLASS)
 			{
+				value->markBase(); // tell property that is in base style class
 				mVec4Map[type] = value; // use value for style class in base
 			}
 			else
