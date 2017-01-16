@@ -56,6 +56,7 @@ namespace eyegui
 		SensorInteractionPenetrationAmount,
 		DimIncreaseDuration,
 		DimDecreaseDuration,
+		DimAlpha,
 		FlashDuration,
 		MaximalAdaptiveScaleIncrease,
 		AdaptiveScaleIncreaseDuration,
@@ -78,7 +79,18 @@ namespace eyegui
 	//! Enumeration style properties vec4 types
 	enum class StylePropertyVec4
 	{
-		
+		Color,
+		BackgroundColor,
+		HighlightColor,
+		SeparatorColor,
+		SelectionColor,
+		IconColor,
+		FontColor,
+		DimColor,
+		FlashColor,
+		MarkColor,
+		PickColor,
+		ThresholdColor
 	};
 
 	//! Enumeration of possible character sets for font rendering.

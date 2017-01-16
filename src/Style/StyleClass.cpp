@@ -102,17 +102,21 @@ namespace eyegui
 		// Float constraints
 		const std::function<float(float)> durationConstraint = [](float value)
 		{
-			return glm::max(MINIMAL_DURATION_VALUE, value);
+			return std::move(glm::max(MINIMAL_DURATION_VALUE, value));
 		};
 		const std::function<float(float)> positiveConstraint = [](float value)
 		{
-			return glm::max(0.f, value);
+			return std::move(glm::max(0.f, value));
+		};
+		const std::function<float(float)> zeroAndOneConstraint = [](float value)
+		{
+			return std::move(glm::clamp(value, 0.f, 1.f));
 		};
 
 		// Initialize float properties
 		typedef StylePropertyFloat sFloat; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<float> > spFloat; // simplify shared pointer creation
-		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat value) // simplify map insertion
+		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat&& value) // simplify map insertion
 		{
 			if (constructionType == StyleClassConstructionType::BASE_CLASS)
 			{
@@ -132,6 +136,7 @@ namespace eyegui
 		floatInsert(sFloat::SensorInteractionPenetrationAmount, spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint)));
 		floatInsert(sFloat::DimIncreaseDuration,				spFloat(new StyleProperty<float>(shared_from_this(), 1.5f, durationConstraint)));
 		floatInsert(sFloat::DimDecreaseDuration,				spFloat(new StyleProperty<float>(shared_from_this(), 0.25f, durationConstraint)));
+		floatInsert(sFloat::DimAlpha,							spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, zeroAndOneConstraint)));
 		floatInsert(sFloat::FlashDuration,						spFloat(new StyleProperty<float>(shared_from_this(), 2.0f, durationConstraint)));
 		floatInsert(sFloat::MaximalAdaptiveScaleIncrease,		spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint)));
 		floatInsert(sFloat::AdaptiveScaleIncreaseDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint)));
@@ -153,13 +158,13 @@ namespace eyegui
 		// Vec4 constraints
 		const std::function<glm::vec4(glm::vec4)> colorConstraint = [](glm::vec4 value)
 		{
-			return glm::clamp(value, VEC_4_ZERO, VEC_4_ONE);
+			return std::move(glm::clamp(value, VEC_4_ZERO, VEC_4_ONE));
 		};
 
 		// Initialize vec4 properties
 		typedef StylePropertyVec4 sVec4; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<glm::vec4> > spVec4; // simplify shared pointer creation
-		std::function<void(sVec4, spVec4)> vec4Insert = [&](sVec4 type, spVec4 value) // simplify map insertion
+		std::function<void(sVec4, spVec4)> vec4Insert = [&](sVec4 type, spVec4&& value) // simplify map insertion
 		{
 			if (constructionType == StyleClassConstructionType::BASE_CLASS)
 			{
@@ -170,7 +175,18 @@ namespace eyegui
 				mVec4Map[type] = spVec4(); // create empty pointer for style class in element
 			}
 		};
-		// vec4Insert(sVec4::GazeVisualizationColor,				spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
+		vec4Insert(sVec4::Color,									spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), colorConstraint)));
+		vec4Insert(sVec4::BackgroundColor,							spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), colorConstraint)));
+		vec4Insert(sVec4::HighlightColor,							spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 1.0f, 0.0f, 0.5f), colorConstraint)));
+		vec4Insert(sVec4::SeparatorColor,							spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), colorConstraint)));
+		vec4Insert(sVec4::SelectionColor,							spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint)));
+		vec4Insert(sVec4::IconColor,								spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), colorConstraint)));
+		vec4Insert(sVec4::FontColor,								spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), colorConstraint)));
+		vec4Insert(sVec4::DimColor,									spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.1f, 0.1f, 0.1f, 0.75f), colorConstraint)));
+		vec4Insert(sVec4::FlashColor,								spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 0.5f, 0.0f, 0.75f), colorConstraint)));
+		vec4Insert(sVec4::MarkColor,								spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 0.5f, 1.0f, 0.5f), colorConstraint)));
+		vec4Insert(sVec4::PickColor,								spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.2f, 1.0f, 0.0f, 0.5f), colorConstraint)));
+		vec4Insert(sVec4::ThresholdColor,							spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint)));
 	}
 
 	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, StyleClassConstructionType type) const
