@@ -91,13 +91,16 @@ namespace eyegui
         transformAndSize();
     }
 
-    bool Key::update(float tpf, bool penetrated)
+    bool Key::update(
+		float tpf,
+		bool penetrated,
+		float selectionDuration)
     {
         mFocus.update(tpf / KEY_FOCUS_DURATION, !mFocused);
         mPick.update(tpf / KEY_PICK_DURATION, !mPicked);
 
 		// Use focus for updating threshold
-		mThreshold.update(tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::KeyboardKeySelectionDuration)->get(), !mFocused || !penetrated || mSelected);
+		mThreshold.update(tpf / selectionDuration, !mFocused || !penetrated || mSelected);
 
 		// Check whether selected
 		mSelected |= mThreshold.getValue() >= 1.f;

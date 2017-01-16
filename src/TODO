@@ -3,11 +3,10 @@
 ## New features
 - Ring Container (optional)
 - Style Tree
- - Make it member of GUI
  - Implement it in Element
- - Adapt parser
  - Replace also current styling with new style tree
  - implement direct element styling
+ - Note: layout uses base class
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)

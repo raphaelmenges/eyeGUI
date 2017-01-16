@@ -82,12 +82,12 @@ namespace eyegui
             highlight(false);
 
             // Update of value
-            mPenetration.update(tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::SensorPenetrationIncreaseDuration)->get());
+            mPenetration.update(tpf / getStyleValue(StylePropertyFloat::SensorPenetrationIncreaseDuration));
         }
         else
         {
             // Update of value
-            mPenetration.update(-tpf / mpLayout->getConfig()->getValue(StylePropertyFloat::SensorPenetrationDecreaseDuration)->get());
+            mPenetration.update(-tpf / getStyleValue(StylePropertyFloat::SensorPenetrationDecreaseDuration));
         }
 
         // Inform listener after updating when penetrated
@@ -130,7 +130,7 @@ namespace eyegui
 
     void Sensor::specialInteract()
     {
-        penetrate(mpLayout->getConfig()->getValue(StylePropertyFloat::SensorInteractionPenetrationAmount)->get());
+        penetrate(getStyleValue(StylePropertyFloat::SensorInteractionPenetrationAmount));
     }
 
     void Sensor::specialPipeNotification(NotificationType notification, Layout* pLayout)

@@ -42,7 +42,10 @@ namespace eyegui
         virtual void transformAndSize(int x, int y, int size);
 
         // Update. Returns whether has been selected by user
-        virtual bool update(float tpf, bool penetrated);
+        virtual bool update(
+			float tpf,
+			bool penetrated,
+			float selectionDuration);
 
         // Draw
 		virtual void draw(

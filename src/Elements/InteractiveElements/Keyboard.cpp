@@ -169,7 +169,7 @@ namespace eyegui
 		float PRESSED_KEY_SCALING_MULTIPLIER = 2.5f; // Just animation scale of pressed key which is moving and fading towards user
 
 		// Use speed multiplier
-		ZOOM_INCREASE_DURATION /= mpLayout->getConfig()->getValue(StylePropertyFloat::KeyboardZoomSpeedMultiplier)->get();
+		ZOOM_INCREASE_DURATION /= getStyleValue(StylePropertyFloat::KeyboardZoomSpeedMultiplier);
 
 		// *** SETUP ***
 
@@ -377,7 +377,7 @@ namespace eyegui
 					(*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
 
 					// Actual updating
-					bool selected = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated); // do not calculate penetration for each key but use one from elements
+					bool selected = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated, getStyleValue(StylePropertyFloat::KeyboardKeySelectionDuration)); // do not calculate penetration for each key but use one from elements
 
 					// Check for "key selected"
 					if (selected) // && (*pKeys)[i][j]->isFocused())

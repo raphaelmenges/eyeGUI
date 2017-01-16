@@ -37,19 +37,22 @@ namespace eyegui
 		{ "MaximalAdaptiveScaleIncrease", StylePropertyFloat::MaximalAdaptiveScaleIncrease },
 		{ "AdaptiveScaleIncreaseDuration", StylePropertyFloat::AdaptiveScaleIncreaseDuration },
 		{ "AdaptiveScaleDecreaseDuration", StylePropertyFloat::AdaptiveScaleDecreaseDuration },
-		{ "GazeVisualizationFadeDuration", StylePropertyFloat::GazeVisualizationFadeDuration },
-		{ "GazeVisualizationFocusDuration", StylePropertyFloat::GazeVisualizationFocusDuration },
-		{ "GazeVisualizationRejectThreshold", StylePropertyFloat::GazeVisualizationRejectThreshold },
-		{ "GazeVisualizationMinSize", StylePropertyFloat::GazeVisualizationMinSize },
-		{ "GazeVisualizationMaxSize", StylePropertyFloat::GazeVisualizationMaxSize },
 		{ "KeyboardZoomSpeedMultiplier", StylePropertyFloat::KeyboardZoomSpeedMultiplier },
 		{ "KeyboardKeySelectionDuration", StylePropertyFloat::KeyboardKeySelectionDuration },
 		{ "FlowSpeedMultiplier", StylePropertyFloat::FlowSpeedMultiplier },
-		{ "TextEditScrollSpeedMultiplier", StylePropertyFloat::TextEditScrollSpeedMultiplier }
+		{ "TextEditScrollSpeedMultiplier", StylePropertyFloat::TextEditScrollSpeedMultiplier },
+
+		// Experimental
+		{ "FutureKeyboardPressDuration", StylePropertyFloat::FutureKeyboardPressDuration },
+		{ "FutureKeyboardRetriggerDelay", StylePropertyFloat::FutureKeyboardRetriggerDelay },
+		{ "FutureKeyboardThresholdDuration", StylePropertyFloat::FutureKeyboardThresholdDuration },
+		{ "FutureKeyboardRepeatKeyThresholdMultiplier", StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier },
+		{ "FutureKeyboardSpaceKeyThresholdMultiplier", StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier },
+		{ "FutureKeyboardBackspaceKeyThresholdMultiplier", StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier },
+		{ "FutureKeyboardSuggestionLineThresholdMultiplier", StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier }
 	};
 	static const std::map<std::string, StylePropertyVec4> VEC4_TYPE_MAP =
 	{
-		{ "GazeVisualizationColor ", StylePropertyVec4::GazeVisualizationColor }
 	};
 
     namespace style_parser

@@ -136,15 +136,19 @@ namespace eyegui
 		floatInsert(sFloat::MaximalAdaptiveScaleIncrease,		spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint)));
 		floatInsert(sFloat::AdaptiveScaleIncreaseDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint)));
 		floatInsert(sFloat::AdaptiveScaleDecreaseDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint)));
-		floatInsert(sFloat::GazeVisualizationFadeDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 4.0f, durationConstraint)));
-		floatInsert(sFloat::GazeVisualizationFocusDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 2.0f, durationConstraint)));
-		floatInsert(sFloat::GazeVisualizationRejectThreshold,	spFloat(new StyleProperty<float>(shared_from_this(), 0.125f, positiveConstraint)));
-		floatInsert(sFloat::GazeVisualizationMinSize,			spFloat(new StyleProperty<float>(shared_from_this(), 0.02f, positiveConstraint)));
-		floatInsert(sFloat::GazeVisualizationMaxSize,			spFloat(new StyleProperty<float>(shared_from_this(), 0.075f, positiveConstraint)));
 		floatInsert(sFloat::KeyboardZoomSpeedMultiplier,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
 		floatInsert(sFloat::KeyboardKeySelectionDuration,		spFloat(new StyleProperty<float>(shared_from_this(), 1.25f, durationConstraint)));
 		floatInsert(sFloat::FlowSpeedMultiplier,				spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
-		floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0, positiveConstraint)));
+		floatInsert(sFloat::TextEditScrollSpeedMultiplier,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
+
+		// Experimental
+		floatInsert(sFloat::FutureKeyboardPressDuration,						spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, durationConstraint)));
+		floatInsert(sFloat::FutureKeyboardRetriggerDelay,						spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint)));
+		floatInsert(sFloat::FutureKeyboardThresholdDuration,					spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint)));
+		floatInsert(sFloat::FutureKeyboardRepeatKeyThresholdMultiplier,			spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
+		floatInsert(sFloat::FutureKeyboardSpaceKeyThresholdMultiplier,			spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
+		floatInsert(sFloat::FutureKeyboardBackspaceKeyThresholdMultiplier,		spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
+		floatInsert(sFloat::FutureKeyboardSuggestionLineThresholdMultiplier,	spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint)));
 
 		// Vec4 constraints
 		const std::function<glm::vec4(glm::vec4)> colorConstraint = [](glm::vec4 value)
@@ -166,7 +170,7 @@ namespace eyegui
 				mVec4Map[type] = spVec4(); // create empty pointer for style class in element
 			}
 		};
-		vec4Insert(sVec4::GazeVisualizationColor,				spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
+		// vec4Insert(sVec4::GazeVisualizationColor,				spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.f, 0.f, 1.f, 0.5f), colorConstraint)));
 	}
 
 	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, StyleClassConstructionType type) const

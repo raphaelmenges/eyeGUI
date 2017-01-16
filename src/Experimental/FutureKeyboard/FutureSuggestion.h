@@ -41,7 +41,13 @@ namespace eyegui
 		virtual void transformAndSize(int x, int y, int width, int height);
 
         // Update, returns whether hit
-        virtual bool update(float tpf, Input const * pInput);
+		virtual bool update(
+			float tpf,
+			Input const * pInput,
+			float pressDuration,
+			float thresholdDuration,
+			float retriggerDelay,
+			float thresholdMultiplier);
 
 		// Draw
         virtual void draw(

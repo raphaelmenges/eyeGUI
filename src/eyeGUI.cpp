@@ -123,7 +123,8 @@ namespace eyegui
         std::string attribute,
         std::string value)
     {
-        pGUI->setValueOfConfigAttribute(attribute, value);
+		// TODO: reimplement for new style tree
+        // pGUI->setValueOfConfigAttribute(attribute, value);
     }
 
     void moveLayoutToFront(GUI* pGUI, Layout* pLayout)

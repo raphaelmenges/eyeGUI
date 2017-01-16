@@ -55,13 +55,19 @@ namespace eyegui
         transformSuggestion();
 	}
 
-	bool FutureSuggestion::update(float tpf, Input const * pInput)
+	bool FutureSuggestion::update(
+		float tpf,
+		Input const * pInput,
+		float pressDuration,
+		float thresholdDuration,
+		float retriggerDelay,
+		float thresholdMultiplier)
 	{
 		// Return value
 		bool hit = false;
 
 		// Update pressing
-        mPressing.update(-tpf / mpLayout->getConfig()->futureKeyboardPressDuration);
+        mPressing.update(-tpf / pressDuration);
 
 		// Update retrigger time
 		mRetriggerTime -= tpf;
@@ -87,7 +93,7 @@ namespace eyegui
 
 		// Update threshold but only when penetrated, after retrigger delay and non empty suggestion
         mThreshold.update(
-			tpf / (mpLayout->getConfig()->futureKeyboardSuggestionLineThresholdMultiplier * mpLayout->getConfig()->futureKeyboardThresholdDuration),
+			tpf / (thresholdMultiplier * thresholdDuration),
 			!penetrated || (mRetriggerTime > 0.f) || mupSuggestion->getContent().empty());
         if(mThreshold.getValue() >= 1.f)
         {
@@ -95,7 +101,7 @@ namespace eyegui
 			mThreshold.setValue(0.f);
             hit = true;
             mPressing.setValue(1.f);
-            mRetriggerTime = mpLayout->getConfig()->futureKeyboardRetriggerDelay;
+            mRetriggerTime = retriggerDelay;
 
 			// Copy suggestion for animation
 			mSuggestionAnimation = std::make_pair(

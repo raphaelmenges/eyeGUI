@@ -218,7 +218,13 @@ namespace eyegui
 		for (auto& rspSuggestion : mSuggestionList)
 		{
 			// Check whether suggestion was hit
-			if(rspSuggestion->update(tpf, pInput))
+			if(rspSuggestion->update(
+				tpf,
+				pInput,
+				getStyleValue(StylePropertyFloat::FutureKeyboardPressDuration),
+				getStyleValue(StylePropertyFloat::FutureKeyboardThresholdDuration),
+				getStyleValue(StylePropertyFloat::FutureKeyboardRetriggerDelay),
+				getStyleValue(StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier)))
 			{
 				// Remember suggestion
 				mWordBeforeSuggestion = mCurrentWord;
@@ -260,19 +266,25 @@ namespace eyegui
 			float thresholdMultiplier = 1.f;
 			if (rspKey->getId() == "repeat")
 			{
-				thresholdMultiplier = mpLayout->getConfig()->futureKeyboardRepeatKeyThresholdMultiplier;
+				thresholdMultiplier = getStyleValue(StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier);
 			}
 			else if (rspKey->getId() == "space")
 			{
-				thresholdMultiplier = mpLayout->getConfig()->futureKeyboardSpaceKeyThresholdMultiplier;
+				thresholdMultiplier = getStyleValue(StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier);
 			}
 			else if (rspKey->getId() == "backspace")
 			{
-				thresholdMultiplier = mpLayout->getConfig()->futureKeyboardBackspaceKeyThresholdMultiplier;
+				thresholdMultiplier = getStyleValue(StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier);
 			}
 
             // Record whether hit
-            FutureKey::HitType type = rspKey->update(tpf, pInput, thresholdMultiplier);
+            FutureKey::HitType type = rspKey->update(
+				tpf,
+				pInput,
+				getStyleValue(StylePropertyFloat::FutureKeyboardPressDuration),
+				getStyleValue(StylePropertyFloat::FutureKeyboardThresholdDuration),
+				getStyleValue(StylePropertyFloat::FutureKeyboardRetriggerDelay),
+				thresholdMultiplier);
 
             // *** LETTERS ***
             if(type == FutureKey::HitType::LETTER

@@ -60,21 +60,25 @@ namespace eyegui
 		MaximalAdaptiveScaleIncrease,
 		AdaptiveScaleIncreaseDuration,
 		AdaptiveScaleDecreaseDuration,
-		GazeVisualizationFadeDuration,
-		GazeVisualizationFocusDuration,
-		GazeVisualizationRejectThreshold,
-		GazeVisualizationMinSize,
-		GazeVisualizationMaxSize,
 		KeyboardZoomSpeedMultiplier,
 		KeyboardKeySelectionDuration,
 		FlowSpeedMultiplier,
-		TextEditScrollSpeedMultiplier
+		TextEditScrollSpeedMultiplier,
+
+		// Experimental
+		FutureKeyboardPressDuration,
+		FutureKeyboardRetriggerDelay,
+		FutureKeyboardThresholdDuration,
+		FutureKeyboardRepeatKeyThresholdMultiplier,
+		FutureKeyboardSpaceKeyThresholdMultiplier,
+		FutureKeyboardBackspaceKeyThresholdMultiplier,
+		FutureKeyboardSuggestionLineThresholdMultiplier
 	};
 
 	//! Enumeration style properties vec4 types
 	enum class StylePropertyVec4
 	{
-		GazeVisualizationColor
+		
 	};
 
 	//! Enumeration of possible character sets for font rendering.

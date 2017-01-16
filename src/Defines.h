@@ -66,6 +66,12 @@ namespace eyegui
 	static const float MINIMAL_DURATION_VALUE = 0.0001f;
 	static const glm::vec4 VEC_4_ZERO = glm::vec4(0, 0, 0, 0);
 	static const glm::vec4 VEC_4_ONE = glm::vec4(1, 1, 1, 1);
+	static const float GAZE_VISUALIZATION_FADE_DURATION = 4.0f;
+	static const float GAZE_VISUALIZATION_FOCUS_DURATION = 2.0f;
+	static const float GAZE_VISUALIZATION_REJECT_THRESHOLD = 0.125f;
+	static const float GAZE_VISUALIZATION_MIN_SIZE = 0.02f;
+	static const float GAZE_VISUALIZATION_MAX_SIZE = 0.075f;
+	static const glm::vec4 GAZE_VISUALIZATION_COLOR = glm::vec4(0.f, 0.f, 1.f, 0.5f);
 }
 
 #endif // DEFINES_H_

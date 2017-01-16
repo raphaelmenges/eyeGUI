@@ -40,6 +40,8 @@ namespace eyegui
 	
 	std::shared_ptr<const StyleClass> StyleTree::fetchStyleClass(std::string name) const
 	{
-		return mspRoot->fetchThisOrChild(name);
+		auto spStyleClass = mspRoot->fetchThisOrChild(name);
+		if (!spStyleClass) { spStyleClass = mspRoot; };
+		return std::move(spStyleClass);
 	}
 }

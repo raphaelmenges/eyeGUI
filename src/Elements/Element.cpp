@@ -772,12 +772,12 @@ namespace eyegui
 
 	float Element::getStyleValue(StylePropertyFloat type) const
 	{
-		return std::move(getStyleValue(type));
+		return std::move(mspStyleClass->getValue(type));
 	}
 
 	glm::vec4 Element::getStyleValue(StylePropertyVec4 type) const
 	{
-		return std::move(getStyleValue(type));
+		return std::move(mspStyleClass->getValue(type));
 	}
 
     void Element::notifyInteraction(std::string interactionType, std::string interactionInfoA) const
