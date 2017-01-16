@@ -283,18 +283,11 @@ namespace eyegui
         mDrawGazeVisualization = !mDrawGazeVisualization;
     }
 
-    void GUI::prefetchImage(std::string filepath)
-    {
-        // Do it immediately
-        mupAssetManager->fetchTexture(filepath);
-    }
-
-	/* TODO
-    void GUI::setValueOfConfigAttribute(std::string attribute, std::string value)
-    {
-        mJobs.push_back(std::move(std::unique_ptr<GUIJob>(new SetValueOfConfigAttributeJob(this, attribute, value))));
-    }
-	*/
+	void GUI::prefetchImage(std::string filepath)
+	{
+		// Do it immediately
+		mupAssetManager->fetchTexture(filepath);
+	}
 
     uint GUI::addDictionary(std::string filepath)
     {

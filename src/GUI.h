@@ -89,9 +89,6 @@ namespace eyegui
         // Prefatch image to avoid lag
         void prefetchImage(std::string filepath);
 
-        // Set value of config attribute (TODO with style tree)
-        // void setValueOfConfigAttribute(std::string attribute, std::string value);
-
         // Add dictionary. Returns index as handle
         uint addDictionary(std::string filepath);
 
