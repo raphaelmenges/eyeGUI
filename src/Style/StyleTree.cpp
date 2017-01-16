@@ -13,8 +13,8 @@ namespace eyegui
 {
 	StyleTree::StyleTree()
 	{
-		// Create root of tree with empty parent pointer
-		mspRoot = StyleClassBuilder().construct(STYLE_BASE_CLASS_NAME, StyleClassConstructionType::STYLE_TREE_ROOT);
+		// Create root of tree with empty parent pointer and base class
+		mspRoot = StyleClassBuilder().construct(STYLE_BASE_CLASS_NAME, StyleClassConstructionType::BASE_CLASS);
 	}
 
 	std::shared_ptr<const StyleClass> StyleTree::addStyleClass(std::string name, std::string parentName)

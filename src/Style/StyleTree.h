@@ -41,7 +41,7 @@ namespace eyegui
 
 	private:
 
-		// Root node of style tree
+		// Root node of style tree, contains base style class
 		std::shared_ptr<StyleClass> mspRoot;
 	};
 }

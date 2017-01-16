@@ -114,9 +114,9 @@ namespace eyegui
 		typedef std::shared_ptr<StyleProperty<float> > spFloat; // simplify shared pointer creation
 		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat value) // simplify map insertion
 		{
-			if (constructionType == StyleClassConstructionType::STYLE_TREE_ROOT)
+			if (constructionType == StyleClassConstructionType::BASE_CLASS)
 			{
-				mFloatMap[type] = value; // use value for style class in root node
+				mFloatMap[type] = value; // use value for style class in base
 			}
 			else
 			{
@@ -161,9 +161,9 @@ namespace eyegui
 		typedef std::shared_ptr<StyleProperty<glm::vec4> > spVec4; // simplify shared pointer creation
 		std::function<void(sVec4, spVec4)> vec4Insert = [&](sVec4 type, spVec4 value) // simplify map insertion
 		{
-			if (constructionType == StyleClassConstructionType::STYLE_TREE_ROOT)
+			if (constructionType == StyleClassConstructionType::BASE_CLASS)
 			{
-				mVec4Map[type] = value; // use value for style class in root node
+				mVec4Map[type] = value; // use value for style class in base
 			}
 			else
 			{

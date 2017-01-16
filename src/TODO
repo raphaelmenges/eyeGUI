@@ -3,10 +3,9 @@
 ## New features
 - Ring Container (optional)
 - Style Tree
- - Implement it in Element
  - Replace also current styling with new style tree
  - implement direct element styling
- - Note: layout uses base class
+ - Note: layout / frame uses base class
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
@@ -21,6 +20,7 @@
   - At the moment: adding layouts -> direct resize. changing flow size -> no direct resize. what :D some resize before drawing would be cool.. (then drawing no more const but ok)
 - Let one create Stacks without inner element (either that or a Nothing element)
 - Started with image class to save no pointer to texture anymore but name in map. Need to change asset manager function concerning texture fetching! This issue concerns all texture accesses :-/
+- Use rvalue refernce in shader uniform filling to save copying
 
 ## Testing
 - test hitButton fuction in combination with visibility etc
