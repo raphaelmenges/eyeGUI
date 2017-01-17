@@ -1121,7 +1121,7 @@ namespace eyegui
             if (xmlElement == NULL)
             {
 				// No style given, use the one from parent
-				return { pParent->getStyleClassesNames() };
+				return pParent->getStyleClassesNames();
             }
             else // get value from xml element
             {
@@ -1133,15 +1133,76 @@ namespace eyegui
 					{
 						return pParent->getStyleClassesNames();
 					}
-					else
+					else // no parent and nothing in style attribute
 					{
 						// Otherwise, set default as style
 						return { STYLE_BASE_CLASS_NAME };
 					}
 				}
-				else
+				else // something defined in style attribute
 				{
-					// TODO Parse Style classes separated by space
+					// Split classes by space
+					std::string delimiter = " ";
+					stylesString += delimiter; // Add final space for simpler loop
+					size_t pos = 0;
+					std::vector<std::string> styles;
+					while ((pos = stylesString.find(delimiter)) != std::string::npos)
+					{
+						// Read name of class and erase it from content
+						std::string style = stylesString.substr(0, pos);
+						stylesString.erase(0, pos + delimiter.length());
+
+						// Add style if not empty
+						if (!style.empty())
+						{
+							styles.push_back(style);
+						}
+					}
+
+					// Delete styles from parents styles which are defined here
+					std::vector<std::string> parentStyles;
+					if (pParent != NULL)
+					{
+						// Fetch style class names
+						parentStyles = pParent->getStyleClassesNames();
+
+						// Save indices of values that has to be deleted
+						std::vector<int> toBeDeleted;
+
+						// Compare styles from this and the ones from parent
+						int i = 0;
+						for (const auto& rParentStyle : parentStyles)
+						{
+							bool deleteThis = false;
+							for (const auto& rStyle : styles)
+							{
+								deleteThis |= rParentStyle.compare(rStyle) == 0;
+							}
+
+							if (deleteThis) { toBeDeleted.push_back(i); }
+							i++;
+						}
+
+						// Filter those which are already defined
+						for (int j = (int)toBeDeleted.size() - 1; j >= 0; j--)
+						{
+							parentStyles.erase(parentStyles.begin() + j);
+						}
+
+					}
+
+					// Combine this styles and the ones from parent
+					styles.insert(styles.end(), parentStyles.begin(), parentStyles.end());
+
+					// Check for empty vector
+					if (styles.empty())
+					{
+						return{ STYLE_BASE_CLASS_NAME };
+					}
+					else
+					{
+						return styles;
+					}
 				}
             }
         }
