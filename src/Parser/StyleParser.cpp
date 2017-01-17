@@ -17,6 +17,8 @@
 #include <fstream>
 #include <map>
 
+#include <iostream>
+
 namespace eyegui
 {
 	// TODO NOTE: ADD MAPPING OF PROPERTIES HERE! Also remember to add initial value and constraints in StyleClass.cpp
@@ -152,6 +154,9 @@ namespace eyegui
 					// Read line and erase it from content
 					line = content.substr(0, pos);
 					content.erase(0, pos + delimiter.length());
+
+					// Check for comment
+					line = line.substr(0, line.find("//"));
 
 					// Decide how to proceed
 					switch (state)

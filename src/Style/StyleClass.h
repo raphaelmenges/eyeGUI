@@ -44,7 +44,7 @@ namespace eyegui
 		// Get vec4 value from property (TODO: const reference?)
 		glm::vec4 getValue(StylePropertyVec4 type) const;
 
-		// Set value of float porperty and propagate to children
+		// Set value of float porperty and propagate to children (TODO: maybe do not set it at value parsing failure)
 		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }
 		void setValue(StylePropertyFloat type, float value);
 		
