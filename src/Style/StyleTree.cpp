@@ -32,7 +32,7 @@ namespace eyegui
 		if (!spParent)
 		{
 			// Suggested parent not found
-			throwWarning(OperationNotifier::Operation::PARSING, "Suggested parent of style class not found: " + name + ". Using base instead");
+			throwWarning(OperationNotifier::Operation::PARSING, "Suggested parent of style class not found: " + name + ". Using " + STYLE_BASE_CLASS_NAME + " instead");
 			spParent = mspRoot;
 		}
 		return spParent->addChild(name);

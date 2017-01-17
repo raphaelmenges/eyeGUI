@@ -59,8 +59,11 @@ namespace eyegui
         // Decide about dimming
         mDimming = dimming;
 
-		// Fetch style class
-		mspStyleClass = mpLayout->fetchStyleClass(styles.at(0)); // TODO: multiple. guarantee one
+		// Fetch style classes
+		for (const auto& rStyle : styles) // parser guarantees at least one element
+		{
+			mStyleClasses.push_back(mpLayout->fetchStyleClass(rStyle));
+		}
 
         // Render items
         mpActivityItem = mpAssetManager->fetchRenderItem(shaders::Type::ACTIVITY, meshes::Type::QUAD);
@@ -180,8 +183,13 @@ namespace eyegui
 
 	std::vector<std::string> Element::getStyleClassesNames() const
 	{
-		// TODO: implement for multiple ones
-		return{ mspStyleClass->getName() };
+		// Collect names
+		std::vector<std::string> names;
+		for (const auto& rspStyleClass : mStyleClasses)
+		{
+			names.push_back(rspStyleClass->getName());
+		}
+		return names;
 	}
 
     Element* Element::getParent() const
@@ -742,12 +750,38 @@ namespace eyegui
 
 	float Element::getStyleValue(StylePropertyFloat type) const
 	{
-		return mspStyleClass->getValue(type);
+		// Go over the property in the differenct classes
+		std::shared_ptr<const StyleProperty<float> > spStyleProperty;
+		for (const auto& rspStyleClass : mStyleClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isBase()) // just base, try next class
+			{ continue; }
+			else // no base, use this property's value
+			{ break; }
+		}
+		return spStyleProperty->get();
 	}
 
 	glm::vec4 Element::getStyleValue(StylePropertyVec4 type) const
 	{
-		return mspStyleClass->getValue(type);
+		// Go over the property in the differenct classes
+		std::shared_ptr<const StyleProperty<glm::vec4> > spStyleProperty;
+		for (const auto& rspStyleClass : mStyleClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isBase()) // just base, try next class
+			{
+				continue;
+			}
+			else // no base, use this property's value
+			{
+				break;
+			}
+		}
+		return spStyleProperty->get();
 	}
 
     void Element::notifyInteraction(std::string interactionType, std::string interactionInfoA) const

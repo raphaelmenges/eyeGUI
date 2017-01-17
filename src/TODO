@@ -3,7 +3,6 @@
 ## New features
 - Ring Container (optional)
 - Style Tree
- - multi classes per element
  - element level style tree
  - decide what to do with layout / frame
  

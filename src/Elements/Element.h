@@ -284,7 +284,7 @@ namespace eyegui
         Element* mpParent;
         float mBorder; // [0..1]
         Orientation mOrientation;
-		std::shared_ptr<const StyleClass> mspStyleClass; // TODO: vector for multi classes
+		std::vector<std::shared_ptr<const StyleClass> > mStyleClasses; // Element parsers guarantees for at least one element
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
         RenderingMask mRenderingMask;

@@ -47,10 +47,16 @@ namespace eyegui
 		// Get copy of constraint
 		std::function<T(T)> getConstraint() const { return this->mConstraint; }
 
-		// Mark as property
-		void markBase() { mIsBase = true; }
+		// Is marked as property in base class?
+		bool isBase() const { return mIsBase; }
 
 	protected:
+
+		// Style class is my friend
+		friend class StyleClass;
+
+		// Mark as property
+		void markBase() { mIsBase = true; }
 
 		// Pointer to style class that holds this property. Might be an invalid pointer
 		std::weak_ptr<const StyleClass> mwpStyleClass;
