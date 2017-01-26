@@ -37,7 +37,7 @@ namespace eyegui
         std::unique_ptr<Element> parseElement(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
             // Names of style classes of element, including inherited from parent
-            std::vector<std::string> styles = parseStyleClassesNames(xmlElement, pParent, filepath);
+            std::vector<std::string> styles = parseStyleClassesNames(xmlElement, pLayout, pParent, filepath);
 
 			// Check outcome of style sparsing
 			if (styles.empty()) { throwError(OperationNotifier::Operation::BUG, "Extracted no style class", filepath); }
@@ -1019,12 +1019,28 @@ namespace eyegui
 			return (std::move(upFutureKeyboard));
 		}
 
-		std::vector<std::string> parseStyleClassesNames(tinyxml2::XMLElement const * xmlElement, Element const * pParent, std::string filepath)
+		std::vector<std::string> parseStyleClassesNames(tinyxml2::XMLElement const * xmlElement, Layout const * pLayout, Element const * pParent, std::string filepath)
 		{
+			// Get parent styling
+			std::vector<std::string> parentStyles;
+			if (pParent != NULL)
+			{
+				// Fetch style class names
+				parentStyles = pParent->getStyleClassesNames();
+			}
+			else // Use layout styling
+			{
+				// Fetch style class names
+				parentStyles = pLayout->getStyleClassesNames();
+			}
+
+			// parentStyles must include at least base style
+
+			// Extract styles for this element
 			if (xmlElement == NULL)
 			{
 				// No style given, use the one from parent
-				return pParent->getStyleClassesNames();
+				return parentStyles;
 			}
 			else // get value from xml element
 			{
@@ -1032,15 +1048,7 @@ namespace eyegui
 				if (stylesString == EMPTY_STRING_ATTRIBUTE)
 				{
 					// No style found, try to get one from parent
-					if (pParent != NULL)
-					{
-						return pParent->getStyleClassesNames();
-					}
-					else // no parent and nothing in style attribute
-					{
-						// Otherwise, set default as style
-						return{ STYLE_BASE_CLASS_NAME };
-					}
+					return parentStyles;
 				}
 				else // something defined in style attribute
 				{
@@ -1061,51 +1069,35 @@ namespace eyegui
 							styles.push_back(style);
 						}
 					}
+					
+					// Save indices of values that has to be deleted
+					std::vector<int> toBeDeleted;
 
-					// Delete styles from parents styles which are defined here
-					std::vector<std::string> parentStyles;
-					if (pParent != NULL)
+					// Compare styles from this and the ones from parent
+					int i = 0;
+					for (const auto& rParentStyle : parentStyles)
 					{
-						// Fetch style class names
-						parentStyles = pParent->getStyleClassesNames();
-
-						// Save indices of values that has to be deleted
-						std::vector<int> toBeDeleted;
-
-						// Compare styles from this and the ones from parent
-						int i = 0;
-						for (const auto& rParentStyle : parentStyles)
+						bool deleteThis = false;
+						for (const auto& rStyle : styles)
 						{
-							bool deleteThis = false;
-							for (const auto& rStyle : styles)
-							{
-								deleteThis |= rParentStyle.compare(rStyle) == 0;
-							}
-
-							if (deleteThis) { toBeDeleted.push_back(i); }
-							i++;
+							deleteThis |= rParentStyle.compare(rStyle) == 0;
 						}
 
-						// Filter those which are already defined
-						for (int j = (int)toBeDeleted.size() - 1; j >= 0; j--)
-						{
-							parentStyles.erase(parentStyles.begin() + j);
-						}
+						if (deleteThis) { toBeDeleted.push_back(i); }
+						i++;
+					}
 
+					// Filter those which are already defined
+					for (int j = (int)toBeDeleted.size() - 1; j >= 0; j--)
+					{
+						parentStyles.erase(parentStyles.begin() + j);
 					}
 
 					// Combine this styles and the ones from parent
 					styles.insert(styles.end(), parentStyles.begin(), parentStyles.end());
 
-					// Check for empty vector
-					if (styles.empty())
-					{
-						return{ STYLE_BASE_CLASS_NAME };
-					}
-					else
-					{
-						return styles;
-					}
+					// Return result
+					return styles;
 				}
 			}
 		}

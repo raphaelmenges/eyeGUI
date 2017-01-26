@@ -17,7 +17,7 @@
 
 namespace eyegui
 {
-    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager)
+    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::vector<std::string> styles)
     {
         // Initialize members
         mName = name;
@@ -32,6 +32,12 @@ namespace eyegui
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
         mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
         mForceResize = false;
+
+		// Styles
+		for (const auto& rStyle : styles) // parser guarantees at least one element
+		{
+			mStyleClasses.push_back(fetchStyleClass(rStyle));
+		}
     }
 
     Layout::~Layout()
@@ -65,7 +71,7 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update alpha
-        mAlpha.update(tpf / fetchStyleClass(STYLE_BASE_CLASS_NAME)->getValue(StylePropertyFloat::AnimationDuration), !mVisible);
+        mAlpha.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mVisible);
 
         // *** UPDATE FRAMES ***
 
@@ -89,7 +95,7 @@ namespace eyegui
                     if (pFrame->isRemoved())
                     {
                         // Do fading of removed frame
-                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / fetchStyleClass(STYLE_BASE_CLASS_NAME)->getValue(StylePropertyFloat::AnimationDuration));
+                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / getStyleValue(StylePropertyFloat::AnimationDuration));
                         fadingAlpha = clamp(fadingAlpha, 0, 1);
                         pFrame->setRemovedFadingAlpha(fadingAlpha);
 
@@ -1478,6 +1484,58 @@ namespace eyegui
 			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find future keyboard with id: " + id);
 		}
 	}
+
+	std::vector<std::string> Layout::getStyleClassesNames() const
+	{
+		// Collect names
+		std::vector<std::string> names;
+		for (const auto& rspStyleClass : mStyleClasses)
+		{
+			names.push_back(rspStyleClass->getName());
+		}
+		return names;
+	}
+
+	float Layout::getStyleValue(StylePropertyFloat type) const
+	{
+		// Go over the property in the differenct classes
+		std::shared_ptr<const StyleProperty<float> > spStyleProperty;
+		for (const auto& rspStyleClass : mStyleClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isBase()) // just base, try next class
+			{
+				continue;
+			}
+			else // no base, use this property's value
+			{
+				break;
+			}
+		}
+		return spStyleProperty->get();
+	}
+
+	glm::vec4 Layout::getStyleValue(StylePropertyVec4 type) const
+	{
+		// Go over the property in the differenct classes
+		std::shared_ptr<const StyleProperty<glm::vec4> > spStyleProperty;
+		for (const auto& rspStyleClass : mStyleClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isBase()) // just base, try next class
+			{
+				continue;
+			}
+			else // no base, use this property's value
+			{
+				break;
+			}
+		}
+		return spStyleProperty->get();
+	}
+
 
     void Layout::internalResizing(bool force, bool instant)
     {

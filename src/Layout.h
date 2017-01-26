@@ -37,7 +37,7 @@ namespace eyegui
         friend class NotificationQueue;
 
         // Constructor
-        Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager);
+        Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::vector<std::string> styles);
 
         // Destructor
         virtual ~Layout();
@@ -364,6 +364,13 @@ namespace eyegui
 		// Clear predisplay of future keyboard
 		void clearFutureKeyboardPredisplay(std::string id);
 
+		// Style getter (TODO: copied form element. create common super class for styling..stylable?)
+		std::vector<std::string> getStyleClassesNames() const;
+
+		// Get values from styling (TODO: copied form element. create common super class for styling..stylable?)
+		float getStyleValue(StylePropertyFloat type) const;
+		glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+
     private:
 
         // Resize function
@@ -403,6 +410,7 @@ namespace eyegui
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<NotificationQueue> mupNotificationQueue;
         bool mForceResize;
+		std::vector<std::shared_ptr<const StyleClass> > mStyleClasses; // Layout parser guarantees for at least one element
     };
 }
 

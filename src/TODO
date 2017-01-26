@@ -4,7 +4,7 @@
 - Ring Container (optional)
 - Style Tree
  - element level style tree
- - decide what to do with layout / frame
+ - decide what to do with layout / frame -> have now own styles -> make superclass "styleable" for element and layout
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)

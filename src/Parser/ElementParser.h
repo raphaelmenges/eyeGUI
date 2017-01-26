@@ -55,7 +55,7 @@ namespace eyegui
 		std::unique_ptr<FutureKeyboard> parseFutureKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFutureKeyboard, Element* pParent, std::string filepath);
 
 		// Helpers
-		std::vector<std::string> parseStyleClassesNames(tinyxml2::XMLElement const * xmlElement, Element const * pParent, std::string filepath);
+		std::vector<std::string> parseStyleClassesNames(tinyxml2::XMLElement const * xmlElement, Layout const * pLayout, Element const * pParent, std::string filepath);
 
         // IdMap
         bool checkElementId(const idMap& rIdMap, const std::string& rId, std::string filepath);
