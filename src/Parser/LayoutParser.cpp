@@ -7,7 +7,9 @@
 
 #include "LayoutParser.h"
 
-#include "Layout.h"
+#include "src/Layout.h"
+#include "ElementParser.h"
+#include "src/Parser/ParserHelpers.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/Helper.h"
 #include "src/Utilities/PathBuilder.h"
@@ -34,13 +36,36 @@ namespace eyegui
 
             // First xml element should be a layout
             tinyxml2::XMLElement* xmlLayout = doc.FirstChildElement();
-            if (!element_parser::validateElement(xmlLayout, "layout"))
+            if (!parser_helpers::validateElement(xmlLayout, "layout"))
             {
                 throwError(OperationNotifier::Operation::PARSING, "No layout node as root in XML found", filepath);
             }
 
             // Extract name of layout
             std::string name = extractFileName(filepath);
+
+			// Extract style classes
+			std::string stylesString = parser_helpers::parseStringAttribute("style", xmlLayout);
+
+			// Split classes by space
+			std::string delimiter = " ";
+			stylesString += delimiter; // Add final space for simpler loop
+			size_t pos = 0;
+			std::vector<std::string> styles;
+			while ((pos = stylesString.find(delimiter)) != std::string::npos)
+			{
+				// Read name of class and erase it from content
+				std::string style = stylesString.substr(0, pos);
+				stylesString.erase(0, pos + delimiter.length());
+
+				// Add style if not empty
+				if (!style.empty())
+				{
+					styles.push_back(style);
+				}
+			}
+
+			// TODO: Set style classes of layout
 
             // Create layout
             std::unique_ptr<Layout> upLayout = std::unique_ptr<Layout>(new Layout(name, pGUI, pAssetManager));

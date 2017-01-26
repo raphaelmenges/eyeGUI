@@ -8,6 +8,7 @@
 #include "ElementParser.h"
 
 #include "src/Elements/ElementFactory.h"
+#include "src/Parser/ParserHelpers.h"
 #include "Defines.h"
 #include "Layout.h"
 #include "src/Utilities/OperationNotifier.h"
@@ -51,7 +52,7 @@ namespace eyegui
             std::unique_ptr<Element> upElement;
 
             // Id of element
-            std::string id = parseStringAttribute("id", xmlElement);
+            std::string id = parser_helpers::parseStringAttribute("id", xmlElement);
 
             // Try to map id using id mapper
             auto it = rIdMapper.find(id);
@@ -61,16 +62,16 @@ namespace eyegui
             }
 
             // Relative scale of element
-            float relativeScale = parseRelativeScale(xmlElement);
+            float relativeScale = parser_helpers::parseRelativeScale(xmlElement);
 
             // Border of element
-            float border = parsePercentAttribute("border", xmlElement);
+            float border = parser_helpers::parsePercentAttribute("border", xmlElement);
 
             // Dimming
-            bool dimming = parseBoolAttribute("dimming", xmlElement);
+            bool dimming = parser_helpers::parseBoolAttribute("dimming", xmlElement);
 
             // Adaptive scaling
-            bool adaptiveScaling = parseBoolAttribute("adaptivescaling", xmlElement);
+            bool adaptiveScaling = parser_helpers::parseBoolAttribute("adaptivescaling", xmlElement);
 
             std::string value = std::string(xmlElement->Value());
             if (value == "grid")
@@ -162,14 +163,14 @@ namespace eyegui
             std::string backgroundFilepath;
             ImageAlignment backgroundAlignment;
             float innerBorder;
-            blockHelper(xmlGrid, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+			parser_helpers::blockHelper(xmlGrid, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Show background?
-            bool showBackground = parseBoolAttribute("showbackground", xmlGrid);
+            bool showBackground = parser_helpers::parseBoolAttribute("showbackground", xmlGrid);
 
             // Get first row
             tinyxml2::XMLElement const * xmlRow = xmlGrid->FirstChildElement();
-            if (!validateElement(xmlRow, "row"))
+            if (!parser_helpers::validateElement(xmlRow, "row"))
             {
                 throwError(OperationNotifier::Operation::PARSING, "Row node expected but not found", filepath);
             }
@@ -211,7 +212,7 @@ namespace eyegui
             {
                 // Get first column
                 tinyxml2::XMLElement const * xmlColumn = xmlRow->FirstChildElement();
-                if (!validateElement(xmlColumn, "column"))
+                if (!parser_helpers::validateElement(xmlColumn, "column"))
                 {
                     throwError(OperationNotifier::Operation::PARSING, "Column node expected but not found", filepath);
                 }
@@ -231,13 +232,13 @@ namespace eyegui
                 upGrid->prepareColumns(i, columns);
 
                 // Set height of row
-                upGrid->setRelativeHeightOfRow(i, parsePercentAttribute("size", xmlRow));
+                upGrid->setRelativeHeightOfRow(i, parser_helpers::parsePercentAttribute("size", xmlRow));
 
                 // Go over columns
                 for (int j = 0; j < columns; j++)
                 {
                     // Set width of column
-                    upGrid->setRelativeWidthOfCell(i, j, parsePercentAttribute("size", xmlColumn));
+                    upGrid->setRelativeWidthOfCell(i, j, parser_helpers::parsePercentAttribute("size", xmlColumn));
 
                     // Determine element in cell
                     tinyxml2::XMLElement const * xmlElement = xmlColumn->FirstChildElement();
@@ -247,7 +248,7 @@ namespace eyegui
                     xmlColumn = xmlColumn->NextSiblingElement();
                     if (j < columns - 1)
                     {
-                        if (!validateElement(xmlColumn, "column"))
+                        if (!parser_helpers::validateElement(xmlColumn, "column"))
                         {
                             throwError(OperationNotifier::Operation::PARSING, "Column node expected but not found", filepath);
                         }
@@ -265,7 +266,7 @@ namespace eyegui
                 xmlRow = xmlRow->NextSiblingElement();
                 if (i < rows - 1)
                 {
-                    if (!validateElement(xmlRow, "row"))
+                    if (!parser_helpers::validateElement(xmlRow, "row"))
                     {
                         throwError(OperationNotifier::Operation::PARSING, "Row node expected but not found", filepath);
                     }
@@ -317,7 +318,7 @@ namespace eyegui
             std::string backgroundFilepath;
             ImageAlignment backgroundAlignment;
             float innerBorder;
-            blockHelper(xmlBlock, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+			parser_helpers::blockHelper(xmlBlock, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Create block
 			ElementFactory fac;
@@ -344,10 +345,10 @@ namespace eyegui
         std::unique_ptr<Picture> parsePicture(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlPicture, Element* pParent, std::string filepath)
         {
             // Get full path to image file
-            std::string imageFilepath = parseStringAttribute("src", xmlPicture);
+            std::string imageFilepath = parser_helpers::parseStringAttribute("src", xmlPicture);
 
             // Get alignment
-            std::string alignmentValue = parseStringAttribute("alignment", xmlPicture);
+            std::string alignmentValue = parser_helpers::parseStringAttribute("alignment", xmlPicture);
             ImageAlignment alignment = ImageAlignment::ORIGINAL;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "original")
             {
@@ -394,13 +395,13 @@ namespace eyegui
             std::string backgroundFilepath;
             ImageAlignment backgroundAlignment;
             float innerBorder;
-            blockHelper(xmlStack, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+			parser_helpers::blockHelper(xmlStack, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Show background?
-            bool showBackground = parseBoolAttribute("showbackground", xmlStack);
+            bool showBackground = parser_helpers::parseBoolAttribute("showbackground", xmlStack);
 
 			// Get direction of stack
-			std::string directionValue = parseStringAttribute("direction", xmlStack);
+			std::string directionValue = parser_helpers::parseStringAttribute("direction", xmlStack);
 			Stack::Direction direction = Stack::Direction::AUTOMATIC;
 			if (directionValue == EMPTY_STRING_ATTRIBUTE || directionValue == "automatic")
 			{
@@ -420,7 +421,7 @@ namespace eyegui
 			}
 
             // Get mode of relative scaling
-            std::string relativeScalingValue = parseStringAttribute("relativescaling", xmlStack);
+            std::string relativeScalingValue = parser_helpers::parseStringAttribute("relativescaling", xmlStack);
             Stack::RelativeScaling relativeScaling = Stack::RelativeScaling::MAIN_AXIS;
             if (relativeScalingValue == EMPTY_STRING_ATTRIBUTE || relativeScalingValue == "mainaxis")
             {
@@ -436,7 +437,7 @@ namespace eyegui
             }
 
             // Get alignment
-            std::string alignmentValue = parseStringAttribute("alignment", xmlStack);
+            std::string alignmentValue = parser_helpers::parseStringAttribute("alignment", xmlStack);
             Stack::Alignment alignment = Stack::Alignment::FILL;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "fill")
             {
@@ -460,14 +461,14 @@ namespace eyegui
             }
 
             // Get padding
-            float padding = parsePercentAttribute("padding", xmlStack);
+            float padding = parser_helpers::parsePercentAttribute("padding", xmlStack);
             if (padding < 0 || padding > 1)
             {
                 throwError(OperationNotifier::Operation::PARSING, "Padding value of stack not in range of 0% to 100%", filepath);
             }
 
             // Get separator
-            float separator = parsePercentAttribute("separator", xmlStack);
+            float separator = parser_helpers::parsePercentAttribute("separator", xmlStack);
             if (separator < 0 || separator > 1)
             {
                 throwError(OperationNotifier::Operation::PARSING, "Separator value of stack not in range of 0% to 100%", filepath);
@@ -520,14 +521,14 @@ namespace eyegui
             std::string backgroundFilepath;
             ImageAlignment backgroundAlignment;
             float innerBorder;
-            blockHelper(xmlTextBlock, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+			parser_helpers::blockHelper(xmlTextBlock, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Get font size
             FontSize fontSize;
-            fontSizeHelper(xmlTextBlock, fontSize, filepath);
+			parser_helpers::fontSizeHelper(xmlTextBlock, fontSize, filepath);
 
             // Get alignment
-            std::string alignmentValue = parseStringAttribute("alignment", xmlTextBlock);
+            std::string alignmentValue = parser_helpers::parseStringAttribute("alignment", xmlTextBlock);
             TextFlowAlignment alignment = TextFlowAlignment::LEFT;
             if (alignmentValue == EMPTY_STRING_ATTRIBUTE || alignmentValue == "left")
             {
@@ -551,7 +552,7 @@ namespace eyegui
             }
 
             // Get vertical alignment
-            std::string verticalAlignmentValue = parseStringAttribute("verticalalignment", xmlTextBlock);
+            std::string verticalAlignmentValue = parser_helpers::parseStringAttribute("verticalalignment", xmlTextBlock);
             TextFlowVerticalAlignment verticalAlignment = TextFlowVerticalAlignment::TOP;
             if (verticalAlignmentValue == EMPTY_STRING_ATTRIBUTE || verticalAlignmentValue == "top")
             {
@@ -571,12 +572,12 @@ namespace eyegui
             }
 
             // Get text scale
-            float textScale = parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
+            float textScale = parser_helpers::parsePercentAttribute("textscale", xmlTextBlock, 1.0f);
 
             // Localization
             std::u16string content;
             std::string key;
-            localizationHelper(xmlTextBlock, "content", "key", content, key);
+			parser_helpers::localizationHelper(xmlTextBlock, "content", "key", content, key);
 
             // Create text block
 			ElementFactory fac;
@@ -610,15 +611,15 @@ namespace eyegui
         std::unique_ptr<CircleButton> parseCircleButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlCircleButton, Element* pParent, std::string filepath)
         {
             // Extract filepath
-            std::string iconFilepath = parseStringAttribute("icon", xmlCircleButton);
+            std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlCircleButton);
 
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlCircleButton, "desc", "desckey", desc, descKey);
+			parser_helpers::localizationHelper(xmlCircleButton, "desc", "desckey", desc, descKey);
 
             // Is button a switch?
-            bool isSwitch = parseBoolAttribute("switch", xmlCircleButton);
+            bool isSwitch = parser_helpers::parseBoolAttribute("switch", xmlCircleButton);
 
             // Create circle button
 			ElementFactory fac;
@@ -646,15 +647,15 @@ namespace eyegui
         std::unique_ptr<BoxButton> parseBoxButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBoxButton, Element* pParent, std::string filepath)
         {
             // Extract filepath
-            std::string iconFilepath = parseStringAttribute("icon", xmlBoxButton);
+            std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlBoxButton);
 
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlBoxButton, "desc", "desckey", desc, descKey);
+			parser_helpers::localizationHelper(xmlBoxButton, "desc", "desckey", desc, descKey);
 
             // Is button a switch?
-            bool isSwitch = parseBoolAttribute("switch", xmlBoxButton);
+            bool isSwitch = parser_helpers::parseBoolAttribute("switch", xmlBoxButton);
 
             // Create box button
 			ElementFactory fac;
@@ -682,12 +683,12 @@ namespace eyegui
         std::unique_ptr<Sensor> parseSensor(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlSensor, Element* pParent, std::string filepath)
         {
             // Extract filepath
-            std::string iconFilepath = parseStringAttribute("icon", xmlSensor);
+            std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlSensor);
 
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlSensor, "desc", "desckey", desc, descKey);
+			parser_helpers::localizationHelper(xmlSensor, "desc", "desckey", desc, descKey);
 
             // Create sensor
 			ElementFactory fac;
@@ -714,15 +715,15 @@ namespace eyegui
         std::unique_ptr<DropButton> parseDropButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlDropButton, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
             // Extract filepath
-            std::string iconFilepath = parseStringAttribute("icon", xmlDropButton);
+            std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlDropButton);
 
             // Description
             std::u16string desc;
             std::string descKey;
-            localizationHelper(xmlDropButton, "desc", "desckey", desc, descKey);
+			parser_helpers::localizationHelper(xmlDropButton, "desc", "desckey", desc, descKey);
 
             // Get usage of available space
-            float space = parsePercentAttribute("space", xmlDropButton);
+            float space = parser_helpers::parsePercentAttribute("space", xmlDropButton);
             if (space < 0 || space > 1)
             {
                 throwError(OperationNotifier::Operation::PARSING, "Usage of available space in DropButton not in range of 0% to 100%", filepath);
@@ -774,7 +775,7 @@ namespace eyegui
         std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
         {
 			// Show background?
-			bool instantPress = parseBoolAttribute("instantpress", xmlKeyboard);
+			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlKeyboard);
 
             // Create keyboard
 			ElementFactory fac;
@@ -800,7 +801,7 @@ namespace eyegui
         {
             // Get font size
             FontSize fontSize;
-            fontSizeHelper(xmlWordSuggest, fontSize, filepath);
+			parser_helpers::fontSizeHelper(xmlWordSuggest, fontSize, filepath);
 
             // Create word suggest
 			ElementFactory fac;
@@ -829,13 +830,13 @@ namespace eyegui
             std::string backgroundFilepath;
             ImageAlignment backgroundAlignment;
             float innerBorder;
-            blockHelper(xmlFlow, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+			parser_helpers::blockHelper(xmlFlow, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Show background?
-            bool showBackground = parseBoolAttribute("showbackground", xmlFlow);
+            bool showBackground = parser_helpers::parseBoolAttribute("showbackground", xmlFlow);
 
             // Get flow direction
-            std::string flowDirectionValue = parseStringAttribute("direction", xmlFlow);
+            std::string flowDirectionValue = parser_helpers::parseStringAttribute("direction", xmlFlow);
             Flow::Direction flowDirection = Flow::Direction::VERTICAL;
             if (flowDirectionValue == EMPTY_STRING_ATTRIBUTE || flowDirectionValue == "vertical")
             {
@@ -851,7 +852,7 @@ namespace eyegui
             }
 
             // Get space
-            float space = parsePercentAttribute("space", xmlFlow);
+            float space = parser_helpers::parsePercentAttribute("space", xmlFlow);
 
             // Create flow
 			ElementFactory fac;
@@ -900,10 +901,10 @@ namespace eyegui
             std::string backgroundFilepath;
             ImageAlignment backgroundAlignment;
             float innerBorder;
-            blockHelper(xmlProgressBar, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
+			parser_helpers::blockHelper(xmlProgressBar, consumeInput, backgroundFilepath, backgroundAlignment, innerBorder);
 
             // Fetch direction of progress
-            std::string progressDirectionValue = parseStringAttribute("direction", xmlProgressBar);
+            std::string progressDirectionValue = parser_helpers::parseStringAttribute("direction", xmlProgressBar);
             ProgressBar::Direction progressDirection = ProgressBar::Direction::LEFT_TO_RIGHT;
             if (progressDirectionValue == EMPTY_STRING_ATTRIBUTE || progressDirectionValue == "leftright")
             {
@@ -954,7 +955,7 @@ namespace eyegui
 		{
 			// Get font size
 			FontSize fontSize;
-			fontSizeHelper(xmlTextEdit, fontSize, filepath);
+			parser_helpers::fontSizeHelper(xmlTextEdit, fontSize, filepath);
 
 			// Create text edit
 			ElementFactory fac;
@@ -979,7 +980,7 @@ namespace eyegui
 		std::unique_ptr<FutureKeyboard> parseFutureKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFutureKeyboard, Element* pParent, std::string filepath)
 		{
 			// Decide mode
-			std::string modeValue = parseStringAttribute("mode", xmlFutureKeyboard);
+			std::string modeValue = parser_helpers::parseStringAttribute("mode", xmlFutureKeyboard);
 			FutureKeyboard::Mode mode = FutureKeyboard::Mode::ONE_SUGGESTION_LINE;
 			if (modeValue == EMPTY_STRING_ATTRIBUTE || modeValue == "onesuggestionline")
 			{
@@ -1018,117 +1019,16 @@ namespace eyegui
 			return (std::move(upFutureKeyboard));
 		}
 
-        void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder)
-        {
-            rConsumeInput = parseBoolAttribute("consumeinput", xmlBlock);
-            rBackgroundFilepath = parseStringAttribute("backgroundsrc", xmlBlock);
-
-            // Background image alignment
-            if(rBackgroundFilepath == EMPTY_STRING_ATTRIBUTE)
-            {
-                // Not necessary, so just use something
-                rBackgroundAlignment = STANDARD_IMAGE_ALIGNMENT;
-            }
-            else
-            {
-                std::string backgroundAlignmentValue = parseStringAttribute("backgroundalignment", xmlBlock);
-                if(backgroundAlignmentValue == "original")
-                {
-                    rBackgroundAlignment = ImageAlignment::ORIGINAL;
-                }
-                else if(backgroundAlignmentValue == "stretched")
-                {
-                    rBackgroundAlignment = ImageAlignment::STRETCHED;
-                }
-                else if(backgroundAlignmentValue == "zoomed")
-                {
-                    rBackgroundAlignment = ImageAlignment::ZOOMED;
-                }
-                else
-                {
-                    // Just use the standard
-                    rBackgroundAlignment = STANDARD_IMAGE_ALIGNMENT;
-                }
-            }
-
-            rInnerBorder = parsePercentAttribute("innerborder", xmlBlock);
-        }
-
-        void fontSizeHelper(tinyxml2::XMLElement const * xmlElement, FontSize& rFontSize, std::string filepath)
-        {
-            std::string fontSizeValue = parseStringAttribute("fontsize", xmlElement);
-            if (fontSizeValue == EMPTY_STRING_ATTRIBUTE || fontSizeValue == "medium")
-            {
-                rFontSize = FontSize::MEDIUM;
-            }
-            else if (fontSizeValue == "tall")
-            {
-                rFontSize = FontSize::TALL;
-            }
-            else if (fontSizeValue == "small")
-            {
-                rFontSize = FontSize::SMALL;
-            }
-            else
-            {
-                throwError(OperationNotifier::Operation::PARSING, "Unknown font size used in element: " + fontSizeValue, filepath);
-            }
-        }
-
-        void localizationHelper(tinyxml2::XMLElement const * xmlElement, std::string contentAttribute, std::string keyAttribute, std::u16string& rContent, std::string& rKey)
-        {
-            // Get content
-            std::string contentValue = parseStringAttribute(contentAttribute, xmlElement);
-
-            // Xml parser replaces new lines with visible "\n"
-            replaceString(contentValue, "\\n", "\n");
-
-            // Convert to utf-16 string
-            convertUTF8ToUTF16(contentValue, rContent);
-
-            // Get key for localization
-            rKey = parseStringAttribute(keyAttribute, xmlElement);
-        }
-
-        bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& rExpectedValue)
-        {
-            if (xmlElement == NULL || std::string(xmlElement->Value()).compare(rExpectedValue) != 0)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        float parseRelativeScale(tinyxml2::XMLElement const * xmlElement)
-        {
-            if (xmlElement == NULL)
-            {
-                return 1;
-            }
-            else
-            {
-                float value = parsePercentAttribute("relativescale", xmlElement);
-                if (value <= 0)
-                {
-                    return 1;
-                }
-                else
-                {
-                    return value;
-                }
-            }
-        }
-
 		std::vector<std::string> parseStyleClassesNames(tinyxml2::XMLElement const * xmlElement, Element const * pParent, std::string filepath)
-        {
-            if (xmlElement == NULL)
-            {
+		{
+			if (xmlElement == NULL)
+			{
 				// No style given, use the one from parent
 				return pParent->getStyleClassesNames();
-            }
-            else // get value from xml element
-            {
-                std::string stylesString = parseStringAttribute("style", xmlElement);
+			}
+			else // get value from xml element
+			{
+				std::string stylesString = parser_helpers::parseStringAttribute("style", xmlElement);
 				if (stylesString == EMPTY_STRING_ATTRIBUTE)
 				{
 					// No style found, try to get one from parent
@@ -1139,7 +1039,7 @@ namespace eyegui
 					else // no parent and nothing in style attribute
 					{
 						// Otherwise, set default as style
-						return { STYLE_BASE_CLASS_NAME };
+						return{ STYLE_BASE_CLASS_NAME };
 					}
 				}
 				else // something defined in style attribute
@@ -1207,68 +1107,8 @@ namespace eyegui
 						return styles;
 					}
 				}
-            }
-        }
-
-        std::string parseStringAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, std::string fallback)
-        {
-            tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-            if (xmlAttribute != NULL)
-            {
-                return xmlAttribute->Value();
-            }
-            else
-            {
-                return fallback;
-            }
-        }
-
-        bool parseBoolAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, bool fallback)
-        {
-            tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-            if (xmlAttribute != NULL)
-            {
-                std::string value = xmlAttribute->Value();
-
-                // File format case is not relevant
-                std::transform(value.begin(), value.end(), value.begin(), ::tolower);
-
-                return value == "true";
-            }
-            else
-            {
-                return fallback;
-            }
-        }
-
-        int parseIntAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, int fallback)
-        {
-            tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-            if (xmlAttribute != NULL)
-            {
-                return xmlAttribute->IntValue();
-            }
-            else
-            {
-                return fallback;
-            }
-        }
-
-        float parsePercentAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, float fallback)
-        {
-            tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-            if (xmlAttribute != NULL)
-            {
-                std::string value = xmlAttribute->Value();
-                std::string delimiter = "%";
-                std::string token = value.substr(0, value.find(delimiter));
-                return (stringToFloat(token) / 100.0f);
-            }
-            else
-            {
-                return fallback;
-            }
-        }
+			}
+		}
 
         bool checkElementId(const idMap& rIdMap, const std::string& rId, std::string filepath)
         {
@@ -1285,7 +1125,6 @@ namespace eyegui
 
             return true;
         }
-
 
         void insertElementId(idMap& rIdMap, const std::string& rId, Element* pElement)
         {

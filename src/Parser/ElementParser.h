@@ -10,9 +10,9 @@
 #define ELEMENT_PARSER_H_
 
 #include "include/eyeGUI.h"
-#include "Rendering/AssetManager.h"
-#include "NotificationQueue.h"
-#include "Elements/Elements.h"
+#include "src/Rendering/AssetManager.h"
+#include "src/NotificationQueue.h"
+#include "src/Elements/Elements.h"
 #include "externals/TinyXML2/tinyxml2.h"
 #include "externals/GLM/glm/vec4.hpp"
 
@@ -54,23 +54,8 @@ namespace eyegui
 		// Experimental
 		std::unique_ptr<FutureKeyboard> parseFutureKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFutureKeyboard, Element* pParent, std::string filepath);
 
-        // Helper
-        void blockHelper(tinyxml2::XMLElement const * xmlBlock, bool& rConsumeInput, std::string& rBackgroundFilepath, ImageAlignment& rBackgroundAlignment, float& rInnerBorder);
-        void fontSizeHelper(tinyxml2::XMLElement const * xmlElement, FontSize& rFontSize, std::string filepath);
-        void localizationHelper(tinyxml2::XMLElement const * xmlElement, std::string contentAttribute, std::string keyAttribute, std::u16string& rContent, std::string& rKey);
-
-        // Checking
-        bool validateElement(tinyxml2::XMLElement const * xmlElement, const std::string& rExpectedValue);
-
-        // Other parsing
-        float parseRelativeScale(tinyxml2::XMLElement const * xmlElement);
-        std::vector<std::string> parseStyleClassesNames(tinyxml2::XMLElement const * xmlElement, Element const * pParent, std::string filepath);
-
-        // Attribute parsing
-        std::string parseStringAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, std::string fallback = EMPTY_STRING_ATTRIBUTE);
-        bool parseBoolAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, bool fallback = EMPTY_BOOL_ATTRIBUTE);
-        int parseIntAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, int fallback = EMPTY_INT_ATTRIBUTE);
-        float parsePercentAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, float fallback = EMPTY_PERCENTAGE_ATTRIBUTE);
+		// Helpers
+		std::vector<std::string> parseStyleClassesNames(tinyxml2::XMLElement const * xmlElement, Element const * pParent, std::string filepath);
 
         // IdMap
         bool checkElementId(const idMap& rIdMap, const std::string& rId, std::string filepath);

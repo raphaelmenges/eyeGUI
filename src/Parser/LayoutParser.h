@@ -9,13 +9,15 @@
 #ifndef LAYOUT_PARSER_H_
 #define LAYOUT_PARSER_H_
 
-#include "ElementParser.h"
+#include <memory>
+#include <string>
 
 namespace eyegui
 {
 	// Forward declaration
 	class GUI;
 	class Layout;
+	class AssetManager;
 
 	namespace layout_parser
 	{
