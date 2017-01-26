@@ -16,6 +16,7 @@ namespace eyegui
 {
 	void testingMain()
 	{
+		/*
 		// TODO
 		StyleTree styleTree;
 		auto header = styleTree.addStyleClass("header");
@@ -37,6 +38,7 @@ namespace eyegui
 		styleTree.setValue("header", StylePropertyFloat::AnimationDuration, "0");
 		std::cout << header->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
 		std::cout << headerButton->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
+		*/
 	}
 }
 
