@@ -31,7 +31,8 @@ namespace eyegui
             u'\u21A4', // backspace symbol
             u'\u2423', // space symbol
             u'\u2191', // shift symbol
-            u'\u21BA' // repeat symbol
+            u'\u21BA', // repeat symbol
+			u'\u00B0' // degree symbol
         };
 
         static const std::set<char16_t> GERMANY_GERMAN
