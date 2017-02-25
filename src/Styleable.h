@@ -20,7 +20,7 @@ namespace eyegui
 		// Constructor
 		Styleable(
 			std::vector<std::string> styles,
-			std::function<std::shared_ptr<const StyleClass>(std::string styleName)> styleFetcher);
+			std::function<std::shared_ptr<const StyleClass>(std::string styleClass)> styleFetcher);
 
 		// Destructor
 		virtual ~Styleable() = 0;
