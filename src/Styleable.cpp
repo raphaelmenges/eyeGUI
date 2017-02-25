@@ -11,7 +11,7 @@ namespace eyegui
 {
 	Styleable::Styleable(
 		std::vector<std::string> styles,
-		std::function<std::shared_ptr<const StyleClass>(std::string styleName)> styleFetcher)
+		std::function<std::shared_ptr<const StyleClass>(std::string styleClass)> styleFetcher)
 	{
 		for (const auto& rStyle : styles)
 		{

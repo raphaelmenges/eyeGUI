@@ -30,7 +30,7 @@ namespace eyegui
         bool dimming,
 		bool adaptiveScaling) : 
 			Object(), // Object constructor
-			Styleable(styles, [pLayout](std::string styleName) { return pLayout->fetchStyleTreeClass(styleName); }) // Styleable constructor
+			Styleable(styles, [pLayout](std::string styleClass) { return pLayout->fetchStyleTreeClass(styleClass); }) // Styleable constructor
     {
         // Initialize members
         mX = 0;
