@@ -22,7 +22,11 @@
 namespace eyegui
 {
 	// Enumeration to decide type of construction via builder
-	enum class StyleClassConstructionType { BASE_CLASS, ELEMENT_CLASS };
+	enum class StyleClassConstructionType
+	{
+		BASE_CLASS, // used as root of style tree
+		ELEMENT_CLASS // used as class within element
+	};
 
 	// Style class, must be built by builder
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this

@@ -19,6 +19,7 @@
 
 #include "include/eyeGUI.h"
 #include "src/Object.h"
+#include "src/Styleable.h"
 #include "src/Elements/ElementFactory.h"
 #include "src/Rendering/AssetManager.h"
 #include "src/Style/StyleClass.h"
@@ -37,7 +38,7 @@ namespace eyegui
     class Frame;
 	class InteractiveElement;
 
-    class Element : public Object
+    class Element : public Object, public Styleable
     {
     public:
 
@@ -100,9 +101,6 @@ namespace eyegui
 
         // Id getter
         std::string getId() const;
-
-		// Style getter
-		std::vector<std::string> getStyleClassesNames() const;
 
         // Parent
         Element* getParent() const;
@@ -255,8 +253,8 @@ namespace eyegui
         float getMultipliedDimmedAlpha() const;
 
 		// Get style property value
-		float getStyleValue(StylePropertyFloat type) const;
-		glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+		virtual float getStyleValue(StylePropertyFloat type) const;
+		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
 
         // Notify about interaction with element
         void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;
@@ -284,7 +282,6 @@ namespace eyegui
         Element* mpParent;
         float mBorder; // [0..1]
         Orientation mOrientation;
-		std::vector<std::shared_ptr<const StyleClass> > mStyleClasses; // Element parsers guarantees for at least one element
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
         RenderingMask mRenderingMask;

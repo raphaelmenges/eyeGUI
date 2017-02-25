@@ -218,6 +218,9 @@ namespace eyegui
         // Typedefs
         typedef std::pair<int, std::unique_ptr<Layer> > LayerPair;
 
+		// GUI wide style tree
+		std::shared_ptr<StyleTree> mspStyleTree;
+
         // Members
         std::vector<std::unique_ptr<LayerPair> > mLayers;
         int mWidth, mHeight;
@@ -225,7 +228,7 @@ namespace eyegui
         CharacterSet mCharacterSet;
         std::unique_ptr<AssetManager> mupAssetManager;
         float mAccPeriodicTime;
-        std::shared_ptr<StyleTree> mspStyleTree;
+        
         Font const * mpDefaultFont;
         bool mResizing;
         float mResizeWaitTime;

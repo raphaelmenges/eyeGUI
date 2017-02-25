@@ -1026,12 +1026,12 @@ namespace eyegui
 			if (pParent != NULL)
 			{
 				// Fetch style class names
-				parentStyles = pParent->getStyleClassesNames();
+				parentStyles = pParent->getStyleTreeClassesNames();
 			}
 			else // Use layout styling
 			{
 				// Fetch style class names
-				parentStyles = pLayout->getStyleClassesNames();
+				parentStyles = pLayout->getStyleTreeClassesNames();
 			}
 
 			// parentStyles must include at least base style

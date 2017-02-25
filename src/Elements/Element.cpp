@@ -28,7 +28,9 @@ namespace eyegui
         float relativeScale,
         float border,
         bool dimming,
-        bool adaptiveScaling) : Object()
+		bool adaptiveScaling) : 
+			Object(), // Object constructor
+			Styleable(styles, [pLayout](std::string styleName) { return pLayout->fetchStyleTreeClass(styleName); }) // Styleable constructor
     {
         // Initialize members
         mX = 0;
@@ -58,12 +60,6 @@ namespace eyegui
 
         // Decide about dimming
         mDimming = dimming;
-
-		// Fetch style classes
-		for (const auto& rStyle : styles) // parser guarantees at least one element
-		{
-			mStyleClasses.push_back(mpLayout->fetchStyleClass(rStyle));
-		}
 
         // Render items
         mpActivityItem = mpAssetManager->fetchRenderItem(shaders::Type::ACTIVITY, meshes::Type::QUAD);
@@ -180,17 +176,6 @@ namespace eyegui
     {
         return mId;
     }
-
-	std::vector<std::string> Element::getStyleClassesNames() const
-	{
-		// Collect names
-		std::vector<std::string> names;
-		for (const auto& rspStyleClass : mStyleClasses)
-		{
-			names.push_back(rspStyleClass->getName());
-		}
-		return names;
-	}
 
     Element* Element::getParent() const
     {
@@ -752,7 +737,7 @@ namespace eyegui
 	{
 		// Go over the property in the differenct classes
 		std::shared_ptr<const StyleProperty<float> > spStyleProperty;
-		for (const auto& rspStyleClass : mStyleClasses)
+		for (const auto& rspStyleClass : mStyleTreeClasses)
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
@@ -768,7 +753,7 @@ namespace eyegui
 	{
 		// Go over the property in the differenct classes
 		std::shared_ptr<const StyleProperty<glm::vec4> > spStyleProperty;
-		for (const auto& rspStyleClass : mStyleClasses)
+		for (const auto& rspStyleClass : mStyleTreeClasses)
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);

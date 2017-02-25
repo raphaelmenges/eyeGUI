@@ -13,6 +13,7 @@
 #define LAYOUT_H_
 
 #include "include/eyeGUI.h"
+#include "src/Styleable.h"
 #include "src/Frame.h"
 #include "src/Parser/BrickParser.h"
 #include "src/NotificationQueue.h"
@@ -29,7 +30,7 @@ namespace eyegui
     class GUI;
 	class StyleClass;
 
-    class Layout
+    class Layout : public Styleable
     {
     public:
 
@@ -61,9 +62,6 @@ namespace eyegui
 
         // Get notificaton queue
         NotificationQueue* getNotificationQueue() const;
-
-        // Fetch style class from style tree
-        std::shared_ptr<const StyleClass> fetchStyleClass(std::string name) const;
 
         // Get used character set
         CharacterSet getCharacterSet() const;
@@ -364,12 +362,12 @@ namespace eyegui
 		// Clear predisplay of future keyboard
 		void clearFutureKeyboardPredisplay(std::string id);
 
-		// Style getter (TODO: copied form element. create common super class for styling..stylable?)
-		std::vector<std::string> getStyleClassesNames() const;
+		// Fetch style class from style tree
+		std::shared_ptr<const StyleClass> fetchStyleTreeClass(std::string name) const;
 
-		// Get values from styling (TODO: copied form element. create common super class for styling..stylable?)
-		float getStyleValue(StylePropertyFloat type) const;
-		glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+		// Get values from styling
+		virtual float getStyleValue(StylePropertyFloat type) const;
+		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
 
     private:
 
@@ -410,7 +408,6 @@ namespace eyegui
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<NotificationQueue> mupNotificationQueue;
         bool mForceResize;
-		std::vector<std::shared_ptr<const StyleClass> > mStyleClasses; // Layout parser guarantees for at least one element
     };
 }
 
