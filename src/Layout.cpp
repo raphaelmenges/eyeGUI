@@ -1488,7 +1488,7 @@ namespace eyegui
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
+			if (spStyleProperty->isSet()) // just base, try next class
 			{
 				continue;
 			}
@@ -1508,7 +1508,7 @@ namespace eyegui
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
+			if (spStyleProperty->isSet()) // just base, try next class
 			{
 				continue;
 			}

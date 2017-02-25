@@ -4,7 +4,6 @@
 - Ring Container (optional)
 - Style Tree
  - unintended behavior: check for duplicate class names for both layout and element stlyes
- - element level styles are not propagated since they all have all properties but class checks at propagation, whether it has a own property or just a pointer. if it has own, then no further propagation happens. Is in conflict with the "is set" method
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)

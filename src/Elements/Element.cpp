@@ -68,7 +68,8 @@ namespace eyegui
         mpMarkItem = mpAssetManager->fetchRenderItem(shaders::Type::MARK, meshes::Type::QUAD);
 
 		// Create own style class. Use empty weak pointer for root element
-		mspStyleClass = StyleClassBuilder().constructElementClass(
+		mspStyleClass = StyleClassBuilder().construct(
+			"",
 			mpParent != NULL ? // is this root?
 			mpParent->fetchStyleClass() : // no! use parents style class
 			std::weak_ptr<const StyleClass>()); // yes! no parent so no parent's style class
@@ -756,7 +757,7 @@ namespace eyegui
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
+			if (spStyleProperty->isSet()) // just base, try next class
 			{ continue; }
 			else // no base, use this property's value
 			{ break; }
@@ -781,7 +782,7 @@ namespace eyegui
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
+			if (spStyleProperty->isSet()) // just base, try next class
 			{ continue;	}
 			else // no base, use this property's value
 			{ break; }

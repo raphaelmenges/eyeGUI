@@ -57,18 +57,11 @@ namespace eyegui
 
 	private:
 
-		// Enumeration to decide type of construction via builder
-		enum class ConstructionType
-		{
-			BASE_CLASS, // used as root of style tree
-			ELEMENT_CLASS // used as class within element
-		};
-
 		// Builder is friend class
 		friend class StyleClassBuilder;
 
 		// Constructor
-		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent);
+		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent, bool& rPleaseFill);
 
 		// Private copy constuctor
 		StyleClass(StyleClass const&) {}
@@ -77,7 +70,7 @@ namespace eyegui
 		StyleClass& operator = (StyleClass const&) { return *this; }
 
 		// Called only by builder
-		void fill(ConstructionType constructionType);
+		void fill();
 
 		// #################################
 		// ### MAPS HELPER FOR TEMPLATES ###
@@ -118,7 +111,7 @@ namespace eyegui
 			else
 			{
 				// Add new owned property while copying constraint from existing since it is of the same type
-				spStoredProperty = std::shared_ptr<StyleProperty<Value> >(new StyleProperty<Value>(shared_from_this(), value, spStoredProperty->getConstraint()));
+				spStoredProperty = std::shared_ptr<StyleProperty<Value> >(new StyleProperty<Value>(shared_from_this(), value, spStoredProperty->getConstraint(), true));
 				this->setMapValue(type, spStoredProperty);
 
 				// Propagate it to children
@@ -184,9 +177,8 @@ namespace eyegui
 	{
 	public:
 
-		// Construct a style class
-		std::shared_ptr<StyleClass> constructBaseClass(std::string name) const; // used for root node of tree
-		std::shared_ptr<StyleClass> constructElementClass(std::weak_ptr<const StyleClass> mwpParent) const; // used for class of element
+		// Construct a style class (necessary because shared from this is used for StyleClass, but this may not be done in its constructor)
+		std::shared_ptr<StyleClass> construct(std::string name = "", std::weak_ptr<const StyleClass> mwpParent = std::weak_ptr<const StyleClass>()) const;
 	};
 }
 
