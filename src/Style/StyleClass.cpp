@@ -97,7 +97,7 @@ namespace eyegui
 
 	void StyleClass::fill(ConstructionType constructionType)
 	{
-		// TODO NOTE: ADD INITIAL VALUES AND CONSTRAINTS OF NEW PROPERTIES HERE! Also remember to add string mapping in StyleParser.cpp
+		// TODO NOTE: ADD INITIAL VALUES AND CONSTRAINTS OF NEW PROPERTIES HERE! Also remember to add string mapping in StylePropertyNameMapper.cpp
 
 		// Float constraints
 		const std::function<float(float)> durationConstraint = [](float value)
@@ -123,9 +123,9 @@ namespace eyegui
 				value->markBase(); // tell property that is in base style class
 				mFloatMap[type] = value; // use value for style class in base
 			}
-			else
+			else // element class
 			{
-				mFloatMap[type] = spFloat(); // create empty pointer for style class in element
+				mFloatMap[type] = value; // TODO think about this
 			}
 		};
 		floatInsert(sFloat::AnimationDuration,					spFloat(new StyleProperty<float>(shared_from_this(), 0.1f, durationConstraint)));
@@ -172,9 +172,9 @@ namespace eyegui
 				value->markBase(); // tell property that is in base style class
 				mVec4Map[type] = value; // use value for style class in base
 			}
-			else
+			else // element class
 			{
-				mVec4Map[type] = spVec4(); // create empty pointer for style class in element
+				mVec4Map[type] = value; // TODO think about this
 			}
 		};
 		vec4Insert(sVec4::Color,									spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), colorConstraint)));

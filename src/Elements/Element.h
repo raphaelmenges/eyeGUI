@@ -259,6 +259,13 @@ namespace eyegui
 		// Getter of individual style class
 		std::shared_ptr<const StyleClass> fetchStyleClass() const;
 
+		// Set value by name of individual style class
+		template<typename Type>
+		void setStyleValue(Type styleType, std::string value)
+		{
+			mspStyleClass->setValue(styleType, value);
+		}
+
         // Notify about interaction with element
         void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;
 
