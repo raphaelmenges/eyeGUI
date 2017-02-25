@@ -3,9 +3,8 @@
 ## New features
 - Ring Container (optional)
 - Style Tree
- - element level style tree
-  - move element style tree from hard encoding in parser to some...tree structure? think about it... -> maybe just build up an additional structure on element level and go to values of classes if element or parent of element has not defined this property...but this should be computed at set time, not at check time.
- - decide what to do with layout / frame -> have now own styles -> make superclass "styleable" for element and layout
+ - element level style tree -> each element has own style class
+ - unintended behavior: check for duplicate class names for both layout and element stlyes
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
