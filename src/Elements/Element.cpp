@@ -66,6 +66,12 @@ namespace eyegui
         mpDimItem = mpAssetManager->fetchRenderItem(shaders::Type::DIM, meshes::Type::QUAD);
 		mpFlashItem = mpAssetManager->fetchRenderItem(shaders::Type::FLASH, meshes::Type::QUAD);
         mpMarkItem = mpAssetManager->fetchRenderItem(shaders::Type::MARK, meshes::Type::QUAD);
+
+		// Create own style class. Use empty weak pointer for root element
+		mspStyleClass = StyleClassBuilder().constructElementClass(
+			mpParent != NULL ? // is this root?
+			mpParent->fetchStyleClass() : // no! use parents style class
+			std::weak_ptr<const StyleClass>()); // yes! no parent so no parent's style class
     }
 
     Element::~Element()
@@ -737,6 +743,15 @@ namespace eyegui
 	{
 		// Go over the property in the differenct classes
 		std::shared_ptr<const StyleProperty<float> > spStyleProperty;
+
+		// Check own class for some set value
+		spStyleProperty = mspStyleClass->fetchProperty(type);
+		if (spStyleProperty->isSet()) // if the value of this property was actively set, use it!
+		{
+			return spStyleProperty->get();
+		}
+
+		// Go over assigned classes of global style tree
 		for (const auto& rspStyleClass : mStyleTreeClasses)
 		{
 			// Check whether property is really set or just base
@@ -753,20 +768,30 @@ namespace eyegui
 	{
 		// Go over the property in the differenct classes
 		std::shared_ptr<const StyleProperty<glm::vec4> > spStyleProperty;
+
+		// Check own class for some set value
+		spStyleProperty = mspStyleClass->fetchProperty(type);
+		if (spStyleProperty->isSet()) // if the value of this property was actively set, use it!
+		{
+			return spStyleProperty->get();
+		}
+
+		// Go over assigned classes of global style tree
 		for (const auto& rspStyleClass : mStyleTreeClasses)
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
 			if (spStyleProperty->isBase()) // just base, try next class
-			{
-				continue;
-			}
+			{ continue;	}
 			else // no base, use this property's value
-			{
-				break;
-			}
+			{ break; }
 		}
 		return spStyleProperty->get();
+	}
+
+	std::shared_ptr<const StyleClass> Element::fetchStyleClass() const
+	{
+		return mspStyleClass;
 	}
 
     void Element::notifyInteraction(std::string interactionType, std::string interactionInfoA) const

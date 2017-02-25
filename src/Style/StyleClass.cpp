@@ -95,7 +95,7 @@ namespace eyegui
 		return mName;
 	}
 
-	void StyleClass::fill(StyleClassConstructionType constructionType)
+	void StyleClass::fill(ConstructionType constructionType)
 	{
 		// TODO NOTE: ADD INITIAL VALUES AND CONSTRAINTS OF NEW PROPERTIES HERE! Also remember to add string mapping in StyleParser.cpp
 
@@ -118,7 +118,7 @@ namespace eyegui
 		typedef std::shared_ptr<StyleProperty<float> > spFloat; // simplify shared pointer creation
 		std::function<void(sFloat, spFloat)> floatInsert = [&](sFloat type, spFloat&& value) // simplify map insertion
 		{
-			if (constructionType == StyleClassConstructionType::BASE_CLASS)
+			if (constructionType == ConstructionType::BASE_CLASS)
 			{
 				value->markBase(); // tell property that is in base style class
 				mFloatMap[type] = value; // use value for style class in base
@@ -167,7 +167,7 @@ namespace eyegui
 		typedef std::shared_ptr<StyleProperty<glm::vec4> > spVec4; // simplify shared pointer creation
 		std::function<void(sVec4, spVec4)> vec4Insert = [&](sVec4 type, spVec4&& value) // simplify map insertion
 		{
-			if (constructionType == StyleClassConstructionType::BASE_CLASS)
+			if (constructionType == ConstructionType::BASE_CLASS)
 			{
 				value->markBase(); // tell property that is in base style class
 				mVec4Map[type] = value; // use value for style class in base
@@ -191,10 +191,17 @@ namespace eyegui
 		vec4Insert(sVec4::ThresholdColor,							spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint)));
 	}
 
-	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, StyleClassConstructionType type) const
+	std::shared_ptr<StyleClass> StyleClassBuilder::constructBaseClass(std::string name) const
 	{
 		auto spStyleClass = std::shared_ptr<StyleClass>(new StyleClass(name, std::shared_ptr<const StyleClass>()));
-		spStyleClass->fill(type);
+		spStyleClass->fill(StyleClass::ConstructionType::BASE_CLASS); // otherwise, class would have no content in maps
+		return spStyleClass;
+	}
+
+	std::shared_ptr<StyleClass> StyleClassBuilder::constructElementClass(std::weak_ptr<const StyleClass> mwpParent) const
+	{
+		auto spStyleClass = std::shared_ptr<StyleClass>(new StyleClass("", mwpParent));
+		spStyleClass->fill(StyleClass::ConstructionType::ELEMENT_CLASS); // otherwise, class would have no content in maps
 		return spStyleClass;
 	}
 }

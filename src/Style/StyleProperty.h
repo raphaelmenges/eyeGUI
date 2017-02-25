@@ -39,7 +39,7 @@ namespace eyegui
 		std::weak_ptr<const StyleClass> getStyleClass() const {	return mwpStyleClass; };
 
 		// Set value while applying the constraint
-		virtual void set(T value) { this->mValue = this->mConstraint(value); }
+		virtual void set(T value) { this->mValue = this->mConstraint(value); this->mIsSet = true; }
 
 		// Get value
 		T get() const { return this->mValue; }
@@ -49,6 +49,9 @@ namespace eyegui
 
 		// Is marked as property in base class?
 		bool isBase() const { return mIsBase; }
+
+		// Is actively set?
+		bool isSet() const { return mIsSet; }
 
 	protected:
 
@@ -69,6 +72,9 @@ namespace eyegui
 
 		// Marker for being property in base class
 		bool mIsBase = false;
+
+		// Marker for being actively set value
+		bool mIsSet = false;
 	};
 }
 

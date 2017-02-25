@@ -189,6 +189,7 @@ namespace eyegui
             // Create grid
 			ElementFactory fac;
 			auto upGrid = fac.build<Grid>(
+				parser_helpers::parseStringAttribute("props", xmlGrid),
 				id,
 				styles,
 				pParent,
@@ -295,6 +296,7 @@ namespace eyegui
             // Create blank
 			ElementFactory fac;
 			auto upBlank = fac.build<Blank>(
+				parser_helpers::parseStringAttribute("props", xmlBlank),
 				id,
 				styles,
 				pParent,
@@ -323,6 +325,7 @@ namespace eyegui
             // Create block
 			ElementFactory fac;
 			auto upBlock = fac.build<Block>(
+						parser_helpers::parseStringAttribute("props", xmlBlock),
                         id,
                         styles,
                         pParent,
@@ -370,6 +373,7 @@ namespace eyegui
             // Create picture
 			ElementFactory fac;
 			auto upPicture = fac.build<Picture>(
+				parser_helpers::parseStringAttribute("props", xmlPicture),
 				id,
 				styles,
 				pParent,
@@ -477,6 +481,7 @@ namespace eyegui
             // Create stack
 			ElementFactory fac;
 			auto upStack = fac.build<Stack>(
+					parser_helpers::parseStringAttribute("props", xmlStack),
                     id,
                     styles,
                     pParent,
@@ -582,6 +587,7 @@ namespace eyegui
             // Create text block
 			ElementFactory fac;
 			auto upTextBlock = fac.build<TextBlock>(
+				parser_helpers::parseStringAttribute("props", xmlTextBlock),
 				id,
 				styles,
 				pParent,
@@ -624,6 +630,7 @@ namespace eyegui
             // Create circle button
 			ElementFactory fac;
 			auto upCircleButton = fac.build<CircleButton>(
+				parser_helpers::parseStringAttribute("props", xmlCircleButton),
 				id,
 				styles,
 				pParent,
@@ -660,6 +667,7 @@ namespace eyegui
             // Create box button
 			ElementFactory fac;
 			auto upBoxButton = fac.build<BoxButton>(
+				parser_helpers::parseStringAttribute("props", xmlBoxButton),
 				id,
 				styles,
 				pParent,
@@ -693,6 +701,7 @@ namespace eyegui
             // Create sensor
 			ElementFactory fac;
 			auto upSensor = fac.build<Sensor>(
+				parser_helpers::parseStringAttribute("props", xmlSensor),
 				id,
 				styles,
 				pParent,
@@ -732,6 +741,7 @@ namespace eyegui
             // Create drop button
 			ElementFactory fac;
 			auto upDropButton = fac.build<DropButton>(
+				parser_helpers::parseStringAttribute("props", xmlDropButton),
 				id,
 				styles,
 				pParent,
@@ -780,6 +790,7 @@ namespace eyegui
             // Create keyboard
 			ElementFactory fac;
 			auto upKeyboard = fac.build<Keyboard>(
+				parser_helpers::parseStringAttribute("props", xmlKeyboard),
 				id,
 				styles,
 				pParent,
@@ -806,6 +817,7 @@ namespace eyegui
             // Create word suggest
 			ElementFactory fac;
 			auto upWordSuggest = fac.build<WordSuggest>(
+				parser_helpers::parseStringAttribute("props", xmlWordSuggest),
 				id,
 				styles,
 				pParent,
@@ -857,6 +869,7 @@ namespace eyegui
             // Create flow
 			ElementFactory fac;
 			auto upFlow = fac.build<Flow>(
+				parser_helpers::parseStringAttribute("props", xmlFlow),
 				id,
 				styles,
 				pParent,
@@ -930,6 +943,7 @@ namespace eyegui
             // Create progress bar
 			ElementFactory fac;
 			auto upProgressBar = fac.build<ProgressBar>(
+				parser_helpers::parseStringAttribute("props", xmlProgressBar),
 				id,
 				styles,
 				pParent,
@@ -960,6 +974,7 @@ namespace eyegui
 			// Create text edit
 			ElementFactory fac;
 			auto upTextEdit = fac.build<TextEdit>(
+				parser_helpers::parseStringAttribute("props", xmlTextEdit),
 				id,
 				styles,
 				pParent,
@@ -1002,6 +1017,7 @@ namespace eyegui
 			// Create future keyboard
 			ElementFactory fac;
 			auto upFutureKeyboard = fac.build<FutureKeyboard>(
+				parser_helpers::parseStringAttribute("props", xmlFutureKeyboard),
 				id,
 				styles,
 				pParent,

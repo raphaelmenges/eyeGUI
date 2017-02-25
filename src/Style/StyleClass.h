@@ -21,13 +21,6 @@
 
 namespace eyegui
 {
-	// Enumeration to decide type of construction via builder
-	enum class StyleClassConstructionType
-	{
-		BASE_CLASS, // used as root of style tree
-		ELEMENT_CLASS // used as class within element
-	};
-
 	// Style class, must be built by builder
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
@@ -64,6 +57,13 @@ namespace eyegui
 
 	private:
 
+		// Enumeration to decide type of construction via builder
+		enum class ConstructionType
+		{
+			BASE_CLASS, // used as root of style tree
+			ELEMENT_CLASS // used as class within element
+		};
+
 		// Builder is friend class
 		friend class StyleClassBuilder;
 
@@ -77,7 +77,7 @@ namespace eyegui
 		StyleClass& operator = (StyleClass const&) { return *this; }
 
 		// Called only by builder
-		void fill(StyleClassConstructionType constructionType);
+		void fill(ConstructionType constructionType);
 
 		// #################################
 		// ### MAPS HELPER FOR TEMPLATES ###
@@ -185,7 +185,8 @@ namespace eyegui
 	public:
 
 		// Construct a style class
-		std::shared_ptr<StyleClass> construct(std::string name, StyleClassConstructionType type) const;
+		std::shared_ptr<StyleClass> constructBaseClass(std::string name) const; // used for root node of tree
+		std::shared_ptr<StyleClass> constructElementClass(std::weak_ptr<const StyleClass> mwpParent) const; // used for class of element
 	};
 }
 

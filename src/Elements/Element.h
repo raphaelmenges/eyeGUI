@@ -256,6 +256,9 @@ namespace eyegui
 		virtual float getStyleValue(StylePropertyFloat type) const;
 		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
 
+		// Getter of individual style class
+		std::shared_ptr<const StyleClass> fetchStyleClass() const;
+
         // Notify about interaction with element
         void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;
 
@@ -279,7 +282,7 @@ namespace eyegui
 
         // Members
         std::string mId;
-        Element* mpParent;
+        Element* mpParent; // NULL for root
         float mBorder; // [0..1]
         Orientation mOrientation;
         std::unique_ptr<Element> mupReplacedElement;
@@ -302,6 +305,8 @@ namespace eyegui
 
         bool mMarking;
         LerpValue mMark; // [0..1]
+
+		std::shared_ptr<StyleClass> mspStyleClass; // individual style class
 
     };
 }
