@@ -18,7 +18,7 @@
 namespace eyegui
 {
     Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::vector<std::string> styles) : 
-		Styleable(styles, [this](std::string styleName) { return this->fetchStyleTreeClass(styleName); }) // Styleable constructor
+		Styleable(styles, [pGUI](std::string styleName) { return pGUI->fetchStyleTree()->fetchStyleClass(styleName); }) // Styleable constructor. Do not delegate member method here, since members not yet initialized
     {
         // Initialize members
         mName = name;

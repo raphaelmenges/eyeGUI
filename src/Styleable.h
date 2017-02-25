@@ -18,28 +18,15 @@ namespace eyegui
 	public:
 
 		// Constructor
-		Styleable(std::vector<std::string> styles, std::function<std::shared_ptr<const StyleClass>(std::string styleName)> styleFetcher)
-		{
-			for (const auto& rStyle : styles)
-			{
-				mStyleTreeClasses.push_back(styleFetcher(rStyle));
-			}
-		}
+		Styleable(
+			std::vector<std::string> styles,
+			std::function<std::shared_ptr<const StyleClass>(std::string styleName)> styleFetcher);
 
 		// Destructor
 		virtual ~Styleable() = 0;
 
 		// Get names of styles
-		std::vector<std::string> getStyleTreeClassesNames() const
-		{
-			// Collect names
-			std::vector<std::string> names;
-			for (const auto& rspStyleClass : mStyleTreeClasses)
-			{
-				names.push_back(rspStyleClass->getName());
-			}
-			return names;
-		}
+		std::vector<std::string> getStyleTreeClassesNames() const;
 
 	protected:
 
