@@ -18,6 +18,7 @@
 #include "src/Parser/BrickParser.h"
 #include "src/NotificationQueue.h"
 #include "src/Utilities/LerpValue.h"
+#include "src/Utilities/OperationNotifier.h"
 
 #include <memory>
 #include <map>
@@ -333,10 +334,32 @@ namespace eyegui
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
 
-        // Experimental
+		// Fetch style class from style tree
+		std::shared_ptr<const StyleClass> fetchStyleTreeClass(std::string name) const;
 
-        // Register future keyboard listener
-        void registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener);
+		// Get values from styling
+		virtual float getStyleValue(StylePropertyFloat type) const;
+		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+
+		// Set value of style owned by element
+		template<typename Type>
+		void setStylePropertyValue(std::string id, Type stylePropertyType, std::string value)
+		{
+			Element* pElement = fetchElement(id);
+			if (pElement != NULL)
+			{
+				pElement->setStylePropertyValue(stylePropertyType, value);
+			}
+			else
+			{
+				throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+			}
+		}
+
+		// Experimental
+
+		// Register future keyboard listener
+		void registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener);
 
 		// Set suggestions of line
 		void setFutureKeyboardLineSuggestions(
@@ -345,11 +368,11 @@ namespace eyegui
 			std::u16string suggestionB,
 			std::u16string suggestionC);
 
-        // Set suggestion in future key
-        void setFutureKeySuggestion(
-            std::string id,
-            std::string keyId,
-            std::u16string suggestion);
+		// Set suggestion in future key
+		void setFutureKeySuggestion(
+			std::string id,
+			std::string keyId,
+			std::u16string suggestion);
 
 		// Get content of future keyboard
 		std::u16string getFutureKeyboardContent(std::string id) const;
@@ -361,13 +384,6 @@ namespace eyegui
 
 		// Clear predisplay of future keyboard
 		void clearFutureKeyboardPredisplay(std::string id);
-
-		// Fetch style class from style tree
-		std::shared_ptr<const StyleClass> fetchStyleTreeClass(std::string name) const;
-
-		// Get values from styling
-		virtual float getStyleValue(StylePropertyFloat type) const;
-		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
 
     private:
 

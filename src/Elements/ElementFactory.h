@@ -64,9 +64,9 @@ namespace eyegui
 
 						// Fill it into style property of elements class
 						auto floatIterator = StylePropertyNameMapper::FLOAT_TYPE_MAP.find(left);
-						if (floatIterator != StylePropertyNameMapper::FLOAT_TYPE_MAP.end()) { upElement->setStyleValue(floatIterator->second, right); }
+						if (floatIterator != StylePropertyNameMapper::FLOAT_TYPE_MAP.end()) { upElement->setStylePropertyValue(floatIterator->second, right); }
 						auto vec4Iterator = StylePropertyNameMapper::VEC4_TYPE_MAP.find(left);
-						if (vec4Iterator != StylePropertyNameMapper::VEC4_TYPE_MAP.end()) { upElement->setStyleValue(vec4Iterator->second, right); }
+						if (vec4Iterator != StylePropertyNameMapper::VEC4_TYPE_MAP.end()) { upElement->setStylePropertyValue(vec4Iterator->second, right); }
 					}
 				}
 			}

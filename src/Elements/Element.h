@@ -207,6 +207,13 @@ namespace eyegui
         // Check for any parent with certain type
         bool checkForParentType(Element::Type type) const;
 
+		// Set value of style property owned by element
+		template<typename Type>
+		void setStylePropertyValue(Type styleType, std::string value)
+		{
+			mspStyleClass->setValue(styleType, value);
+		}
+
     protected:
 
 		// Factory is friend
@@ -258,13 +265,6 @@ namespace eyegui
 
 		// Getter of individual style class
 		std::shared_ptr<const StyleClass> fetchStyleClass() const;
-
-		// Set value by name of individual style class
-		template<typename Type>
-		void setStyleValue(Type styleType, std::string value)
-		{
-			mspStyleClass->setValue(styleType, value);
-		}
 
         // Notify about interaction with element
         void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;

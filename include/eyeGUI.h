@@ -347,7 +347,7 @@ namespace eyegui
 	*/
 	void loadStyleSheet(GUI* pGUI, std::string filepath);
 
-	//! Set value of style property in style class.
+	//! Set value of style property in style tree class.
 	/*!
 	\param pGUI pointer to GUI.
 	\param styleClass is name of style class where property exists.
@@ -453,6 +453,16 @@ namespace eyegui
 	AbsolutePositionAndSize getAbsolutePositionAndSizeOfElement(
 		Layout* pLayout,
 		std::string id);
+
+	//! Set value of style property in of individual class in element.
+	/*!
+	\param pGUI pointer to GUI.
+	\param id is the unique id of an element.
+	\param styleProperty is property which value is set.
+	\param value is encoded value.
+	*/
+	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value);
+	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value);
 
 	//! Activity of element.
 	/*!
