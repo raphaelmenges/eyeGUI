@@ -343,7 +343,7 @@ namespace eyegui
 
 		// Set value of style owned by element
 		template<typename Type>
-		void setStylePropertyValue(std::string id, Type stylePropertyType, std::string value)
+		void setElementStylePropertyValue(std::string id, Type stylePropertyType, std::string value)
 		{
 			Element* pElement = fetchElement(id);
 			if (pElement != NULL)
