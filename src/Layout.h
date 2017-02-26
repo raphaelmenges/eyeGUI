@@ -348,7 +348,7 @@ namespace eyegui
 			Element* pElement = fetchElement(id);
 			if (pElement != NULL)
 			{
-				pElement->setStylePropertyValue(stylePropertyType, value);
+				pElement->setElementStylePropertyValue(stylePropertyType, value);
 			}
 			else
 			{

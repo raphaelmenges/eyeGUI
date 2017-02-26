@@ -17,7 +17,7 @@ namespace eyegui
 		mwpParent = wpParent;
 
 		// Fill all pointers in map initially with the ones from parent class
-		if (auto spParent = mwpParent.lock()) // does not work for base class
+		if (auto spParent = mwpParent.lock()) // does not work for root class
 		{
 			// Copy maps with pointers, not values itself
 			mFloatMap = spParent->mFloatMap;
