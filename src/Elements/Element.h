@@ -264,7 +264,7 @@ namespace eyegui
 		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
 
 		// Getter of individual style class owned by element
-		std::shared_ptr<const StyleClass> fetchElementStyleClass() const;
+		std::shared_ptr<StyleClass> fetchElementStyleClass() const;
 
         // Notify about interaction with element
         void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;

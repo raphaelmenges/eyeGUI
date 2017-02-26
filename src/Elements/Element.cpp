@@ -67,12 +67,15 @@ namespace eyegui
 		mpFlashItem = mpAssetManager->fetchRenderItem(shaders::Type::FLASH, meshes::Type::QUAD);
         mpMarkItem = mpAssetManager->fetchRenderItem(shaders::Type::MARK, meshes::Type::QUAD);
 
-		// Create own style class. Use empty weak pointer for root element
-		mspStyleClass = StyleClassBuilder().construct(
-			"",
-			mpParent != NULL ? // is this root?
-			mpParent->fetchElementStyleClass() : // no! use parents style class
-			std::weak_ptr<const StyleClass>()); // yes! no parent so no parent's style class
+		// Create own style class by adding child to parent's or construct new if root element
+		if (mpParent == NULL)
+		{
+			mspStyleClass = StyleClassBuilder().construct();
+		}
+		else
+		{
+			mspStyleClass = mpParent->fetchElementStyleClass()->addChild();
+		}
     }
 
     Element::~Element()
@@ -790,7 +793,7 @@ namespace eyegui
 		return spStyleProperty->get();
 	}
 
-	std::shared_ptr<const StyleClass> Element::fetchElementStyleClass() const
+	std::shared_ptr<StyleClass> Element::fetchElementStyleClass() const
 	{
 		return mspStyleClass;
 	}

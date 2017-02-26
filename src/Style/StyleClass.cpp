@@ -38,9 +38,7 @@ namespace eyegui
 		// Just push back to vector. It must be checked by tree if name is globally unique!
 		bool pleaseFill = false;
 		auto spChild = std::shared_ptr<StyleClass>(new StyleClass(name, shared_from_this(), pleaseFill));
-
-		// Please fill is ignored since calling with parent as this and please fill must be false. must.
-
+		if (pleaseFill) { spChild->fill(); } // must be always false
 		mChildren.push_back(spChild);
 		return spChild;
 	}
@@ -179,14 +177,11 @@ namespace eyegui
 		mVec4Map[sVec4::ThresholdColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
 	}
 
-	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, std::weak_ptr<const StyleClass> mwpParent) const
+	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name) const
 	{
 		bool pleaseFill = false;
-		auto spStyleClass = std::shared_ptr<StyleClass>(new StyleClass(name, mwpParent, pleaseFill));
-		if (pleaseFill)
-		{
-			spStyleClass->fill();
-		}
+		auto spStyleClass = std::shared_ptr<StyleClass>(new StyleClass(name, std::weak_ptr<StyleClass>(), pleaseFill));
+		if (pleaseFill)	{ spStyleClass->fill();	}
 		return spStyleClass;
 	}
 }

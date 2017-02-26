@@ -26,9 +26,8 @@ namespace eyegui
 	{
 	public:
 
-		// Add child. Caller must check whether name is globally unique. Only called by tree, so better structure
-		// would be to have separate Style node doing this child / parent thing for the tree.
-		std::shared_ptr<StyleClass> addChild(std::string name);
+		// Add child
+		std::shared_ptr<StyleClass> addChild(std::string name = "");
 
 		// Fetch float property
 		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
@@ -167,7 +166,7 @@ namespace eyegui
 		std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
 
 		// Parent
-		std::weak_ptr<const StyleClass> mwpParent;
+		std::weak_ptr<const StyleClass> mwpParent; // empty for root
 
 		// Children
 		std::vector<std::shared_ptr<StyleClass> > mChildren;
@@ -178,8 +177,8 @@ namespace eyegui
 	{
 	public:
 
-		// Construct a style class (necessary because shared from this is used for StyleClass, but this may not be done in its constructor)
-		std::shared_ptr<StyleClass> construct(std::string name = "", std::weak_ptr<const StyleClass> mwpParent = std::weak_ptr<const StyleClass>()) const;
+		// Construct a style class (necessary because "shared from" this is used for StyleClass, but this may not be done in its constructor)
+		std::shared_ptr<StyleClass> construct(std::string name = "") const;
 	};
 }
 
