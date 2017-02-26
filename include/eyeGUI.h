@@ -354,8 +354,8 @@ namespace eyegui
 	\param styleProperty is property which value is set.
 	\param value is encoded value.
 	*/
-	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value);
-	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value);
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value);
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value);
 
 	//! Set gaze visualization drawing.
 	/*!
@@ -461,8 +461,8 @@ namespace eyegui
 	\param styleProperty is property which value is set.
 	\param value is encoded value.
 	*/
-	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value);
-	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value);
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value);
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value);
 
 	//! Activity of element.
 	/*!

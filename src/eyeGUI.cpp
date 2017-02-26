@@ -88,14 +88,14 @@ namespace eyegui
 		pGUI->loadStyleSheet(filepath);
     }
 
-	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value)
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value)
 	{
-		pGUI->setStylePropertyValue(styleClass, stylePropertyType, value);
+		pGUI->setStyleTreePropertyValue(styleClass, stylePropertyType, value);
 	}
 
-	void setStylePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value)
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value)
 	{
-		pGUI->setStylePropertyValue(styleClass, stylePropertyType, value);
+		pGUI->setStyleTreePropertyValue(styleClass, stylePropertyType, value);
 	}
 
     void setGazeVisualizationDrawing(GUI* pGUI, bool draw)
@@ -167,12 +167,12 @@ namespace eyegui
         return pLayout->getAbsolutePositionAndSizeOfElement(id);
     }
 
-	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value)
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value)
 	{
 		pLayout->setElementStylePropertyValue(id, stylePropertyType, value);
 	}
 
-	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value)
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value)
 	{
 		pLayout->setElementStylePropertyValue(id, stylePropertyType, value);
 	}
