@@ -52,7 +52,7 @@ namespace eyegui
 			stylesString += delimiter; // Add final space for simpler loop
 			size_t pos = 0;
 			std::vector<std::string> styles;
-			std::set<std::string> uniquesChecker;
+			std::set<std::string> uniqueChecker;
 			while ((pos = stylesString.find(delimiter)) != std::string::npos)
 			{
 				// Read name of class and erase it from content
@@ -60,10 +60,10 @@ namespace eyegui
 				stylesString.erase(0, pos + delimiter.length());
 
 				// Add name to set to check uniques
-				//uniquesChecker.insert()
+				bool unique = uniqueChecker.insert(style).second;
 
-				// Add style if not empty
-				if (!style.empty())
+				// Add style if not empty and unique
+				if (unique && !style.empty())
 				{
 					styles.push_back(style);
 				}

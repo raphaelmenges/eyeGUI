@@ -3,7 +3,7 @@
 ## New features
 - Ring Container (optional)
 - Style Tree
- - unintended behavior: check for duplicate class names for both layout and element stlyes
+ - Refactor and Test!
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
