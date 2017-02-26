@@ -179,7 +179,7 @@ namespace eyegui
 		mVec4Map[sVec4::ThresholdColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
 	}
 
-	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, std::weak_ptr<const StyleClass> mwpParent ) const
+	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name, std::weak_ptr<const StyleClass> mwpParent) const
 	{
 		bool pleaseFill = false;
 		auto spStyleClass = std::shared_ptr<StyleClass>(new StyleClass(name, mwpParent, pleaseFill));

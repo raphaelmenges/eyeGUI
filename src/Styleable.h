@@ -17,7 +17,7 @@ namespace eyegui
 	{
 	public:
 
-		// Constructor
+		// Constructor (can be used both for from laout and element)
 		Styleable(
 			std::vector<std::string> styles,
 			std::function<std::shared_ptr<const StyleClass>(std::string styleClass)> styleFetcher);
@@ -30,11 +30,11 @@ namespace eyegui
 
 	protected:
 
-		// Getter and setter for style value
+		// Getter and setter for computed style value
 		virtual float getStyleValue(StylePropertyFloat type) const = 0;
 		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const = 0;
 
-		// StyleClasses from GUI style tree
+		// Style classes assigned from style tree
 		std::vector<std::shared_ptr<const StyleClass> > mStyleTreeClasses; // Parser must guarantee for at least one element
 
 	};

@@ -5,7 +5,8 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Single style property. Applies given constraint on itself when value is set.
-// Has pointer to style class who owns this property.
+// Has pointer to style class who owns this property. Used both in style tree
+// and element style.
 
 #ifndef STYLE_PROPERTY_H_
 #define STYLE_PROPERTY_H_

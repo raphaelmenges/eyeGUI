@@ -209,7 +209,7 @@ namespace eyegui
 
 		// Set value of style property owned by element
 		template<typename Type>
-		void setStylePropertyValue(Type styleType, std::string value)
+		void setElementStylePropertyValue(Type styleType, std::string value)
 		{
 			mspStyleClass->setValue(styleType, value);
 		}
@@ -313,7 +313,7 @@ namespace eyegui
         bool mMarking;
         LerpValue mMark; // [0..1]
 
-		std::shared_ptr<StyleClass> mspStyleClass; // individual style class
+		std::shared_ptr<StyleClass> mspStyleClass; // individual style class owned by element
 
     };
 }

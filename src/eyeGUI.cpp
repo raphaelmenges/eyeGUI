@@ -169,12 +169,12 @@ namespace eyegui
 
 	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value)
 	{
-		pLayout->setStylePropertyValue(id, stylePropertyType, value);
+		pLayout->setElementStylePropertyValue(id, stylePropertyType, value);
 	}
 
 	void setStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value)
 	{
-		pLayout->setStylePropertyValue(id, stylePropertyType, value);
+		pLayout->setElementStylePropertyValue(id, stylePropertyType, value);
 	}
 
     void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade)

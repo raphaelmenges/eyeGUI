@@ -36,10 +36,10 @@ namespace eyegui
 
         std::unique_ptr<Element> parseElement(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
-            // Names of style classes of element, including inherited from parent
+            // Names of style classes of element from tree, including inherited from parent
             std::vector<std::string> styles = parseStyleClassesNames(xmlElement, pLayout, pParent, filepath);
 
-			// Check outcome of style sparsing
+			// Check outcome of style parsing
 			if (styles.empty()) { throwError(OperationNotifier::Operation::BUG, "Extracted no style class", filepath); }
 
             if (xmlElement == NULL)

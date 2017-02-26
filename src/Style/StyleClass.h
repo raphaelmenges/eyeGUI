@@ -5,7 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Style class has maps of style property pointers. Some of those properties
-// are just references to properties from other classes and some are owned
+// are just references to properties from parent classes and other are owned
 // by this. If a property is owned, propagation of values of its type
 // from parent class is stopped.
 
@@ -26,19 +26,20 @@ namespace eyegui
 	{
 	public:
 
-		// Add child. Caller must check whether name is globally unique
+		// Add child. Caller must check whether name is globally unique. Only called by tree, so better structure
+		// would be to have separate Style node doing this child / parent thing for the tree.
 		std::shared_ptr<StyleClass> addChild(std::string name);
 
 		// Fetch float property
 		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
 
-		// Get float value from property (TODO: const reference?)
+		// Get float value from property
 		float getValue(StylePropertyFloat type) const;
 
 		// Fetch vec4 property
 		std::shared_ptr<const StyleProperty<glm::vec4> > fetchProperty(StylePropertyVec4 type) const;
 
-		// Get vec4 value from property (TODO: const reference?)
+		// Get vec4 value from property
 		glm::vec4 getValue(StylePropertyVec4 type) const;
 
 		// Set value of float porperty and propagate to children (TODO: maybe do not set it at value parsing failure)
@@ -172,7 +173,7 @@ namespace eyegui
 		std::vector<std::shared_ptr<StyleClass> > mChildren;
 	};
 
-	// Builder for style class. Takes care of some prerequisites
+	// Builder for style class. Takes care of some prerequisites, as style class is always used in shared pointer which produces problems in constructor
 	class StyleClassBuilder
 	{
 	public:

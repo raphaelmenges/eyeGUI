@@ -71,7 +71,7 @@ namespace eyegui
 		mspStyleClass = StyleClassBuilder().construct(
 			"",
 			mpParent != NULL ? // is this root?
-			mpParent->fetchStyleClass() : // no! use parents style class
+			mpParent->fetchElementStyleClass() : // no! use parents style class
 			std::weak_ptr<const StyleClass>()); // yes! no parent so no parent's style class
     }
 
@@ -790,7 +790,7 @@ namespace eyegui
 		return spStyleProperty->get();
 	}
 
-	std::shared_ptr<const StyleClass> Element::fetchStyleClass() const
+	std::shared_ptr<const StyleClass> Element::fetchElementStyleClass() const
 	{
 		return mspStyleClass;
 	}
