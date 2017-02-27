@@ -74,7 +74,7 @@ namespace eyegui
 		}
 		else
 		{
-			mspStyleClass = mpParent->fetchElementStyleClass()->addChild();
+			mspStyleClass = mpParent->fetchElementStyleClass()->addChild(false); // this hold shared pointer, no need to store a second as child in parent's style class
 		}
     }
 

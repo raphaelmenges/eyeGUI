@@ -6,8 +6,11 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Style class has maps of style property pointers. Some of those properties
 // are just references to properties from parent classes and other are owned
-// by this. If a property is owned, propagation of values of its type
-// from parent class is stopped.
+// by this. If a property is owned, propagation of values of its type from
+// parent class is stopped. Children are optionally stored as shared pointer,
+// because this is desired for the style tree but not for element style
+// classes. Those are already shared pointer in the corresponding element
+// and would survive the deletion of the element if stored as shared here.
 
 #ifndef STYLE_CLASS_H_
 #define STYLE_CLASS_H_
@@ -27,7 +30,7 @@ namespace eyegui
 	public:
 
 		// Add child
-		std::shared_ptr<StyleClass> addChild(std::string name = "");
+		std::shared_ptr<StyleClass> addChild(bool storeShared, std::string name = "");
 
 		// Fetch float property
 		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
@@ -115,9 +118,12 @@ namespace eyegui
 				this->setMapValue(type, spStoredProperty);
 
 				// Propagate it to children
-				for (auto& rspChild : this->mChildren)
+				for (auto& rwpChild : this->mWeakChildren)
 				{
-					rspChild->genericPropagateProperty(type, spStoredProperty);
+					if (auto rspChild = rwpChild.lock())
+					{
+						rspChild->genericPropagateProperty(type, spStoredProperty);
+					}
 				}
 			}
 		}
@@ -147,9 +153,12 @@ namespace eyegui
 				this->setMapValue(type, spProperty);
 
 				// Propagate it to children
-				for (auto& rspChild : this->mChildren)
+				for (auto& rwpChild : this->mWeakChildren)
 				{
-					rspChild->genericPropagateProperty(type, spProperty);
+					if(auto rspChild = rwpChild.lock())
+					{
+						rspChild->genericPropagateProperty(type, spProperty);
+					}
 				}
 			} // else: stop propagation here
 		}
@@ -169,7 +178,8 @@ namespace eyegui
 		std::weak_ptr<const StyleClass> mwpParent; // empty for root
 
 		// Children
-		std::vector<std::shared_ptr<StyleClass> > mChildren;
+		std::vector<std::shared_ptr<StyleClass> > mChildren; // empty for classes belonging to element, only used classes of style tree for storing them
+		std::vector<std::weak_ptr<StyleClass> > mWeakChildren; // this is used for all calculations, as it is always contains the children
 	};
 
 	// Builder for style class. Takes care of some prerequisites, as style class is always used in shared pointer which produces problems in constructor

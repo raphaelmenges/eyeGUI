@@ -33,13 +33,20 @@ namespace eyegui
 		}
 	}
 
-	std::shared_ptr<StyleClass> StyleClass::addChild(std::string name)
+	std::shared_ptr<StyleClass> StyleClass::addChild(bool storeShared, std::string name)
 	{
-		// Just push back to vector. It must be checked by tree if name is globally unique!
+		// Create child
 		bool pleaseFill = false;
 		auto spChild = std::shared_ptr<StyleClass>(new StyleClass(name, shared_from_this(), pleaseFill));
 		if (pleaseFill) { spChild->fill(); } // must be always false
-		mChildren.push_back(spChild);
+
+		// Store it optionally as shared pointer so memory is kept. Used by tree
+		if (storeShared) { mChildren.push_back(spChild); }
+
+		// Store always weak pointer, used for both element and tree based classes
+		mWeakChildren.push_back(spChild);
+
+		// Return shared pointer to child
 		return spChild;
 	}
 
@@ -85,13 +92,16 @@ namespace eyegui
 		else
 		{
 			// Go over children
-			for (auto& rspChild : mChildren)
+			for (auto& rwpChild : mWeakChildren)
 			{
 				// Return result if it is something found
-				auto result = rspChild->fetchThisOrChild(name);
-				if (result)
+				if (auto rspChild = rwpChild.lock())
 				{
-					return result;
+					auto result = rspChild->fetchThisOrChild(name);
+					if (result)
+					{
+						return result;
+					}
 				}
 			}
 		}

@@ -35,7 +35,7 @@ namespace eyegui
 			throwWarning(OperationNotifier::Operation::PARSING, "Suggested parent of style class not found: " + name + ". Using " + STYLE_BASE_CLASS_NAME + " instead");
 			spParent = mspRoot;
 		}
-		return spParent->addChild(name);
+		return spParent->addChild(true, name);
 	}
 	
 	std::shared_ptr<const StyleClass> StyleTree::fetchStyleClass(std::string name) const

@@ -4,7 +4,6 @@
 - Ring Container (optional)
 - Style Tree
  - Refactor and Test!
- - "Memory Leak": StyleClass gets added as shared pointer to children of parent StyleClass. When Element is removed, StyleClass of elements survives on that way. They live in both worlds :/
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
