@@ -18,7 +18,7 @@ namespace eyegui
         GUI const * pGUI,
         std::string filepath,
         std::unique_ptr<FT_Face> upFace,
-        std::set<char16_t> characterSet) : Font()
+        std::set<Character> characterSet) : Font()
     {
         // Fill members
         mpGUI = pGUI;
@@ -275,8 +275,11 @@ namespace eyegui
         rLineHeight = (float)(rFace->height) / 64; // Given in 1/64 pixel
 
         // Go over character set and collect glyphs and bitmaps
-        for (char16_t c : mCharacterSet)
+        for (const auto& rCharacter : mCharacterSet)
         {
+			// Store in local character variable
+			char16_t c = rCharacter.character;
+
             // Load current glyph in face
             if (FT_Load_Char(rFace, c, FT_LOAD_RENDER))
             {

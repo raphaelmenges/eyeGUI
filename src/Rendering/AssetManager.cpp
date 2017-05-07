@@ -323,7 +323,7 @@ namespace eyegui
                 else
                 {
                     // Decide character set
-                    std::set<char16_t> characters = charsets::BASIC;
+                    std::set<Character> characters = charsets::BASIC;
                     switch (mpGUI->getCharacterSet())
                     {
                     case CharacterSet::GERMANY_GERMAN:

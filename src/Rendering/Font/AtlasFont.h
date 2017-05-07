@@ -11,6 +11,7 @@
 #define ATLAS_FONT_H_
 
 #include "Font.h"
+#include "CharacterSets.h"
 
 #include "externals/FreeType2/include/ft2build.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"
@@ -33,7 +34,7 @@ namespace eyegui
             GUI const * pGUI,
             std::string filepath,
             std::unique_ptr<FT_Face> upFace,
-            std::set<char16_t> characterSet);
+            std::set<Character> characterSet);
 
         // Destructor
         virtual ~AtlasFont();
@@ -78,7 +79,7 @@ namespace eyegui
         // Members
         GUI const * mpGUI;
         std::unique_ptr<FT_Face> mupFace;
-        std::set<char16_t> mCharacterSet;
+        std::set<Character> mCharacterSet;
 
         std::map<char16_t, Glyph> mTallGlyphs;
         std::map<char16_t, Glyph> mMediumGlyphs;
