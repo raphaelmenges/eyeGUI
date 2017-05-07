@@ -15,6 +15,7 @@ namespace eyegui
 {
     namespace charsets
     {
+		// Basic Latin characters
         static const std::set<char16_t> BASIC
         {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
@@ -35,6 +36,7 @@ namespace eyegui
 			u'\u00B0' // degree symbol
         };
 
+		// Additional German letters
         static const std::set<char16_t> GERMANY_GERMAN
         {
             u'\u00c4', // AE
@@ -46,6 +48,42 @@ namespace eyegui
             u'\u00df', // sz
             u'\u20AC'  // Euro
         };
+
+		// Modern Hebrew
+		static const std::set<char16_t> ISRAEL_HEBREW
+		{
+			u'\u05E9',
+			u'\u05D3',
+			u'\u05D2',
+			u'\u05DB',
+			u'\u05E2',
+			u'\u05D9',
+			u'\u05D7',
+			u'\u05DC',
+			u'\u05DA',
+			u'\u05E3',
+			u'\u05D6',
+			u'\u05E1',
+			u'\u05D1',
+			u'\u05D4',
+			u'\u05E0',
+			u'\u05DE',
+			u'\u05E6',
+			u'\u05EA',
+			u'\u05E5',
+			u'\u20AA',
+			u'\u05F2',
+			u'\u05F1',
+			u'\u05F0',
+			u'\u05E7',
+			u'\u05E8',
+			u'\u05D0',
+			u'\u05D8',
+			u'\u05D5',
+			u'\u05DF',
+			u'\u05DD',
+			u'\u05E4'
+		};
     }
 }
 

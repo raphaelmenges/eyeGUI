@@ -332,6 +332,9 @@ namespace eyegui
                     case CharacterSet::US_ENGLISH:
                         // Are there any special characters in us english?
                         break;
+					case CharacterSet::ALL:
+						characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end()); // German
+						characters.insert(charsets::ISRAEL_HEBREW.begin(), charsets::ISRAEL_HEBREW.end()); // Hebrew
                     }
 
                     // Give face to a font object (it will delete it in the end)

@@ -94,7 +94,7 @@ namespace eyegui
 	};
 
 	//! Enumeration of possible character sets for font rendering.
-	enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH };
+	enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH, ALL }; // TODO: all for testing, maybe remove this complete enum in later releases
 
 	//! Enumeration of possible font sizes. Size of keyboard font cannot be set in GUIBuilder.
 	enum class FontSize { TALL, MEDIUM, SMALL, KEYBOARD };
