@@ -14,7 +14,7 @@ namespace eyegui
 	StyleTree::StyleTree()
 	{
 		// Create root of tree with empty parent pointer and base class
-		mspRoot = StyleClassBuilder().construct(STYLE_BASE_CLASS_NAME, StyleClassConstructionType::BASE_CLASS);
+		mspRoot = StyleClassBuilder().construct(STYLE_BASE_CLASS_NAME);
 	}
 
 	std::shared_ptr<const StyleClass> StyleTree::addStyleClass(std::string name, std::string parentName)
@@ -35,7 +35,7 @@ namespace eyegui
 			throwWarning(OperationNotifier::Operation::PARSING, "Suggested parent of style class not found: " + name + ". Using " + STYLE_BASE_CLASS_NAME + " instead");
 			spParent = mspRoot;
 		}
-		return spParent->addChild(name);
+		return spParent->addChild(true, name);
 	}
 	
 	std::shared_ptr<const StyleClass> StyleTree::fetchStyleClass(std::string name) const

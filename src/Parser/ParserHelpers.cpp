@@ -115,61 +115,89 @@ namespace eyegui
 
 		std::string parseStringAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, std::string fallback)
 		{
-			tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-			if (xmlAttribute != NULL)
+			if (xmlElement == NULL)
 			{
-				return xmlAttribute->Value();
+				return fallback;
 			}
 			else
 			{
-				return fallback;
+				tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
+				if (xmlAttribute != NULL)
+				{
+					return xmlAttribute->Value();
+				}
+				else
+				{
+					return fallback;
+				}
 			}
 		}
 
 		bool parseBoolAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, bool fallback)
 		{
-			tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-			if (xmlAttribute != NULL)
+			if (xmlElement == NULL)
 			{
-				std::string value = xmlAttribute->Value();
-
-				// File format case is not relevant
-				std::transform(value.begin(), value.end(), value.begin(), ::tolower);
-
-				return value == "true";
+				return fallback;
 			}
 			else
 			{
-				return fallback;
+				tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
+				if (xmlAttribute != NULL)
+				{
+					std::string value = xmlAttribute->Value();
+
+					// File format case is not relevant
+					std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+
+					return value == "true";
+				}
+				else
+				{
+					return fallback;
+				}
 			}
 		}
 
 		int parseIntAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, int fallback)
 		{
-			tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-			if (xmlAttribute != NULL)
+			if (xmlElement == NULL)
 			{
-				return xmlAttribute->IntValue();
+				return fallback;
 			}
 			else
 			{
-				return fallback;
+				tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
+				if (xmlAttribute != NULL)
+				{
+					return xmlAttribute->IntValue();
+				}
+				else
+				{
+					return fallback;
+				}
 			}
 		}
 
 		float parsePercentAttribute(std::string attributeName, tinyxml2::XMLElement const * xmlElement, float fallback)
 		{
-			tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
-			if (xmlAttribute != NULL)
+			if (xmlElement == NULL)
 			{
-				std::string value = xmlAttribute->Value();
-				std::string delimiter = "%";
-				std::string token = value.substr(0, value.find(delimiter));
-				return (stringToFloat(token) / 100.0f);
+				return fallback;
 			}
 			else
 			{
-				return fallback;
+				tinyxml2::XMLAttribute const * xmlAttribute = xmlElement->FindAttribute(attributeName.c_str());
+				if (xmlAttribute != NULL)
+				{
+					std::string value = xmlAttribute->Value();
+					std::string delimiter = "%";
+					std::string token = value.substr(0, value.find(delimiter));
+					return (stringToFloat(token) / 100.0f);
+				}
+				else
+				{
+					return fallback;
+				}
 			}
 		}
 	}

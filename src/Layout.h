@@ -13,10 +13,12 @@
 #define LAYOUT_H_
 
 #include "include/eyeGUI.h"
+#include "src/Styleable.h"
 #include "src/Frame.h"
 #include "src/Parser/BrickParser.h"
 #include "src/NotificationQueue.h"
 #include "src/Utilities/LerpValue.h"
+#include "src/Utilities/OperationNotifier.h"
 
 #include <memory>
 #include <map>
@@ -29,7 +31,7 @@ namespace eyegui
     class GUI;
 	class StyleClass;
 
-    class Layout
+    class Layout : public Styleable
     {
     public:
 
@@ -61,9 +63,6 @@ namespace eyegui
 
         // Get notificaton queue
         NotificationQueue* getNotificationQueue() const;
-
-        // Fetch style class from style tree
-        std::shared_ptr<const StyleClass> fetchStyleClass(std::string name) const;
 
         // Get used character set
         CharacterSet getCharacterSet() const;
@@ -335,10 +334,32 @@ namespace eyegui
         // Get font size for descriptions
         FontSize getDescriptionFontSize() const;
 
-        // Experimental
+		// Fetch style class from style tree
+		std::shared_ptr<const StyleClass> fetchStyleTreeClass(std::string name) const;
 
-        // Register future keyboard listener
-        void registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener);
+		// Get values from styling
+		virtual float getStyleValue(StylePropertyFloat type) const;
+		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+
+		// Set value of style owned by element
+		template<typename Type>
+		void setElementStylePropertyValue(std::string id, Type stylePropertyType, std::string value)
+		{
+			Element* pElement = fetchElement(id);
+			if (pElement != NULL)
+			{
+				pElement->setElementStylePropertyValue(stylePropertyType, value);
+			}
+			else
+			{
+				throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find element with id: " + id);
+			}
+		}
+
+		// Experimental
+
+		// Register future keyboard listener
+		void registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener);
 
 		// Set suggestions of line
 		void setFutureKeyboardLineSuggestions(
@@ -347,11 +368,11 @@ namespace eyegui
 			std::u16string suggestionB,
 			std::u16string suggestionC);
 
-        // Set suggestion in future key
-        void setFutureKeySuggestion(
-            std::string id,
-            std::string keyId,
-            std::u16string suggestion);
+		// Set suggestion in future key
+		void setFutureKeySuggestion(
+			std::string id,
+			std::string keyId,
+			std::u16string suggestion);
 
 		// Get content of future keyboard
 		std::u16string getFutureKeyboardContent(std::string id) const;
@@ -363,13 +384,6 @@ namespace eyegui
 
 		// Clear predisplay of future keyboard
 		void clearFutureKeyboardPredisplay(std::string id);
-
-		// Style getter (TODO: copied form element. create common super class for styling..stylable?)
-		std::vector<std::string> getStyleClassesNames() const;
-
-		// Get values from styling (TODO: copied form element. create common super class for styling..stylable?)
-		float getStyleValue(StylePropertyFloat type) const;
-		glm::vec4 getStyleValue(StylePropertyVec4 type) const;
 
     private:
 
@@ -410,7 +424,6 @@ namespace eyegui
         InteractiveElement* mpSelectedInteractiveElement;
         std::unique_ptr<NotificationQueue> mupNotificationQueue;
         bool mForceResize;
-		std::vector<std::shared_ptr<const StyleClass> > mStyleClasses; // Layout parser guarantees for at least one element
     };
 }
 

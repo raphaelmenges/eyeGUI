@@ -49,4 +49,4 @@ namespace eyegui
 	};
 }
 
-#endif
+#endif // OBJECT_H_

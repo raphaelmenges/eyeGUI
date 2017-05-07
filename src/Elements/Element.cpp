@@ -28,7 +28,9 @@ namespace eyegui
         float relativeScale,
         float border,
         bool dimming,
-        bool adaptiveScaling) : Object()
+		bool adaptiveScaling) : 
+			Object(), // Object constructor
+			Styleable(styles, [pLayout](std::string styleClass) { return pLayout->fetchStyleTreeClass(styleClass); }) // Styleable constructor
     {
         // Initialize members
         mX = 0;
@@ -59,17 +61,21 @@ namespace eyegui
         // Decide about dimming
         mDimming = dimming;
 
-		// Fetch style classes
-		for (const auto& rStyle : styles) // parser guarantees at least one element
-		{
-			mStyleClasses.push_back(mpLayout->fetchStyleClass(rStyle));
-		}
-
         // Render items
         mpActivityItem = mpAssetManager->fetchRenderItem(shaders::Type::ACTIVITY, meshes::Type::QUAD);
         mpDimItem = mpAssetManager->fetchRenderItem(shaders::Type::DIM, meshes::Type::QUAD);
 		mpFlashItem = mpAssetManager->fetchRenderItem(shaders::Type::FLASH, meshes::Type::QUAD);
         mpMarkItem = mpAssetManager->fetchRenderItem(shaders::Type::MARK, meshes::Type::QUAD);
+
+		// Create own style class by adding child to parent's or construct new if root element
+		if (mpParent == NULL)
+		{
+			mspStyleClass = StyleClassBuilder().construct();
+		}
+		else
+		{
+			mspStyleClass = mpParent->fetchElementStyleClass()->addChild(false); // this hold shared pointer, no need to store a second as child in parent's style class
+		}
     }
 
     Element::~Element()
@@ -180,17 +186,6 @@ namespace eyegui
     {
         return mId;
     }
-
-	std::vector<std::string> Element::getStyleClassesNames() const
-	{
-		// Collect names
-		std::vector<std::string> names;
-		for (const auto& rspStyleClass : mStyleClasses)
-		{
-			names.push_back(rspStyleClass->getName());
-		}
-		return names;
-	}
 
     Element* Element::getParent() const
     {
@@ -752,14 +747,23 @@ namespace eyegui
 	{
 		// Go over the property in the differenct classes
 		std::shared_ptr<const StyleProperty<float> > spStyleProperty;
-		for (const auto& rspStyleClass : mStyleClasses)
+
+		// Check own class for some set value
+		spStyleProperty = mspStyleClass->fetchProperty(type);
+		if (spStyleProperty->isSet()) // if the value of this property was actively set, use it!
+		{
+			return spStyleProperty->get();
+		}
+
+		// Go over assigned classes of global style tree
+		for (const auto& rspStyleClass : mStyleTreeClasses)
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
-			{ continue; }
-			else // no base, use this property's value
+			if (spStyleProperty->isSet()) // no base, use this property's value
 			{ break; }
+			else // just base, try next class
+			{ continue; }
 		}
 		return spStyleProperty->get();
 	}
@@ -768,20 +772,30 @@ namespace eyegui
 	{
 		// Go over the property in the differenct classes
 		std::shared_ptr<const StyleProperty<glm::vec4> > spStyleProperty;
-		for (const auto& rspStyleClass : mStyleClasses)
+
+		// Check own class for some set value
+		spStyleProperty = mspStyleClass->fetchProperty(type);
+		if (spStyleProperty->isSet()) // if the value of this property was actively set, use it!
+		{
+			return spStyleProperty->get();
+		}
+
+		// Go over assigned classes of global style tree
+		for (const auto& rspStyleClass : mStyleTreeClasses)
 		{
 			// Check whether property is really set or just base
 			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
-			{
-				continue;
-			}
-			else // no base, use this property's value
-			{
-				break;
-			}
+			if (spStyleProperty->isSet()) // no base, use this property's value
+			{ break;	}
+			else // just base, try next class
+			{ continue; }
 		}
 		return spStyleProperty->get();
+	}
+
+	std::shared_ptr<StyleClass> Element::fetchElementStyleClass() const
+	{
+		return mspStyleClass;
 	}
 
     void Element::notifyInteraction(std::string interactionType, std::string interactionInfoA) const

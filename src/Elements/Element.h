@@ -19,6 +19,7 @@
 
 #include "include/eyeGUI.h"
 #include "src/Object.h"
+#include "src/Styleable.h"
 #include "src/Elements/ElementFactory.h"
 #include "src/Rendering/AssetManager.h"
 #include "src/Style/StyleClass.h"
@@ -37,7 +38,7 @@ namespace eyegui
     class Frame;
 	class InteractiveElement;
 
-    class Element : public Object
+    class Element : public Object, public Styleable
     {
     public:
 
@@ -100,9 +101,6 @@ namespace eyegui
 
         // Id getter
         std::string getId() const;
-
-		// Style getter
-		std::vector<std::string> getStyleClassesNames() const;
 
         // Parent
         Element* getParent() const;
@@ -209,6 +207,13 @@ namespace eyegui
         // Check for any parent with certain type
         bool checkForParentType(Element::Type type) const;
 
+		// Set value of style property owned by element
+		template<typename Type>
+		void setElementStylePropertyValue(Type styleType, std::string value)
+		{
+			mspStyleClass->setValue(styleType, value);
+		}
+
     protected:
 
 		// Factory is friend
@@ -255,8 +260,11 @@ namespace eyegui
         float getMultipliedDimmedAlpha() const;
 
 		// Get style property value
-		float getStyleValue(StylePropertyFloat type) const;
-		glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+		virtual float getStyleValue(StylePropertyFloat type) const;
+		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+
+		// Getter of individual style class owned by element
+		std::shared_ptr<StyleClass> fetchElementStyleClass() const;
 
         // Notify about interaction with element
         void notifyInteraction(std::string interactionType, std::string interactionInfoA = "") const;
@@ -281,10 +289,9 @@ namespace eyegui
 
         // Members
         std::string mId;
-        Element* mpParent;
+        Element* mpParent; // NULL for root
         float mBorder; // [0..1]
         Orientation mOrientation;
-		std::vector<std::shared_ptr<const StyleClass> > mStyleClasses; // Element parsers guarantees for at least one element
         std::unique_ptr<Element> mupReplacedElement;
         bool mHidden;
         RenderingMask mRenderingMask;
@@ -305,6 +312,8 @@ namespace eyegui
 
         bool mMarking;
         LerpValue mMark; // [0..1]
+
+		std::shared_ptr<StyleClass> mspStyleClass; // individual style class owned by element
 
     };
 }

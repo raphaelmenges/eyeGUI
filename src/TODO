@@ -2,12 +2,7 @@
 
 ## New features
 - Ring Container (optional)
-- Style Tree
- - element level style tree
-  - every element should have on style class. if property not set, use provided classes
-   - somehow parallel structure to tree since it also propagation -> maybe make tree something you can inherent from and implement it for the layout style tree and for the element style tree -> maybe to not fill in datastructure but give methods that can be used -> in that way, elements can still use their parent / child architecture and layout style tree its own stuff
- - layout and frame get common superclass "styleable" (is it already possible to define classes in xml?)
- - set style of element and update it for children (propagate it to children (push it to front of all styles)
+- Style tree on element side
  
 ## Other
 - think about different keyboard layouts set in xml (web pages do not need umlaute)

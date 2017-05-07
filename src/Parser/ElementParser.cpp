@@ -36,10 +36,10 @@ namespace eyegui
 
         std::unique_ptr<Element> parseElement(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
-            // Names of style classes of element, including inherited from parent
+            // Names of style classes of element from tree, including inherited from parent
             std::vector<std::string> styles = parseStyleClassesNames(xmlElement, pLayout, pParent, filepath);
 
-			// Check outcome of style sparsing
+			// Check outcome of style parsing
 			if (styles.empty()) { throwError(OperationNotifier::Operation::BUG, "Extracted no style class", filepath); }
 
             if (xmlElement == NULL)
@@ -189,6 +189,7 @@ namespace eyegui
             // Create grid
 			ElementFactory fac;
 			auto upGrid = fac.build<Grid>(
+				parser_helpers::parseStringAttribute("props", xmlGrid),
 				id,
 				styles,
 				pParent,
@@ -295,6 +296,7 @@ namespace eyegui
             // Create blank
 			ElementFactory fac;
 			auto upBlank = fac.build<Blank>(
+				parser_helpers::parseStringAttribute("props", xmlBlank),
 				id,
 				styles,
 				pParent,
@@ -323,6 +325,7 @@ namespace eyegui
             // Create block
 			ElementFactory fac;
 			auto upBlock = fac.build<Block>(
+						parser_helpers::parseStringAttribute("props", xmlBlock),
                         id,
                         styles,
                         pParent,
@@ -370,6 +373,7 @@ namespace eyegui
             // Create picture
 			ElementFactory fac;
 			auto upPicture = fac.build<Picture>(
+				parser_helpers::parseStringAttribute("props", xmlPicture),
 				id,
 				styles,
 				pParent,
@@ -477,6 +481,7 @@ namespace eyegui
             // Create stack
 			ElementFactory fac;
 			auto upStack = fac.build<Stack>(
+					parser_helpers::parseStringAttribute("props", xmlStack),
                     id,
                     styles,
                     pParent,
@@ -582,6 +587,7 @@ namespace eyegui
             // Create text block
 			ElementFactory fac;
 			auto upTextBlock = fac.build<TextBlock>(
+				parser_helpers::parseStringAttribute("props", xmlTextBlock),
 				id,
 				styles,
 				pParent,
@@ -624,6 +630,7 @@ namespace eyegui
             // Create circle button
 			ElementFactory fac;
 			auto upCircleButton = fac.build<CircleButton>(
+				parser_helpers::parseStringAttribute("props", xmlCircleButton),
 				id,
 				styles,
 				pParent,
@@ -660,6 +667,7 @@ namespace eyegui
             // Create box button
 			ElementFactory fac;
 			auto upBoxButton = fac.build<BoxButton>(
+				parser_helpers::parseStringAttribute("props", xmlBoxButton),
 				id,
 				styles,
 				pParent,
@@ -693,6 +701,7 @@ namespace eyegui
             // Create sensor
 			ElementFactory fac;
 			auto upSensor = fac.build<Sensor>(
+				parser_helpers::parseStringAttribute("props", xmlSensor),
 				id,
 				styles,
 				pParent,
@@ -732,6 +741,7 @@ namespace eyegui
             // Create drop button
 			ElementFactory fac;
 			auto upDropButton = fac.build<DropButton>(
+				parser_helpers::parseStringAttribute("props", xmlDropButton),
 				id,
 				styles,
 				pParent,
@@ -780,6 +790,7 @@ namespace eyegui
             // Create keyboard
 			ElementFactory fac;
 			auto upKeyboard = fac.build<Keyboard>(
+				parser_helpers::parseStringAttribute("props", xmlKeyboard),
 				id,
 				styles,
 				pParent,
@@ -806,6 +817,7 @@ namespace eyegui
             // Create word suggest
 			ElementFactory fac;
 			auto upWordSuggest = fac.build<WordSuggest>(
+				parser_helpers::parseStringAttribute("props", xmlWordSuggest),
 				id,
 				styles,
 				pParent,
@@ -857,6 +869,7 @@ namespace eyegui
             // Create flow
 			ElementFactory fac;
 			auto upFlow = fac.build<Flow>(
+				parser_helpers::parseStringAttribute("props", xmlFlow),
 				id,
 				styles,
 				pParent,
@@ -930,6 +943,7 @@ namespace eyegui
             // Create progress bar
 			ElementFactory fac;
 			auto upProgressBar = fac.build<ProgressBar>(
+				parser_helpers::parseStringAttribute("props", xmlProgressBar),
 				id,
 				styles,
 				pParent,
@@ -960,6 +974,7 @@ namespace eyegui
 			// Create text edit
 			ElementFactory fac;
 			auto upTextEdit = fac.build<TextEdit>(
+				parser_helpers::parseStringAttribute("props", xmlTextEdit),
 				id,
 				styles,
 				pParent,
@@ -1002,6 +1017,7 @@ namespace eyegui
 			// Create future keyboard
 			ElementFactory fac;
 			auto upFutureKeyboard = fac.build<FutureKeyboard>(
+				parser_helpers::parseStringAttribute("props", xmlFutureKeyboard),
 				id,
 				styles,
 				pParent,
@@ -1026,12 +1042,12 @@ namespace eyegui
 			if (pParent != NULL)
 			{
 				// Fetch style class names
-				parentStyles = pParent->getStyleClassesNames();
+				parentStyles = pParent->getStyleTreeClassesNames();
 			}
 			else // Use layout styling
 			{
 				// Fetch style class names
-				parentStyles = pLayout->getStyleClassesNames();
+				parentStyles = pLayout->getStyleTreeClassesNames();
 			}
 
 			// parentStyles must include at least base style
@@ -1057,14 +1073,18 @@ namespace eyegui
 					stylesString += delimiter; // Add final space for simpler loop
 					size_t pos = 0;
 					std::vector<std::string> styles;
+					std::set<std::string> uniqueChecker;
 					while ((pos = stylesString.find(delimiter)) != std::string::npos)
 					{
 						// Read name of class and erase it from content
 						std::string style = stylesString.substr(0, pos);
 						stylesString.erase(0, pos + delimiter.length());
 
+						// Add name to set to check uniques
+						bool unique = uniqueChecker.insert(style).second;
+
 						// Add style if not empty
-						if (!style.empty())
+						if (unique && !style.empty())
 						{
 							styles.push_back(style);
 						}
@@ -1093,7 +1113,7 @@ namespace eyegui
 						parentStyles.erase(parentStyles.begin() + j);
 					}
 
-					// Combine this styles and the ones from parent
+					// Combine this styles and the ones from parent (parent's style should be alreday unique)
 					styles.insert(styles.end(), parentStyles.begin(), parentStyles.end());
 
 					// Return result

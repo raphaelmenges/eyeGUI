@@ -11,13 +11,13 @@
 #include "src/Utilities/Helper.h"
 #include "src/Elements/ElementCasting.h"
 #include "src/Defines.h"
-#include "src/Utilities/OperationNotifier.h"
 
 #include <algorithm>
 
 namespace eyegui
 {
-    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::vector<std::string> styles)
+    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::vector<std::string> styles) : 
+		Styleable(styles, [pGUI](std::string styleClass) { return pGUI->fetchStyleTree()->fetchStyleClass(styleClass); }) // Styleable constructor. Do not delegate member method here, since members not yet initialized
     {
         // Initialize members
         mName = name;
@@ -32,12 +32,6 @@ namespace eyegui
         mupMainFrame = std::unique_ptr<Frame>(new Frame(this, 0, 0, 1, 1));
         mupNotificationQueue = std::unique_ptr<NotificationQueue>(new NotificationQueue(this));
         mForceResize = false;
-
-		// Styles
-		for (const auto& rStyle : styles) // parser guarantees at least one element
-		{
-			mStyleClasses.push_back(fetchStyleClass(rStyle));
-		}
     }
 
     Layout::~Layout()
@@ -168,11 +162,6 @@ namespace eyegui
     NotificationQueue* Layout::getNotificationQueue() const
     {
         return mupNotificationQueue.get();
-    }
-
-	std::shared_ptr<const StyleClass> Layout::fetchStyleClass(std::string name) const
-    {
-		return mpGUI->fetchStyleTree()->fetchStyleClass(name);
     }
 
     CharacterSet Layout::getCharacterSet() const
@@ -1397,6 +1386,46 @@ namespace eyegui
         return mpGUI->getDescriptionFontSize();
     }
 
+	float Layout::getStyleValue(StylePropertyFloat type) const
+	{
+		// Go over the property in the differenct classes in tre
+		std::shared_ptr<const StyleProperty<float> > spStyleProperty;
+		for (const auto& rspStyleClass : mStyleTreeClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isSet()) // just base, try next class
+			{
+				continue;
+			}
+			else // no base, use this property's value
+			{
+				break;
+			}
+		}
+		return spStyleProperty->get();
+	}
+
+	glm::vec4 Layout::getStyleValue(StylePropertyVec4 type) const
+	{
+		// Go over the property in the differenct classes in tree
+		std::shared_ptr<const StyleProperty<glm::vec4> > spStyleProperty;
+		for (const auto& rspStyleClass : mStyleTreeClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isSet()) // just base, try next class
+			{
+				continue;
+			}
+			else // no base, use this property's value
+			{
+				break;
+			}
+		}
+		return spStyleProperty->get();
+	}
+
     void Layout::registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener)
     {
         FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));
@@ -1485,57 +1514,10 @@ namespace eyegui
 		}
 	}
 
-	std::vector<std::string> Layout::getStyleClassesNames() const
+	std::shared_ptr<const StyleClass> Layout::fetchStyleTreeClass(std::string name) const
 	{
-		// Collect names
-		std::vector<std::string> names;
-		for (const auto& rspStyleClass : mStyleClasses)
-		{
-			names.push_back(rspStyleClass->getName());
-		}
-		return names;
+		return mpGUI->fetchStyleTree()->fetchStyleClass(name);
 	}
-
-	float Layout::getStyleValue(StylePropertyFloat type) const
-	{
-		// Go over the property in the differenct classes
-		std::shared_ptr<const StyleProperty<float> > spStyleProperty;
-		for (const auto& rspStyleClass : mStyleClasses)
-		{
-			// Check whether property is really set or just base
-			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
-			{
-				continue;
-			}
-			else // no base, use this property's value
-			{
-				break;
-			}
-		}
-		return spStyleProperty->get();
-	}
-
-	glm::vec4 Layout::getStyleValue(StylePropertyVec4 type) const
-	{
-		// Go over the property in the differenct classes
-		std::shared_ptr<const StyleProperty<glm::vec4> > spStyleProperty;
-		for (const auto& rspStyleClass : mStyleClasses)
-		{
-			// Check whether property is really set or just base
-			spStyleProperty = rspStyleClass->fetchProperty(type);
-			if (spStyleProperty->isBase()) // just base, try next class
-			{
-				continue;
-			}
-			else // no base, use this property's value
-			{
-				break;
-			}
-		}
-		return spStyleProperty->get();
-	}
-
 
     void Layout::internalResizing(bool force, bool instant)
     {

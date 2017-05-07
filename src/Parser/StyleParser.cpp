@@ -11,6 +11,7 @@
 #include "src/Utilities/Helper.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/PathBuilder.h"
+#include "src/Style/StylePropertyNameMapper.h"
 
 #include <algorithm>
 #include <sstream>
@@ -21,55 +22,6 @@
 
 namespace eyegui
 {
-	// TODO NOTE: ADD MAPPING OF PROPERTIES HERE! Also remember to add initial value and constraints in StyleClass.cpp
-
-	// Maps from string to style property type
-	static const std::map<std::string, StylePropertyFloat> FLOAT_TYPE_MAP =
-	{ 
-		{ "AnimationDuration",									StylePropertyFloat::AnimationDuration },
-		{ "SensorPenetrationIncreaseDuration",					StylePropertyFloat::SensorPenetrationIncreaseDuration },
-		{ "SensorPenetrationDecreaseDuration",					StylePropertyFloat::SensorPenetrationDecreaseDuration },
-		{ "ButtonThresholdIncreaseDuration",					StylePropertyFloat::ButtonThresholdIncreaseDuration },
-		{ "ButtonThresholdDecreaseDuration",					StylePropertyFloat::ButtonThresholdDecreaseDuration },
-		{ "ButtonPressingDuration",								StylePropertyFloat::ButtonPressingDuration },
-		{ "SensorInteractionPenetrationAmount",					StylePropertyFloat::SensorInteractionPenetrationAmount },
-		{ "DimIncreaseDuration",								StylePropertyFloat::DimIncreaseDuration },
-		{ "DimDecreaseDuration",								StylePropertyFloat::DimDecreaseDuration },
-		{ "DimAlpha",											StylePropertyFloat::DimAlpha },
-		{ "FlashDuration",										StylePropertyFloat::FlashDuration },
-		{ "MaximalAdaptiveScaleIncrease",						StylePropertyFloat::MaximalAdaptiveScaleIncrease },
-		{ "AdaptiveScaleIncreaseDuration",						StylePropertyFloat::AdaptiveScaleIncreaseDuration },
-		{ "AdaptiveScaleDecreaseDuration",						StylePropertyFloat::AdaptiveScaleDecreaseDuration },
-		{ "KeyboardZoomSpeedMultiplier",						StylePropertyFloat::KeyboardZoomSpeedMultiplier },
-		{ "KeyboardKeySelectionDuration",						StylePropertyFloat::KeyboardKeySelectionDuration },
-		{ "FlowSpeedMultiplier",								StylePropertyFloat::FlowSpeedMultiplier },
-		{ "TextEditScrollSpeedMultiplier",						StylePropertyFloat::TextEditScrollSpeedMultiplier },
-
-		// Experimental
-		{ "FutureKeyboardPressDuration",						StylePropertyFloat::FutureKeyboardPressDuration },
-		{ "FutureKeyboardRetriggerDelay",						StylePropertyFloat::FutureKeyboardRetriggerDelay },
-		{ "FutureKeyboardThresholdDuration",					StylePropertyFloat::FutureKeyboardThresholdDuration },
-		{ "FutureKeyboardRepeatKeyThresholdMultiplier",			StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier },
-		{ "FutureKeyboardSpaceKeyThresholdMultiplier",			StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier },
-		{ "FutureKeyboardBackspaceKeyThresholdMultiplier",		StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier },
-		{ "FutureKeyboardSuggestionLineThresholdMultiplier",	StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier }
-	};
-	static const std::map<std::string, StylePropertyVec4> VEC4_TYPE_MAP =
-	{
-		{ "Color",												StylePropertyVec4::Color },
-		{ "BackgroundColor",									StylePropertyVec4::BackgroundColor },
-		{ "HighlightColor",										StylePropertyVec4::HighlightColor },
-		{ "SeparatorColor",										StylePropertyVec4::SeparatorColor },
-		{ "SelectionColor",										StylePropertyVec4::SelectionColor },
-		{ "IconColor",											StylePropertyVec4::IconColor },
-		{ "FontColor",											StylePropertyVec4::FontColor },
-		{ "DimColor",											StylePropertyVec4::DimColor },
-		{ "FlashColor",											StylePropertyVec4::FlashColor },
-		{ "MarkColor",											StylePropertyVec4::MarkColor },
-		{ "PickColor",											StylePropertyVec4::PickColor },
-		{ "ThresholdColor",										StylePropertyVec4::ThresholdColor }
-	};
-
     namespace style_parser
     {
 		// Helper function not exposed through header
@@ -90,10 +42,10 @@ namespace eyegui
 			std::string right = line;
 
 			// Fill it into style property
-			auto floatIterator = FLOAT_TYPE_MAP.find(left);
-			if (floatIterator != FLOAT_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, floatIterator->second, right); }
-			auto vec4Iterator = VEC4_TYPE_MAP.find(left);
-			if (vec4Iterator != VEC4_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, vec4Iterator->second, right); }
+			auto floatIterator = StylePropertyNameMapper::FLOAT_TYPE_MAP.find(left);
+			if (floatIterator != StylePropertyNameMapper::FLOAT_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, floatIterator->second, right); }
+			auto vec4Iterator = StylePropertyNameMapper::VEC4_TYPE_MAP.find(left);
+			if (vec4Iterator != StylePropertyNameMapper::VEC4_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, vec4Iterator->second, right); }
 		}
 
 		void parse(std::shared_ptr<StyleTree> spStyleTree, std::string filepath)
@@ -137,8 +89,7 @@ namespace eyegui
 				end_pos = std::remove(content.begin(), content.end(), '\t');
 				content.erase(end_pos, content.end());
 
-				// Add some new line at the end of content because while loop does not read last line
-				content += "\n";
+				
 
 				// Make some state variables for parsing
 				enum class ParseState { OUTER, NAME_READ, INNER };
@@ -149,6 +100,10 @@ namespace eyegui
 				std::string delimiter = "\n";
 				size_t pos = 0;
 				std::string line;
+
+				// Add some new line at the end of content because while loop does not read last line
+				content += delimiter;
+
 				while ((pos = content.find(delimiter)) != std::string::npos)
 				{
 					// Read line and erase it from content

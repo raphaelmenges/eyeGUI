@@ -6,7 +6,10 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Tree of style classes with single root. Guarantees that name of style
 // classes is unique. Returns only const pointers to style classes,
-// for value setting the corresponding method must be called.
+// for value setting the corresponding method must be called. GUI objects
+// has one tree which is filled by loaded stylesheets. Elements and layouts
+// are assigned classes, whereby all properties directly set in element class
+// do override the values from this tree.
 
 #ifndef STYLE_TREE_H_
 #define STYLE_TREE_H_

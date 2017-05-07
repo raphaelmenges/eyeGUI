@@ -263,12 +263,12 @@ namespace eyegui
 		style_parser::parse(mspStyleTree, filepath);
     }
 
-	void GUI::setStylePropertyValue(std::string styleClass, StylePropertyFloat styleType, std::string value)
+	void GUI::setStyleTreePropertyValue(std::string styleClass, StylePropertyFloat styleType, std::string value)
 	{
 		mspStyleTree->setValue(styleClass, styleType, value);
 	}
 
-	void GUI::setStylePropertyValue(std::string styleClass, StylePropertyVec4 styleType, std::string value)
+	void GUI::setStyleTreePropertyValue(std::string styleClass, StylePropertyVec4 styleType, std::string value)
 	{
 		mspStyleTree->setValue(styleClass, styleType, value);
 	}

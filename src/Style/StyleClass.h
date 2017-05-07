@@ -5,9 +5,12 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Style class has maps of style property pointers. Some of those properties
-// are just references to properties from other classes and some are owned
-// by this. If a property is owned, propagation of values of its type
-// from parent class is stopped.
+// are just references to properties from parent classes and other are owned
+// by this. If a property is owned, propagation of values of its type from
+// parent class is stopped. Children are optionally stored as shared pointer,
+// because this is desired for the style tree but not for element style
+// classes. Those are already shared pointer in the corresponding element
+// and would survive the deletion of the element if stored as shared here.
 
 #ifndef STYLE_CLASS_H_
 #define STYLE_CLASS_H_
@@ -21,27 +24,24 @@
 
 namespace eyegui
 {
-	// Enumeration to decide type of construction via builder
-	enum class StyleClassConstructionType { BASE_CLASS, ELEMENT_CLASS };
-
 	// Style class, must be built by builder
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
 	public:
 
-		// Add child. Caller must check whether name is globally unique
-		std::shared_ptr<StyleClass> addChild(std::string name);
+		// Add child
+		std::shared_ptr<StyleClass> addChild(bool storeShared, std::string name = "");
 
 		// Fetch float property
 		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
 
-		// Get float value from property (TODO: const reference?)
+		// Get float value from property
 		float getValue(StylePropertyFloat type) const;
 
 		// Fetch vec4 property
 		std::shared_ptr<const StyleProperty<glm::vec4> > fetchProperty(StylePropertyVec4 type) const;
 
-		// Get vec4 value from property (TODO: const reference?)
+		// Get vec4 value from property
 		glm::vec4 getValue(StylePropertyVec4 type) const;
 
 		// Set value of float porperty and propagate to children (TODO: maybe do not set it at value parsing failure)
@@ -64,7 +64,7 @@ namespace eyegui
 		friend class StyleClassBuilder;
 
 		// Constructor
-		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent);
+		StyleClass(std::string name, std::weak_ptr<const StyleClass> wpParent, bool& rPleaseFill);
 
 		// Private copy constuctor
 		StyleClass(StyleClass const&) {}
@@ -73,7 +73,7 @@ namespace eyegui
 		StyleClass& operator = (StyleClass const&) { return *this; }
 
 		// Called only by builder
-		void fill(StyleClassConstructionType constructionType);
+		void fill();
 
 		// #################################
 		// ### MAPS HELPER FOR TEMPLATES ###
@@ -114,13 +114,16 @@ namespace eyegui
 			else
 			{
 				// Add new owned property while copying constraint from existing since it is of the same type
-				spStoredProperty = std::shared_ptr<StyleProperty<Value> >(new StyleProperty<Value>(shared_from_this(), value, spStoredProperty->getConstraint()));
+				spStoredProperty = std::shared_ptr<StyleProperty<Value> >(new StyleProperty<Value>(shared_from_this(), value, spStoredProperty->getConstraint(), true));
 				this->setMapValue(type, spStoredProperty);
 
 				// Propagate it to children
-				for (auto& rspChild : this->mChildren)
+				for (auto& rwpChild : this->mWeakChildren)
 				{
-					rspChild->genericPropagateProperty(type, spStoredProperty);
+					if (auto rspChild = rwpChild.lock())
+					{
+						rspChild->genericPropagateProperty(type, spStoredProperty);
+					}
 				}
 			}
 		}
@@ -150,9 +153,12 @@ namespace eyegui
 				this->setMapValue(type, spProperty);
 
 				// Propagate it to children
-				for (auto& rspChild : this->mChildren)
+				for (auto& rwpChild : this->mWeakChildren)
 				{
-					rspChild->genericPropagateProperty(type, spProperty);
+					if(auto rspChild = rwpChild.lock())
+					{
+						rspChild->genericPropagateProperty(type, spProperty);
+					}
 				}
 			} // else: stop propagation here
 		}
@@ -169,19 +175,20 @@ namespace eyegui
 		std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
 
 		// Parent
-		std::weak_ptr<const StyleClass> mwpParent;
+		std::weak_ptr<const StyleClass> mwpParent; // empty for root
 
 		// Children
-		std::vector<std::shared_ptr<StyleClass> > mChildren;
+		std::vector<std::shared_ptr<StyleClass> > mChildren; // empty for classes belonging to element, only used classes of style tree for storing them
+		std::vector<std::weak_ptr<StyleClass> > mWeakChildren; // this is used for all calculations, as it is always contains the children
 	};
 
-	// Builder for style class. Takes care of some prerequisites
+	// Builder for style class. Takes care of some prerequisites, as style class is always used in shared pointer which produces problems in constructor
 	class StyleClassBuilder
 	{
 	public:
 
-		// Construct a style class
-		std::shared_ptr<StyleClass> construct(std::string name, StyleClassConstructionType type) const;
+		// Construct a style class (necessary because "shared from" this is used for StyleClass, but this may not be done in its constructor)
+		std::shared_ptr<StyleClass> construct(std::string name = "") const;
 	};
 }
 
