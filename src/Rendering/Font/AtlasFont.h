@@ -11,7 +11,6 @@
 #define ATLAS_FONT_H_
 
 #include "Font.h"
-#include "CharacterSets.h"
 
 #include "externals/FreeType2/include/ft2build.h"
 #include "externals/OpenGLLoader/gl_core_3_3.h"

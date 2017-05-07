@@ -167,7 +167,7 @@ namespace eyegui
         for(const std::u16string line : collectedLines)
         {
             // Just do whole line as one big word
-            RenderWord word = calculateWord(line, mScale);
+            RenderWord word = calculateWord(line, mScale, false);
 
             // Assuming, that the count of vertices and texture coordinates is equal
             for (uint i = 0; i < word.spVertices->size(); i++)

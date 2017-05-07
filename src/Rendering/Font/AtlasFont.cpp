@@ -302,6 +302,7 @@ namespace eyegui
             rGlyphMap[c].bearing = glm::ivec2(
                 rFace->glyph->bitmap_left,
                 rFace->glyph->bitmap_top);
+			rGlyphMap[c].direction = rCharacter.direction; // text direction indicated by  character
 
             // Go over rows and write it mirrored into own buffer
             std::vector<unsigned char> mirrorBuffer;

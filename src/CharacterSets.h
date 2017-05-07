@@ -14,7 +14,7 @@
 namespace eyegui
 {
 	// Text direction defined by character
-	enum class TextDirection { LEFT_TO_RIGHT, RIGHT_TO_LEFT, NEUTRAL, PARENTHESIS}; // extra enum for parentheses, as they are rendered mirrored for right to left languages
+	enum class CharacterDirection { LEFT_TO_RIGHT, RIGHT_TO_LEFT, NEUTRAL, PARENTHESIS}; // extra enum for parentheses, as they are rendered mirrored for right to left languages
 
 	// Simple class for character defintion including direction
 	class Character
@@ -22,12 +22,12 @@ namespace eyegui
 	public:
 
 		// Constructors
-		Character(char16_t character, TextDirection direction)
+		Character(char16_t character, CharacterDirection direction)
 		{
 			this->character = character;
 			this->direction = direction;
 		}
-		Character(char16_t character) : Character(character, TextDirection::LEFT_TO_RIGHT)
+		Character(char16_t character) : Character(character, CharacterDirection::LEFT_TO_RIGHT)
 		{}
 
 		// Implementing operators
@@ -38,7 +38,7 @@ namespace eyegui
 
 		// Members
 		char16_t character;
-		TextDirection direction;
+		CharacterDirection direction;
 	};
 
     namespace charsets
@@ -54,42 +54,42 @@ namespace eyegui
             'U', 'V', 'W', 'X', 'Y', 'Z',
 
 			// Character neutral to text direction
-			Character(u'-', TextDirection::NEUTRAL), 
-			Character(u'_', TextDirection::NEUTRAL),
-			Character(u',', TextDirection::NEUTRAL),
-			Character(u';', TextDirection::NEUTRAL),
-			Character(u'.', TextDirection::NEUTRAL),
-			Character(u':', TextDirection::NEUTRAL),
-			Character(u'+', TextDirection::NEUTRAL),
-			Character(u'*', TextDirection::NEUTRAL),
-            Character(u'~', TextDirection::NEUTRAL),
-			Character(u'#', TextDirection::NEUTRAL),
-			Character(u'/', TextDirection::NEUTRAL),
-			Character(u'?', TextDirection::NEUTRAL),
-			Character(u'!', TextDirection::NEUTRAL),
-			Character(u'%', TextDirection::NEUTRAL),
-			Character(u'#', TextDirection::NEUTRAL),
-			Character(u' ', TextDirection::NEUTRAL),
-			Character(u'|', TextDirection::NEUTRAL),
-			Character(u'$', TextDirection::NEUTRAL),
-			Character(u'@', TextDirection::NEUTRAL),
-			Character(u'^', TextDirection::NEUTRAL),
-            Character(u'"', TextDirection::NEUTRAL),
-			Character(u'=', TextDirection::NEUTRAL),
-			Character(u'&', TextDirection::NEUTRAL),
-			Character(u'\\', TextDirection::NEUTRAL),
-			Character(u'/', TextDirection::NEUTRAL),
-			Character(u'\u00A7', TextDirection::NEUTRAL), // paragraph
+			Character(u'-', CharacterDirection::NEUTRAL), 
+			Character(u'_', CharacterDirection::NEUTRAL),
+			Character(u',', CharacterDirection::NEUTRAL),
+			Character(u';', CharacterDirection::NEUTRAL),
+			Character(u'.', CharacterDirection::NEUTRAL),
+			Character(u':', CharacterDirection::NEUTRAL),
+			Character(u'+', CharacterDirection::NEUTRAL),
+			Character(u'*', CharacterDirection::NEUTRAL),
+            Character(u'~', CharacterDirection::NEUTRAL),
+			Character(u'#', CharacterDirection::NEUTRAL),
+			Character(u'/', CharacterDirection::NEUTRAL),
+			Character(u'?', CharacterDirection::NEUTRAL),
+			Character(u'!', CharacterDirection::NEUTRAL),
+			Character(u'%', CharacterDirection::NEUTRAL),
+			Character(u'#', CharacterDirection::NEUTRAL),
+			Character(u' ', CharacterDirection::NEUTRAL),
+			Character(u'|', CharacterDirection::NEUTRAL),
+			Character(u'$', CharacterDirection::NEUTRAL),
+			Character(u'@', CharacterDirection::NEUTRAL),
+			Character(u'^', CharacterDirection::NEUTRAL),
+            Character(u'"', CharacterDirection::NEUTRAL),
+			Character(u'=', CharacterDirection::NEUTRAL),
+			Character(u'&', CharacterDirection::NEUTRAL),
+			Character(u'\\', CharacterDirection::NEUTRAL),
+			Character(u'/', CharacterDirection::NEUTRAL),
+			Character(u'\u00A7', CharacterDirection::NEUTRAL), // paragraph
 
 			// Parentheses
-			Character(u'(', TextDirection::PARENTHESIS),
-			Character(u')', TextDirection::PARENTHESIS),
-			Character(u'[', TextDirection::PARENTHESIS),
-			Character(u']', TextDirection::PARENTHESIS),
-			Character(u'{', TextDirection::PARENTHESIS),
-			Character(u'}', TextDirection::PARENTHESIS),
-			Character(u'<', TextDirection::PARENTHESIS),
-			Character(u'>', TextDirection::PARENTHESIS),
+			Character(u'(', CharacterDirection::PARENTHESIS),
+			Character(u')', CharacterDirection::PARENTHESIS),
+			Character(u'[', CharacterDirection::PARENTHESIS),
+			Character(u']', CharacterDirection::PARENTHESIS),
+			Character(u'{', CharacterDirection::PARENTHESIS),
+			Character(u'}', CharacterDirection::PARENTHESIS),
+			Character(u'<', CharacterDirection::PARENTHESIS),
+			Character(u'>', CharacterDirection::PARENTHESIS),
 
             // Experimental
             u'\u21AA', // return symbol
@@ -116,37 +116,37 @@ namespace eyegui
 		// Modern Hebrew
 		static const std::set<Character> ISRAEL_HEBREW
 		{
-			Character(u'\u05E9', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D3', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D2', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05DB', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E2', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D9', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D7', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05DC', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05DA', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E3', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D6', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E1', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D1', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D4', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E0', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05DE', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E6', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05EA', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E5', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u20AA', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05F2', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05F1', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05F0', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E7', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E8', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D0', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D8', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05D5', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05DF', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05DD', TextDirection::RIGHT_TO_LEFT),
-			Character(u'\u05E4', TextDirection::RIGHT_TO_LEFT)
+			Character(u'\u05E9', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D3', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D2', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05DB', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E2', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D9', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D7', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05DC', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05DA', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E3', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D6', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E1', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D1', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D4', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E0', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05DE', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E6', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05EA', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E5', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u20AA', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05F2', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05F1', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05F0', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E7', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E8', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D0', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D8', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05D5', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05DF', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05DD', CharacterDirection::RIGHT_TO_LEFT),
+			Character(u'\u05E4', CharacterDirection::RIGHT_TO_LEFT)
 		};
     }
 }

@@ -756,7 +756,7 @@ namespace eyegui
     std::vector<RenderWord> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
     {
         // Calculate word from content
-        RenderWord word = calculateWord(content, scale);
+        RenderWord word = calculateWord(content, scale, false); // TODO: define here whether to mirror parentheses or not
 
         // End of recursion
         if ((content.size() == 1 && word.pixelWidth > maxPixelWidth) || content.empty())

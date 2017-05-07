@@ -10,6 +10,7 @@
 #define FONT_H_
 
 #include "include/eyeGUI.h"
+#include "CharacterSets.h"
 #include "Defines.h"
 
 #include "externals/GLM/glm/glm.hpp"
@@ -18,10 +19,11 @@ namespace eyegui
 {
     struct Glyph
     {
-        glm::vec4	atlasPosition;	// Position in atlas (minU, minV, maxU, maxV)
-        glm::ivec2  size;			// Size in pixel
-        glm::ivec2	bearing;		// Offset from baseline to left / top of glyph in pixel
-        glm::vec2	advance;        // Offset to advance to next glyph in pixel
+        glm::vec4			atlasPosition;	// Position in atlas (minU, minV, maxU, maxV)
+        glm::ivec2			size;			// Size in pixel
+        glm::ivec2			bearing;		// Offset from baseline to left / top of glyph in pixel
+        glm::vec2			advance;        // Offset to advance to next glyph in pixel
+		CharacterDirection	direction;		// Direction of text indicated by character represented by this glyph
     };
 
     class Font

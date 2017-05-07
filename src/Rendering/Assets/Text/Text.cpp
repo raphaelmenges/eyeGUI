@@ -166,7 +166,7 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    RenderWord Text::calculateWord(const std::u16string& rContent, float scale) const
+    RenderWord Text::calculateWord(const std::u16string& rContent, float scale, bool mirrorParentheses) const
     {
         // Empty word
         RenderWord word;
@@ -194,6 +194,8 @@ namespace eyegui
             glm::vec3 positionB = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen, 0);
             glm::vec3 positionC = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen + (scale * pGlyph->size.y), 0);
             glm::vec3 positionD = glm::vec3(xPixelPen, yPixelPen + (scale * pGlyph->size.y), 0);
+
+			// TODO: mirror parentheses if required
 
             // Texture coordinates for this quad
             glm::vec2 textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);

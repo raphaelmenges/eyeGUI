@@ -5,6 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Very simple text asset for rendering.
+// TODO: Hebrew / right to left support
 
 #ifndef TEXT_SIMPLE_H_
 #define TEXT_SIMPLE_H_
