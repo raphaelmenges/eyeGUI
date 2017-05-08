@@ -68,6 +68,6 @@ namespace eyegui
 
 	CharacterDirection EmptyFont::getCharacterDirection(char16_t character) const
 	{
-		return CharacterDirection::NEUTRAL; // TODO: this could work, as empty font could still get the character set
+		return CharacterDirection::Neutral; // TODO: this could work, as empty font could still get the character set
 	}
 }

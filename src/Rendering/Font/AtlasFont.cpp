@@ -199,7 +199,7 @@ namespace eyegui
 		auto entry = mCharacterSet.find(character);
 		if (entry == mCharacterSet.end())
 		{
-			return CharacterDirection::NEUTRAL;
+			return CharacterDirection::Neutral;
 		}
 		else
 		{

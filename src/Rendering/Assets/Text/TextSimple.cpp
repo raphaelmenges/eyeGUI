@@ -154,12 +154,12 @@ namespace eyegui
 		for (const auto& character : streamlinedContent)
 		{
 			auto direction = mpFont->getCharacterDirection(character);
-			if (direction == CharacterDirection::LEFT_TO_RIGHT)
+			if (direction == CharacterDirection::LeftToRight)
 			{
 				globalRightToLeft = false;
 				break;
 			}
-			else if (direction == CharacterDirection::RIGHT_TO_LEFT)
+			else if (direction == CharacterDirection::RightToLeft)
 			{
 				globalRightToLeft = true;
 				break;
@@ -201,7 +201,7 @@ namespace eyegui
 			{
 				// Determine direction
 				auto direction = mpFont->getCharacterDirection(line.at(index));
-				if (direction == CharacterDirection::LEFT_TO_RIGHT)
+				if (direction == CharacterDirection::LeftToRight)
 				{
 					// If new part, assign bool
 					if (newPart)
@@ -217,7 +217,7 @@ namespace eyegui
 					newPart = true;
 					startIndex = index;
 				}
-				else if (direction == CharacterDirection::RIGHT_TO_LEFT)
+				else if (direction == CharacterDirection::RightToLeft)
 				{
 					// If new part, assign bool
 					if (newPart)

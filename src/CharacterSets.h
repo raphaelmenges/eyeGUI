@@ -14,7 +14,7 @@
 namespace eyegui
 {
 	// Text direction defined by character (e.g., Latin is left to right and Hebrew right to left)
-	enum class CharacterDirection { LEFT_TO_RIGHT, RIGHT_TO_LEFT, NEUTRAL, PARENTHESIS}; // extra enum for parentheses, as they are rendered mirrored for right to left languages
+	enum class CharacterDirection { LeftToRight, RightToLeft, Neutral, Parenthesis}; // extra enum for parentheses, as they are rendered mirrored for right to left languages
 
     namespace charsets
     {
@@ -22,163 +22,163 @@ namespace eyegui
         static const std::map<char16_t, CharacterDirection> BASIC
         {
 			// Left to right do not need full contructor
-            {'0', CharacterDirection::LEFT_TO_RIGHT},
-			{'1', CharacterDirection::LEFT_TO_RIGHT},
-			{'2', CharacterDirection::LEFT_TO_RIGHT},
-			{'3', CharacterDirection::LEFT_TO_RIGHT},
-			{'4', CharacterDirection::LEFT_TO_RIGHT},
-			{'5', CharacterDirection::LEFT_TO_RIGHT},
-			{'6', CharacterDirection::LEFT_TO_RIGHT},
-			{'7', CharacterDirection::LEFT_TO_RIGHT},
-			{'8', CharacterDirection::LEFT_TO_RIGHT},
-			{'9', CharacterDirection::LEFT_TO_RIGHT},
-			{'a', CharacterDirection::LEFT_TO_RIGHT},
-			{'b', CharacterDirection::LEFT_TO_RIGHT},
-			{'c', CharacterDirection::LEFT_TO_RIGHT},
-			{'d', CharacterDirection::LEFT_TO_RIGHT},
-            {'e', CharacterDirection::LEFT_TO_RIGHT},
-			{'f', CharacterDirection::LEFT_TO_RIGHT},
-			{'g', CharacterDirection::LEFT_TO_RIGHT},
-			{'h', CharacterDirection::LEFT_TO_RIGHT},
-			{'i', CharacterDirection::LEFT_TO_RIGHT},
-			{'j', CharacterDirection::LEFT_TO_RIGHT},
-			{'k', CharacterDirection::LEFT_TO_RIGHT},
-			{'l', CharacterDirection::LEFT_TO_RIGHT},
-			{'m', CharacterDirection::LEFT_TO_RIGHT},
-			{'n', CharacterDirection::LEFT_TO_RIGHT},
-			{'o', CharacterDirection::LEFT_TO_RIGHT},
-			{'p', CharacterDirection::LEFT_TO_RIGHT},
-			{'q', CharacterDirection::LEFT_TO_RIGHT},
-			{'r', CharacterDirection::LEFT_TO_RIGHT},
-            {'s', CharacterDirection::LEFT_TO_RIGHT},
-			{'t', CharacterDirection::LEFT_TO_RIGHT},
-			{'u', CharacterDirection::LEFT_TO_RIGHT},
-			{'v', CharacterDirection::LEFT_TO_RIGHT},
-			{'w', CharacterDirection::LEFT_TO_RIGHT},
-			{'x', CharacterDirection::LEFT_TO_RIGHT},
-			{'y', CharacterDirection::LEFT_TO_RIGHT},
-			{'z', CharacterDirection::LEFT_TO_RIGHT},
-			{'A', CharacterDirection::LEFT_TO_RIGHT},
-			{'B', CharacterDirection::LEFT_TO_RIGHT},
-			{'C', CharacterDirection::LEFT_TO_RIGHT},
-			{'D', CharacterDirection::LEFT_TO_RIGHT},
-			{'E', CharacterDirection::LEFT_TO_RIGHT},
-			{'F', CharacterDirection::LEFT_TO_RIGHT},
-            {'G', CharacterDirection::LEFT_TO_RIGHT},
-			{'H', CharacterDirection::LEFT_TO_RIGHT},
-			{'I', CharacterDirection::LEFT_TO_RIGHT},
-			{'J', CharacterDirection::LEFT_TO_RIGHT},
-			{'K', CharacterDirection::LEFT_TO_RIGHT},
-			{'L', CharacterDirection::LEFT_TO_RIGHT},
-			{'M', CharacterDirection::LEFT_TO_RIGHT},
-			{'N', CharacterDirection::LEFT_TO_RIGHT},
-			{'O', CharacterDirection::LEFT_TO_RIGHT},
-			{'P', CharacterDirection::LEFT_TO_RIGHT},
-			{'Q', CharacterDirection::LEFT_TO_RIGHT},
-			{'R', CharacterDirection::LEFT_TO_RIGHT},
-			{'S', CharacterDirection::LEFT_TO_RIGHT},
-			{'T', CharacterDirection::LEFT_TO_RIGHT},
-            {'U', CharacterDirection::LEFT_TO_RIGHT},
-			{'V', CharacterDirection::LEFT_TO_RIGHT},
-			{'W', CharacterDirection::LEFT_TO_RIGHT},
-			{'X', CharacterDirection::LEFT_TO_RIGHT},
-			{'Y', CharacterDirection::LEFT_TO_RIGHT},
-			{'Z', CharacterDirection::LEFT_TO_RIGHT},
+            {'0', CharacterDirection::LeftToRight},
+			{'1', CharacterDirection::LeftToRight},
+			{'2', CharacterDirection::LeftToRight},
+			{'3', CharacterDirection::LeftToRight},
+			{'4', CharacterDirection::LeftToRight},
+			{'5', CharacterDirection::LeftToRight},
+			{'6', CharacterDirection::LeftToRight},
+			{'7', CharacterDirection::LeftToRight},
+			{'8', CharacterDirection::LeftToRight},
+			{'9', CharacterDirection::LeftToRight},
+			{'a', CharacterDirection::LeftToRight},
+			{'b', CharacterDirection::LeftToRight},
+			{'c', CharacterDirection::LeftToRight},
+			{'d', CharacterDirection::LeftToRight},
+            {'e', CharacterDirection::LeftToRight},
+			{'f', CharacterDirection::LeftToRight},
+			{'g', CharacterDirection::LeftToRight},
+			{'h', CharacterDirection::LeftToRight},
+			{'i', CharacterDirection::LeftToRight},
+			{'j', CharacterDirection::LeftToRight},
+			{'k', CharacterDirection::LeftToRight},
+			{'l', CharacterDirection::LeftToRight},
+			{'m', CharacterDirection::LeftToRight},
+			{'n', CharacterDirection::LeftToRight},
+			{'o', CharacterDirection::LeftToRight},
+			{'p', CharacterDirection::LeftToRight},
+			{'q', CharacterDirection::LeftToRight},
+			{'r', CharacterDirection::LeftToRight},
+            {'s', CharacterDirection::LeftToRight},
+			{'t', CharacterDirection::LeftToRight},
+			{'u', CharacterDirection::LeftToRight},
+			{'v', CharacterDirection::LeftToRight},
+			{'w', CharacterDirection::LeftToRight},
+			{'x', CharacterDirection::LeftToRight},
+			{'y', CharacterDirection::LeftToRight},
+			{'z', CharacterDirection::LeftToRight},
+			{'A', CharacterDirection::LeftToRight},
+			{'B', CharacterDirection::LeftToRight},
+			{'C', CharacterDirection::LeftToRight},
+			{'D', CharacterDirection::LeftToRight},
+			{'E', CharacterDirection::LeftToRight},
+			{'F', CharacterDirection::LeftToRight},
+            {'G', CharacterDirection::LeftToRight},
+			{'H', CharacterDirection::LeftToRight},
+			{'I', CharacterDirection::LeftToRight},
+			{'J', CharacterDirection::LeftToRight},
+			{'K', CharacterDirection::LeftToRight},
+			{'L', CharacterDirection::LeftToRight},
+			{'M', CharacterDirection::LeftToRight},
+			{'N', CharacterDirection::LeftToRight},
+			{'O', CharacterDirection::LeftToRight},
+			{'P', CharacterDirection::LeftToRight},
+			{'Q', CharacterDirection::LeftToRight},
+			{'R', CharacterDirection::LeftToRight},
+			{'S', CharacterDirection::LeftToRight},
+			{'T', CharacterDirection::LeftToRight},
+            {'U', CharacterDirection::LeftToRight},
+			{'V', CharacterDirection::LeftToRight},
+			{'W', CharacterDirection::LeftToRight},
+			{'X', CharacterDirection::LeftToRight},
+			{'Y', CharacterDirection::LeftToRight},
+			{'Z', CharacterDirection::LeftToRight},
 
-			// Character neutral to text direction
-			{u'-', CharacterDirection::NEUTRAL}, 
-			{u'_', CharacterDirection::NEUTRAL},
-			{u',', CharacterDirection::NEUTRAL},
-			{u';', CharacterDirection::NEUTRAL},
-			{u'.', CharacterDirection::NEUTRAL},
-			{u':', CharacterDirection::NEUTRAL},
-			{u'+', CharacterDirection::NEUTRAL},
-			{u'*', CharacterDirection::NEUTRAL},
-            {u'~', CharacterDirection::NEUTRAL},
-			{u'#', CharacterDirection::NEUTRAL},
-			{u'/', CharacterDirection::NEUTRAL},
-			{u'?', CharacterDirection::NEUTRAL}, // for Latin / Hebrew, this is ok. Arabic needs it mirrored
-			{u'!', CharacterDirection::NEUTRAL},
-			{u'%', CharacterDirection::NEUTRAL},
-			{u'#', CharacterDirection::NEUTRAL},
-			{u' ', CharacterDirection::NEUTRAL},
-			{u'|', CharacterDirection::NEUTRAL},
-			{u'$', CharacterDirection::NEUTRAL},
-			{u'@', CharacterDirection::NEUTRAL},
-			{u'^', CharacterDirection::NEUTRAL},
-            {u'"', CharacterDirection::NEUTRAL},
-			{u'=', CharacterDirection::NEUTRAL},
-			{u'&', CharacterDirection::NEUTRAL},
-			{u'\\', CharacterDirection::NEUTRAL},
-			{u'/', CharacterDirection::NEUTRAL},
-			{u'\u00A7', CharacterDirection::NEUTRAL}, // paragraph
+			// Character Neutral to text direction
+			{u'-', CharacterDirection::Neutral}, 
+			{u'_', CharacterDirection::Neutral},
+			{u',', CharacterDirection::Neutral},
+			{u';', CharacterDirection::Neutral},
+			{u'.', CharacterDirection::Neutral},
+			{u':', CharacterDirection::Neutral},
+			{u'+', CharacterDirection::Neutral},
+			{u'*', CharacterDirection::Neutral},
+            {u'~', CharacterDirection::Neutral},
+			{u'#', CharacterDirection::Neutral},
+			{u'/', CharacterDirection::Neutral},
+			{u'?', CharacterDirection::Neutral}, // for Latin / Hebrew, this is ok. Arabic needs it mirrored
+			{u'!', CharacterDirection::Neutral},
+			{u'%', CharacterDirection::Neutral},
+			{u'#', CharacterDirection::Neutral},
+			{u' ', CharacterDirection::Neutral},
+			{u'|', CharacterDirection::Neutral},
+			{u'$', CharacterDirection::Neutral},
+			{u'@', CharacterDirection::Neutral},
+			{u'^', CharacterDirection::Neutral},
+            {u'"', CharacterDirection::Neutral},
+			{u'=', CharacterDirection::Neutral},
+			{u'&', CharacterDirection::Neutral},
+			{u'\\', CharacterDirection::Neutral},
+			{u'/', CharacterDirection::Neutral},
+			{u'\u00A7', CharacterDirection::Neutral}, // paragraph
 
 			// Parentheses
-			{u'(', CharacterDirection::PARENTHESIS},
-			{u')', CharacterDirection::PARENTHESIS},
-			{u'[', CharacterDirection::PARENTHESIS},
-			{u']', CharacterDirection::PARENTHESIS},
-			{u'{', CharacterDirection::PARENTHESIS},
-			{u'}', CharacterDirection::PARENTHESIS},
-			{u'<', CharacterDirection::PARENTHESIS},
-			{u'>', CharacterDirection::PARENTHESIS},
+			{u'(', CharacterDirection::Parenthesis},
+			{u')', CharacterDirection::Parenthesis},
+			{u'[', CharacterDirection::Parenthesis},
+			{u']', CharacterDirection::Parenthesis},
+			{u'{', CharacterDirection::Parenthesis},
+			{u'}', CharacterDirection::Parenthesis},
+			{u'<', CharacterDirection::Parenthesis},
+			{u'>', CharacterDirection::Parenthesis},
 
             // Experimental
-            {u'\u21AA', CharacterDirection::NEUTRAL}, // return symbol
-            {u'\u21A4', CharacterDirection::NEUTRAL}, // backspace symbol
-            {u'\u2423', CharacterDirection::NEUTRAL}, // space symbol
-            {u'\u2191', CharacterDirection::NEUTRAL}, // shift symbol
-            {u'\u21BA', CharacterDirection::NEUTRAL}, // repeat symbol
-			{u'\u00B0', CharacterDirection::NEUTRAL } // degree symbol
+            {u'\u21AA', CharacterDirection::Neutral}, // return symbol
+            {u'\u21A4', CharacterDirection::Neutral}, // backspace symbol
+            {u'\u2423', CharacterDirection::Neutral}, // space symbol
+            {u'\u2191', CharacterDirection::Neutral}, // shift symbol
+            {u'\u21BA', CharacterDirection::Neutral}, // repeat symbol
+			{u'\u00B0', CharacterDirection::Neutral } // degree symbol
         };
 
 		// Additional German letters
         static const std::map<char16_t, CharacterDirection> GERMANY_GERMAN
         {
-            {u'\u00c4', CharacterDirection::LEFT_TO_RIGHT}, // AE
-            {u'\u00e4', CharacterDirection::LEFT_TO_RIGHT}, // ae
-            {u'\u00d6', CharacterDirection::LEFT_TO_RIGHT}, // OE
-            {u'\u00f6', CharacterDirection::LEFT_TO_RIGHT}, // oe
-            {u'\u00dc', CharacterDirection::LEFT_TO_RIGHT}, // UE
-            {u'\u00fc', CharacterDirection::LEFT_TO_RIGHT}, // ue
-            {u'\u00df', CharacterDirection::LEFT_TO_RIGHT}, // sz
-            {u'\u20AC', CharacterDirection::LEFT_TO_RIGHT}  // Euro
+            {u'\u00c4', CharacterDirection::LeftToRight}, // AE
+            {u'\u00e4', CharacterDirection::LeftToRight}, // ae
+            {u'\u00d6', CharacterDirection::LeftToRight}, // OE
+            {u'\u00f6', CharacterDirection::LeftToRight}, // oe
+            {u'\u00dc', CharacterDirection::LeftToRight}, // UE
+            {u'\u00fc', CharacterDirection::LeftToRight}, // ue
+            {u'\u00df', CharacterDirection::LeftToRight}, // sz
+            {u'\u20AC', CharacterDirection::LeftToRight}  // Euro
         };
 
 		// Modern Hebrew
 		static const std::map<char16_t, CharacterDirection> ISRAEL_HEBREW
 		{
-			{u'\u05E9', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D3', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D2', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05DB', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E2', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D9', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D7', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05DC', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05DA', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E3', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D6', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E1', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D1', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D4', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E0', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05DE', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E6', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05EA', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E5', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u20AA', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05F2', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05F1', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05F0', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E7', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E8', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D0', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D8', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05D5', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05DF', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05DD', CharacterDirection::RIGHT_TO_LEFT},
-			{u'\u05E4', CharacterDirection::RIGHT_TO_LEFT}
+			{u'\u05E9', CharacterDirection::RightToLeft},
+			{u'\u05D3', CharacterDirection::RightToLeft},
+			{u'\u05D2', CharacterDirection::RightToLeft},
+			{u'\u05DB', CharacterDirection::RightToLeft},
+			{u'\u05E2', CharacterDirection::RightToLeft},
+			{u'\u05D9', CharacterDirection::RightToLeft},
+			{u'\u05D7', CharacterDirection::RightToLeft},
+			{u'\u05DC', CharacterDirection::RightToLeft},
+			{u'\u05DA', CharacterDirection::RightToLeft},
+			{u'\u05E3', CharacterDirection::RightToLeft},
+			{u'\u05D6', CharacterDirection::RightToLeft},
+			{u'\u05E1', CharacterDirection::RightToLeft},
+			{u'\u05D1', CharacterDirection::RightToLeft},
+			{u'\u05D4', CharacterDirection::RightToLeft},
+			{u'\u05E0', CharacterDirection::RightToLeft},
+			{u'\u05DE', CharacterDirection::RightToLeft},
+			{u'\u05E6', CharacterDirection::RightToLeft},
+			{u'\u05EA', CharacterDirection::RightToLeft},
+			{u'\u05E5', CharacterDirection::RightToLeft},
+			{u'\u20AA', CharacterDirection::RightToLeft},
+			{u'\u05F2', CharacterDirection::RightToLeft},
+			{u'\u05F1', CharacterDirection::RightToLeft},
+			{u'\u05F0', CharacterDirection::RightToLeft},
+			{u'\u05E7', CharacterDirection::RightToLeft},
+			{u'\u05E8', CharacterDirection::RightToLeft},
+			{u'\u05D0', CharacterDirection::RightToLeft},
+			{u'\u05D8', CharacterDirection::RightToLeft},
+			{u'\u05D5', CharacterDirection::RightToLeft},
+			{u'\u05DF', CharacterDirection::RightToLeft},
+			{u'\u05DD', CharacterDirection::RightToLeft},
+			{u'\u05E4', CharacterDirection::RightToLeft}
 		};
     }
 }

@@ -208,7 +208,7 @@ namespace eyegui
 			glm::vec2 textureCoordinateA, textureCoordinateB, textureCoordinateC, textureCoordinateD;
 
             // Texture coordinates for this quad
-			if (rightToLeft && mpFont->getCharacterDirection(rContent.at(index)) == CharacterDirection::PARENTHESIS) // mirror when required (like parentheses when right to left text direction)
+			if (rightToLeft && mpFont->getCharacterDirection(rContent.at(index)) == CharacterDirection::Parenthesis) // mirror when required (like parentheses when right to left text direction)
 			{
 				textureCoordinateA = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.y);
 				textureCoordinateB = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
