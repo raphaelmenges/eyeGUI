@@ -195,13 +195,24 @@ namespace eyegui
             glm::vec3 positionC = glm::vec3(xPixelPen + (scale * pGlyph->size.x), yPixelPen + (scale * pGlyph->size.y), 0);
             glm::vec3 positionD = glm::vec3(xPixelPen, yPixelPen + (scale * pGlyph->size.y), 0);
 
-			// TODO: mirror parentheses if required
+			// Create variables for texture coordinates
+			glm::vec2 textureCoordinateA, textureCoordinateB, textureCoordinateC, textureCoordinateD;
 
             // Texture coordinates for this quad
-            glm::vec2 textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
-            glm::vec2 textureCoordinateB = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.y);
-            glm::vec2 textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
-            glm::vec2 textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
+			if (pGlyph->direction == CharacterDirection::PARENTHESIS) // mirror when required (like parentheses when right to left text direction)
+			{
+				textureCoordinateA = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.y);
+				textureCoordinateB = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
+				textureCoordinateC = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
+				textureCoordinateD = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
+			}
+			else // not mirrored
+			{
+				textureCoordinateA = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
+				textureCoordinateB = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.y);
+				textureCoordinateC = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.w);
+				textureCoordinateD = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.w);
+			}
 
 			// Advance x pen
             xPixelPen += scale * (float)pGlyph->advance.x;
@@ -224,13 +235,13 @@ namespace eyegui
         return word;
     }
 
-    RenderWord Text::calculateWord(const char16_t& rLetter, float scale) const
+    RenderWord Text::calculateWord(const char16_t& rLetter, float scale, bool mirrorParentheses) const
     {
         // Create string out of char
         std::u16string string(&rLetter, 1);
 
         // Delegate to standard
-        return std::move(calculateWord(string, scale));
+        return std::move(calculateWord(string, scale, mirrorParentheses));
     }
 
 	void Text::prepareText()

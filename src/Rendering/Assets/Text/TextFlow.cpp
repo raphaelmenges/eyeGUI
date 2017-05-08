@@ -403,7 +403,7 @@ namespace eyegui
                 // Add one flow part for the mark
                 std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
                 upFlowPart->mupRenderWord = std::unique_ptr<RenderWord>(
-                    new RenderWord(calculateWord(streamlinedContent.at(index), mScale)));
+                    new RenderWord(calculateWord(streamlinedContent.at(index), mScale, false))); // TODO: instead of false, give correct mirroring indicator
                 spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
 
                 // Go one letter further
