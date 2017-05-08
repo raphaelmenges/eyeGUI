@@ -515,7 +515,7 @@ namespace eyegui
                     std::shared_ptr<FlowEntity> spFlowEntity = mFlowEntities.at(currentEntityIndex);
 
                     // Check for new line. Is processed as all other entities. Will be always added to line
-                    // because its with is zero
+                    // because its width is zero
                     endOfParagraph = spFlowEntity->getType() == FlowEntity::Type::NewLine;
 
                     // Count of flow parts
