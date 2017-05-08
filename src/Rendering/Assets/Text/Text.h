@@ -39,8 +39,9 @@ namespace eyegui
         // Width of rendered word
         float pixelWidth;
 
-        // Position after single letters, first one is always zero to indicate position in front of first letter.
-		// So there are be letterCount + 1 many offsets
+        // Position after single letters, first one is zero to indicate position in front of first letter.
+		// Inverted order for right to left languages.
+		// There are be letterCount + 1 many offsets
         std::vector<int> xOffsets;
     };
 
@@ -72,7 +73,7 @@ namespace eyegui
 			int xOffset = 0,
 			int yOffset = 0) const = 0;
 
-        // Set content and call "calculateMesh"
+        // Set content and implicit call of "calculateMesh"
         void setContent(std::u16string content);
 
 		// Get height of line
@@ -100,7 +101,7 @@ namespace eyegui
             float lineHeight,
             RenderWordVertices& rVertices) = 0;
 
-        // Calculate single word and returns it
+        // Calculate single word and returns it. Does not look up character direction, just does as indicated in the parameters
         RenderWord calculateWord(const std::u16string& rContent, float scale, bool rightToLeft) const;
         RenderWord calculateWord(const char16_t& rLetter, float scale, bool rightToLeft) const;
 

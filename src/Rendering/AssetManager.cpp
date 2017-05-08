@@ -311,7 +311,7 @@ namespace eyegui
                 // Check filepath
                 if (!checkFileNameExtension(filepath, "ttf"))
                 {
-                    throwError(OperationNotifier::Operation::FONT_LOADING, "Font file has unknown format", filepath);
+                    throwWarning(OperationNotifier::Operation::FONT_LOADING, "Font file has unknown format", filepath);
                 }
 
                 // Load font to FreeType face

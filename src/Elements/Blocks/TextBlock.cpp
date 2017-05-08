@@ -83,7 +83,7 @@ namespace eyegui
         mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, textScale, textFlowContent));
     
 		// TODO TESTING
-		mupTextSimple = mpAssetManager->createTextSimple(FontSize::MEDIUM, 1, u"\u05D1abcd\u05D1\u05D1\u05D42017");
+		mupTextSimple = mpAssetManager->createTextSimple(FontSize::MEDIUM, 1, u"hallo \u05D1 abcd\u05D1\n\u05D1\u05D420171234");
 	}
 
     TextBlock::~TextBlock()

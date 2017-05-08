@@ -179,7 +179,7 @@ namespace eyegui
 		const int wordLength = (int)rContent.size();
         for (int i = 0; i < wordLength; i++)
         {
-			// If right to left text direction, switch index direction
+			// If right to left text direction, switch index direction of character access
 			int index = i;
 			if (rightToLeft)
 			{
@@ -237,10 +237,9 @@ namespace eyegui
             word.spVertices->push_back(std::make_pair(positionD, textureCoordinateD));
             word.spVertices->push_back(std::make_pair(positionA, textureCoordinateA));
 
-			// If right to left, change some things
+			// Change order of offsets for right to left text
 			if (rightToLeft)
 			{
-				// Change order of offsets
 				std::reverse(word.xOffsets.begin(), word.xOffsets.end());
 			}
         }

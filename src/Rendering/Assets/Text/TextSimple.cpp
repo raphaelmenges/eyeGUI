@@ -181,12 +181,17 @@ namespace eyegui
         float yPixelPen = -lineHeight; // first line should be also inside element
         float maxPixelWidth = 0;
         float pixelHeight = 0;
+		std::vector<
+			std::pair<
+				std::vector<std::pair<glm::vec3, glm::vec2> >, // position and texture coordinates
+				float> > // length of the line (used for right hand alignment if necessary)
+			vertices; // vertices per line
         for(const std::u16string line : collectedLines)
         {
-			// Collect parts of that line (some may left to right, other right to left directions)
+			// Collect parts of that line (some may left to right, other right to left in terms of direction)
 			std::vector<RenderWord> parts;
 
-			// Go over characters (some may left to right, other right to left directions)
+			// Go over characters
 			bool newPart = true;
 			bool partRightToLeft = false;
 			int index = 0;
@@ -194,8 +199,6 @@ namespace eyegui
 			int characterCount = line.length();
 			for (; index < characterCount; index++)
 			{
-				bool pushBackPart = false;
-
 				// Determine direction
 				auto direction = mpFont->getCharacterDirection(line.at(index));
 				if (direction == CharacterDirection::LEFT_TO_RIGHT)
@@ -207,9 +210,9 @@ namespace eyegui
 						partRightToLeft = false;
 						continue;
 					}
-					else if (!partRightToLeft) { continue; } // directions continues, ok
+					else if (!partRightToLeft) { continue; } // direction continues, ok
 
-					// End of part, add part to line and start new part
+					// End of part, add previous part to line and start new part
 					parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, true)); // previous part
 					newPart = true;
 					startIndex = index;
@@ -223,9 +226,9 @@ namespace eyegui
 						partRightToLeft = true;
 						continue;
 					}
-					else if (partRightToLeft) { continue; } // directions continues, ok
+					else if (partRightToLeft) { continue; } // direction continues, ok
 
-					// End of part, add part to line and start new part
+					// End of part, add previous part to line and start new part
 					parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, false)); // previous part
 					newPart = true;
 					startIndex = index;
@@ -239,6 +242,7 @@ namespace eyegui
 			}
 
             // Process collected parts
+			std::vector<std::pair<glm::vec3, glm::vec2> > lineVertices; // vertices of this line
 			float xPixelPen = 0.f;
 			int partCount = (int)parts.size();
 			for (int i = 0; i < partCount; i++)
@@ -254,7 +258,7 @@ namespace eyegui
 				for (uint j = 0; j < parts.at(index).spVertices->size(); j++)
 				{
 					const std::pair<glm::vec3, glm::vec2>& rVertex = parts.at(index).spVertices->at(j);
-					rVertices.push_back(
+					lineVertices.push_back(
 						std::make_pair(
 							glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
 							glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
@@ -270,7 +274,28 @@ namespace eyegui
             // Remember that line for evaluate size
             maxPixelWidth = std::max(maxPixelWidth, xPixelPen);
             pixelHeight += lineHeight;
+
+			// Push back vertices to collection
+			vertices.push_back(std::make_pair(lineVertices, xPixelPen)); // store vertices and width for this line
         }
+
+		// Concatenation of the vertices
+		for (auto& line : vertices)
+		{
+			// Change alignment to right hand side if required
+			if (globalRightToLeft)
+			{
+				// Add offset
+				float offset = maxPixelWidth - line.second;
+				for (auto & vertex : line.first)
+				{
+					vertex.first.x += offset;
+				}
+			}
+
+			// Insert vertices to given reference
+			rVertices.insert(rVertices.end(), line.first.begin(), line.first.end());
+		}
 
         // Save used width and height
         mTextWidth = (int)maxPixelWidth;

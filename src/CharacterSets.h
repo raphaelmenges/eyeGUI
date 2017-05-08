@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Character sets for generating texture atlases.
+// Character sets for generating texture atlases and indication of direction.
 
 #ifndef CHARACTER_SETS_H_
 #define CHARACTER_SETS_H_
@@ -97,7 +97,7 @@ namespace eyegui
             {u'~', CharacterDirection::NEUTRAL},
 			{u'#', CharacterDirection::NEUTRAL},
 			{u'/', CharacterDirection::NEUTRAL},
-			{u'?', CharacterDirection::NEUTRAL},
+			{u'?', CharacterDirection::NEUTRAL}, // for Latin / Hebrew, this is ok. Arabic needs it mirrored
 			{u'!', CharacterDirection::NEUTRAL},
 			{u'%', CharacterDirection::NEUTRAL},
 			{u'#', CharacterDirection::NEUTRAL},
