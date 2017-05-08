@@ -101,8 +101,8 @@ namespace eyegui
             RenderWordVertices& rVertices) = 0;
 
         // Calculate single word and returns it
-        RenderWord calculateWord(const std::u16string& rContent, float scale, bool mirrorParentheses) const;
-        RenderWord calculateWord(const char16_t& rLetter, float scale, bool mirrorParentheses) const;
+        RenderWord calculateWord(const std::u16string& rContent, float scale, bool rightToLeft) const;
+        RenderWord calculateWord(const char16_t& rLetter, float scale, bool rightToLeft) const;
 
 		// Prepare text
 		void prepareText();

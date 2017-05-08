@@ -166,7 +166,7 @@ namespace eyegui
         glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
     }
 
-    RenderWord Text::calculateWord(const std::u16string& rContent, float scale, bool mirrorParentheses) const
+    RenderWord Text::calculateWord(const std::u16string& rContent, float scale, bool rightToLeft) const
     {
         // Empty word
         RenderWord word;
@@ -199,7 +199,7 @@ namespace eyegui
 			glm::vec2 textureCoordinateA, textureCoordinateB, textureCoordinateC, textureCoordinateD;
 
             // Texture coordinates for this quad
-			if (pGlyph->direction == CharacterDirection::PARENTHESIS) // mirror when required (like parentheses when right to left text direction)
+			if (rightToLeft && pGlyph->direction == CharacterDirection::PARENTHESIS) // mirror when required (like parentheses when right to left text direction)
 			{
 				textureCoordinateA = glm::vec2(pGlyph->atlasPosition.z, pGlyph->atlasPosition.y);
 				textureCoordinateB = glm::vec2(pGlyph->atlasPosition.x, pGlyph->atlasPosition.y);
@@ -235,13 +235,13 @@ namespace eyegui
         return word;
     }
 
-    RenderWord Text::calculateWord(const char16_t& rLetter, float scale, bool mirrorParentheses) const
+    RenderWord Text::calculateWord(const char16_t& rLetter, float scale, bool rightToLeft) const
     {
         // Create string out of char
         std::u16string string(&rLetter, 1);
 
         // Delegate to standard
-        return std::move(calculateWord(string, scale, mirrorParentheses));
+        return std::move(calculateWord(string, scale, rightToLeft));
     }
 
 	void Text::prepareText()

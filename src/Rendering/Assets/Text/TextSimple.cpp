@@ -161,13 +161,16 @@ namespace eyegui
         collectedLines.push_back(streamlinedContent);
 
         // Go over collected lines
-        float yPixelPen = -lineHeight; // First line should be also inside element
+        float yPixelPen = -lineHeight; // first line should be also inside element
         float maxPixelWidth = 0;
         float pixelHeight = 0;
         for(const std::u16string line : collectedLines)
         {
+			// Determine text direction
+			bool rightToLeft = false; // TODO: work here
+
             // Just do whole line as one big word
-            RenderWord word = calculateWord(line, mScale, false);
+            RenderWord word = calculateWord(line, mScale, rightToLeft);
 
             // Assuming, that the count of vertices and texture coordinates is equal
             for (uint i = 0; i < word.spVertices->size(); i++)
