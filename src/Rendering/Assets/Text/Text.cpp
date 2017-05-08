@@ -176,9 +176,18 @@ namespace eyegui
 
         // Fill word with data
         float xPixelPen = 0;
-        for (uint i = 0; i < rContent.size(); i++)
+		const int wordLength = (int)rContent.size();
+        for (int i = 0; i < wordLength; i++)
         {
-            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, rContent.at(i));
+			// If right to left text direction, switch index direction
+			int index = i;
+			if (rightToLeft)
+			{
+                index = wordLength - index - 1;
+			}
+
+			// Get corresponding glyph
+            Glyph const * pGlyph = mpFont->getGlyph(mFontSize, rContent.at(index));
             if (pGlyph == NULL)
             {
                 throwWarning(
@@ -187,7 +196,7 @@ namespace eyegui
                 continue;
             }
 
-            float yPixelPen = 0 - (scale * (float)(pGlyph->size.y - pGlyph->bearing.y));
+            const float yPixelPen = 0 - (scale * (float)(pGlyph->size.y - pGlyph->bearing.y));
 
             // Positions for this quad
             glm::vec3 positionA = glm::vec3(xPixelPen, yPixelPen, 0);
@@ -227,6 +236,13 @@ namespace eyegui
             word.spVertices->push_back(std::make_pair(positionC, textureCoordinateC));
             word.spVertices->push_back(std::make_pair(positionD, textureCoordinateD));
             word.spVertices->push_back(std::make_pair(positionA, textureCoordinateA));
+
+			// If right to left, change some things
+			if (rightToLeft)
+			{
+				// Change order of offsets
+				std::reverse(word.xOffsets.begin(), word.xOffsets.end());
+			}
         }
 
         // Set width of whole word

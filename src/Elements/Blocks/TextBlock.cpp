@@ -81,7 +81,10 @@ namespace eyegui
 
         // Create text flow
         mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, textScale, textFlowContent));
-    }
+    
+		// TODO TESTING
+		mupTextSimple = mpAssetManager->createTextSimple(FontSize::MEDIUM, 1, u"(a)bc");
+	}
 
     TextBlock::~TextBlock()
     {
@@ -135,6 +138,9 @@ namespace eyegui
 
         // Drawing of text flow
         mupTextFlow->draw(getStyleValue(StylePropertyVec4::FontColor), mAlpha);
+
+		// TODO TESTING
+		mupTextSimple->draw(glm::vec4(1.0), 1.f, false, 0, 0);
     }
 
     void TextBlock::specialTransformAndSize()
@@ -144,5 +150,9 @@ namespace eyegui
 
         // Tell text flow about transformation
         mupTextFlow->transformAndSize(mInnerX, mInnerY, mInnerWidth, mInnerHeight);
+
+		// TODO TESTING
+		mupTextSimple->setPosition(mX, mY);
+		mupTextSimple->transform();
     }
 }

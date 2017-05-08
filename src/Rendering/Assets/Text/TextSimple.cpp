@@ -167,7 +167,7 @@ namespace eyegui
         for(const std::u16string line : collectedLines)
         {
 			// Determine text direction
-			bool rightToLeft = false; // TODO: work here
+            bool rightToLeft = true; // TODO: work here
 
             // Just do whole line as one big word
             RenderWord word = calculateWord(line, mScale, rightToLeft);
