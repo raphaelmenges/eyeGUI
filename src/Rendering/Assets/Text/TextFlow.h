@@ -81,7 +81,7 @@ namespace eyegui
 			}
 			else // no render word
 			{
-				// Fix for space: Since each space is represented by one flow part, return pixel width when index is 1
+				// For space: Since each space is represented by one flow part, return pixel width when index is 1
 				if (offsetIndex == 1)
 				{
 					return (int)getPixelWidth();

@@ -822,6 +822,7 @@ namespace eyegui
     {
         switch(rLetter)
         {
+			// TODO: some already defining in the character set
             case u' '	: return FlowEntity::Type::Space;
 			case u'\n'	: return FlowEntity::Type::NewLine;
             case u'.'	: return FlowEntity::Type::Mark;
