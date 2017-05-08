@@ -4,8 +4,8 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Very simple text asset for rendering.
-// TODO: Hebrew / right to left support
+// Very simple text asset for rendering. Does not care for alignment, one has
+// to position the text simple by herself.
 
 #ifndef TEXT_SIMPLE_H_
 #define TEXT_SIMPLE_H_

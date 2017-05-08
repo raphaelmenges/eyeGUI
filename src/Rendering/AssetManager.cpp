@@ -323,11 +323,16 @@ namespace eyegui
                 else
                 {
                     // Decide character set
-                    std::set<Character> characters = charsets::BASIC;
+					std::map<char16_t, CharacterDirection> characters;
+
+					// Add basic characters
+					characters.insert(charsets::BASIC.begin(), charsets::BASIC.end());
+
+					// Add further characters
                     switch (mpGUI->getCharacterSet())
                     {
                     case CharacterSet::GERMANY_GERMAN:
-                        characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
+						characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
                         break;
                     case CharacterSet::US_ENGLISH:
                         // Are there any special characters in us english?

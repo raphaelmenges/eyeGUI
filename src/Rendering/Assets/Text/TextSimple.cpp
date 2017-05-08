@@ -149,6 +149,23 @@ namespace eyegui
     {
         // OpenGL setup done in calling method
 
+		// Determine text direction by iterating through the content until first indicating character
+		bool globalRightToLeft = false;
+		for (const auto& character : streamlinedContent)
+		{
+			auto direction = mpFont->getCharacterDirection(character);
+			if (direction == CharacterDirection::LEFT_TO_RIGHT)
+			{
+				globalRightToLeft = false;
+				break;
+			}
+			else if (direction == CharacterDirection::RIGHT_TO_LEFT)
+			{
+				globalRightToLeft = true;
+				break;
+			}
+		}
+
         // Go over lines and collect them
         std::u16string delimiter = u"\n";
         size_t pos = 0;
@@ -166,27 +183,92 @@ namespace eyegui
         float pixelHeight = 0;
         for(const std::u16string line : collectedLines)
         {
-			// Determine text direction
-            bool rightToLeft = true; // TODO: work here
+			// Collect parts of that line (some may left to right, other right to left directions)
+			std::vector<RenderWord> parts;
 
-            // Just do whole line as one big word
-            RenderWord word = calculateWord(line, mScale, rightToLeft);
+			// Go over characters (some may left to right, other right to left directions)
+			bool newPart = true;
+			bool partRightToLeft = false;
+			int index = 0;
+			int startIndex = 0;
+			int characterCount = line.length();
+			for (; index < characterCount; index++)
+			{
+				bool pushBackPart = false;
 
-            // Assuming, that the count of vertices and texture coordinates is equal
-            for (uint i = 0; i < word.spVertices->size(); i++)
-            {               
-                const std::pair<glm::vec3, glm::vec2>& rVertex = word.spVertices->at(i);
-                    rVertices.push_back(
-                        std::make_pair(
-                            glm::vec3(rVertex.first.x, rVertex.first.y + yPixelPen, rVertex.first.z),
-                            glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
-            }
+				// Determine direction
+				auto direction = mpFont->getCharacterDirection(line.at(index));
+				if (direction == CharacterDirection::LEFT_TO_RIGHT)
+				{
+					// If new part, assign bool
+					if (newPart)
+					{
+						newPart = false;
+						partRightToLeft = false;
+						continue;
+					}
+					else if (!partRightToLeft) { continue; } // directions continues, ok
+
+					// End of part, add part to line and start new part
+					parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, true)); // previous part
+					newPart = true;
+					startIndex = index;
+				}
+				else if (direction == CharacterDirection::RIGHT_TO_LEFT)
+				{
+					// If new part, assign bool
+					if (newPart)
+					{
+						newPart = false;
+						partRightToLeft = true;
+						continue;
+					}
+					else if (partRightToLeft) { continue; } // directions continues, ok
+
+					// End of part, add part to line and start new part
+					parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, false)); // previous part
+					newPart = true;
+					startIndex = index;
+				}
+			}
+
+			// Push back remaining part
+			if (startIndex < characterCount)
+			{
+				parts.push_back(calculateWord(line.substr(startIndex, characterCount - startIndex ), mScale, partRightToLeft));
+			}
+
+            // Process collected parts
+			float xPixelPen = 0.f;
+			int partCount = (int)parts.size();
+			for (int i = 0; i < partCount; i++)
+			{
+				// If right to left text direction, switch index direction
+				int index = i;
+				if (globalRightToLeft)
+				{
+					index = partCount - index - 1;
+				}
+
+				// Assuming, that the count of vertices and texture coordinates is equal
+				for (uint j = 0; j < parts.at(index).spVertices->size(); j++)
+				{
+					const std::pair<glm::vec3, glm::vec2>& rVertex = parts.at(index).spVertices->at(j);
+					rVertices.push_back(
+						std::make_pair(
+							glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
+							glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
+				}
+
+				// Expand xPixelPen
+				xPixelPen += parts.at(index).pixelWidth;
+			}
 
             // Advance yPen
             yPixelPen -= lineHeight;
 
             // Remember that line for evaluate size
-            maxPixelWidth = std::max(maxPixelWidth, word.pixelWidth);
+            maxPixelWidth = std::max(maxPixelWidth, xPixelPen);
             pixelHeight += lineHeight;
         }
 

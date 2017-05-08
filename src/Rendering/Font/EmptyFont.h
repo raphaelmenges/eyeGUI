@@ -42,6 +42,9 @@ namespace eyegui
         // Bind atlas texture of font
         virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const;
 
+		// Get direction of character. Returns NEUTRAL if character not found
+		virtual CharacterDirection getCharacterDirection(char16_t character) const;
+
     private:
 
         // Members

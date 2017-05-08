@@ -18,7 +18,7 @@ namespace eyegui
         GUI const * pGUI,
         std::string filepath,
         std::unique_ptr<FT_Face> upFace,
-        std::set<Character> characterSet) : Font()
+        std::map<char16_t, CharacterDirection> characterSet) : Font()
     {
         // Fill members
         mpGUI = pGUI;
@@ -194,6 +194,19 @@ namespace eyegui
         }
     }
 
+	CharacterDirection AtlasFont::getCharacterDirection(char16_t character) const
+	{
+		auto entry = mCharacterSet.find(character);
+		if (entry == mCharacterSet.end())
+		{
+			return CharacterDirection::NEUTRAL;
+		}
+		else
+		{
+			return entry->second;
+		}
+	}
+
     Glyph const * AtlasFont::getGlyph(const std::map<char16_t, Glyph>& rGlyphMap, char16_t character) const
     {
         auto it = rGlyphMap.find(character);
@@ -275,10 +288,10 @@ namespace eyegui
         rLineHeight = (float)(rFace->height) / 64; // Given in 1/64 pixel
 
         // Go over character set and collect glyphs and bitmaps
-        for (const auto& rCharacter : mCharacterSet)
+        for (const auto& entry : mCharacterSet)
         {
-			// Store in local character variable
-			char16_t c = rCharacter.character;
+			// Extract character
+			char16_t c = entry.first;
 
             // Load current glyph in face
             if (FT_Load_Char(rFace, c, FT_LOAD_RENDER))
@@ -302,7 +315,6 @@ namespace eyegui
             rGlyphMap[c].bearing = glm::ivec2(
                 rFace->glyph->bitmap_left,
                 rFace->glyph->bitmap_top);
-			rGlyphMap[c].direction = rCharacter.direction; // text direction indicated by  character
 
             // Go over rows and write it mirrored into own buffer
             std::vector<unsigned char> mirrorBuffer;

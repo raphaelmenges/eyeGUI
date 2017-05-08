@@ -23,7 +23,6 @@ namespace eyegui
         glm::ivec2			size;			// Size in pixel
         glm::ivec2			bearing;		// Offset from baseline to left / top of glyph in pixel
         glm::vec2			advance;        // Offset to advance to next glyph in pixel
-		CharacterDirection	direction;		// Direction of text indicated by character represented by this glyph
     };
 
     class Font
@@ -50,6 +49,9 @@ namespace eyegui
 
         // Bind atlas texture of font
         virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const = 0;
+
+		// Get direction of character. Returns NEUTRAL if character not found
+		virtual CharacterDirection getCharacterDirection(char16_t character) const = 0;
     };
 }
 

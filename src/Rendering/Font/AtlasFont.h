@@ -33,7 +33,7 @@ namespace eyegui
             GUI const * pGUI,
             std::string filepath,
             std::unique_ptr<FT_Face> upFace,
-            std::set<Character> characterSet);
+            std::map<char16_t, CharacterDirection> characterSet);
 
         // Destructor
         virtual ~AtlasFont();
@@ -52,6 +52,9 @@ namespace eyegui
 
         // Bind atlas texture of font
         virtual void bindAtlasTexture(FontSize fontSize, uint slot = 0, bool linearFiltering = false) const;
+
+		// Get direction of character. Returns NEUTRAL if character not found
+		virtual CharacterDirection getCharacterDirection(char16_t character) const;
 
     private:
 
@@ -78,7 +81,7 @@ namespace eyegui
         // Members
         GUI const * mpGUI;
         std::unique_ptr<FT_Face> mupFace;
-        std::set<Character> mCharacterSet;
+        std::map<char16_t, CharacterDirection> mCharacterSet;
 
         std::map<char16_t, Glyph> mTallGlyphs;
         std::map<char16_t, Glyph> mMediumGlyphs;

@@ -83,7 +83,7 @@ namespace eyegui
         mupTextFlow = std::move(mpAssetManager->createTextFlow(fontSize, alignment, verticalAlignment, textScale, textFlowContent));
     
 		// TODO TESTING
-		mupTextSimple = mpAssetManager->createTextSimple(FontSize::MEDIUM, 1, u"(a)bc");
+		mupTextSimple = mpAssetManager->createTextSimple(FontSize::MEDIUM, 1, u"\u05D1abcd\u05D1\u05D1\u05D42017");
 	}
 
     TextBlock::~TextBlock()
@@ -140,7 +140,7 @@ namespace eyegui
         mupTextFlow->draw(getStyleValue(StylePropertyVec4::FontColor), mAlpha);
 
 		// TODO TESTING
-		mupTextSimple->draw(glm::vec4(1.0), 1.f, false, 0, 0);
+		mupTextSimple->draw(glm::vec4(1.0), 1.f, false, 128, 0);
     }
 
     void TextBlock::specialTransformAndSize()
