@@ -67,9 +67,6 @@ namespace eyegui
         // Members
         std::string mKey;
         std::unique_ptr<TextFlow> mupTextFlow;
-
-		// TODO TESTING
-		std::unique_ptr<TextSimple> mupTextSimple;
     };
 }
 
