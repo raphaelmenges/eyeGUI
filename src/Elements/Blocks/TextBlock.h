@@ -14,20 +14,20 @@
 
 namespace eyegui
 {
-    class TextBlock : public Block
-    {
-    public:
+	class TextBlock : public Block
+	{
+	public:
 
-        // Destructor
-        virtual ~TextBlock();
+		// Destructor
+		virtual ~TextBlock();
 
-        // Setter for content
-        void setContent(std::u16string content);
+		// Setter for content
+		void setContent(std::u16string content);
 
-        // Setter for key
-        void setKey(std::string key);
+		// Setter for key
+		void setKey(std::string key);
 
-    protected:
+	protected:
 
 		// Factory is friend
 		friend ElementFactory;
@@ -56,18 +56,21 @@ namespace eyegui
 			std::u16string content,
 			std::string key);
 
-        // Drawing filled by subclasses
-        virtual void specialDraw() const;
+		// Drawing filled by subclasses
+		virtual void specialDraw() const;
 
-        // Transformation
-        virtual void specialTransformAndSize();
+		// Transformation
+		virtual void specialTransformAndSize();
 
-    private:
+	private:
 
-        // Members
-        std::string mKey;
-        std::unique_ptr<TextFlow> mupTextFlow;
-    };
+		// Members
+		std::string mKey;
+		std::unique_ptr<TextFlow> mupTextFlow;
+
+		// TODO TESTING
+		std::unique_ptr<TextSimple> mupTextSimple;
+	};
 }
 
 #endif // TEXT_BLOCK_H_

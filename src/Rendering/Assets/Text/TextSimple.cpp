@@ -192,46 +192,49 @@ namespace eyegui
 			std::vector<RenderWord> parts;
 
 			// Go over characters
-			bool newPart = true;
+			bool directionUndecided = true;
 			bool partRightToLeft = false;
-			int index = 0;
 			int startIndex = 0;
 			int characterCount = line.length();
-			for (; index < characterCount; index++)
+			for (int index = 0; index < characterCount; index++)
 			{
 				// Determine direction
 				auto direction = mpFont->getCharacterDirection(line.at(index));
-				if (direction == CharacterDirection::LeftToRight)
+				if (directionUndecided) // direction not yet decided
 				{
-					// If new part, assign bool
-					if (newPart)
+					if (direction == CharacterDirection::LeftToRight)
 					{
-						newPart = false;
 						partRightToLeft = false;
-						continue;
+						directionUndecided = false;
 					}
-					else if (!partRightToLeft) { continue; } // direction continues, ok
-
-					// End of part, add previous part to line and start new part
-					parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, true)); // previous part
-					newPart = true;
-					startIndex = index;
-				}
-				else if (direction == CharacterDirection::RightToLeft)
-				{
-					// If new part, assign bool
-					if (newPart)
+					else if (direction == CharacterDirection::RightToLeft)
 					{
-						newPart = false;
 						partRightToLeft = true;
-						continue;
+						directionUndecided = false;
 					}
-					else if (partRightToLeft) { continue; } // direction continues, ok
-
-					// End of part, add previous part to line and start new part
-					parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, false)); // previous part
-					newPart = true;
-					startIndex = index;
+				}
+				else // direction has been initially decided
+				{
+					if (direction == CharacterDirection::LeftToRight)
+					{
+						if (!partRightToLeft) { continue; } // direction continues, ok
+						else
+						{
+							parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, true)); // previous part
+							startIndex = index;
+							partRightToLeft = false;
+						}
+					}
+					else if (direction == CharacterDirection::RightToLeft)
+					{
+						if (partRightToLeft) { continue; } // direction continues, ok
+						else
+						{
+							parts.push_back(calculateWord(line.substr(startIndex, index - startIndex), mScale, false)); // previous part
+							startIndex = index;
+							partRightToLeft = true;
+						}
+					}			
 				}
 			}
 

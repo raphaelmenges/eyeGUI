@@ -348,10 +348,19 @@ namespace eyegui
         // Get entities out of content
         uint letterCount = (uint)streamlinedContent.size();
         uint index = 0;
+		// TODO: global direction of text flow
+		bool partRightToLeft = false;
+		bool newPart = true;
+
+		// Go over streamlined content
         while(index < letterCount)
 		{
             // Determine type
             FlowEntity::Type type = classifyLetter(streamlinedContent.at(index));
+
+			// Determine direction indicated by letter (or previous letters)
+			CharacterDirection direction = mpFont->getCharacterDirection(streamlinedContent.at(index));
+			// TODO
 
             // Initialize entity
             std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
