@@ -199,7 +199,7 @@ namespace eyegui
 			for (int index = 0; index < characterCount; index++)
 			{
 				// Determine direction
-				auto direction = mpFont->getCharacterDirection(line.at(index));
+				CharacterDirection direction = mpFont->getCharacterDirection(line.at(index));
 				if (directionUndecided) // direction not yet decided
 				{
 					if (direction == CharacterDirection::LeftToRight)

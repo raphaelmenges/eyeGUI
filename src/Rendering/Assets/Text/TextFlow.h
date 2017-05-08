@@ -210,6 +210,12 @@ namespace eyegui
             index += mContentStartIndex;
             return index;
         }
+		
+		// Return direction of rendered text
+		bool isRightToLeft() const
+		{
+			return rightToLeft;
+		}
 
     protected:
 
@@ -242,6 +248,7 @@ namespace eyegui
         uint mContentStartIndex = 0; // index in content where flow entity starts
         uint mIndex = 0; // index within flow entity vector
         std::vector<std::shared_ptr<FlowPart> > mFlowParts;
+		bool rightToLeft = false; // bool indicating rendering direction
     };
 
     // Text flow class
@@ -327,10 +334,10 @@ namespace eyegui
             RenderWordVertices& rVertices);
 
         // Calculate word with maximal width (in doubt split it). If result is empty, not enough space available
-        std::vector<RenderWord> calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const;
+        std::vector<RenderWord> calculateFitWord(std::u16string content, int maxPixelWidth, float scale, bool rightToLeft) const;
 
-        // Inserts word into vector, returns true at success
-        bool insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const;
+        // Inserts word into render words vector, returns true at success and false if not enough space available
+        bool insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale, bool rightToLeft) const;
 
         // Classify letter in terms of entity type
         FlowEntity::Type classifyLetter(const char16_t& rLetter) const;

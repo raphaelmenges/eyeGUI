@@ -348,9 +348,54 @@ namespace eyegui
         // Get entities out of content
         uint letterCount = (uint)streamlinedContent.size();
         uint index = 0;
-		// TODO: global direction of text flow
-		bool partRightToLeft = false;
-		bool newPart = true;
+		bool globalRightToLeft = false;
+		
+		// Determine initial text direction
+		for (const auto& character : streamlinedContent)
+		{
+			CharacterDirection direction = mpFont->getCharacterDirection(character);
+			if (direction == CharacterDirection::LeftToRight)
+			{
+				globalRightToLeft = false;
+				break;
+			}
+			else if (direction == CharacterDirection::RightToLeft)
+			{
+				globalRightToLeft = true;
+				break;
+			}
+		}
+
+		// Inner text direction, which can change depending on letters in text
+		bool partRightToLeft = globalRightToLeft;
+
+		// ### TODO ###
+		// - only per flow entity right now. implement direction for multiple entities
+		// - for this: use global direction
+
+		// Define a lambda to check for direction change
+		const std::function<bool(bool&, char16_t)> directionChange = [this](bool& rRightToLeft, char16_t character)
+		{
+			CharacterDirection direction = this->mpFont->getCharacterDirection(character);
+			bool directionChanged = false;
+			if (direction == CharacterDirection::LeftToRight)
+			{
+				if (rRightToLeft)
+				{
+					directionChanged = true;
+					rRightToLeft = false;
+				}
+			}
+			else if (direction == CharacterDirection::RightToLeft)
+			{
+				if (!rRightToLeft)
+				{
+					directionChanged = true;
+					rRightToLeft = true;
+				}
+			}
+			return directionChanged;
+		};
 
 		// Go over streamlined content
         while(index < letterCount)
@@ -358,19 +403,16 @@ namespace eyegui
             // Determine type
             FlowEntity::Type type = classifyLetter(streamlinedContent.at(index));
 
-			// Determine direction indicated by letter (or previous letters)
-			CharacterDirection direction = mpFont->getCharacterDirection(streamlinedContent.at(index));
-			// TODO
-
             // Initialize entity
             std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
             spFlowEntity->mType = type;
             spFlowEntity->mContentStartIndex = index;
             spFlowEntity->mIndex = (uint)mFlowEntities.size();
+			spFlowEntity->rightToLeft = partRightToLeft; // important to fill it here and not after the switch statement
 
             switch(spFlowEntity->mType)
             {
-            case FlowEntity::Type::Space:
+            case FlowEntity::Type::Space: // cannot change direction
             {              
                 // Determine end index of word in content
                 uint endIndex = index;
@@ -395,7 +437,7 @@ namespace eyegui
             }
             break;
 
-			case FlowEntity::Type::NewLine:
+			case FlowEntity::Type::NewLine: // cannot change direction
 			{
 				// Add empty flow part for the new line
 				std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
@@ -407,7 +449,7 @@ namespace eyegui
 			}
 			break;
 
-            case FlowEntity::Type::Mark:
+            case FlowEntity::Type::Mark: // cannot change direction
             {
                 // Add one flow part for the mark
                 std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
@@ -420,21 +462,22 @@ namespace eyegui
             }
             break;
 
-            case FlowEntity::Type::Word:
+            case FlowEntity::Type::Word: // can change direction
             {
                 // Determine end index of word in content
                 uint endIndex = index;
                 while (
                     endIndex < letterCount - 1
                     && classifyLetter(streamlinedContent.at(endIndex + 1))
-                        == FlowEntity::Type::Word)
+                        == FlowEntity::Type::Word // classification as word
+					&& !directionChange(partRightToLeft, streamlinedContent.at(endIndex + 1))) // direction does not change, otherwise end word and start next one
                 {
                     endIndex++;
                 }
 
                 // Create vector of fitting words
                 std::vector<RenderWord> fitWords;
-                failure |= !insertFitWord(fitWords, streamlinedContent.substr(index, (endIndex - index) + 1), mWidth, mScale);
+                failure |= !insertFitWord(fitWords, streamlinedContent.substr(index, (endIndex - index) + 1), mWidth, mScale, spFlowEntity->isRightToLeft());
 
                 // Create flow parts words using fit words
                 for (const auto& rFitWord : fitWords)
@@ -762,10 +805,10 @@ namespace eyegui
 		}
     }
 
-    std::vector<RenderWord> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale) const
+    std::vector<RenderWord> TextFlow::calculateFitWord(std::u16string content, int maxPixelWidth, float scale, bool rightToLeft) const
     {
         // Calculate word from content
-        RenderWord word = calculateWord(content, scale, false); // TODO: define here whether to mirror parentheses or not
+        RenderWord word = calculateWord(content, scale, rightToLeft);
 
         // End of recursion
         if ((content.size() == 1 && word.pixelWidth > maxPixelWidth) || content.empty())
@@ -786,8 +829,8 @@ namespace eyegui
             int right = length - left;
 
             // Combine results from recursive call
-            std::vector<RenderWord> leftWord = calculateFitWord(content.substr(0, left), maxPixelWidth, scale);
-            std::vector<RenderWord> rightWord = calculateFitWord(content.substr(left, right), maxPixelWidth, scale);
+            std::vector<RenderWord> leftWord = calculateFitWord(content.substr(0, left), maxPixelWidth, scale, rightToLeft);
+            std::vector<RenderWord> rightWord = calculateFitWord(content.substr(left, right), maxPixelWidth, scale, rightToLeft);
 
             // If one or more of both are empty, forget it
             if (leftWord.empty() || rightWord.empty())
@@ -803,7 +846,7 @@ namespace eyegui
         }
     }
 
-    bool TextFlow::insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale) const
+    bool TextFlow::insertFitWord(std::vector<RenderWord>& rWords, const std::u16string& rContent, int maxPixelWidth, float scale, bool rightToLeft) const
     {
         // Do nothing if input is empty
         if (rContent.empty())
@@ -811,7 +854,7 @@ namespace eyegui
             return true;
         }
 
-        std::vector<RenderWord> newWords = calculateFitWord(rContent, maxPixelWidth, scale);
+        std::vector<RenderWord> newWords = calculateFitWord(rContent, maxPixelWidth, scale, rightToLeft);
 
         // Check, whether call was successful
         if (newWords.empty())
