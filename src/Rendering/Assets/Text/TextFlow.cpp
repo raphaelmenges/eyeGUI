@@ -369,11 +369,6 @@ namespace eyegui
 		// Inner text direction, which can change depending on letters in text
 		bool partRightToLeft = globalRightToLeft;
 
-		// ### TODO ###
-		// - only per flow entity right now. implement direction for multiple entities
-		// - use global direction 
-		// - add new alignment type: natural that aligns by language (and is already implemented for text simple)
-
 		// Define a lambda to check for direction change
 		const std::function<bool(bool&, char16_t)> directionChange = [this](bool& rRightToLeft, char16_t character)
 		{
@@ -717,6 +712,8 @@ namespace eyegui
 				}
 
 				// *** DRAW LINE ***
+
+				// TODO: cluster latin / hebrew text, so it is not messed up at typesetting at BIDI usage
 
                 // Prepare xPixelPen for drawing
 				float xPixelPen = xOffset;
