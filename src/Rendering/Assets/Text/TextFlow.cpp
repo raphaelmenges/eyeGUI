@@ -689,14 +689,30 @@ namespace eyegui
                 // Calculate the new line width
                 float newLineWidth = nonSpaceWidth + (drawnSpaceFlowPartCount * dynamicSpace);
 
-				// Now decide xOffset for line
-				float xOffset = 0;
-				if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER)
+				// Now decide xOffset for line (includes for right to left also offset of starting point)
+				float xOffset = 0; // used for left, right and center alignment, not justify
+				if (globalRightToLeft) // right to left direction
 				{
-                    xOffset = (float)mWidth - newLineWidth;
-					if (mAlignment == TextFlowAlignment::CENTER)
+					xOffset = newLineWidth; // left
+					if (mAlignment == TextFlowAlignment::RIGHT) // right
 					{
-						xOffset /= 2.0f;
+						xOffset = (float)mWidth;
+					}
+					else if(mAlignment == TextFlowAlignment::CENTER) // center
+					{
+						xOffset = (float)mWidth - (((float)mWidth - newLineWidth) / 2.f);
+					}
+				}
+				else // left to right direction
+				{
+					xOffset = 0; // left
+					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER) // right or center
+					{
+						xOffset = (float)mWidth - newLineWidth;
+						if (mAlignment == TextFlowAlignment::CENTER) // center
+						{
+							xOffset /= 2.f;
+						}
 					}
 				}
 
@@ -716,7 +732,7 @@ namespace eyegui
                     uint flowPartIndex = entityIndex == 0 ? initialFlowPartIndex : 0;
                     for (; flowPartIndex < flowPartCount; flowPartIndex++)
                     {
-						// *** SET REMAINING WIDTH OF FLOW PART ***
+						// *** SET WIDTH OF FLOW PARTS THAT IS NOT YET SET ***
 						if (spFlowEntity->getType() == FlowEntity::Type::Space) // space
 						{
 							// Set pixel with of space flow part as fallback

@@ -213,7 +213,7 @@ namespace eyegui
 						directionUndecided = false;
 					}
 				}
-				else // direction has been initially decided
+				else // direction has been initially decided for this line
 				{
 					if (direction == CharacterDirection::LeftToRight)
 					{
@@ -257,7 +257,7 @@ namespace eyegui
 					index = partCount - index - 1;
 				}
 
-				// Assuming, that the count of vertices and texture coordinates is equal
+				// Push back vertices for this line
 				for (uint j = 0; j < parts.at(index).spVertices->size(); j++)
 				{
 					const std::pair<glm::vec3, glm::vec2>& rVertex = parts.at(index).spVertices->at(j);
