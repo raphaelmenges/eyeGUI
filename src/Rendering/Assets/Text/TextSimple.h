@@ -4,8 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Very simple text asset for rendering. Does not care for alignment, one has
-// to position the text simple by herself.
+// Very simple text asset for rendering. Does perform natural alignment on
+// rendered text, e.g. left to right text is aligned at left side and
+// right to left text at the right side.
 
 #ifndef TEXT_SIMPLE_H_
 #define TEXT_SIMPLE_H_

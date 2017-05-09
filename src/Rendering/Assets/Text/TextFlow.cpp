@@ -372,6 +372,7 @@ namespace eyegui
 		// ### TODO ###
 		// - only per flow entity right now. implement direction for multiple entities
 		// - for this: use global direction
+		// - add new alignment type: natural that aligns by language (and is already implemented for text simple)
 
 		// Define a lambda to check for direction change
 		const std::function<bool(bool&, char16_t)> directionChange = [this](bool& rRightToLeft, char16_t character)
