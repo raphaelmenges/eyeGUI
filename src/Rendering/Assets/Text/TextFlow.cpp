@@ -15,6 +15,9 @@
 
 #include <cmath>
 
+// TODO TESTING
+#include <iostream>
+
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -460,13 +463,18 @@ namespace eyegui
 
             case FlowEntity::Type::Word: // can change direction
             {
+				// TODO: right to left not correctly recognized here for each entity!!!
+
+				// Update partRightToLeft for the case the word is at end of content and single
+				directionChange(partRightToLeft, streamlinedContent.at(index)); // maybe find better place for this, as is might be confusing
+
                 // Determine end index of word in content
                 uint endIndex = index;
                 while (
                     endIndex < letterCount - 1
+					&& !directionChange(partRightToLeft, streamlinedContent.at(endIndex + 1)) // direction does not change, otherwise end word and start next one. Assuming, that only content of words can trigger direction change
                     && classifyLetter(streamlinedContent.at(endIndex + 1))
-                        == FlowEntity::Type::Word // classification as word
-					&& !directionChange(partRightToLeft, streamlinedContent.at(endIndex + 1))) // direction does not change, otherwise end word and start next one
+                        == FlowEntity::Type::Word) // classification as word
                 {
                     endIndex++;
                 }
@@ -725,107 +733,192 @@ namespace eyegui
 					}
 				}
 
-				// *** DRAW LINE ***
+				// *** CLUSTER TO PARTS WITH HOMOGENE DIRECTION ***
 
-				// TODO: cluster latin / hebrew text, so it is not messed up at typesetting at BIDI usage
-				// Ideas:
-				// - collect entities below and cluster them at drawing for correct direction.
+				// TODO TESTING
+				std::cout << "Start of part clustering" << std::endl;
+
+				typedef std::pair< // pair of entity vector and direction indication
+					std::vector< // vector of enties and pairs
+						std::pair< // pair of entity and index
+							std::shared_ptr<FlowEntity>, // shared pointer to entity
+							uint>>, // index of entity within line
+					bool> // right to left indication for this part
+					Part;
+				std::vector<Part> parts; // vector of parts in this line
+				std::vector<std::pair<std::shared_ptr<FlowEntity>, uint > > helperPart; // only used in following loop
+				bool rightToLeft = line.at(0)->isRightToLeft(); // assuming there is always at least one entity in a line
+				for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++)
+				{
+					std::shared_ptr<FlowEntity> spEntity = line.at(entityIndex);
+
+					// TODO TESTING
+					std::cout << "Entity Index: " << entityIndex << " RightToLeft: " << spEntity->isRightToLeft() << std::endl;
+
+					if (spEntity->isRightToLeft() != rightToLeft)
+					{
+						// Direction has changed for this entity
+						parts.push_back(std::make_pair(helperPart, rightToLeft)); // deep copy helper part into part vector of this line
+						helperPart.clear(); // clear helper part
+					}
+
+					// Add current entity into helper part, including entity index
+					helperPart.push_back(std::make_pair(spEntity, entityIndex));
+				}
+				parts.push_back(std::make_pair(helperPart, rightToLeft)); // left over
+
+
+				// *** DRAW LINE ***
 
                 // Prepare xPixelPen for drawing
 				float xPixelPen = xOffset;
 
+				// TODO TESTING
+				std::cout << "Part Count: " << parts.size() << std::endl;
+
 				// Integrate entities' geometry to renderable mesh structure
-                for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++) // index in line pointing to entity
+                for(auto& rPart : parts) // go over directional homogene parts
 				{
-                    // Fetch pointer to currently drawn entity
-                    std::shared_ptr<FlowEntity> spFlowEntity = line.at(entityIndex);
+					// *** SIZE OF PART ***
 
-                    // Go over flow parts which are in line
-                    uint flowPartCount = entityIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(entityIndex)->getFlowPartCount();
-                    uint flowPartIndex = entityIndex == 0 ? initialFlowPartIndex : 0;
-                    for (; flowPartIndex < flowPartCount; flowPartIndex++)
-                    {
-						// *** SET WIDTH OF FLOW PARTS THAT IS NOT YET SET ***
-						if (spFlowEntity->getType() == FlowEntity::Type::Space) // space
+					// Calculate horizontal size of this part
+					float partWidth = 0;
+					bool partRightToLeft = rPart.second; // direction of this part
+					for (auto& rEntity : rPart.first)
+					{
+						// Extract entity and its index
+						auto spEntity = rEntity.first;
+						uint entityIndex = rEntity.second;
+
+						// Go over flow parts
+						uint flowPartCount = entityIndex == line.size() - 1 ? endFlowPartIndex + 1 : spEntity->getFlowPartCount();
+						uint flowPartIndex = entityIndex == 0 ? initialFlowPartIndex : 0;
+						for (; flowPartIndex < flowPartCount; flowPartIndex++)
 						{
-							// Set pixel with of space flow part as fallback
-							if (spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
+							// Set width of flow parts that is not yet set
+							if (spEntity->getType() == FlowEntity::Type::Space) // space
 							{
-								spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
+								// Set pixel with of space flow part as fallback
+								if (spEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
+								{
+									spEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
+								}
+								else
+								{
+									spEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
+								}
 							}
-							else
-							{
-								spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
-							}
-						}
 
-						// *** ADVANCE X PIXEL PEN FOR RIGHT TO LEFT ***
+							// Accumulate width of this directional part
+							partWidth += spEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+						}
+					}
+
+					// *** DRAWING OF PART ***
+
+					// global right to left -> pen starts at right side and degreases for every entry
+
+					// Advance xPixelPen for right to left
+					float partXPixelPen = xPixelPen; // Standard when global and part have the same direction
+
+					// For global right to left, pen is at the right side of the canvas. So move it to the left end of the upcoming part to start drawing from left to right
+					if (globalRightToLeft && !partRightToLeft)
+					{
+						partXPixelPen -= partWidth;
+					}
+					else if (!globalRightToLeft && partRightToLeft) // analogous case
+					{
+						partXPixelPen += partWidth;
+					}
+
+					// Draw one part
+					for (auto& rEntity : rPart.first)
+					{
+						// Extract entity and its index
+						auto spEntity = rEntity.first;
+						uint entityIndex = rEntity.second;
+
+						// Go over flow parts which are in line (same as above)
+						uint flowPartCount = entityIndex == line.size() - 1 ? endFlowPartIndex + 1 : spEntity->getFlowPartCount();
+						uint flowPartIndex = entityIndex == 0 ? initialFlowPartIndex : 0;
+						for (; flowPartIndex < flowPartCount; flowPartIndex++)
+						{
+							// Advance partXPixelPen for right to left
+							if (partRightToLeft)
+							{
+								// Width of flow part must be known at this time
+								partXPixelPen -= spEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+							}
+
+							// Fill position of complete entity
+							if (pPreviousFilledEntity != line.at(entityIndex).get()) // fill it only once, so equal to first part's
+							{
+								spEntity->mX = (int)partXPixelPen;
+								spEntity->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
+							}
+
+							// Fill position of entity part
+							if (spEntity->getType() == FlowEntity::Type::Space) // space
+							{
+								// Save position in flow part
+								spEntity->mFlowParts.at(flowPartIndex)->mX = (int)partXPixelPen;
+								spEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
+							}
+							else if (spEntity->getType() == FlowEntity::Type::NewLine) // new line
+							{
+								// Save position in flow part (different from other entities!)
+								spEntity->mFlowParts.at(flowPartIndex)->mX = 0; // TODO: For right to left more like width?
+								spEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen - lineHeight) - lineHeight));
+							}
+							else // word or mark
+							{
+								// Draw word of flow part
+								if (spEntity->mFlowParts.at(flowPartIndex)->mupRenderWord != nullptr)
+								{
+									const auto* pRenderWord = line.at(entityIndex)->mFlowParts.at(flowPartIndex)->mupRenderWord.get();
+
+									// Push back positions and texture coordinates
+									for (uint i = 0; i < pRenderWord->spVertices->size(); i++)
+									{
+										const std::pair<glm::vec3, glm::vec2>& rVertex = pRenderWord->spVertices->at(i);
+										rVertices.push_back(
+											std::make_pair(
+												glm::vec3(rVertex.first.x + partXPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
+												glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
+									}
+								}
+								else
+								{
+									throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
+									failure |= true;
+								}
+
+								// Save position in flow part
+								spEntity->mFlowParts.at(flowPartIndex)->mX = (int)partXPixelPen;
+								spEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
+							}
+
+							// Advance partXPixelPen for left to right
+							if (!partRightToLeft)
+							{
+								partXPixelPen += spEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+							}
+
+						} // end of flow part iteration
+
+						// Update xPixelPen
 						if (globalRightToLeft)
 						{
-							// Width of flow part must be known at this time
-							xPixelPen -= spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+							xPixelPen -= partWidth;
 						}
-
-						// *** APPLY X PIXEL PEN FOR STORING POSITION OF FLOW ENTITY AND FLOW AND MESH GENERATION ***
-
-						// Fill position of complete entity
-						if (pPreviousFilledEntity != line.at(entityIndex).get()) // fill it only once, so equal to first part's
+						else
 						{
-							spFlowEntity->mX = (int)xPixelPen;
-							spFlowEntity->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
+							xPixelPen += partWidth;
 						}
 
-						// Fill position of entity part
-                        if(spFlowEntity->getType() == FlowEntity::Type::Space) // space
-                        {
-                            // Save position in flow part
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
-                        }
-						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
-						{
-                            // Save position in flow part (different from other entities!)
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = 0; // TODO: For right to left more like width?
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen- lineHeight) - lineHeight));
-						}
-                        else // word or mark
-                        {
-                            // Draw word of flow part
-                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupRenderWord != nullptr)
-                            {
-                                const auto* pRenderWord = line.at(entityIndex)->mFlowParts.at(flowPartIndex)->mupRenderWord.get();
-
-                                // Push back positions and texture coordinates
-                                for (uint i = 0; i < pRenderWord->spVertices->size(); i++)
-                                {
-                                    const std::pair<glm::vec3, glm::vec2>& rVertex = pRenderWord->spVertices->at(i);
-                                    rVertices.push_back(
-                                        std::make_pair(
-                                            glm::vec3(rVertex.first.x + xPixelPen, rVertex.first.y + yPixelPen, rVertex.first.z),
-                                            glm::vec2(glm::vec2(rVertex.second.s, rVertex.second.t))));
-                                }
-                            }
-                            else
-                            {
-                                throwWarning(OperationNotifier::Operation::BUG, "TextFlow has nullptr in flow part which should not exist");
-                                failure |= true;
-                            }
-
-                            // Save position in flow part
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
-                        }
-
-						// *** ADVANCE X PIXEL PEN FOR LEFT TO RIGHT ***
-						if (!globalRightToLeft)
-						{
-							xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
-						}
-
-                    } // end of flow part iteration
-
-                    // Update previous filled entity
-                    pPreviousFilledEntity = spFlowEntity.get();
+						// Update previous filled entity
+						pPreviousFilledEntity = spEntity.get();
+					}  
 
                 } // end of line
 
