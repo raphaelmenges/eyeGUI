@@ -250,7 +250,7 @@ namespace eyegui
 			int partCount = (int)parts.size();
 			for (int i = 0; i < partCount; i++)
 			{
-				// If right to left text direction, switch index direction
+				// If right to left text direction, switch index direction to render last part at first
 				int index = i;
 				if (globalRightToLeft)
 				{

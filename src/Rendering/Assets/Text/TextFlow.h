@@ -347,7 +347,7 @@ namespace eyegui
         TextFlowVerticalAlignment mVerticalAlignment;
         int mWidth;
         int mHeight;
-		int mFlowWidth;
+		int mFlowWidth; // TODO: is this correct for right to left directional texts?
         int mFlowHeight;
 		float mPixelOfSpace;
 		bool mOverflowHeight; // when overflow height, height in transformAndSize is ignored and overwritten by height necessary to display complete text

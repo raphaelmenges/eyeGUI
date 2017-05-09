@@ -371,7 +371,7 @@ namespace eyegui
 
 		// ### TODO ###
 		// - only per flow entity right now. implement direction for multiple entities
-		// - for this: use global direction
+		// - use global direction 
 		// - add new alignment type: natural that aligns by language (and is already implemented for text simple)
 
 		// Define a lambda to check for direction change
@@ -409,7 +409,7 @@ namespace eyegui
             spFlowEntity->mType = type;
             spFlowEntity->mContentStartIndex = index;
             spFlowEntity->mIndex = (uint)mFlowEntities.size();
-			spFlowEntity->rightToLeft = partRightToLeft; // important to fill it here and not after the switch statement
+			spFlowEntity->rightToLeft = partRightToLeft; // has to be done here, as directionChange is here called for next letter from content
 
             switch(spFlowEntity->mType)
             {
@@ -478,7 +478,7 @@ namespace eyegui
 
                 // Create vector of fitting words
                 std::vector<RenderWord> fitWords;
-                failure |= !insertFitWord(fitWords, streamlinedContent.substr(index, (endIndex - index) + 1), mWidth, mScale, spFlowEntity->isRightToLeft());
+                failure |= !insertFitWord(fitWords, streamlinedContent.substr(index, (endIndex - index) + 1), mWidth, mScale, spFlowEntity->isRightToLeft()); // use rightToLeft from entity here, not the variable as already set for upcoming entity!
 
                 // Create flow parts words using fit words
                 for (const auto& rFitWord : fitWords)
@@ -527,7 +527,7 @@ namespace eyegui
             // Remember previous filled entity to save position of first flow part of flow entity later at drawing
             FlowEntity const * pPreviousFilledEntity = nullptr;
 
-			// Go over lines
+			// Create the lines
 			while (
 				hasNext // entities left for new line
 				&& (glm::abs(yPixelPen) <= mHeight || mOverflowHeight)) // does not overflow height without permission
@@ -552,7 +552,7 @@ namespace eyegui
 
                 // *** SETUP SINGLE LINE ***
 
-                // Go over entities to build up line
+                // Go over remaining entities to build up line
 				while (
 					hasNext // entities left to draw into that line
 					&& spaceLeft // whether space is available within line
@@ -627,7 +627,7 @@ namespace eyegui
                         spaceLeft = false;
                     }
 
-                    // Add entity to line since at least some flow parts of it is drawn
+                    // Add entity to line since at least some flow parts of it are drawn
                     if (addEntityToLine) { line.push_back(spFlowEntity); }
 
                     // Check whether there are entities left
@@ -635,7 +635,7 @@ namespace eyegui
 				}
 
                 // Remember longest line's width
-                mFlowWidth = mFlowWidth < (int)glm::ceil(lineWidth) ? (int)glm::ceil(lineWidth) : mFlowWidth;
+                mFlowWidth = mFlowWidth < (int)glm::ceil(lineWidth) ? (int)glm::ceil(lineWidth) : mFlowWidth; // TODO: does this consider the dynamic spacing stuff for justify etc?
 
 				// *** PREPARE DRAWING ***
 
@@ -702,37 +702,53 @@ namespace eyegui
 
 				// *** DRAW LINE ***
 
-                // Integrate entities' geometry to renderable mesh structure
+                // Prepare xPixelPen for drawing
 				float xPixelPen = xOffset;
-                for (uint lineIndex = 0; lineIndex < line.size(); lineIndex++)
+
+				// Integrate entities' geometry to renderable mesh structure
+                for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++) // index in line pointing to entity
 				{
                     // Fetch pointer to currently drawn entity
-                    std::shared_ptr<FlowEntity> spFlowEntity = line.at(lineIndex);
-
-                    // Fill position
-                    if(pPreviousFilledEntity != line.at(lineIndex).get()) // fill it only one, so equal to first part's
-                    {
-                        spFlowEntity->mX = (int)xPixelPen;
-                        spFlowEntity->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
-                    } 
+                    std::shared_ptr<FlowEntity> spFlowEntity = line.at(entityIndex);
 
                     // Go over flow parts which are in line
-                    uint flowPartCount = lineIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(lineIndex)->getFlowPartCount();
-                    uint flowPartIndex = lineIndex == 0 ? initialFlowPartIndex : 0;
+                    uint flowPartCount = entityIndex == line.size() - 1 ? endFlowPartIndex + 1 : line.at(entityIndex)->getFlowPartCount();
+                    uint flowPartIndex = entityIndex == 0 ? initialFlowPartIndex : 0;
                     for (; flowPartIndex < flowPartCount; flowPartIndex++)
                     {
+						// *** SET REMAINING WIDTH OF FLOW PART ***
+						if (spFlowEntity->getType() == FlowEntity::Type::Space) // space
+						{
+							// Set pixel with of space flow part as fallback
+							if (spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
+							{
+								spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
+							}
+							else
+							{
+								spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
+							}
+						}
+
+						// *** ADVANCE X PIXEL PEN FOR RIGHT TO LEFT ***
+						if (globalRightToLeft)
+						{
+							// Width of flow part must be known at this time
+							xPixelPen -= spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+						}
+
+						// *** APPLY X PIXEL PEN FOR STORING POSITION OF FLOW ENTITY AND FLOW AND MESH GENERATION ***
+
+						// Fill position of complete entity
+						if (pPreviousFilledEntity != line.at(entityIndex).get()) // fill it only once, so equal to first part's
+						{
+							spFlowEntity->mX = (int)xPixelPen;
+							spFlowEntity->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
+						}
+
+						// Fill position of entity part
                         if(spFlowEntity->getType() == FlowEntity::Type::Space) // space
                         {
-                            // Set pixel with of space flow part as fallback
-                            if(spFlowEntity->mFlowParts.at(flowPartIndex)->isCollapsed())
-                            {
-                                spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = 0.f;
-                            }
-                            else
-                            {
-                                spFlowEntity->mFlowParts.at(flowPartIndex)->mPixelWidth = dynamicSpace;
-                            }
-
                             // Save position in flow part
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mX = (int)xPixelPen;
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
@@ -740,7 +756,7 @@ namespace eyegui
 						else if (spFlowEntity->getType() == FlowEntity::Type::NewLine) // new line
 						{
                             // Save position in flow part (different from other entities!)
-                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = 0;
+                            spFlowEntity->mFlowParts.at(flowPartIndex)->mX = 0; // TODO: For right to left more like width?
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen- lineHeight) - lineHeight));
 						}
                         else // word or mark
@@ -748,7 +764,7 @@ namespace eyegui
                             // Draw word of flow part
                             if(spFlowEntity->mFlowParts.at(flowPartIndex)->mupRenderWord != nullptr)
                             {
-                                const auto* pRenderWord = line.at(lineIndex)->mFlowParts.at(flowPartIndex)->mupRenderWord.get();
+                                const auto* pRenderWord = line.at(entityIndex)->mFlowParts.at(flowPartIndex)->mupRenderWord.get();
 
                                 // Push back positions and texture coordinates
                                 for (uint i = 0; i < pRenderWord->spVertices->size(); i++)
@@ -771,8 +787,11 @@ namespace eyegui
                             spFlowEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
                         }
 
-                        // Advance xPen
-                        xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+						// *** ADVANCE X PIXEL PEN FOR LEFT TO RIGHT ***
+						if (!globalRightToLeft)
+						{
+							xPixelPen += spFlowEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
+						}
 
                     } // end of flow part iteration
 
