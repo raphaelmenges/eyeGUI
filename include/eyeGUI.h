@@ -99,8 +99,8 @@ namespace eyegui
 	//! Enumeration of possible font sizes. Size of keyboard font cannot be set in GUIBuilder.
 	enum class FontSize { TALL, MEDIUM, SMALL, KEYBOARD };
 
-	//! Enumeration of possible text flow alignments
-	enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY };
+	//! Enumeration of possible text flow alignments. Natural aligns left for left to right text and right for right to left text
+	enum class TextFlowAlignment { LEFT, RIGHT, CENTER, JUSTIFY, NATURAL };
 
 	//! Enumeration of possible vertical text flow alignments
 	enum class TextFlowVerticalAlignment { TOP, CENTER, BOTTOM };

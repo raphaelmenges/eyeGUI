@@ -671,6 +671,20 @@ namespace eyegui
                 // Count of space entities which are actually drawn
                 float drawnSpaceFlowPartCount = (float)(spaceFlowPartCount - collapsedSpaceFlowPartCount);
 
+				// Decide alignment. Project natural alignment to either right or left
+				TextFlowAlignment alignment = mAlignment;
+				if (alignment == TextFlowAlignment::NATURAL)
+				{
+					if (globalRightToLeft)
+					{
+						alignment = TextFlowAlignment::RIGHT;
+					}
+					else
+					{
+						alignment = TextFlowAlignment::LEFT;
+					}
+				}
+
                 // Decide dynamic space for line
 				float dynamicSpace = mPixelOfSpace;
 				if (
@@ -714,6 +728,8 @@ namespace eyegui
 				// *** DRAW LINE ***
 
 				// TODO: cluster latin / hebrew text, so it is not messed up at typesetting at BIDI usage
+				// Ideas:
+				// - collect entities below and cluster them at drawing for correct direction.
 
                 // Prepare xPixelPen for drawing
 				float xPixelPen = xOffset;
