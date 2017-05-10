@@ -402,23 +402,26 @@ namespace eyegui
             // Determine type
             FlowEntity::Type type = classifyLetter(streamlinedContent.at(index));
 
+			// Determine direction for character at current index (reference of partRightToLeft overriden)
+			directionChange(partRightToLeft, streamlinedContent.at(index)); // return value of no interest here, as already starting a new entity
+
             // Initialize entity
             std::shared_ptr<FlowEntity> spFlowEntity = std::shared_ptr<FlowEntity>(new FlowEntity);
             spFlowEntity->mType = type;
             spFlowEntity->mContentStartIndex = index;
             spFlowEntity->mIndex = (uint)mFlowEntities.size();
-			spFlowEntity->rightToLeft = partRightToLeft; // has to be done here, as directionChange is here called for next letter from content
+			spFlowEntity->rightToLeft = partRightToLeft;
 
             switch(spFlowEntity->mType)
             {
             case FlowEntity::Type::Space: // cannot change direction
-            {              
+            {
                 // Determine end index of word in content
                 uint endIndex = index;
                 while (
                     endIndex < letterCount - 1
                     && classifyLetter(streamlinedContent.at(endIndex + 1))
-                        == FlowEntity::Type::Space)
+                        == FlowEntity::Type::Space) // no check for direction change, as space cannot trigger one
                 {
                     endIndex++;
                 }
@@ -453,7 +456,7 @@ namespace eyegui
                 // Add one flow part for the mark
                 std::unique_ptr<FlowPart> upFlowPart = std::unique_ptr<FlowPart>(new FlowPart);
                 upFlowPart->mupRenderWord = std::unique_ptr<RenderWord>(
-                    new RenderWord(calculateWord(streamlinedContent.at(index), mScale, false))); // TODO: instead of false, give correct mirroring indicator
+                    new RenderWord(calculateWord(streamlinedContent.at(index), mScale, partRightToLeft)));
                 spFlowEntity->mFlowParts.push_back(std::move(upFlowPart));
 
                 // Go one letter further
@@ -463,16 +466,12 @@ namespace eyegui
 
             case FlowEntity::Type::Word: // can change direction
             {
-				// TODO: right to left not correctly recognized here for each entity!!!
-
-				// Update partRightToLeft for the case the word is at end of content and single
-				directionChange(partRightToLeft, streamlinedContent.at(index)); // maybe find better place for this, as is might be confusing
-
                 // Determine end index of word in content
                 uint endIndex = index;
+				bool tmpRightToLeft = partRightToLeft; // following call of direction change might overwrite value, which is not desired
                 while (
-                    endIndex < letterCount - 1
-					&& !directionChange(partRightToLeft, streamlinedContent.at(endIndex + 1)) // direction does not change, otherwise end word and start next one. Assuming, that only content of words can trigger direction change
+                    endIndex < letterCount - 1 // letters in content left
+					&& !directionChange(tmpRightToLeft, streamlinedContent.at(endIndex + 1)) // direction does not change, otherwise end word and start next one
                     && classifyLetter(streamlinedContent.at(endIndex + 1))
                         == FlowEntity::Type::Word) // classification as word
                 {
@@ -481,7 +480,7 @@ namespace eyegui
 
                 // Create vector of fitting words
                 std::vector<RenderWord> fitWords;
-                failure |= !insertFitWord(fitWords, streamlinedContent.substr(index, (endIndex - index) + 1), mWidth, mScale, spFlowEntity->isRightToLeft()); // use rightToLeft from entity here, not the variable as already set for upcoming entity!
+                failure |= !insertFitWord(fitWords, streamlinedContent.substr(index, (endIndex - index) + 1), mWidth, mScale, partRightToLeft);
 
                 // Create flow parts words using fit words
                 for (const auto& rFitWord : fitWords)
@@ -751,10 +750,6 @@ namespace eyegui
 				for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++)
 				{
 					std::shared_ptr<FlowEntity> spEntity = line.at(entityIndex);
-
-					// TODO TESTING
-					std::cout << "Entity Index: " << entityIndex << " RightToLeft: " << spEntity->isRightToLeft() << std::endl;
-
 					if (spEntity->isRightToLeft() != rightToLeft)
 					{
 						// Direction has changed for this entity
@@ -772,9 +767,6 @@ namespace eyegui
 
                 // Prepare xPixelPen for drawing
 				float xPixelPen = xOffset;
-
-				// TODO TESTING
-				std::cout << "Part Count: " << parts.size() << std::endl;
 
 				// Integrate entities' geometry to renderable mesh structure
                 for(auto& rPart : parts) // go over directional homogene parts
