@@ -149,6 +149,10 @@ namespace eyegui
     {
         // OpenGL setup done in calling method
 
+		// TODO: In TextFlow, extra treatment for directional partition for space has been implemented,
+		// as it is not attached to the other parts here like done in this class. Maybe perform the same
+		// in TextSimple.
+
 		// Determine text direction by iterating through the content until first indicating character
 		bool globalRightToLeft = false;
 		for (const auto& character : streamlinedContent)
