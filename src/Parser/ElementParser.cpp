@@ -551,6 +551,10 @@ namespace eyegui
             {
                 alignment = TextFlowAlignment::JUSTIFY;
             }
+			else if (alignmentValue == "natural")
+			{
+				alignment = TextFlowAlignment::NATURAL;
+			}
             else
             {
                 throwError(OperationNotifier::Operation::PARSING, "Unknown alignment used in text block: " + alignmentValue, filepath);
