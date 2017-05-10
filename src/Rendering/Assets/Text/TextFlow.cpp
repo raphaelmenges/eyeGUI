@@ -696,7 +696,7 @@ namespace eyegui
                 // Decide dynamic space for line
 				float dynamicSpace = mPixelOfSpace;
 				if (
-					mAlignment == TextFlowAlignment::JUSTIFY
+					alignment == TextFlowAlignment::JUSTIFY
 					&& hasNext // do not use dynamic space for last line
 					&& line.size() > 1) // do not use dynamic space when there is only one word
 				{
@@ -711,11 +711,11 @@ namespace eyegui
 				if (globalRightToLeft) // right to left direction
 				{
 					xOffset = newLineWidth; // left
-					if (mAlignment == TextFlowAlignment::RIGHT) // right
+					if (alignment == TextFlowAlignment::RIGHT) // right
 					{
 						xOffset = (float)mWidth;
 					}
-					else if(mAlignment == TextFlowAlignment::CENTER) // center
+					else if(alignment == TextFlowAlignment::CENTER) // center
 					{
 						xOffset = (float)mWidth - (((float)mWidth - newLineWidth) / 2.f);
 					}
@@ -723,10 +723,10 @@ namespace eyegui
 				else // left to right direction
 				{
 					xOffset = 0; // left
-					if (mAlignment == TextFlowAlignment::RIGHT || mAlignment == TextFlowAlignment::CENTER) // right or center
+					if (alignment == TextFlowAlignment::RIGHT || alignment == TextFlowAlignment::CENTER) // right or center
 					{
 						xOffset = (float)mWidth - newLineWidth;
-						if (mAlignment == TextFlowAlignment::CENTER) // center
+						if (alignment == TextFlowAlignment::CENTER) // center
 						{
 							xOffset /= 2.f;
 						}
@@ -778,16 +778,16 @@ namespace eyegui
 					// Calculate horizontal size of this part
 					float partWidth = 0;
 					bool partRightToLeft = rPart.second; // direction of this part
-					for (auto& rEntity : rPart.first)
+					for (auto& rEntity : rPart.first) // go over entities of this part
 					{
 						// Extract entity and its index
-						auto spEntity = rEntity.first;
-						uint entityIndex = rEntity.second;
+						auto spEntity = rEntity.first; // actually, iterating over a pair. This is entity
+						uint entityIndex = rEntity.second; // this is index of entity within line. Needed for following flowPartCount and index calculation
 
 						// Go over flow parts
 						uint flowPartCount = entityIndex == line.size() - 1 ? endFlowPartIndex + 1 : spEntity->getFlowPartCount();
 						uint flowPartIndex = entityIndex == 0 ? initialFlowPartIndex : 0;
-						for (; flowPartIndex < flowPartCount; flowPartIndex++)
+						for (; flowPartIndex < flowPartCount; flowPartIndex++) // go over flow parts count to draw of this entity
 						{
 							// Set width of flow parts that is not yet set
 							if (spEntity->getType() == FlowEntity::Type::Space) // space
@@ -810,32 +810,30 @@ namespace eyegui
 
 					// *** DRAWING OF PART ***
 
-					// global right to left -> pen starts at right side and degreases for every entry
+					// Create pixel pen used to draw the parts
+					float partXPixelPen = xPixelPen; // standard when global and part have the same direction
 
-					// Advance xPixelPen for right to left
-					float partXPixelPen = xPixelPen; // Standard when global and part have the same direction
-
-					// For global right to left, pen is at the right side of the canvas. So move it to the left end of the upcoming part to start drawing from left to right
+					// For global direction of right to left, pen is at the right end of the canvas. So move it to the left end of the upcoming part to start the drawing from left to right
 					if (globalRightToLeft && !partRightToLeft)
 					{
 						partXPixelPen -= partWidth;
 					}
-					else if (!globalRightToLeft && partRightToLeft) // analogous case
+					else if (!globalRightToLeft && partRightToLeft) // symmetrical case
 					{
 						partXPixelPen += partWidth;
 					}
 
 					// Draw one part
-					for (auto& rEntity : rPart.first)
+					for (auto& rEntity : rPart.first) // go over enities in part
 					{
 						// Extract entity and its index
 						auto spEntity = rEntity.first;
 						uint entityIndex = rEntity.second;
 
-						// Go over flow parts which are in line (same as above)
+						// Go over flow parts of current entity, which are in this line (same as above)
 						uint flowPartCount = entityIndex == line.size() - 1 ? endFlowPartIndex + 1 : spEntity->getFlowPartCount();
 						uint flowPartIndex = entityIndex == 0 ? initialFlowPartIndex : 0;
-						for (; flowPartIndex < flowPartCount; flowPartIndex++)
+						for (; flowPartIndex < flowPartCount; flowPartIndex++) // go over flow parts to draw of this entity
 						{
 							// Advance partXPixelPen for right to left
 							if (partRightToLeft)
