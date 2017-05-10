@@ -764,14 +764,16 @@ namespace eyegui
 				}
 				parts.push_back(std::make_pair(helperPart, rightToLeft)); // left over
 
+				// TODO testing
+				std::cout << "Parts  Count: " << parts.size() << std::endl;
 
 				// *** DRAW LINE ***
 
-                // Prepare xPixelPen for drawing
+                // Prepare xPixelPen for drawing of this line
 				float xPixelPen = xOffset;
 
 				// Integrate entities' geometry to renderable mesh structure
-                for(auto& rPart : parts) // go over directional homogene parts
+                for(auto& rPart : parts) // go over directional homogene parts in line
 				{
 					// *** SIZE OF PART ***
 
@@ -807,6 +809,8 @@ namespace eyegui
 							partWidth += spEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
 						}
 					}
+
+					std::cout << "Parts Width: " << partWidth << std::endl;
 
 					// *** DRAWING OF PART ***
 
@@ -890,7 +894,7 @@ namespace eyegui
 								spEntity->mFlowParts.at(flowPartIndex)->mY = (int)(std::ceil(glm::abs(yPixelPen) - lineHeight));
 							}
 
-							// Advance partXPixelPen for left to right
+							// Advance partXPixelPen for left to right after drawing
 							if (!partRightToLeft)
 							{
 								partXPixelPen += spEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
@@ -898,19 +902,20 @@ namespace eyegui
 
 						} // end of flow part iteration
 
-						// Update xPixelPen
-						if (globalRightToLeft)
-						{
-							xPixelPen -= partWidth;
-						}
-						else
-						{
-							xPixelPen += partWidth;
-						}
-
 						// Update previous filled entity
 						pPreviousFilledEntity = spEntity.get();
-					}  
+
+					} // end of part
+
+					// Update xPixelPen
+					if (globalRightToLeft)
+					{
+						xPixelPen -= partWidth;
+					}
+					else
+					{
+						xPixelPen += partWidth;
+					}
 
                 } // end of line
 
