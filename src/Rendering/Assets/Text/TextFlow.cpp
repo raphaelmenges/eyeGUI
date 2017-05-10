@@ -451,6 +451,7 @@ namespace eyegui
 			}
 			break;
 
+			// TODO: For BIDI rendering, no wrapping parentheses around directional different text are possible, as the opening one belongs to the surounding direction and closing to the inner
             case FlowEntity::Type::Mark: // cannot change direction
             {
                 // Add one flow part for the mark
@@ -705,8 +706,8 @@ namespace eyegui
                 // Calculate the new line width
                 float newLineWidth = nonSpaceWidth + (drawnSpaceFlowPartCount * dynamicSpace);
 
-				// Now decide xOffset for line (includes for right to left also offset of starting point)
-				float xOffset = 0; // used for left, right and center alignment, not justify
+				// Now decide xOffset for line (includes for right to left also change of starting position)
+				float xOffset = 0;
 				if (globalRightToLeft) // right to left direction
 				{
 					xOffset = newLineWidth; // left
@@ -745,16 +746,17 @@ namespace eyegui
 					bool> // right to left indication for this part
 					Part;
 				std::vector<Part> parts; // vector of parts in this line
-				std::vector<std::pair<std::shared_ptr<FlowEntity>, uint > > helperPart; // only used in following loop
+				std::vector<std::pair<std::shared_ptr<FlowEntity>, uint> > helperPart; // only used in following loop
 				bool rightToLeft = line.at(0)->isRightToLeft(); // assuming there is always at least one entity in a line
 				for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++)
 				{
 					std::shared_ptr<FlowEntity> spEntity = line.at(entityIndex);
-					if (spEntity->isRightToLeft() != rightToLeft)
+					if (spEntity->isRightToLeft() != rightToLeft) // different direction for this entity
 					{
-						// Direction has changed for this entity
-						parts.push_back(std::make_pair(helperPart, rightToLeft)); // deep copy helper part into part vector of this line
+						// Store so-far-collected entities including indication for direction
+						parts.push_back(std::make_pair(helperPart, rightToLeft)); // deep copy of helper structure into part vector of this line
 						helperPart.clear(); // clear helper part
+						rightToLeft = spEntity->isRightToLeft(); // update current direction
 					}
 
 					// Add current entity into helper part, including entity index
