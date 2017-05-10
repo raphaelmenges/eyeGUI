@@ -9,6 +9,8 @@
 // active entity, a cursor position is set, which is used for deletion and
 // insertion new content to the text that is edited.
 
+// TODO: cursor performs strange for right to left text
+
 #ifndef TEXT_EDIT_H_
 #define TEXT_EDIT_H_
 

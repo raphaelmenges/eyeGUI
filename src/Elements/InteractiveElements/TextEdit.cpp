@@ -66,7 +66,7 @@ namespace eyegui
 		// Create text flow (TODO: pipe through the xml stuff)
         mupTextFlow = std::move(mpAssetManager->createTextFlow(
 			fontSize,
-			TextFlowAlignment::LEFT,
+			TextFlowAlignment::NATURAL,
 			TextFlowVerticalAlignment::TOP,
 			1.0f,
 			u"",
