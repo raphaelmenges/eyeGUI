@@ -15,9 +15,6 @@
 
 #include <cmath>
 
-// TODO TESTING
-#include <iostream>
-
 namespace eyegui
 {
     TextFlow::TextFlow(
@@ -735,9 +732,6 @@ namespace eyegui
 
 				// *** CLUSTER TO PARTS WITH HOMOGENE DIRECTION ***
 
-				// TODO TESTING
-				std::cout << "Start of part clustering" << std::endl;
-
 				typedef std::pair< // pair of entity vector and direction indication
 					std::vector< // vector of enties and pairs
 						std::pair< // pair of entity and index
@@ -785,9 +779,6 @@ namespace eyegui
 					parts.push_back(std::make_pair(helperPart, rightToLeft)); // left over
 				}
 
-				// TODO testing
-				std::cout << "Parts  Count: " << parts.size() << std::endl;
-
 				// *** DRAW LINE ***
 
                 // Prepare xPixelPen for drawing of this line
@@ -830,8 +821,6 @@ namespace eyegui
 							partWidth += spEntity->mFlowParts.at(flowPartIndex)->getPixelWidth();
 						}
 					}
-
-					std::cout << "Parts Width: " << partWidth << std::endl;
 
 					// *** DRAWING OF PART ***
 
