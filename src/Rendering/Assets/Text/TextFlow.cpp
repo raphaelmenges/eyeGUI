@@ -750,19 +750,40 @@ namespace eyegui
 				bool rightToLeft = line.at(0)->isRightToLeft(); // assuming there is always at least one entity in a line
 				for (uint entityIndex = 0; entityIndex < line.size(); entityIndex++)
 				{
+					// Extract entity
 					std::shared_ptr<FlowEntity> spEntity = line.at(entityIndex);
-					if (spEntity->isRightToLeft() != rightToLeft) // different direction for this entity
+
+					// Extra treatment for spaces, as they should always follow the global direction and not be appended to the parts
+					if (spEntity->getType() == FlowEntity::Type::Space)
 					{
 						// Store so-far-collected entities including indication for direction
 						parts.push_back(std::make_pair(helperPart, rightToLeft)); // deep copy of helper structure into part vector of this line
 						helperPart.clear(); // clear helper part
-						rightToLeft = spEntity->isRightToLeft(); // update current direction
+						helperPart.push_back(std::make_pair(spEntity, entityIndex)); // push back space to helper part
+						parts.push_back(std::make_pair(helperPart, globalRightToLeft)); // deep copy of helper structure into part vector of this line
+						helperPart.clear(); // clear helper part
 					}
+					else // no space
+					{
+						// Check for directional change
+						if (spEntity->isRightToLeft() != rightToLeft) // different direction for this entity
+						{
+							// Store so-far-collected entities including indication for direction
+							parts.push_back(std::make_pair(helperPart, rightToLeft)); // deep copy of helper structure into part vector of this line
+							helperPart.clear(); // clear helper part
+							rightToLeft = spEntity->isRightToLeft(); // update current direction
+						}
 
-					// Add current entity into helper part, including entity index
-					helperPart.push_back(std::make_pair(spEntity, entityIndex));
+						// Add current entity into helper part, including entity index
+						helperPart.push_back(std::make_pair(spEntity, entityIndex));
+					}
 				}
-				parts.push_back(std::make_pair(helperPart, rightToLeft)); // left over
+
+				// Add left overs if necessary
+				if (!helperPart.empty())
+				{
+					parts.push_back(std::make_pair(helperPart, rightToLeft)); // left over
+				}
 
 				// TODO testing
 				std::cout << "Parts  Count: " << parts.size() << std::endl;
