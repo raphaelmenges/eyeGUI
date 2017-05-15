@@ -112,6 +112,8 @@ namespace eyegui
 			{u'\\', CharacterDirection::Neutral},
 			{u'/', CharacterDirection::Neutral},
 			{u'\u00A7', CharacterDirection::Neutral}, // paragraph
+			{u'\'', CharacterDirection::Neutral },
+			{u'\u05F3', CharacterDirection::Neutral },
 
 			// Parentheses
 			{u'(', CharacterDirection::Parenthesis},
