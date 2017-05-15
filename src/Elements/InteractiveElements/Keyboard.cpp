@@ -199,11 +199,14 @@ namespace eyegui
 
 	void Keyboard::updateKeyboardLayout()
 	{
-		// Use layout to fill keymaps
-		fillKeymaps(mpLayout->getKeyboardLayout());
+		if(!mForcedKeyboardLayout)
+		{
+			// Use layout to fill keymaps
+			fillKeymaps(mpLayout->getKeyboardLayout());
 
-		// Tranform and size necessary to calc intial positions of keys
-		specialTransformAndSize();
+			// Tranform and size necessary to calc intial positions of keys
+			specialTransformAndSize();
+		}
 	}
 
 	float Keyboard::specialUpdate(float tpf, Input* pInput)
