@@ -695,7 +695,7 @@ namespace eyegui
 				mKeymaps.back().initialKeyPositions,
 				std::vector<std::vector<CPair> >
 			{
-				{ CPair(u'\u05DB') },
+				{ CPair(u'T'), CPair(u'O'), CPair(u'D'), CPair(u'O') },
 			});
 
 			break;
