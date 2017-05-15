@@ -54,7 +54,7 @@ namespace eyegui
 		// Factory is friend
 		friend ElementFactory;
 
-		// Protected constructor
+		// Protected constructors
 		Keyboard(
 			std::string id,
 			std::vector<std::string> styles,
@@ -68,6 +68,20 @@ namespace eyegui
 			bool dimming,
 			bool adaptiveScaling,
 			bool instantPress);
+		Keyboard(
+			std::string id,
+			std::vector<std::string> styles,
+			Element* pParent,
+			Layout const * pLayout,
+			Frame* pFrame,
+			AssetManager* pAssetManager,
+			NotificationQueue* pNotificationQueue,
+			float relativeScale,
+			float border,
+			bool dimming,
+			bool adaptiveScaling,
+			bool instantPress,
+			KeyboardLayout keyboardLayout); // forced keyboard layout
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);
@@ -162,6 +176,7 @@ namespace eyegui
         int mLastFastKeyColumn;
 		Key* mpSelectedKey;
 		Classification mSelectionClassification;
+		bool mForcedKeyboardLayout;
     };
 }
 
