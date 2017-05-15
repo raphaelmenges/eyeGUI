@@ -58,7 +58,7 @@ namespace eyegui
             meshes::Type::QUAD);
 
         // Create keymaps (mKeymaps)
-        initKeymaps(mpLayout->getCharacterSet());
+        initKeymaps(mpLayout->getKeyboardLayout());
     }
 
     Keyboard::~Keyboard()
@@ -617,11 +617,11 @@ namespace eyegui
         }
     }
 
-    void Keyboard::initKeymaps(CharacterSet set)
+    void Keyboard::initKeymaps(KeyboardLayout layout)
     {
-        switch (set)
+        switch (layout)
         {
-        case CharacterSet::US_ENGLISH:
+        case KeyboardLayout::US_ENGLISH:
 
             // Primary keymap
             mKeymaps.push_back(Keymap());
@@ -637,21 +637,8 @@ namespace eyegui
                 { CPair(u'@'), CPair(u'z', u'Z'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'?'), CPair(u'!') }
             });
 
-            // Secondary keymap
-            mKeymaps.push_back(Keymap());
-            addKeys(
-                mKeymaps.back().smallKeys,
-                mKeymaps.back().bigKeys,
-                mKeymaps.back().initialKeyPositions,
-                std::vector<std::vector<CPair> >
-            {
-                { CPair(u'\u00A7'), CPair(u'$'), CPair(u'\u20AC'), CPair(u'#')},
-                { CPair(u'['), CPair(u']'), CPair(u'{'), CPair(u'}'), CPair(u'%') },
-                { CPair(u'<'), CPair(u'>'), CPair(u'('), CPair(u')')},
-            });
-
             break;
-        case CharacterSet::GERMANY_GERMAN:
+        case KeyboardLayout::GERMANY_GERMAN:
 
             // Primary keymap
             mKeymaps.push_back(Keymap());
@@ -667,23 +654,23 @@ namespace eyegui
                 { CPair(u'@'), CPair(u'y', u'Y'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u'.'), CPair(u':'), CPair(u'!'), CPair(u'?') }
             });
 
-            // Secondary keymap
-            mKeymaps.push_back(Keymap());
-            addKeys(
-                mKeymaps.back().smallKeys,
-                mKeymaps.back().bigKeys,
-                mKeymaps.back().initialKeyPositions,
-                std::vector<std::vector<CPair> >
-            {
-                { CPair(u'+'), CPair(u'-'), CPair(u'$'), CPair(u'#')},
-                { CPair(u'['), CPair(u']'), CPair(u'{'), CPair(u'}'), CPair(u'%') },
-                { CPair(u'<'), CPair(u'>'), CPair(u'('), CPair(u')')},
-            });
-
             break;
         default:
-            throwError(OperationNotifier::Operation::BUG, "Tried to initialize keyboard of unkown character set");
+            throwError(OperationNotifier::Operation::BUG, "Tried to initialize keyboard of unknown layout");
         }
+
+		// Secondary keymap
+		mKeymaps.push_back(Keymap());
+		addKeys(
+			mKeymaps.back().smallKeys,
+			mKeymaps.back().bigKeys,
+			mKeymaps.back().initialKeyPositions,
+			std::vector<std::vector<CPair> >
+		{
+			{ CPair(u'+'), CPair(u'-'), CPair(u'$'), CPair(u'#')},
+			{ CPair(u'['), CPair(u']'), CPair(u'{'), CPair(u'}'), CPair(u'%') },
+			{ CPair(u'<'), CPair(u'>'), CPair(u'('), CPair(u')') },
+		});
 
         // Transform and size has to be called to set initial key size (depending on size of element)
     }

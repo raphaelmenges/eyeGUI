@@ -164,9 +164,9 @@ namespace eyegui
         return mupNotificationQueue.get();
     }
 
-    CharacterSet Layout::getCharacterSet() const
+	KeyboardLayout Layout::getKeyboardLayout() const
     {
-        return mpGUI->getCharacterSet();
+        return mpGUI->getKeyboardLayout();
     }
 
     Frame* Layout::getMainFrame()

@@ -30,7 +30,7 @@ namespace eyegui
             width,
             height,
             fontFilepath,
-            characterSet,
+            keyboardLayout,
             localizationFilepath,
             vectorGraphicsDPI,
             fontTallSize,

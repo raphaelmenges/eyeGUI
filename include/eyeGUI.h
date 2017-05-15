@@ -94,7 +94,7 @@ namespace eyegui
 	};
 
 	//! Enumeration of possible character sets for font rendering.
-	enum class CharacterSet { GERMANY_GERMAN, US_ENGLISH, ALL }; // TODO: all for testing, maybe remove this complete enum in later releases
+	enum class KeyboardLayout { US_ENGLISH, GERMANY_GERMAN, ISRAEL_HEBREW, GREECE_GREEK };
 
 	//! Enumeration of possible font sizes. Size of keyboard font cannot be set in GUIBuilder.
 	enum class FontSize { TALL, MEDIUM, SMALL, KEYBOARD };
@@ -278,7 +278,7 @@ namespace eyegui
 		int width = 1280; //!< Width of GUI as integer
 		int height = 720; //!< Height of GUI as integer
 		std::string fontFilepath = ""; //!< FontFilepath is path to a .ttf font file
-		CharacterSet characterSet = CharacterSet::US_ENGLISH; //!< CharacterSet used to initialize font rendering
+		KeyboardLayout keyboardLayout = KeyboardLayout::US_ENGLISH; //!< Keyboard layout with which keyboard are initialized
 		std::string localizationFilepath = ""; //!< LocalizationFilepath is path to a .leyegui file
 		float vectorGraphicsDPI = 96.0f; //!< Dpi which are used to rasterize vector graphics
 		float fontTallSize = 0.1f; //!< Height of tall font in percentage of GUI height

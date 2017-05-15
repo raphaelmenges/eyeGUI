@@ -123,7 +123,7 @@ namespace eyegui
         };
 
         // Keymap creation methods
-        void initKeymaps(CharacterSet set);
+        void initKeymaps(KeyboardLayout layout);
 
         // Add many keys at once
         void addKeys(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, const std::vector<std::vector<CPair> >& input);

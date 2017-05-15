@@ -23,7 +23,7 @@ namespace eyegui
         int width,
         int height,
         std::string fontFilepath,
-        CharacterSet characterSet,
+		KeyboardLayout keyboardLayout,
         std::string localizationFilepath,
         float vectorGraphicsDPI,
         float fontTallSize,
@@ -40,7 +40,7 @@ namespace eyegui
         mHeight = height;
         mNewWidth = mWidth;
         mNewHeight = mHeight;
-        mCharacterSet = characterSet;
+        mKeyboardLayout = keyboardLayout;
         mAccPeriodicTime = -(ACCUMULATED_TIME_PERIOD / 2);
         mupAssetManager = std::unique_ptr<AssetManager>(new AssetManager(this));
         mpDefaultFont = NULL;
@@ -323,9 +323,9 @@ namespace eyegui
 		return mspStyleTree;
     }
 
-    CharacterSet GUI::getCharacterSet() const
+	KeyboardLayout GUI::getKeyboardLayout() const
     {
-        return mCharacterSet;
+        return mKeyboardLayout;
     }
 
     Font const * GUI::getDefaultFont() const

@@ -322,6 +322,8 @@ namespace eyegui
                 }
                 else
                 {
+					// TODO: instead of adding more and more letters, one might think about a dynamic buffer approach instead of an static atlas
+
                     // Decide character set
 					std::map<char16_t, CharacterDirection> characters;
 
@@ -329,18 +331,8 @@ namespace eyegui
 					characters.insert(charsets::BASIC.begin(), charsets::BASIC.end());
 
 					// Add further characters
-                    switch (mpGUI->getCharacterSet())
-                    {
-                    case CharacterSet::GERMANY_GERMAN:
-						characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end());
-                        break;
-                    case CharacterSet::US_ENGLISH:
-                        // Are there any special characters in us english?
-                        break;
-					case CharacterSet::ALL:
-						characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end()); // German
-						characters.insert(charsets::ISRAEL_HEBREW.begin(), charsets::ISRAEL_HEBREW.end()); // Hebrew
-                    }
+					characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end()); // German
+					characters.insert(charsets::ISRAEL_HEBREW.begin(), charsets::ISRAEL_HEBREW.end()); // Hebrew
 
                     // Give face to a font object (it will delete it in the end)
                     rupFont = std::unique_ptr<Font>(

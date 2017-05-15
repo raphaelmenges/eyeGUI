@@ -39,7 +39,7 @@ namespace eyegui
             int width,
             int height,
             std::string fontFilepath,
-            CharacterSet characterSet,
+            KeyboardLayout keyboardLayout,
             std::string localizationFilepath,
             float vectorGraphicsDPI,
             float fontTallSize,
@@ -107,8 +107,8 @@ namespace eyegui
         // Get pointer to style tree of this GUI
         std::shared_ptr<const StyleTree> fetchStyleTree() const;
 
-        // Get used character set
-        CharacterSet getCharacterSet() const;
+        // Get global keyboard layout
+        KeyboardLayout getKeyboardLayout() const;
 
         // Get set default font
         Font const * getDefaultFont() const;
@@ -225,7 +225,7 @@ namespace eyegui
         std::vector<std::unique_ptr<LayerPair> > mLayers;
         int mWidth, mHeight;
         int mNewWidth, mNewHeight;
-        CharacterSet mCharacterSet;
+		KeyboardLayout mKeyboardLayout;
         std::unique_ptr<AssetManager> mupAssetManager;
         float mAccPeriodicTime;
         

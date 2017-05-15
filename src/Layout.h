@@ -64,8 +64,8 @@ namespace eyegui
         // Get notificaton queue
         NotificationQueue* getNotificationQueue() const;
 
-        // Get used character set
-        CharacterSet getCharacterSet() const;
+        // Get global keyboard layout
+        KeyboardLayout getKeyboardLayout() const;
 
         // Get main frame of layout
         Frame* getMainFrame();
