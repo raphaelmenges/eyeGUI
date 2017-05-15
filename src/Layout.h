@@ -356,6 +356,16 @@ namespace eyegui
 			}
 		}
 
+		// Execute query on elements
+		void executeOnElements(std::function<void(Element*)> function)
+		{
+			mupMainFrame->executeOnElements(function);
+			for (auto& rFrame : mFloatingFrames)
+			{
+				rFrame->executeOnElements(function);
+			}
+		}
+
 		// Experimental
 
 		// Register future keyboard listener

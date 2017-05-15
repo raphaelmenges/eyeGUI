@@ -214,6 +214,9 @@ namespace eyegui
 			mspStyleClass->setValue(styleType, value);
 		}
 
+		// Update keyboard layouts in element tree (TODO: would be nicer to have general execute on tree function)
+		virtual void updateKeyboardLayout();
+
     protected:
 
 		// Factory is friend

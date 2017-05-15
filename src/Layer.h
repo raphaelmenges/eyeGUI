@@ -47,6 +47,9 @@ namespace eyegui
 		// Getter for layout count
 		int getLayoutCount() const;
 
+		// Execute function on all layouts
+		void executeOnLayouts(std::function<void(Layout&)> function);
+
 	protected:
 
 		// Members

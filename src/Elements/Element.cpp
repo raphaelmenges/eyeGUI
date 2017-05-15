@@ -712,6 +712,11 @@ namespace eyegui
         return false;
     }
 
+	void Element::updateKeyboardLayout()
+	{
+		// Do nothing as standard behavior
+	}
+
     bool Element::penetratedByInput(Input const * pInput) const
     {
         // Check whether gaze is upon element

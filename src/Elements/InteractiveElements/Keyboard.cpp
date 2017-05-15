@@ -58,7 +58,7 @@ namespace eyegui
             meshes::Type::QUAD);
 
         // Create keymaps (mKeymaps)
-        initKeymaps(mpLayout->getKeyboardLayout());
+		fillKeymaps(mpLayout->getKeyboardLayout());
     }
 
     Keyboard::~Keyboard()
@@ -147,6 +147,15 @@ namespace eyegui
 				mSelectionClassification = Classification::REJECT;
 			}
 		}
+	}
+
+	void Keyboard::updateKeyboardLayout()
+	{
+		// Use layout to fill keymaps
+		fillKeymaps(mpLayout->getKeyboardLayout());
+
+		// Tranform and size necessary to calc intial positions of keys
+		specialTransformAndSize();
 	}
 
 	float Keyboard::specialUpdate(float tpf, Input* pInput)
@@ -617,8 +626,12 @@ namespace eyegui
         }
     }
 
-    void Keyboard::initKeymaps(KeyboardLayout layout)
+    void Keyboard::fillKeymaps(KeyboardLayout layout)
     {
+		// Before starting, clear current maps
+		mKeymaps.clear();
+
+		// Depending on layout, fill primary keymap
         switch (layout)
         {
         case KeyboardLayout::US_ENGLISH:

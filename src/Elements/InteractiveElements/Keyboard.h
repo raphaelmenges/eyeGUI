@@ -46,6 +46,9 @@ namespace eyegui
 		// Classify currently selected key. If no key is selected, nothing happens
 		void classifyKey(bool accept);
 
+		// Update keyboard layouts in element tree
+		virtual void updateKeyboardLayout();
+
     protected:
 
 		// Factory is friend
@@ -87,7 +90,7 @@ namespace eyegui
     private:
 
 		// Enum for classification of selection
-		enum class Classification {NO_SELECTION, PENDING, ACCEPT, REJECT };
+		enum class Classification { NO_SELECTION, PENDING, ACCEPT, REJECT };
 
         // Typedefs
         typedef std::pair<float, std::unique_ptr<Key> > PressedKey; // Alpha and copy of key
@@ -122,8 +125,8 @@ namespace eyegui
             char16_t big;
         };
 
-        // Keymap creation methods
-        void initKeymaps(KeyboardLayout layout);
+        // Clear and fill keymaps
+        void fillKeymaps(KeyboardLayout layout);
 
         // Add many keys at once
         void addKeys(SubKeymap& rSmallKeys, SubKeymap& rBigKeys, PositionMap& rInitialPositions, const std::vector<std::vector<CPair> >& input);

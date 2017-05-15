@@ -153,6 +153,15 @@ namespace eyegui
         return NULL;
     }
 
+	void Container::updateKeyboardLayout()
+	{
+		// Execute on children
+		for (std::unique_ptr<Element>& rupElement : mChildren)
+		{
+			rupElement->updateKeyboardLayout();
+		}
+	}
+
     float Container::specialUpdate(float tpf, Input* pInput)
     {
         float maxAdaptiveScaleOfChildren = 0;

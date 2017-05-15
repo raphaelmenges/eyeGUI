@@ -414,6 +414,13 @@ namespace eyegui
 	*/
 	void moveLayoutToBack(GUI* pGUI, Layout* pLayout);
 
+	//! Set global layout of keyboard.
+	/*!
+	\param pGUI pointer to GUI.
+	\param keyboardLayout is layout of keyboard.
+	*/
+	void setKeyboardLayout(GUI* pGUI, KeyboardLayout keyboardLayout);
+
 	//! Control layout's input usage.
 	/*!
 	  \param pLayout pointer to layout.

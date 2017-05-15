@@ -115,4 +115,13 @@ namespace eyegui
     {
         return (int) mLayouts.size();
     }
+
+	void Layer::executeOnLayouts(std::function<void(Layout&)> function)
+	{
+		for (std::unique_ptr<Layout>& upLayout : mLayouts)
+		{
+			// Execute function
+			function(*(upLayout.get()));
+		}
+	}
 }

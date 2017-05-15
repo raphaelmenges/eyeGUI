@@ -138,6 +138,11 @@ namespace eyegui
         pGUI->moveLayoutToBack(pLayout);
     }
 
+	void setKeyboardLayout(GUI* pGUI, KeyboardLayout keyboardLayout)
+	{
+		pGUI->setKeyboardLayout(keyboardLayout);
+	}
+
     void setInputUsageOfLayout(Layout* pLayout, bool useInput)
     {
         pLayout->useInput(useInput);

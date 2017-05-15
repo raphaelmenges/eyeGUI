@@ -303,6 +303,11 @@ namespace eyegui
 		mDescriptionVisibility = visbility;
     }
 
+	void GUI::setKeyboardLayout(KeyboardLayout keyboardLayout)
+	{
+		mJobs.push_back(std::move(std::unique_ptr<KeyboardLayoutJob>(new KeyboardLayoutJob(this, keyboardLayout))));
+	}
+
     int GUI::getWindowWidth() const
     {
         return mWidth;
@@ -548,6 +553,31 @@ namespace eyegui
 
         // TODO: Remove layer if empty
     }
+
+	GUI::KeyboardLayoutJob::KeyboardLayoutJob(GUI* pGUI, KeyboardLayout keyboardLayout) : GUIJob(pGUI)
+	{
+		mKeyboardLayout = keyboardLayout;
+	}
+
+	void GUI::KeyboardLayoutJob::execute()
+	{
+		// Set global keyboard layout
+		mpGUI->mKeyboardLayout = mKeyboardLayout;
+		
+		// Go over all layouts and update keyboards
+		for (auto& rLayer : mpGUI->mLayers)
+		{
+			rLayer->second->executeOnLayouts([](Layout& rLayout)
+			{
+				// Execute keyboard update on all elements of layout
+				rLayout.executeOnElements([](Element* pElement)
+				{
+					// Finally, do that update keyboard thing
+					pElement->updateKeyboardLayout();
+				});
+			});
+		}
+	}
 
 	/* TODO
     GUI::SetValueOfConfigAttributeJob::SetValueOfConfigAttributeJob(GUI* pGUI, std::string attribute, std::string value) : GUIJob(pGUI)

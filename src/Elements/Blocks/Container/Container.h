@@ -37,6 +37,9 @@ namespace eyegui
             Element* pTarget,
             std::unique_ptr<Element> upReplacement);
 
+		// Update keyboard layouts in element tree
+		virtual void updateKeyboardLayout();
+
     protected:
 
 		// Factory is friend

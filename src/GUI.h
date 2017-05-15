@@ -95,6 +95,9 @@ namespace eyegui
         // Set visbility of descriptions
 		void setDescriptionVisibility(DescriptionVisibility visbility);
 
+		// Set global keyboard layout
+		void setKeyboardLayout(KeyboardLayout keyboardLayout);
+
         // *** Methods accessed by other classes ***
 
         // Getter for window size
@@ -193,6 +196,20 @@ namespace eyegui
 
             Layout const * mpLayout;
         };
+
+		// Job to change keyboard layout
+		class KeyboardLayoutJob : public GUIJob
+		{
+		public:
+
+			KeyboardLayoutJob(GUI* pGUI, KeyboardLayout keyboardLayout);
+			virtual void execute();
+
+		protected:
+
+			KeyboardLayout mKeyboardLayout;
+		};
+
 
         // Job to change value of config attribute TODO
 		/*
