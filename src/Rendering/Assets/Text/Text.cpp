@@ -236,13 +236,13 @@ namespace eyegui
             word.spVertices->push_back(std::make_pair(positionC, textureCoordinateC));
             word.spVertices->push_back(std::make_pair(positionD, textureCoordinateD));
             word.spVertices->push_back(std::make_pair(positionA, textureCoordinateA));
-
-			// Change order of offsets for right to left text
-			if (rightToLeft)
-			{
-				std::reverse(word.xOffsets.begin(), word.xOffsets.end());
-			}
         }
+
+		// Change order of offsets for right to left text
+		if (rightToLeft)
+		{
+			std::reverse(word.xOffsets.begin(), word.xOffsets.end());
+		}
 
         // Set width of whole word
         word.pixelWidth = xPixelPen;
