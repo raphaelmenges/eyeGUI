@@ -43,6 +43,7 @@ namespace eyegui
             adaptiveScaling)
     {
         mType = Type::KEYBOARD;
+		mForcedKeyboardLayout = false;
 
 		// Fill members
 		mInstantPress = instantPress;
@@ -60,6 +61,53 @@ namespace eyegui
         // Create keymaps (mKeymaps)
 		fillKeymaps(mpLayout->getKeyboardLayout());
     }
+
+	Keyboard::Keyboard(
+		std::string id,
+		std::vector<std::string> styles,
+		Element* pParent,
+		Layout const * pLayout,
+		Frame* pFrame,
+		AssetManager* pAssetManager,
+		NotificationQueue* pNotificationQueue,
+		float relativeScale,
+		float border,
+		bool dimming,
+		bool adaptiveScaling,
+		bool instantPress,
+		KeyboardLayout keyboardLayout) : InteractiveElement(
+			id,
+			styles,
+			pParent,
+			pLayout,
+			pFrame,
+			pAssetManager,
+			pNotificationQueue,
+			RenderingMask::BOX,
+			relativeScale,
+			border,
+			dimming,
+			adaptiveScaling)
+	{
+		mType = Type::KEYBOARD;
+		mForcedKeyboardLayout = true;
+
+		// Fill members
+		mInstantPress = instantPress;
+
+		// Initialize members
+		mCurrentKeymapIndex = 0;
+		mBigCharactersActive = false;
+		mUseFastTyping = false;
+
+		// Fetch render item for background
+		mpBackground = mpAssetManager->fetchRenderItem(
+			shaders::Type::COLOR,
+			meshes::Type::QUAD);
+
+		// Create keymaps (mKeymaps)
+		fillKeymaps(keyboardLayout);
+	}
 
     Keyboard::~Keyboard()
     {

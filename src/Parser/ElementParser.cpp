@@ -788,25 +788,80 @@ namespace eyegui
 
         std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
         {
-			// Show background?
+			// Do not care for key check
 			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlKeyboard);
+
+			// Force static layout
+			std::string layout = parser_helpers::parseStringAttribute("layout", xmlKeyboard);
+			KeyboardLayout forcedKeyboardLayout = KeyboardLayout::US_ENGLISH;
+			bool forceLayout = false;
+			if (layout == "")
+			{
+				forceLayout = false;
+			}
+			else if (layout == "US_ENGLISH")
+			{
+				forcedKeyboardLayout = KeyboardLayout::US_ENGLISH;
+				forceLayout = true;
+			}
+			else if (layout == "GERMANY_GERMAN")
+			{
+				forcedKeyboardLayout = KeyboardLayout::GERMANY_GERMAN;
+				forceLayout = true;
+			}
+			else if (layout == "ISRAEL_HEBREW")
+			{
+				forcedKeyboardLayout = KeyboardLayout::ISRAEL_HEBREW;
+				forceLayout = true;
+			}
+			else if (layout == "GREECE_GREEK")
+			{
+				forcedKeyboardLayout = KeyboardLayout::GREECE_GREEK;
+				forceLayout = true;
+			}
+			else
+			{
+				throwError(OperationNotifier::Operation::PARSING, "Unkown forced layout for keyboard", filepath);
+			}
 
             // Create keyboard
 			ElementFactory fac;
-			auto upKeyboard = fac.build<Keyboard>(
-				parser_helpers::parseStringAttribute("props", xmlKeyboard),
-				id,
-				styles,
-				pParent,
-				pLayout,
-				pFrame,
-				pAssetManager,
-				pNotificationQueue,
-				relativeScale,
-				border,
-				dimming,
-				adaptiveScaling,
-				instantPress);
+			std::unique_ptr<Keyboard> upKeyboard;
+			if (forceLayout)
+			{
+				upKeyboard = fac.build<Keyboard>(
+					parser_helpers::parseStringAttribute("props", xmlKeyboard),
+					id,
+					styles,
+					pParent,
+					pLayout,
+					pFrame,
+					pAssetManager,
+					pNotificationQueue,
+					relativeScale,
+					border,
+					dimming,
+					adaptiveScaling,
+					instantPress,
+					forcedKeyboardLayout);
+			}
+			else
+			{
+				upKeyboard = fac.build<Keyboard>(
+					parser_helpers::parseStringAttribute("props", xmlKeyboard),
+					id,
+					styles,
+					pParent,
+					pLayout,
+					pFrame,
+					pAssetManager,
+					pNotificationQueue,
+					relativeScale,
+					border,
+					dimming,
+					adaptiveScaling,
+					instantPress);
+			}
             
 			// Return keyboard
 			return (std::move(upKeyboard));
