@@ -294,15 +294,15 @@ namespace eyegui
         return std::set<Element*>(); // implemented by Container
     }
 
-    std::set<std::string> Element::getAllChildrensIds() const
+    std::set<std::string> Element::getAllChildrenIds() const
     {
-        return std::set<std::string>(); // implemented by Container
+        return std::set<std::string>(); // implemented by Container and Drop Button
     }
 
     std::set<std::string> Element::getAllIds() const
     {
         // Call it on children
-        std::set<std::string> ids = getAllChildrensIds();
+        std::set<std::string> ids = getAllChildrenIds();
 
         // Add own
         std::string id = getId();

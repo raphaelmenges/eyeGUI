@@ -40,6 +40,9 @@ namespace eyegui
         // Activate or deactivate
         virtual void setActivity(bool active, bool fade);
 
+		// Get ids of all children, recursively. Or here: inner element rather than children
+		virtual std::set<std::string> getAllChildrenIds() const;
+
     protected:
 
 		// Factory is friend

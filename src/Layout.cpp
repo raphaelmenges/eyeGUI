@@ -1626,7 +1626,7 @@ namespace eyegui
             {
                 mupIds->erase(pTarget->getId());
             }
-            std::set<std::string> childrenIds = pTarget->getAllChildrensIds();
+            std::set<std::string> childrenIds = pTarget->getAllChildrenIds();
             for (std::string id : childrenIds)
             {
                 mupIds->erase(id);

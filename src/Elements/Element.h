@@ -154,7 +154,7 @@ namespace eyegui
         virtual std::set<Element*> getAllChildren() const;
 
         // Get ids of all children, recursively
-        virtual std::set<std::string> getAllChildrensIds() const;
+        virtual std::set<std::string> getAllChildrenIds() const;
 
         // Get all ids, of children and this node
         std::set<std::string> getAllIds() const;

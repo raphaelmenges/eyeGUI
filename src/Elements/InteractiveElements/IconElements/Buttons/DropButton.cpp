@@ -153,6 +153,21 @@ namespace eyegui
         BoxButton::setActivity(active, fade);
     }
 
+	std::set<std::string> DropButton::getAllChildrenIds() const
+	{
+		// Get ids of children of inner element
+		std::set<std::string> ids = mupInnerElement->getAllChildrenIds();
+
+		// Only insert id of inner element if there is one
+		std::string id = mupInnerElement->getId();
+		if (id != "")
+		{
+			ids.insert(mupInnerElement->getId());
+		}
+
+		return ids;
+	}
+
     float DropButton::specialUpdate(float tpf, Input * pInput)
     {
         // Super call

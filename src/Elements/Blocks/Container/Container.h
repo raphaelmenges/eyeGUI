@@ -30,7 +30,7 @@ namespace eyegui
         virtual std::set<Element*> getAllChildren() const;
 
         // Get ids of all children, recursively
-        virtual std::set<std::string> getAllChildrensIds() const;
+        virtual std::set<std::string> getAllChildrenIds() const;
 
         // Replace an attached element, returns NULL if not found
         virtual std::unique_ptr<Element> replaceAttachedElement(

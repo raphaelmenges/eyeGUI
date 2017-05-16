@@ -101,7 +101,7 @@ namespace eyegui
         return elements;
     }
 
-    std::set<std::string> Container::getAllChildrensIds() const
+    std::set<std::string> Container::getAllChildrenIds() const
     {
         std::set<std::string> ids;
 
@@ -109,8 +109,8 @@ namespace eyegui
         for (const std::unique_ptr<Element>& rupChild : mChildren)
         {
             // Insert id of children of child
-            std::set<std::string> childrensIds = rupChild->getAllChildrensIds();
-            ids.insert(childrensIds.begin(), childrensIds.end());
+            std::set<std::string> childrenIds = rupChild->getAllChildrenIds();
+            ids.insert(childrenIds.begin(), childrenIds.end());
 
             // Only insert id of child if there is one
             std::string id = rupChild->getId();
