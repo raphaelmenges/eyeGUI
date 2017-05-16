@@ -201,6 +201,9 @@ namespace eyegui
 	{
 		if(!mForcedKeyboardLayout)
 		{
+			// Reset stuff
+			resetKeymapsAndState();
+
 			// Use layout to fill keymaps
 			fillKeymaps(mpLayout->getKeyboardLayout());
 
