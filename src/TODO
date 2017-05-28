@@ -5,6 +5,7 @@
 - Style tree on element side
  
 ## Other
+- readme: cite paper publication
 - think about different keyboard layouts set in xml (web pages do not need umlaute)
 - setDimming / Marking: give element and offset from it in tree so only that is dimmed
   - Test dimming / marking
