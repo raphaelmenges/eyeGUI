@@ -59,6 +59,19 @@ file(GLOB_RECURSE STB_IMAGE
 # Add NanoSVG
 file(GLOB_RECURSE NANO_SVG
 	"${EXTERNAL_DIR}/NanoSVG/*.h")
+	
+# Add PortAudio
+set(PA_BUILD_EXAMPLES OFF CACHE INTERNAL "" )
+set(PA_BUILD_TESTS OFF CACHE INTERNAL "" )
+set(PA_CONFIG_LIB_OUTPUT_PATH OFF CACHE INTERNAL "" )
+set(PA_ENABLE_DEBUG_OUTPUT OFF CACHE INTERNAL "" )
+set(PA_UNICODE_BUILD ON CACHE INTERNAL "" )
+set(PA_USE_ASIO OFF CACHE INTERNAL "" )
+set(PA_USE_DS OFF CACHE INTERNAL "" )
+set(PA_USE_WASAPI ON CACHE INTERNAL "" )
+set(PA_USE_WDMKS ON CACHE INTERNAL "" )
+set(PA_USE_WMME ON CACHE INTERNAL "" )
+add_subdirectory("${EXTERNAL_DIR}/PortAudio")
 
 # Add FreeType2 (list of source code taken from ./externals/FreeType2/CMakeLists.txt)
 add_definitions(-DFT2_BUILD_LIBRARY)
@@ -167,3 +180,8 @@ set(ALL_CODE ${ALL_CODE} "${CMAKE_CURRENT_LIST_DIR}/include/eyeGUI.h")
 
 # Create eyeGUI static library
 add_library(${LIBNAME} STATIC ${ALL_CODE})
+
+# Link to libraries
+target_link_libraries(
+		${LIBNAME}
+		portaudio)
