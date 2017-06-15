@@ -184,4 +184,4 @@ add_library(${LIBNAME} STATIC ${ALL_CODE})
 # Link to libraries
 target_link_libraries(
 		${LIBNAME}
-		portaudio)
+		portaudio_static)

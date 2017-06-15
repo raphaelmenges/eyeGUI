@@ -41,7 +41,7 @@ namespace eyegui
 		std::cout << headerButton->fetchProperty(StylePropertyFloat::AnimationDuration)->get() << std::endl;
 		*/
 
-		// example();
+		example();
 	}
 
 
@@ -49,7 +49,7 @@ namespace eyegui
 	#include <math.h>
 	#include "portaudio.h"
 
-	#define NUM_SECONDS   (5)
+	#define NUM_SECONDS   (1)
 	#define SAMPLE_RATE   (44100)
 	#define FRAMES_PER_BUFFER  (64)
 
