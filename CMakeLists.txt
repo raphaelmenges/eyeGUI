@@ -52,26 +52,13 @@ include_directories("${EXTERNAL_DIR}/GLM")
 file(GLOB_RECURSE OPEN_GL_LOADER
 	"${EXTERNAL_DIR}/OpenGLLoader/*")
 
-# Add stb_image
-file(GLOB_RECURSE STB_IMAGE
+# Add stb libraries
+file(GLOB_RECURSE STB
 	"${EXTERNAL_DIR}/stb/*")
 
 # Add NanoSVG
 file(GLOB_RECURSE NANO_SVG
 	"${EXTERNAL_DIR}/NanoSVG/*.h")
-	
-# Add PortAudio
-set(PA_BUILD_EXAMPLES OFF CACHE INTERNAL "" )
-set(PA_BUILD_TESTS OFF CACHE INTERNAL "" )
-set(PA_CONFIG_LIB_OUTPUT_PATH OFF CACHE INTERNAL "" )
-set(PA_ENABLE_DEBUG_OUTPUT OFF CACHE INTERNAL "" )
-set(PA_UNICODE_BUILD ON CACHE INTERNAL "" )
-set(PA_USE_ASIO OFF CACHE INTERNAL "" )
-set(PA_USE_DS OFF CACHE INTERNAL "" )
-set(PA_USE_WASAPI ON CACHE INTERNAL "" )
-set(PA_USE_WDMKS ON CACHE INTERNAL "" )
-set(PA_USE_WMME ON CACHE INTERNAL "" )
-add_subdirectory("${EXTERNAL_DIR}/PortAudio")
 
 # Add FreeType2 (list of source code taken from ./externals/FreeType2/CMakeLists.txt)
 add_definitions(-DFT2_BUILD_LIBRARY)
@@ -142,6 +129,19 @@ file(GLOB UTF8REWIND
 	"${UTF8REWIND_DIR}/source/internal/*"
 	)
 include_directories("${UTF8REWIND_DIR}/include/utf8rewind")
+	
+# Add PortAudio
+set(PA_BUILD_EXAMPLES OFF CACHE INTERNAL "" )
+set(PA_BUILD_TESTS OFF CACHE INTERNAL "" )
+set(PA_CONFIG_LIB_OUTPUT_PATH OFF CACHE INTERNAL "" )
+set(PA_ENABLE_DEBUG_OUTPUT OFF CACHE INTERNAL "" )
+set(PA_UNICODE_BUILD ON CACHE INTERNAL "" )
+set(PA_USE_ASIO OFF CACHE INTERNAL "" )
+set(PA_USE_DS OFF CACHE INTERNAL "" )
+set(PA_USE_WASAPI ON CACHE INTERNAL "" )
+set(PA_USE_WDMKS ON CACHE INTERNAL "" )
+set(PA_USE_WMME ON CACHE INTERNAL "" )
+add_subdirectory("${EXTERNAL_DIR}/PortAudio")
 
 # Collect all code
 set(ALL_CODE
@@ -150,7 +150,7 @@ set(ALL_CODE
 	${TINYXML2}
 	${GLM}
 	${OPEN_GL_LOADER}
-	${STB_IMAGE}
+	${STB}
 	${NANO_SVG}
 	${FREETYPE2}
 	${UTF8REWIND})
