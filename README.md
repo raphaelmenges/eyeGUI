@@ -68,7 +68,7 @@ In order to use eyeGUI, please follow these steps:
 * NanoSVG: https://github.com/memononen/nanosvg
 * TinyXML2: https://github.com/leethomason/tinyxml2
 * GLM: http://glm.g-truc.net/0.9.7/index.html (MIT license chosen)
-* stb_image: https://github.com/nothings/stb
+* stb libraries: https://github.com/nothings/stb
 * FreeType 2.6.1: http://www.freetype.org/ (FreeType license chosen)
 * utf8rewind: https://bitbucket.org/knight666/utf8rewind
 * levenshtein-sse: https://github.com/addaleax/levenshtein-sse
