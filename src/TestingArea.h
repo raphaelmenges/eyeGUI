@@ -11,6 +11,7 @@
 
 #include "src/Style/StyleTree.h"
 #include "src/Utilities/PathBuilder.h"
+#include "src/Utilities/OperationNotifier.h"
 #include "externals/PortAudio/include/portaudio.h"
 #include "externals/stb/stb_vorbis.c"
 #include <iostream>
@@ -18,46 +19,79 @@
 
 namespace eyegui
 {
-	short* buffer;
-	int bufferIndex = 0;
-	int samples = 0;
-
-
-	static int
-		output_cb(const void * inputBuffer, void * outputBuffer, unsigned long frames_per_buffer,
-			const PaStreamCallbackTimeInfo *time_info,
-			PaStreamCallbackFlags flags, void * data)
+	struct Audio
 	{
+		std::shared_ptr<short> spBuffer;
+		int channelCount;
+		int sampleCount;
+		int bufferIndex;
+	};
+
+	// Static instance of audio that is available over complete runtime
+	static Audio AUDIO;
+
+	static int audioStreamCallback(
+			const void * inputBuffer, // buffer for audio input via microphone
+			void * outputBuffer, // buffer for audio output via speakers
+			unsigned long framesPerBuffer, // counts of frames (count of samples for all channels)
+			const PaStreamCallbackTimeInfo *timeInfo, // not used
+			PaStreamCallbackFlags flags, // not used
+			void * data) // not used
+	{
+		// Return value
+		PaStreamCallbackResult result = PaStreamCallbackResult::paComplete;
+
+		// Cast output buffer
 		short *out = (short*)outputBuffer;
-		unsigned int i;
-		(void)inputBuffer; /* Prevent unused variable warnings. */
-		(void)time_info;
+
+		// Prevent unused variable warnings
+		(void)inputBuffer; 
+		(void)timeInfo;
 		(void)flags;
 		(void)data;
 
-		for (i = 0; i<frames_per_buffer; i++)
+		// Fill output buffer for PortAudio
+		bool samplesLeft = AUDIO.bufferIndex < AUDIO.sampleCount;
+		if (samplesLeft)
 		{
-			*out++ = buffer[bufferIndex];
-			// TODO: channels
-			if (bufferIndex + 1 < samples)
+			for (uint i = 0; i < framesPerBuffer; i++) // go over requested frames
 			{
-				bufferIndex++;
-			}
-			else
-			{
-				break;
-			}
-			
+				for (uint j = 0; j < AUDIO.channelCount; j++) // go over channels
+				{
+					*out++ = AUDIO.spBuffer.get()[AUDIO.bufferIndex]; // add sample to output
+					if (AUDIO.bufferIndex + 1 < AUDIO.sampleCount) // check whether there are samples left in the buffer
+					{
+						AUDIO.bufferIndex++;
+					}
+					else
+					{
+						samplesLeft = false;
+						break; // break inner
+					}
+				}
 
-			// TODO Do not overflow here. return paComplete instead
+				// break outer
+				if (!samplesLeft)
+				{
+					break;
+				}
+			}
 		}
-		return paContinue;
+
+		// Decide whether to continue
+		if(samplesLeft)
+		{
+			result = PaStreamCallbackResult::paContinue;
+		}
+		return result;
 	}
 
-	static void
-		end_cb(void * data)
+	static void audioStreamStopCallback(void * data)
 	{
-		printf("end!\n");
+		// Prevent unused variable warnings
+		(void)data;
+
+		// TODO
 	}
 
 	void testingMain()
@@ -88,49 +122,119 @@ namespace eyegui
 	
 		// EXPERIMENT WITH STB VORBIS
 
+		// Try to read audio file from disk
 		std::string filepath = PathBuilder::buildFullFilepath("sounds/test.ogg");
-		int channels, sampleRate;
-		samples = stb_vorbis_decode_filename(filepath.c_str(), &channels, &sampleRate, &buffer);
-		std::cout << "Sample Rate: " << sampleRate << std::endl;
-		std::cout << "Channel Number: " << channels << std::endl;
-		std::cout << "Frame Number: " << samples << std::endl;
-
-		PaStreamParameters out_param;
-		PaStream * stream;
-
-		// init portaudio
-		Pa_Initialize();
-
-		out_param.device = Pa_GetDefaultOutputDevice();
-		if (out_param.device == paNoDevice)
+		int sampleCount, channelCount, sampleRate = 0;
+		short* buffer = NULL;
+		sampleCount = stb_vorbis_decode_filename(filepath.c_str(), &channelCount, &sampleRate, &buffer);
+		if(sampleCount < 0)
 		{
-			fprintf(stderr, "Have not found an audio device!\n");
+			// TODO Failure
 		}
 
-		out_param.channelCount = channels;
-		out_param.sampleFormat = paInt16;
-		out_param.suggestedLatency = Pa_GetDeviceInfo(out_param.device)->defaultLowOutputLatency;
-		out_param.hostApiSpecificStreamInfo = NULL;
+		// Fill static audio structure
+		AUDIO.spBuffer = std::shared_ptr<short>(buffer, free);
+		AUDIO.channelCount = channelCount;
+		AUDIO.sampleCount = sampleCount;
+		AUDIO.bufferIndex = 0; // start with streaming at the beginning
 
-		Pa_OpenStream(&stream, NULL, &out_param, sampleRate,
-			paFramesPerBufferUnspecified, paClipOff,
-			output_cb, NULL);
+		// PortAudio variables
+		bool portAudioInitialized = false;
+		PaStreamParameters parameters;
+		PaStream* stream;
+		PaError err;
 
-		Pa_SetStreamFinishedCallback(stream, &end_cb);
+		// Initialization
+		err = Pa_Initialize();
+		if (err != paNoError)
+		{
+			Pa_Terminate();
+			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+		}
 
-		Pa_StartStream(stream);
+		// Finding default device
+		parameters.device = Pa_GetDefaultOutputDevice();
+		parameters.channelCount = channelCount;
+		parameters.sampleFormat = paInt16;
+		parameters.suggestedLatency = Pa_GetDeviceInfo(parameters.device)->defaultLowOutputLatency;
+		parameters.hostApiSpecificStreamInfo = NULL;
+		if (parameters.device == paNoDevice)
+		{
+			Pa_Terminate();
+			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: Have not found an audio device");
+		}
+		else
+		{
+			portAudioInitialized = true;
+		}
 
-		printf("Play for 5 seconds.\n");
-		float duration = (float)samples / (float)(sampleRate * channels);
-		Pa_Sleep((long)(1000 * duration));
+		// Start and execute a stream
+		if (portAudioInitialized)
+		{
+			bool streamRunning = false;
 
-		Pa_StopStream(stream);
+			// Open stream
+			err = Pa_OpenStream(
+				&stream,
+				NULL,
+				&parameters,
+				sampleRate,
+				paFramesPerBufferUnspecified,
+				paClipOff,
+				audioStreamCallback,
+				NULL);
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+			}
 
-		Pa_CloseStream(stream);
+			// Set finish callback
+			err = Pa_SetStreamFinishedCallback(stream, audioStreamStopCallback); // called when stream complete or stopped
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+			}
 
-		Pa_Terminate();
+			// Start stream
+			err = Pa_StartStream(stream);
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+			}
+			else
+			{
+				streamRunning = true;
+			}
 
-		delete buffer;
+			// Sleeping
+			printf("Play for 5 seconds.\n");
+			float duration = (float)sampleCount / (float)(sampleRate * channelCount);
+			Pa_Sleep((long)(500 * duration));
+
+			// Stop stream
+			if (streamRunning)
+			{
+				err = Pa_StopStream(stream);
+				if (err != paNoError)
+				{
+					OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+				}
+				streamRunning = false;
+			}
+			
+			// Close stream
+			err = Pa_CloseStream(stream);
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+			}
+		}
+
+		// Terminate PortAudio
+		if (portAudioInitialized)
+		{
+			Pa_Terminate();
+		}
 	}
 }
 
