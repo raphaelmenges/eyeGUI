@@ -25,6 +25,7 @@
 
 #include "externals/FreeType2/include/ft2build.h"
 #include FT_FREETYPE_H
+#include "externals/PortAudio/include/portaudio.h"
 
 #include <memory>
 #include <map>
@@ -133,6 +134,10 @@ namespace eyegui
         std::map<graphics::Type, std::unique_ptr<Texture> > mGraphics;
         std::map<std::string, std::unique_ptr<Font> > mFonts;
 		std::map<std::string, std::unique_ptr<Audio> > mSounds;
+
+		// Audio
+		bool mPortAudioInitialized = false;
+		PaStream* mpStream = NULL; // current stream
     };
 }
 

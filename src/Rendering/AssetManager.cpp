@@ -20,10 +20,81 @@
 #include "Font/EmptyFont.h"
 #include "src/Utilities/PathBuilder.h"
 
-// Should be included only one time in complete project
-#include "externals/stb/stb_vorbis.c"
+#include "externals/stb/stb_vorbis.c" // should be included only one time in complete project
 
 #include <algorithm>
+
+// Struct containing information about currently played audio
+struct AudioOutput
+{
+	eyegui::Audio const * pAudio = NULL; // must be valid during output (kinda guaranteed through destruction of PortAudio in destructor)
+	int index = 0;
+	std::function<void()> stopStreamCallback;
+};
+static AudioOutput AUDIO_OUTPUT;
+
+// Static callback for PortAudio stream updates
+static int audioStreamUpdateCallback(
+	const void * inputBuffer, // buffer for audio input via microphone
+	void * outputBuffer, // buffer for audio output via speakers
+	unsigned long framesPerBuffer, // counts of frames (count of samples for all channels)
+	const PaStreamCallbackTimeInfo *timeInfo, // not used
+	PaStreamCallbackFlags flags, // not used
+	void * data) // not used
+{
+	// Return value
+	PaStreamCallbackResult result = PaStreamCallbackResult::paComplete;
+
+	// Cast output buffer
+	short *out = (short*)outputBuffer;
+
+	// Prevent unused variable warnings
+	(void)inputBuffer;
+	(void)timeInfo;
+	(void)flags;
+	(void)data;
+
+	// Fill output buffer for PortAudio
+	bool samplesLeft = AUDIO_OUTPUT.index < AUDIO_OUTPUT.pAudio->getSampleCount();
+	if (samplesLeft)
+	{
+		for (unsigned int i = 0; i < framesPerBuffer; i++) // go over requested frames
+		{
+			for (unsigned int j = 0; j < AUDIO_OUTPUT.pAudio->getChannelCount(); j++) // go over channels
+			{
+				*out++ = AUDIO_OUTPUT.pAudio->getSample(AUDIO_OUTPUT.index); // add sample to output
+				if (AUDIO_OUTPUT.index + 1 < AUDIO_OUTPUT.pAudio->getSampleCount()) // check whether there are samples left in the buffer
+				{
+					AUDIO_OUTPUT.index++;
+				}
+				else
+				{
+					samplesLeft = false;
+					break; // break inner
+				}
+			}
+
+			// break outer
+			if (!samplesLeft)
+			{
+				break;
+			}
+		}
+	}
+
+	// Decide whether to continue
+	if (samplesLeft)
+	{
+		result = PaStreamCallbackResult::paContinue;
+	}
+	return result;
+}
+
+// Static callback for PortAudio stream stops
+static void audioStreamStopCallback(void * data)
+{
+	AUDIO_OUTPUT.stopStreamCallback();
+}
 
 namespace eyegui
 {
@@ -39,6 +110,18 @@ namespace eyegui
                 OperationNotifier::Operation::RUNTIME,
                 "Could not initialize FreeType Library");
         }
+
+		// Initialization
+		PaError err = Pa_Initialize();
+		if (err != paNoError)
+		{
+			Pa_Terminate();
+			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+		}
+		else
+		{
+			mPortAudioInitialized = true;
+		}
     }
 
     AssetManager::~AssetManager()
@@ -48,6 +131,12 @@ namespace eyegui
 
         // Close FreeType Library
         FT_Done_FreeType(mFreeTypeLibrary);
+
+		// Terminate PortAudio
+		if (mPortAudioInitialized)
+		{
+			Pa_Terminate();
+		}
     }
 
     RenderItem const * AssetManager::fetchRenderItem(shaders::Type shader, meshes::Type mesh)
@@ -394,6 +483,7 @@ namespace eyegui
 				new Audio(
 					channelCount,
 					sampleCount,
+					sampleRate,
 					pBuffer));
 
 			// Store sound
@@ -401,7 +491,121 @@ namespace eyegui
 			mSounds[filepath] = std::move(rupSound);
 		}
 
-		// Play sound TODO
+		// Check for PortAudio
+		if (mPortAudioInitialized)
+		{
+			// Variable to fetch errors
+			PaError err;
+
+			// Stop existing stream if necessary
+			if (mpStream != NULL)
+			{
+				// Aborts stream (stop would wait until buffer finished)
+				err = Pa_AbortStream(mpStream);
+				if (err != paNoError)
+				{
+					OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+					mpStream = NULL;
+					return;
+				}
+
+				// Stop stream
+				err = Pa_StopStream(mpStream);
+				if (err != paNoError)
+				{
+					OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+					mpStream = NULL;
+					return;
+				}
+
+				// Close stream TODO: would make sense to reuse the same stream over and over again, but then the channel count must be static
+				err = Pa_CloseStream(mpStream);
+				if (err != paNoError)
+				{
+					OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+					mpStream = NULL;
+					return;
+				}
+
+				// Set stream to NULL
+				mpStream = NULL;
+			}
+
+			// Set values in static structure accessed by the callbacks
+			AUDIO_OUTPUT.pAudio = pSound;
+			AUDIO_OUTPUT.index = 0;
+			AUDIO_OUTPUT.stopStreamCallback = [this]()
+			{
+				if (mpStream != NULL)
+				{
+					// Stop stream
+					PaError err = Pa_StopStream(mpStream);
+					if (err != paNoError)
+					{
+						OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+						mpStream = NULL;
+						return;
+					}
+
+					// Close stream TODO: would make sense to reuse the same stream over and over again, but then the channel count must be static
+					err = Pa_CloseStream(mpStream);
+					if (err != paNoError)
+					{
+						OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+						mpStream = NULL;
+						return;
+					}
+				}
+			};
+
+			// Open new stream
+			PaStreamParameters parameters;
+			parameters.device = Pa_GetDefaultOutputDevice();
+			parameters.channelCount = pSound->getChannelCount();
+			parameters.sampleFormat = paInt16;
+			parameters.suggestedLatency = Pa_GetDeviceInfo(parameters.device)->defaultLowOutputLatency;
+			parameters.hostApiSpecificStreamInfo = NULL;
+			if (parameters.device == paNoDevice)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: Have not found an audio device");
+				return;
+			}
+
+			// Open stream
+			err = Pa_OpenStream(
+				&mpStream,
+				NULL,
+				&parameters,
+				pSound->getSampleRate(),
+				paFramesPerBufferUnspecified,
+				paClipOff,
+				audioStreamUpdateCallback,
+				NULL);
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+				mpStream = NULL;
+				return;
+			}
+
+			// Set finish callback
+			err = Pa_SetStreamFinishedCallback(mpStream, audioStreamStopCallback); // called when stream completed or stopped
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+				// TODO stop stream?
+				return;
+			}
+
+			// Start stream
+			err = Pa_StartStream(mpStream);
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+				// TODO stop stream?
+				return;
+			}
+		}
 	}
 
     std::unique_ptr<TextFlow> AssetManager::createTextFlow(

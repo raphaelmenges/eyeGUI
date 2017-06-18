@@ -4,7 +4,7 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Encapsulation of the audio creation and usage.
+// Encapsulation of audio data.
 
 #ifndef AUDIO_H_
 #define AUDIO_H_
@@ -16,7 +16,7 @@ namespace eyegui
 	public:
 
 		// Constructor. Handles freeing of buffer at destruction
-		Audio(int channelCount, int sampleCount, short* pBuffer);
+		Audio(int channelCount, int sampleCount, int sampleRate, short* pBuffer);
 
 		// Destructor
 		virtual ~Audio();
@@ -24,6 +24,7 @@ namespace eyegui
 		// Getter
 		int getChannelCount() const { return mChannelCount; }
 		int getSampleCount() const { return mSampleCount; }
+		int getSampleRate() const { return mSampleRate; }
 		short getSample(int index) const { return mpBuffer[index]; } // no bounds check performed!
 
 	private:
@@ -31,6 +32,7 @@ namespace eyegui
 		// Members
 		int mChannelCount;
 		int mSampleCount;
+		int mSampleRate;
 		short* mpBuffer;
 	};
 }
