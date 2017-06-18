@@ -54,7 +54,7 @@ file(GLOB_RECURSE OPEN_GL_LOADER
 
 # Add stb libraries
 file(GLOB_RECURSE STB
-	"${EXTERNAL_DIR}/stb/*")
+	"${EXTERNAL_DIR}/stb/*.h") # does exclude .c files which are included into single translation unit
 
 # Add NanoSVG
 file(GLOB_RECURSE NANO_SVG

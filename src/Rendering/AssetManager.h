@@ -16,6 +16,7 @@
 #include "Textures/Texture.h"
 #include "RenderItem.h"
 #include "Font/Font.h"
+#include "Audio.h"
 #include "Assets/Text/TextFlow.h"
 #include "Assets/Text/TextSimple.h"
 #include "Assets/Key.h"
@@ -95,6 +96,9 @@ namespace eyegui
         // Resize font atlases (should be called by GUI only)
         void resizeFontAtlases();
 
+		// Play sound
+		void playSound(std::string filepath);
+
         // Create text flow and return it as unique pointer
         std::unique_ptr<TextFlow> createTextFlow(
             FontSize fontSize,
@@ -128,6 +132,7 @@ namespace eyegui
         std::map<std::string, std::unique_ptr<Texture> > mTextures;
         std::map<graphics::Type, std::unique_ptr<Texture> > mGraphics;
         std::map<std::string, std::unique_ptr<Font> > mFonts;
+		std::map<std::string, std::unique_ptr<Audio> > mSounds;
     };
 }
 

@@ -13,12 +13,13 @@
 #include "src/Utilities/PathBuilder.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "externals/PortAudio/include/portaudio.h"
-#include "externals/stb/stb_vorbis.c"
+// #include "externals/stb/stb_vorbis.c"
 #include <iostream>
 #include <system_error>
 
 namespace eyegui
 {
+	/*
 	struct Audio
 	{
 		std::shared_ptr<short> spBuffer;
@@ -93,6 +94,7 @@ namespace eyegui
 
 		// TODO
 	}
+	*/
 
 	void testingMain()
 	{
@@ -121,6 +123,8 @@ namespace eyegui
 		*/
 	
 		// EXPERIMENT WITH STB VORBIS
+
+		/*
 
 		// Try to read audio file from disk
 		std::string filepath = PathBuilder::buildFullFilepath("sounds/test.ogg");
@@ -235,6 +239,8 @@ namespace eyegui
 		{
 			Pa_Terminate();
 		}
+
+		*/
 	}
 }
 

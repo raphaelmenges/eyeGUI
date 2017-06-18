@@ -206,6 +206,12 @@ namespace eyegui
             mResizeCallbackFunction(mWidth, mHeight);
         }
 
+		// TODO testing
+		if (input.instantInteraction)
+		{
+			mupAssetManager->playSound("sounds/test.ogg");
+		}
+
         // Return copy of used input
         return copyInput;
     }

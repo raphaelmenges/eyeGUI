@@ -20,6 +20,9 @@
 #include "Font/EmptyFont.h"
 #include "src/Utilities/PathBuilder.h"
 
+// Should be included only one time in complete project
+#include "externals/stb/stb_vorbis.c"
+
 #include <algorithm>
 
 namespace eyegui
@@ -361,6 +364,45 @@ namespace eyegui
             rPair.second->resizeFontAtlases();
         }
     }
+
+	void AssetManager::playSound(std::string filepath)
+	{
+		// Search in map for sounds and create if needed
+		std::unique_ptr<Audio>& rupSound = mSounds[filepath];
+		Audio* pSound = rupSound.get();
+
+		if (pSound == NULL)
+		{
+			// Check filepath
+			if (!checkFileNameExtension(filepath, "ogg"))
+			{
+				throwWarning(OperationNotifier::Operation::AUDIO_LOADING, "Font file has unknown format", filepath);
+			}
+
+			// Try to read audio file from disk
+			int sampleCount, channelCount, sampleRate = 0;
+			short* pBuffer = NULL;
+			sampleCount = stb_vorbis_decode_filename(buildPath(filepath).c_str(), &channelCount, &sampleRate, &pBuffer);
+			if (sampleCount < 0)
+			{
+				throwWarning(OperationNotifier::Operation::AUDIO_LOADING, "Failed to load audio file", filepath);
+				return;
+			}
+
+			// Fill sound audio structure (buffer will be freed at destruction of that pointer)
+			rupSound = std::unique_ptr<Audio>(
+				new Audio(
+					channelCount,
+					sampleCount,
+					pBuffer));
+
+			// Store sound
+			pSound = rupSound.get();
+			mSounds[filepath] = std::move(rupSound);
+		}
+
+		// Play sound TODO
+	}
 
     std::unique_ptr<TextFlow> AssetManager::createTextFlow(
         FontSize fontSize,

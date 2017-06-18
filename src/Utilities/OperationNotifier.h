@@ -26,7 +26,14 @@ namespace eyegui
     public:
 
         // Enumeration of operations which could occur
-        enum class Operation { PARSING, IMAGE_LOADING, FONT_LOADING, RUNTIME, BUG, DICTIONARY };
+        enum class Operation {
+			PARSING,
+			IMAGE_LOADING,
+			FONT_LOADING,
+			AUDIO_LOADING,
+			RUNTIME,
+			BUG,
+			DICTIONARY };
 
         // Send error to callback
         static void notifyAboutError(Operation operation, std::string message = "", std::string filepath = "")
@@ -226,6 +233,9 @@ namespace eyegui
             case Operation::FONT_LOADING:
                 operationString = "Font Loading " + typeString + ": ";
                 break;
+			case Operation::AUDIO_LOADING:
+				operationString = "Audio Loading " + typeString + ": ";
+				break;
             case Operation::RUNTIME:
                 operationString = "Runtime " + typeString + ": ";
                 break;
