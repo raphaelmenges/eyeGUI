@@ -206,11 +206,13 @@ namespace eyegui
             mResizeCallbackFunction(mWidth, mHeight);
         }
 
-		// TODO testing
+		// TODO when called from within eyeGUI, sound is double as fast as normal?!
+		/*
 		if (input.instantInteraction)
 		{
-			mupAssetManager->playSound("sounds/test.ogg");
+			playSound("sounds/test.ogg");
 		}
+		*/
 
         // Return copy of used input
         return copyInput;
@@ -312,6 +314,11 @@ namespace eyegui
 	void GUI::setKeyboardLayout(KeyboardLayout keyboardLayout)
 	{
 		mJobs.push_back(std::move(std::unique_ptr<KeyboardLayoutJob>(new KeyboardLayoutJob(this, keyboardLayout))));
+	}
+
+	void GUI::playSound(std::string filepath)
+	{
+		mupAssetManager->playSound(filepath);
 	}
 
     int GUI::getWindowWidth() const

@@ -421,6 +421,13 @@ namespace eyegui
 	*/
 	void setKeyboardLayout(GUI* pGUI, KeyboardLayout keyboardLayout);
 
+	//! Play a sound file.
+	/*!
+	\param pGUI pointer to GUI.
+	\param filepath to sound file.
+	*/
+	void playSound(GUI* pGUI, std::string filepath);
+
 	//! Control layout's input usage.
 	/*!
 	  \param pLayout pointer to layout.

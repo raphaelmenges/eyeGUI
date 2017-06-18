@@ -143,6 +143,11 @@ namespace eyegui
 		pGUI->setKeyboardLayout(keyboardLayout);
 	}
 
+	void playSound(GUI* pGUI, std::string filepath)
+	{
+		pGUI->playSound(filepath);
+	}
+
     void setInputUsageOfLayout(Layout* pLayout, bool useInput)
     {
         pLayout->useInput(useInput);

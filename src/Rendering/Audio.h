@@ -16,7 +16,7 @@ namespace eyegui
 	public:
 
 		// Constructor. Handles freeing of buffer at destruction
-		Audio(int channelCount, int sampleCount, int sampleRate, short* pBuffer);
+		Audio(unsigned int channelCount, unsigned int sampleCount, unsigned int sampleRate, short* pBuffer);
 
 		// Destructor
 		virtual ~Audio();
@@ -30,9 +30,9 @@ namespace eyegui
 	private:
 
 		// Members
-		int mChannelCount;
-		int mSampleCount;
-		int mSampleRate;
+		unsigned int mChannelCount;
+		unsigned int mSampleCount;
+		unsigned int mSampleRate;
 		short* mpBuffer;
 	};
 }

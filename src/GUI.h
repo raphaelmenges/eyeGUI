@@ -98,6 +98,9 @@ namespace eyegui
 		// Set global keyboard layout
 		void setKeyboardLayout(KeyboardLayout keyboardLayout);
 
+		// Play some sound
+		void playSound(std::string filepath);
+
         // *** Methods accessed by other classes ***
 
         // Getter for window size

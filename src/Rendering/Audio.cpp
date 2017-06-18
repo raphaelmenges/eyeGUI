@@ -11,7 +11,7 @@
 
 namespace eyegui
 {
-	Audio::Audio(int channelCount, int sampleCount, int sampleRate, short* pBuffer) :
+	Audio::Audio(unsigned int channelCount, unsigned int sampleCount, unsigned int sampleRate, short* pBuffer) :
 		mChannelCount(channelCount), mSampleCount(sampleCount), mSampleRate(sampleRate), mpBuffer(pBuffer)
 	{
 		// Nothing to do

@@ -24,14 +24,30 @@
 
 #include <algorithm>
 
-// Struct containing information about currently played audio
-struct AudioOutput
+// Class containing information about currently played audio
+class AudioOutput
 {
-	eyegui::Audio const * pAudio = NULL; // must be valid during output (kinda guaranteed through destruction of PortAudio in destructor)
-	int index = 0;
-	std::function<void()> stopStreamCallback;
+public:
+
+	// Constructor
+	AudioOutput(eyegui::Audio const * pAudio) : mpAudio(pAudio) {};
+
+	// Increment index
+	void incrementIndex() { ++mIndex; }
+
+	// Get index
+	int getIndex() const { return mIndex; }
+
+	// Get pointer to audio class
+	eyegui::Audio const * getAudio() const { return mpAudio; }
+
+private:
+
+	// Members
+	eyegui::Audio const * mpAudio = nullptr; // must be valid during output (kinda guaranteed through unique pointer in member map)
+	int mIndex = 0; // sample index
 };
-static AudioOutput AUDIO_OUTPUT;
+static AudioOutput AUDIO_OUTPUT(nullptr);
 
 // Static callback for PortAudio stream updates
 static int audioStreamUpdateCallback(
@@ -55,17 +71,17 @@ static int audioStreamUpdateCallback(
 	(void)data;
 
 	// Fill output buffer for PortAudio
-	bool samplesLeft = AUDIO_OUTPUT.index < AUDIO_OUTPUT.pAudio->getSampleCount();
+	bool samplesLeft = AUDIO_OUTPUT.getIndex() < AUDIO_OUTPUT.getAudio()->getSampleCount();
 	if (samplesLeft)
 	{
 		for (unsigned int i = 0; i < framesPerBuffer; i++) // go over requested frames
 		{
-			for (unsigned int j = 0; j < AUDIO_OUTPUT.pAudio->getChannelCount(); j++) // go over channels
+			for (unsigned int j = 0; j < AUDIO_OUTPUT.getAudio()->getChannelCount(); j++) // go over channels
 			{
-				*out++ = AUDIO_OUTPUT.pAudio->getSample(AUDIO_OUTPUT.index); // add sample to output
-				if (AUDIO_OUTPUT.index + 1 < AUDIO_OUTPUT.pAudio->getSampleCount()) // check whether there are samples left in the buffer
+				*out++ = AUDIO_OUTPUT.getAudio()->getSample(AUDIO_OUTPUT.getIndex()); // add sample to output
+				if (AUDIO_OUTPUT.getIndex() + 1 < AUDIO_OUTPUT.getAudio()->getSampleCount()) // check whether there are samples left in the buffer
 				{
-					AUDIO_OUTPUT.index++;
+					AUDIO_OUTPUT.incrementIndex();
 				}
 				else
 				{
@@ -74,7 +90,7 @@ static int audioStreamUpdateCallback(
 				}
 			}
 
-			// break outer
+			// Break outer
 			if (!samplesLeft)
 			{
 				break;
@@ -88,12 +104,6 @@ static int audioStreamUpdateCallback(
 		result = PaStreamCallbackResult::paContinue;
 	}
 	return result;
-}
-
-// Static callback for PortAudio stream stops
-static void audioStreamStopCallback(void * data)
-{
-	AUDIO_OUTPUT.stopStreamCallback();
 }
 
 namespace eyegui
@@ -465,7 +475,7 @@ namespace eyegui
 			// Check filepath
 			if (!checkFileNameExtension(filepath, "ogg"))
 			{
-				throwWarning(OperationNotifier::Operation::AUDIO_LOADING, "Font file has unknown format", filepath);
+				throwWarning(OperationNotifier::Operation::AUDIO_LOADING, "Audio file has unknown format", filepath);
 			}
 
 			// Try to read audio file from disk
@@ -509,16 +519,7 @@ namespace eyegui
 					return;
 				}
 
-				// Stop stream
-				err = Pa_StopStream(mpStream);
-				if (err != paNoError)
-				{
-					OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-					mpStream = NULL;
-					return;
-				}
-
-				// Close stream TODO: would make sense to reuse the same stream over and over again, but then the channel count must be static
+				// Close stream
 				err = Pa_CloseStream(mpStream);
 				if (err != paNoError)
 				{
@@ -531,32 +532,8 @@ namespace eyegui
 				mpStream = NULL;
 			}
 
-			// Set values in static structure accessed by the callbacks
-			AUDIO_OUTPUT.pAudio = pSound;
-			AUDIO_OUTPUT.index = 0;
-			AUDIO_OUTPUT.stopStreamCallback = [this]()
-			{
-				if (mpStream != NULL)
-				{
-					// Stop stream
-					PaError err = Pa_StopStream(mpStream);
-					if (err != paNoError)
-					{
-						OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-						mpStream = NULL;
-						return;
-					}
-
-					// Close stream TODO: would make sense to reuse the same stream over and over again, but then the channel count must be static
-					err = Pa_CloseStream(mpStream);
-					if (err != paNoError)
-					{
-						OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-						mpStream = NULL;
-						return;
-					}
-				}
-			};
+			// Set value of static structure accessed by the callbacks
+			AUDIO_OUTPUT = AudioOutput(pSound);
 
 			// Open new stream
 			PaStreamParameters parameters;
@@ -588,21 +565,12 @@ namespace eyegui
 				return;
 			}
 
-			// Set finish callback
-			err = Pa_SetStreamFinishedCallback(mpStream, audioStreamStopCallback); // called when stream completed or stopped
-			if (err != paNoError)
-			{
-				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-				// TODO stop stream?
-				return;
-			}
-
 			// Start stream
 			err = Pa_StartStream(mpStream);
 			if (err != paNoError)
 			{
 				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-				// TODO stop stream?
+				mpStream = NULL; // possible memory leak
 				return;
 			}
 		}
