@@ -33,6 +33,7 @@ namespace eyegui
 		// Getter and setter for computed style value
 		virtual float getStyleValue(StylePropertyFloat type) const = 0;
 		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const = 0;
+		virtual std::string getStyleValue(StylePropertyString type) const = 0;
 
 		// Style classes assigned from style tree
 		std::vector<std::shared_ptr<const StyleClass> > mStyleTreeClasses; // Parser must guarantee for at least one element

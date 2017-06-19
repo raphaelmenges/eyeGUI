@@ -93,6 +93,12 @@ namespace eyegui
 		ThresholdColor
 	};
 
+	//! Enumeration style properties string types
+	enum class StylePropertyString
+	{
+		SoundButtonDown
+	};
+
 	//! Enumeration of possible character sets for font rendering.
 	enum class KeyboardLayout { US_ENGLISH, GERMANY_GERMAN, ISRAEL_HEBREW, GREECE_GREEK };
 

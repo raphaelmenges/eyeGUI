@@ -340,6 +340,7 @@ namespace eyegui
 		// Get values from styling
 		virtual float getStyleValue(StylePropertyFloat type) const;
 		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
+		virtual std::string getStyleValue(StylePropertyString type) const;
 
 		// Set value of style owned by element
 		template<typename Type>

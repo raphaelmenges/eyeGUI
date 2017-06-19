@@ -70,6 +70,16 @@ namespace eyegui
 		return mVec4Map.at(type)->get();
 	}
 
+	std::shared_ptr<const StyleProperty<std::string> > StyleClass::fetchProperty(StylePropertyString type) const
+	{
+		return mStringMap.at(type);
+	}
+
+	std::string StyleClass::getValue(StylePropertyString type) const
+	{
+		return mStringMap.at(type)->get();
+	}
+
 	void StyleClass::setValue(StylePropertyFloat type, float value)
 	{
 		// Pass to template
@@ -77,6 +87,12 @@ namespace eyegui
 	}
 
 	void StyleClass::setValue(StylePropertyVec4 type, glm::vec4 value)
+	{
+		// Pass to template
+		genericSetValue(type, value);
+	}
+
+	void StyleClass::setValue(StylePropertyString type, std::string value)
 	{
 		// Pass to template
 		genericSetValue(type, value);
@@ -185,6 +201,17 @@ namespace eyegui
 		mVec4Map[sVec4::MarkColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 0.5f, 1.0f, 0.5f), colorConstraint));
 		mVec4Map[sVec4::PickColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.2f, 1.0f, 0.0f, 0.5f), colorConstraint));
 		mVec4Map[sVec4::ThresholdColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
+
+		// String constraints
+		const std::function<std::string(std::string)> stringConstraint = [](std::string value)
+		{
+			return std::move(value);
+		};
+
+		// Initialize string properties
+		typedef StylePropertyString sString; // simplify enum access
+		typedef std::shared_ptr<StyleProperty<std::string> > spString; // simplify shared pointer creation
+		mStringMap[sString::SoundButtonDown] = spString(new StyleProperty<std::string>(shared_from_this(), std::string(), stringConstraint));
 	}
 
 	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name) const

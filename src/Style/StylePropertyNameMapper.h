@@ -63,6 +63,10 @@ namespace eyegui
 			{ "PickColor",											StylePropertyVec4::PickColor },
 			{ "ThresholdColor",										StylePropertyVec4::ThresholdColor }
 		};
+		const std::map<std::string, StylePropertyString> STRING_TYPE_MAP =
+		{
+			{ "SoundButtonDown",									StylePropertyString::SoundButtonDown },
+		};
 	}
 }
 

@@ -111,6 +111,9 @@ namespace eyegui
 
             // Interaction notification
             notifyInteraction("DOWN");
+
+			// Play sound
+			mpAssetManager->playSound(getStyleValue(StylePropertyString::SoundButtonDown));
         }
     }
 

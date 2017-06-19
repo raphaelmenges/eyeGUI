@@ -44,6 +44,12 @@ namespace eyegui
 		// Get vec4 value from property
 		glm::vec4 getValue(StylePropertyVec4 type) const;
 
+		// Fetch string property
+		std::shared_ptr<const StyleProperty<std::string> > fetchProperty(StylePropertyString type) const;
+
+		// Get string value from property
+		std::string getValue(StylePropertyString type) const;
+
 		// Set value of float porperty and propagate to children (TODO: maybe do not set it at value parsing failure)
 		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }
 		void setValue(StylePropertyFloat type, float value);
@@ -51,6 +57,9 @@ namespace eyegui
 		// Set vec4 value and propagate to children
 		void setValue(StylePropertyVec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
 		void setValue(StylePropertyVec4 type, glm::vec4 value);
+
+		// Set string value and propagate to children
+		void setValue(StylePropertyString type, std::string value);
 
 		// Fetch this or child by name. Return empty pointer if not found
 		std::shared_ptr<StyleClass> fetchThisOrChild(std::string name);
@@ -82,10 +91,12 @@ namespace eyegui
 		// Get style property pointer by type
 		std::shared_ptr<StyleProperty<float> > getStyleProperty(StylePropertyFloat type) { return this->mFloatMap[type]; }
 		std::shared_ptr<StyleProperty<glm::vec4> > getStyleProperty(StylePropertyVec4 type) { return this->mVec4Map[type]; }
+		std::shared_ptr<StyleProperty<std::string> > getStyleProperty(StylePropertyString type) { return this->mStringMap[type]; }
 
 		// Set property pointer in map
 		void setMapValue(StylePropertyFloat type, std::shared_ptr<StyleProperty<float> > spProperty) { this->mFloatMap[type] = spProperty; }
 		void setMapValue(StylePropertyVec4 type, std::shared_ptr<StyleProperty<glm::vec4> > spProperty) { this->mVec4Map[type] = spProperty; }
+		void setMapValue(StylePropertyString type, std::shared_ptr<StyleProperty<std::string> > spProperty) { this->mStringMap[type] = spProperty; }
 
 		// ####################
 		// ### VALUE SETTER ###
@@ -173,6 +184,7 @@ namespace eyegui
 		// Maps
 		std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<float> > > mFloatMap;
 		std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
+		std::map<StylePropertyString, std::shared_ptr<StyleProperty<std::string> > > mStringMap;
 
 		// Parent
 		std::weak_ptr<const StyleClass> mwpParent; // empty for root

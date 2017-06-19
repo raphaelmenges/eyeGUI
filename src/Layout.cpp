@@ -1426,6 +1426,26 @@ namespace eyegui
 		return spStyleProperty->get();
 	}
 
+	std::string Layout::getStyleValue(StylePropertyString type) const
+	{
+		// Go over the property in the differenct classes in tre
+		std::shared_ptr<const StyleProperty<std::string> > spStyleProperty;
+		for (const auto& rspStyleClass : mStyleTreeClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isSet()) // just base, try next class
+			{
+				continue;
+			}
+			else // no base, use this property's value
+			{
+				break;
+			}
+		}
+		return spStyleProperty->get();
+	}
+
     void Layout::registerFutureKeyboardListener(std::string id, std::weak_ptr<eyegui_experimental::FutureKeyboardListener> wpListener)
     {
         FutureKeyboard* pFutureKeyboard = toFutureKeyboard(fetchElement(id));

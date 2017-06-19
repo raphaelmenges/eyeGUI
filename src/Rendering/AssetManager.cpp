@@ -443,6 +443,12 @@ namespace eyegui
 
 	void AssetManager::playSound(std::string filepath)
 	{
+		// Check for empty string
+		if (filepath.empty())
+		{
+			return;
+		}
+
 		// Search in map for sounds and create if needed
 		std::unique_ptr<Audio>& rupSound = mSounds[filepath];
 		Audio* pSound = rupSound.get();

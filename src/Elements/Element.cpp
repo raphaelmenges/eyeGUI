@@ -798,6 +798,35 @@ namespace eyegui
 		return spStyleProperty->get();
 	}
 
+	std::string Element::getStyleValue(StylePropertyString type) const
+	{
+		// Go over the property in the differenct classes
+		std::shared_ptr<const StyleProperty<std::string> > spStyleProperty;
+
+		// Check own class for some set value
+		spStyleProperty = mspStyleClass->fetchProperty(type);
+		if (spStyleProperty->isSet()) // if the value of this property was actively set, use it!
+		{
+			return spStyleProperty->get();
+		}
+
+		// Go over assigned classes of global style tree
+		for (const auto& rspStyleClass : mStyleTreeClasses)
+		{
+			// Check whether property is really set or just base
+			spStyleProperty = rspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isSet()) // no base, use this property's value
+			{
+				break;
+			}
+			else // just base, try next class
+			{
+				continue;
+			}
+		}
+		return spStyleProperty->get();
+	}
+
 	std::shared_ptr<StyleClass> Element::fetchElementStyleClass() const
 	{
 		return mspStyleClass;

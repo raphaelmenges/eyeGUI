@@ -122,7 +122,7 @@ namespace eyegui
         // Resize font atlases (should be called by GUI only)
         void resizeFontAtlases();
 
-		// Play sound
+		// Play sound. Does nothing for empty filepath string
 		void playSound(std::string filepath);
 
         // Create text flow and return it as unique pointer
