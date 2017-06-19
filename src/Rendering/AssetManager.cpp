@@ -24,31 +24,6 @@
 
 #include <algorithm>
 
-// Class containing information about currently played audio
-class AudioOutput
-{
-public:
-
-	// Constructor
-	AudioOutput(eyegui::Audio const * pAudio) : mpAudio(pAudio) {};
-
-	// Increment index
-	void incrementIndex() { ++mIndex; }
-
-	// Get index
-	int getIndex() const { return mIndex; }
-
-	// Get pointer to audio class
-	eyegui::Audio const * getAudio() const { return mpAudio; }
-
-private:
-
-	// Members
-	eyegui::Audio const * mpAudio = nullptr; // must be valid during output (kinda guaranteed through unique pointer in member map)
-	int mIndex = 0; // sample index
-};
-static AudioOutput AUDIO_OUTPUT(nullptr);
-
 // Static callback for PortAudio stream updates
 static int audioStreamUpdateCallback(
 	const void * inputBuffer, // buffer for audio input via microphone
@@ -56,7 +31,7 @@ static int audioStreamUpdateCallback(
 	unsigned long framesPerBuffer, // counts of frames (count of samples for all channels)
 	const PaStreamCallbackTimeInfo *timeInfo, // not used
 	PaStreamCallbackFlags flags, // not used
-	void * data) // not used
+	void * data) // pointer to audio output data
 {
 	// Return value
 	PaStreamCallbackResult result = PaStreamCallbackResult::paComplete;
@@ -68,20 +43,22 @@ static int audioStreamUpdateCallback(
 	(void)inputBuffer;
 	(void)timeInfo;
 	(void)flags;
-	(void)data;
+
+	// Extract pointer to audio output data
+	auto pData = reinterpret_cast<eyegui::AudioOutput*>(data);
 
 	// Fill output buffer for PortAudio
-	bool samplesLeft = AUDIO_OUTPUT.getIndex() < AUDIO_OUTPUT.getAudio()->getSampleCount();
+	bool samplesLeft = pData->getIndex() < pData->getAudio()->getSampleCount();
 	if (samplesLeft)
 	{
 		for (unsigned int i = 0; i < framesPerBuffer; i++) // go over requested frames
 		{
-			for (unsigned int j = 0; j < AUDIO_OUTPUT.getAudio()->getChannelCount(); j++) // go over channels
+			for (unsigned int j = 0; j < pData->getAudio()->getChannelCount(); j++) // go over channels
 			{
-				*out++ = AUDIO_OUTPUT.getAudio()->getSample(AUDIO_OUTPUT.getIndex()); // add sample to output
-				if (AUDIO_OUTPUT.getIndex() + 1 < AUDIO_OUTPUT.getAudio()->getSampleCount()) // check whether there are samples left in the buffer
+				*out++ = pData->getAudio()->getSample(pData->getIndex()); // add sample to output
+				if (pData->getIndex() + 1 < pData->getAudio()->getSampleCount()) // check whether there are samples left in the buffer
 				{
-					AUDIO_OUTPUT.incrementIndex();
+					pData->incrementIndex();
 				}
 				else
 				{
@@ -533,7 +510,7 @@ namespace eyegui
 			}
 
 			// Set value of static structure accessed by the callbacks
-			AUDIO_OUTPUT = AudioOutput(pSound);
+			mupAudioOutput = std::unique_ptr<AudioOutput>(new AudioOutput(pSound));
 
 			// Open new stream
 			PaStreamParameters parameters;
@@ -557,7 +534,7 @@ namespace eyegui
 				paFramesPerBufferUnspecified,
 				paClipOff,
 				audioStreamUpdateCallback,
-				NULL);
+				mupAudioOutput.get()); // provide pointer to audio output data (must be valid during callback)
 			if (err != paNoError)
 			{
 				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));

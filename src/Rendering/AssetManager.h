@@ -59,6 +59,31 @@ namespace eyegui
     // Forward declaration
     class GUI;
 
+	// Class containing information about currently played audio
+	class AudioOutput
+	{
+	public:
+
+		// Constructor
+		AudioOutput(eyegui::Audio const * pAudio) : mpAudio(pAudio) {};
+
+		// Increment index
+		void incrementIndex() { ++mIndex; }
+
+		// Get index
+		int getIndex() const { return mIndex; }
+
+		// Get pointer to audio class
+		eyegui::Audio const * getAudio() const { return mpAudio; }
+
+	private:
+
+		// Members
+		eyegui::Audio const * mpAudio = nullptr; // must be valid during output (kinda guaranteed through unique pointer in member map)
+		int mIndex = 0; // sample index
+	};
+	
+	// AssetManager
     class AssetManager
     {
     public:
@@ -137,7 +162,8 @@ namespace eyegui
 
 		// Audio
 		bool mPortAudioInitialized = false;
-		PaStream* mpStream = NULL; // current stream
+		PaStream* mpStream = nullptr; // current stream
+		std::unique_ptr<AudioOutput> mupAudioOutput; // currently outputted audio data
     };
 }
 
