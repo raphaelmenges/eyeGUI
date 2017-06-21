@@ -22,6 +22,7 @@ namespace eyegui
 			// Copy maps with pointers, not values itself
 			mFloatMap = spParent->mFloatMap;
 			mVec4Map = spParent->mVec4Map;
+			mStringMap = spParent->mStringMap;
 
 			// Please do not fill maps
 			rPleaseFill = false;
