@@ -46,6 +46,8 @@ namespace eyegui
 			if (floatIterator != StylePropertyNameMapper::FLOAT_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, floatIterator->second, right); }
 			auto vec4Iterator = StylePropertyNameMapper::VEC4_TYPE_MAP.find(left);
 			if (vec4Iterator != StylePropertyNameMapper::VEC4_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, vec4Iterator->second, right); }
+			auto stringIterator = StylePropertyNameMapper::STRING_TYPE_MAP.find(left);
+			if (stringIterator != StylePropertyNameMapper::STRING_TYPE_MAP.end()) { spStyleTree->setValue(styleClass, stringIterator->second, right); }
 		}
 
 		void parse(std::shared_ptr<StyleTree> spStyleTree, std::string filepath)
