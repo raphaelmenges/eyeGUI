@@ -91,8 +91,6 @@ namespace eyegui
 				end_pos = std::remove(content.begin(), content.end(), '\t');
 				content.erase(end_pos, content.end());
 
-				
-
 				// Make some state variables for parsing
 				enum class ParseState { OUTER, NAME_READ, INNER };
 				ParseState state = ParseState::OUTER;

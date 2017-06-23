@@ -15,6 +15,7 @@
 #ifndef STYLE_CLASS_H_
 #define STYLE_CLASS_H_
 
+#include "include/eyeGUI.h"
 #include "src/Style/StyleProperty.h"
 #include "src/Utilities/Helper.h"
 #include "src/Defines.h"
@@ -24,6 +25,12 @@
 
 namespace eyegui
 {
+	// Compile time mapping between style property and type
+	template<typename Type> struct StylePropertyValue;
+	template<> struct StylePropertyValue<StylePropertyFloat> { typedef float type; };
+	template<> struct StylePropertyValue<StylePropertyVec4> { typedef glm::vec4 type; };
+	template<> struct StylePropertyValue<StylePropertyString> { typedef std::string type; };
+
 	// Style class, must be built by builder
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
@@ -88,15 +95,19 @@ namespace eyegui
 		// ### MAPS HELPER FOR TEMPLATES ###
 		// #################################
 
-		// Get style property pointer by type
-		std::shared_ptr<StyleProperty<float> > getStyleProperty(StylePropertyFloat type) { return this->mFloatMap[type]; }
-		std::shared_ptr<StyleProperty<glm::vec4> > getStyleProperty(StylePropertyVec4 type) { return this->mVec4Map[type]; }
-		std::shared_ptr<StyleProperty<std::string> > getStyleProperty(StylePropertyString type) { return this->mStringMap[type]; }
+		// Get map corresponding to property type
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap() { return NULL; } // fallback
+		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > >* getMap() { return &mFloatMap; }
+		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > >* getMap() { return &mVec4Map; }
+		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > >* getMap() { return &mStringMap; }
+
+		// Get style property by type
+		template<typename Type>
+		std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > getStyleProperty(Type type) { return (*getMap<Type>())[type]; }
 
 		// Set property pointer in map
-		void setMapValue(StylePropertyFloat type, std::shared_ptr<StyleProperty<float> > spProperty) { this->mFloatMap[type] = spProperty; }
-		void setMapValue(StylePropertyVec4 type, std::shared_ptr<StyleProperty<glm::vec4> > spProperty) { this->mVec4Map[type] = spProperty; }
-		void setMapValue(StylePropertyString type, std::shared_ptr<StyleProperty<std::string> > spProperty) { this->mStringMap[type] = spProperty; }
+		template<typename Type>
+		void setMapValue(Type type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > spProperty) { (*getMap<Type>())[type] = spProperty; }
 
 		// ####################
 		// ### VALUE SETTER ###
