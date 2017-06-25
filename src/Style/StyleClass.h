@@ -47,14 +47,12 @@ namespace eyegui
 			return getConstMap<Type>()->at(type);
 		}
 
-		// Get float value from property
-		float getValue(StylePropertyFloat type) const;
-
-		// Get vec4 value from property
-		glm::vec4 getValue(StylePropertyVec4 type) const;
-
-		// Get string value from property
-		std::string getValue(StylePropertyString type) const;
+		// Get value of property
+		template<typename Type>
+		typename StylePropertyValue<Type>::type getValue(Type type) const
+		{
+			return getConstMap<Type>()->at(type)->get();
+		}
 
 		// Set value of float porperty and propagate to children (TODO: maybe do not set it at value parsing failure)
 		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }

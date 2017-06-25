@@ -51,21 +51,6 @@ namespace eyegui
 		return spChild;
 	}
 
-	float StyleClass::getValue(StylePropertyFloat type) const
-	{
-		return mFloatMap.at(type)->get();
-	}
-
-	glm::vec4 StyleClass::getValue(StylePropertyVec4 type) const
-	{
-		return mVec4Map.at(type)->get();
-	}
-
-	std::string StyleClass::getValue(StylePropertyString type) const
-	{
-		return mStringMap.at(type)->get();
-	}
-
 	void StyleClass::setValue(StylePropertyFloat type, float value)
 	{
 		// Pass to template
