@@ -81,7 +81,7 @@ namespace eyegui
 
         // Decrease alpha of all gaze points but last one
         int pointsToRemoveIndex = -1;
-        for (uint i = 0; i < mPoints.size() - 1; i++)
+        for (uint i = 0; i < (int)(mPoints.size()) - 1; i++)
         {
             mPoints[i].alpha.update(-tpf / GAZE_VISUALIZATION_FADE_DURATION);
 
@@ -110,7 +110,7 @@ namespace eyegui
         mpLine->bind();
 
         // Go over connections of gaze points
-        for(uint i = 0; i < mPoints.size() - 1; i++)
+        for(uint i = 0; i < (int)(mPoints.size()) - 1; i++)
         {
             // Calculate transformation values
             glm::vec2 currentPoint = mPoints[i].point;
