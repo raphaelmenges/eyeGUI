@@ -25,6 +25,7 @@
 
 namespace eyegui
 {
+	// (ADD NEW PROPERTY TYPES HERE AS MAPPING)
 	// Compile time mapping between style property and type
 	template<typename Type> struct StylePropertyValue;
 	template<> struct StylePropertyValue<StylePropertyFloat> { typedef float type; };
@@ -38,6 +39,9 @@ namespace eyegui
 
 		// Add child
 		std::shared_ptr<StyleClass> addChild(bool storeShared, std::string name = "");
+
+		// Fetch value from property
+		// template<typename Type> TODO
 
 		// Fetch float property
 		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
@@ -114,8 +118,8 @@ namespace eyegui
 		// ####################
 
 		// Set value as template implementation. Does create new property if not existing in instance
-		template<typename Type, typename Value>
-		void genericSetValue(Type type, Value value)
+		template<typename Type>
+		void genericSetValue(Type type, typename StylePropertyValue<Type>::type value)
 		{
 			// Check whether property is owned by me
 			auto spStoredProperty = this->getStyleProperty(type);
@@ -136,7 +140,8 @@ namespace eyegui
 			else
 			{
 				// Add new owned property while copying constraint from existing since it is of the same type
-				spStoredProperty = std::shared_ptr<StyleProperty<Value> >(new StyleProperty<Value>(shared_from_this(), value, spStoredProperty->getConstraint(), true));
+				typedef StyleProperty<typename StylePropertyValue<Type>::type> PropertyType;
+				spStoredProperty = std::shared_ptr<PropertyType>(new PropertyType(shared_from_this(), value, spStoredProperty->getConstraint(), true));
 				this->setMapValue(type, spStoredProperty);
 
 				// Propagate it to children
@@ -155,8 +160,8 @@ namespace eyegui
 		// #########################
 
 		// Propagate value from parent to this and children
-		template<typename Type, typename ValueType>
-		void genericPropagateProperty(Type type, std::shared_ptr<StyleProperty<ValueType> > spProperty)
+		template<typename Type>
+		void genericPropagateProperty(Type type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > spProperty)
 		{
 			// Check whether property is owned by me
 			auto spStoredProperty = this->getStyleProperty(type);
@@ -192,7 +197,7 @@ namespace eyegui
 		// Name
 		std::string mName = "";
 
-		// Maps
+		// Maps (ADD NEW PROPERTY TYPES HERE AS MAP)
 		std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<float> > > mFloatMap;
 		std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
 		std::map<StylePropertyString, std::shared_ptr<StyleProperty<std::string> > > mStringMap;
