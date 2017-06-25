@@ -51,29 +51,14 @@ namespace eyegui
 		return spChild;
 	}
 
-	std::shared_ptr<const StyleProperty<float> > StyleClass::fetchProperty(StylePropertyFloat type) const
-	{
-		return mFloatMap.at(type);
-	}
-
 	float StyleClass::getValue(StylePropertyFloat type) const
 	{
 		return mFloatMap.at(type)->get();
 	}
 
-	std::shared_ptr<const StyleProperty<glm::vec4> > StyleClass::fetchProperty(StylePropertyVec4 type) const
-	{
-		return mVec4Map.at(type);
-	}
-
 	glm::vec4 StyleClass::getValue(StylePropertyVec4 type) const
 	{
 		return mVec4Map.at(type)->get();
-	}
-
-	std::shared_ptr<const StyleProperty<std::string> > StyleClass::fetchProperty(StylePropertyString type) const
-	{
-		return mStringMap.at(type);
 	}
 
 	std::string StyleClass::getValue(StylePropertyString type) const

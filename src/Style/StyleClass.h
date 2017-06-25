@@ -41,22 +41,17 @@ namespace eyegui
 		std::shared_ptr<StyleClass> addChild(bool storeShared, std::string name = "");
 
 		// Fetch value from property
-		// template<typename Type> TODO
-
-		// Fetch float property
-		std::shared_ptr<const StyleProperty<float> > fetchProperty(StylePropertyFloat type) const;
+		template<typename Type>
+		std::shared_ptr<const StyleProperty<typename StylePropertyValue<Type>::type> > fetchProperty(Type type) const
+		{
+			return getConstMap<Type>()->at(type);
+		}
 
 		// Get float value from property
 		float getValue(StylePropertyFloat type) const;
 
-		// Fetch vec4 property
-		std::shared_ptr<const StyleProperty<glm::vec4> > fetchProperty(StylePropertyVec4 type) const;
-
 		// Get vec4 value from property
 		glm::vec4 getValue(StylePropertyVec4 type) const;
-
-		// Fetch string property
-		std::shared_ptr<const StyleProperty<std::string> > fetchProperty(StylePropertyString type) const;
 
 		// Get string value from property
 		std::string getValue(StylePropertyString type) const;
@@ -99,11 +94,18 @@ namespace eyegui
 		// ### MAPS HELPER FOR TEMPLATES ###
 		// #################################
 
+		// (ADD FURTHER SPECIALIZATION PER PROPERTY TYPE)
 		// Get map corresponding to property type
 		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap() { return NULL; } // fallback
 		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > >* getMap() { return &mFloatMap; }
 		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > >* getMap() { return &mVec4Map; }
 		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > >* getMap() { return &mStringMap; }
+
+		// Get const map corresponding to proptery type (TODO: const as template parameter?)
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const { return NULL; } // fallback
+		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > > const * getConstMap() const { return &mFloatMap; }
+		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > > const * getConstMap() const { return &mVec4Map; }
+		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > > const * getConstMap() const { return &mStringMap; }
 
 		// Get style property by type
 		template<typename Type>
