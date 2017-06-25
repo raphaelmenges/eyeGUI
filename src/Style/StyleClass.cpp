@@ -203,16 +203,10 @@ namespace eyegui
 		mVec4Map[sVec4::PickColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.2f, 1.0f, 0.0f, 0.5f), colorConstraint));
 		mVec4Map[sVec4::ThresholdColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
 
-		// String constraints
-		const std::function<std::string(std::string)> stringConstraint = [](std::string value)
-		{
-			return std::move(value);
-		};
-
 		// Initialize string properties
 		typedef StylePropertyString sString; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<std::string> > spString; // simplify shared pointer creation
-		mStringMap[sString::SoundButtonDown] = spString(new StyleProperty<std::string>(shared_from_this(), std::string(), stringConstraint));
+		mStringMap[sString::SoundButtonDown] = spString(new StyleProperty<std::string>(shared_from_this(), std::string()));
 	}
 
 	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name) const
