@@ -54,16 +54,17 @@ namespace eyegui
 			return getConstMap<Type>()->at(type)->get();
 		}
 
-		// Set value of float porperty and propagate to children (TODO: maybe do not set it at value parsing failure)
-		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }
-		void setValue(StylePropertyFloat type, float value);
+		// General set value of property and propagate to chilren
+		template<typename Type>
+		void setValue(Type type, typename StylePropertyValue<Type>::type value)
+		{
+			// Pass to other template
+			genericSetValue(type, value);
+		}
 		
-		// Set vec4 value and propagate to children
+		// Special setters of property values (TODO: there should be a compile time map providing function to map string to value)
+		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }
 		void setValue(StylePropertyVec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
-		void setValue(StylePropertyVec4 type, glm::vec4 value);
-
-		// Set string value and propagate to children
-		void setValue(StylePropertyString type, std::string value);
 
 		// Fetch this or child by name. Return empty pointer if not found
 		std::shared_ptr<StyleClass> fetchThisOrChild(std::string name);

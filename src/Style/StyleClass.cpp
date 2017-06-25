@@ -51,24 +51,6 @@ namespace eyegui
 		return spChild;
 	}
 
-	void StyleClass::setValue(StylePropertyFloat type, float value)
-	{
-		// Pass to template
-		genericSetValue(type, value);
-	}
-
-	void StyleClass::setValue(StylePropertyVec4 type, glm::vec4 value)
-	{
-		// Pass to template
-		genericSetValue(type, value);
-	}
-
-	void StyleClass::setValue(StylePropertyString type, std::string value)
-	{
-		// Pass to template
-		genericSetValue(type, value);
-	}
-
 	std::shared_ptr<StyleClass> StyleClass::fetchThisOrChild(std::string name)
 	{
 		// Ok, this is the searched class since name is equal to searched one
