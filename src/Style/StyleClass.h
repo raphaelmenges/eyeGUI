@@ -54,13 +54,18 @@ namespace eyegui
 			return getConstMap<Type>()->at(type)->get();
 		}
 
-		// General set value of property and propagate to chilren
+		// General set value of property and propagate to children
+		/*
 		template<typename Type>
 		void setValue(Type type, typename StylePropertyValue<Type>::type value)
 		{
 			// Pass to other template
 			genericSetValue(type, value);
 		}
+		*/
+		void setValue(StylePropertyFloat type, float value);
+		void setValue(StylePropertyVec4 type, glm::vec4 value);
+		void setValue(StylePropertyString type, std::string value);
 		
 		// Special setters of property values (TODO: there should be a compile time map providing function to map string to value)
 		void setValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }
