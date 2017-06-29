@@ -173,14 +173,4 @@ namespace eyegui
 		if (pleaseFill)	{ spStyleClass->fill();	}
 		return spStyleClass;
 	}
-
-	// Specialization of get map must be in CPP
-	template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > >* StyleClass::getMap() { return &mFloatMap; }
-	template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > >* StyleClass::getMap() { return &mVec4Map; }
-	template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > >* StyleClass::getMap() { return &mStringMap; }
-
-	// Specialization of get const map must be in CPP
-	template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > > const * StyleClass::getConstMap() const { return &mFloatMap; }
-	template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > > const * StyleClass::getConstMap() const { return &mVec4Map; }
-	template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > > const * StyleClass::getConstMap() const { return &mStringMap; }
 }

@@ -35,6 +35,37 @@ namespace eyegui
 	// Style class, must be built by builder
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
+	private:
+
+		// #################################
+		// ### MAPS HELPER FOR TEMPLATES ###
+		// #################################
+
+		// (ADD FURTHER SPECIALIZATION PER PROPERTY TYPE)
+		// Get map corresponding to property type
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap() { return NULL; } // fallback
+
+		// Get const map corresponding to proptery type (TODO: const as template parameter?)
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const { return NULL; } // fallback
+
+		// Specialization of get map
+		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > >* getMap() { return &mFloatMap; }
+		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > >* getMap() { return &mVec4Map; }
+		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > >* getMap() { return &mStringMap; }
+
+		// Specialization of get const map
+		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > > const * getConstMap() const { return &mFloatMap; }
+		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > > const * getConstMap() const { return &mVec4Map; }
+		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > > const * getConstMap() const { return &mStringMap; }
+
+		// Get style property by type
+		template<typename Type>
+		std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > getStyleProperty(Type type) { return (*getMap<Type>())[type]; }
+
+		// Set property pointer in map
+		template<typename Type>
+		void setMapValue(Type type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > spProperty) { (*getMap<Type>())[type] = spProperty; }
+
 	public:
 
 		// Add child
@@ -93,25 +124,6 @@ namespace eyegui
 
 		// Called only by builder
 		void fill();
-
-		// #################################
-		// ### MAPS HELPER FOR TEMPLATES ###
-		// #################################
-
-		// (ADD FURTHER SPECIALIZATION PER PROPERTY TYPE)
-		// Get map corresponding to property type
-		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap() { return NULL; } // fallback
-
-		// Get const map corresponding to proptery type (TODO: const as template parameter?)
-		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const { return NULL; } // fallback
-
-		// Get style property by type
-		template<typename Type>
-		std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > getStyleProperty(Type type) { return (*getMap<Type>())[type]; }
-
-		// Set property pointer in map
-		template<typename Type>
-		void setMapValue(Type type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > spProperty) { (*getMap<Type>())[type] = spProperty; }
 
 		// ####################
 		// ### VALUE SETTER ###
