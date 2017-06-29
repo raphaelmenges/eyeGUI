@@ -42,21 +42,20 @@ namespace eyegui
 		// #################################
 
 		// (ADD FURTHER SPECIALIZATION PER PROPERTY TYPE)
-		// Get map corresponding to property type
-		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap() { return NULL; } // fallback
 
-		// Get const map corresponding to proptery type (TODO: const as template parameter?)
+		// Get const map corresponding to proptery type
 		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const { return NULL; } // fallback
-
-		// Specialization of get map
-		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > >* getMap() { return &mFloatMap; }
-		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > >* getMap() { return &mVec4Map; }
-		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > >* getMap() { return &mStringMap; }
 
 		// Specialization of get const map
 		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > > const * getConstMap() const { return &mFloatMap; }
 		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > > const * getConstMap() const { return &mVec4Map; }
 		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > > const * getConstMap() const { return &mStringMap; }
+
+		// Get map corresponding to property type (cast away const'ness)
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap()
+		{
+			return const_cast<std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >*>(getConstMap<Type>());
+		}
 
 		// Get style property by type
 		template<typename Type>
