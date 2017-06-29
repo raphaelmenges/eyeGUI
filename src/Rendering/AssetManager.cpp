@@ -412,6 +412,7 @@ namespace eyegui
 					// Add further characters
 					characters.insert(charsets::GERMANY_GERMAN.begin(), charsets::GERMANY_GERMAN.end()); // German
 					characters.insert(charsets::ISRAEL_HEBREW.begin(), charsets::ISRAEL_HEBREW.end()); // Hebrew
+					characters.insert(charsets::GREECE_GREEK.begin(), charsets::GREECE_GREEK.end()); // Greek
 
                     // Give face to a font object (it will delete it in the end)
                     rupFont = std::unique_ptr<Font>(

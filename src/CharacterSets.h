@@ -182,6 +182,65 @@ namespace eyegui
 			{u'\u05DD', CharacterDirection::RightToLeft},
 			{u'\u05E4', CharacterDirection::RightToLeft}
 		};
+
+		// Modern Greek
+		static const std::map<char16_t, CharacterDirection> GREECE_GREEK
+		{
+			// Lowercase letters
+			{u'\u03B8', CharacterDirection::LeftToRight},
+			{u'\u03C9', CharacterDirection::LeftToRight},
+			{u'\u03B5', CharacterDirection::LeftToRight},
+			{u'\u03C1', CharacterDirection::LeftToRight},
+			{u'\u03C4', CharacterDirection::LeftToRight},
+			{u'\u03C8', CharacterDirection::LeftToRight},
+			{u'\u03C5', CharacterDirection::LeftToRight},
+			{u'\u03B9', CharacterDirection::LeftToRight},
+			{u'\u03BF', CharacterDirection::LeftToRight},
+			{u'\u03C0', CharacterDirection::LeftToRight}, // end of first row
+			{u'\u03B1', CharacterDirection::LeftToRight},
+			{u'\u03C3', CharacterDirection::LeftToRight},
+			{u'\u03B4', CharacterDirection::LeftToRight},
+			{u'\u03C6', CharacterDirection::LeftToRight},
+			{u'\u03B3', CharacterDirection::LeftToRight},
+			{u'\u03B7', CharacterDirection::LeftToRight},
+			{u'\u03C2', CharacterDirection::LeftToRight},
+			{u'\u03BA', CharacterDirection::LeftToRight},
+			{u'\u03BB', CharacterDirection::LeftToRight}, // end of second row
+			{u'\u03B6', CharacterDirection::LeftToRight},
+			{u'\u03C7', CharacterDirection::LeftToRight},
+			{u'\u03BE', CharacterDirection::LeftToRight},
+			{u'\u03C9', CharacterDirection::LeftToRight},
+			{u'\u03B2', CharacterDirection::LeftToRight},
+			{u'\u03BD', CharacterDirection::LeftToRight},
+			{u'\u03BC', CharacterDirection::LeftToRight}, // end of third row
+			// Uppercase letters
+			{u'\u0398', CharacterDirection::LeftToRight},
+			{u'\u03A9', CharacterDirection::LeftToRight},
+			{u'\u0395', CharacterDirection::LeftToRight},
+			{u'\u03A1', CharacterDirection::LeftToRight},
+			{u'\u03A4', CharacterDirection::LeftToRight},
+			{u'\u03A8', CharacterDirection::LeftToRight},
+			{u'\u03A5', CharacterDirection::LeftToRight},
+			{u'\u0399', CharacterDirection::LeftToRight},
+			{u'\u039F', CharacterDirection::LeftToRight},
+			{u'\u03A0', CharacterDirection::LeftToRight}, // end of first row
+			{u'\u0391', CharacterDirection::LeftToRight},
+			{u'\u03A3', CharacterDirection::LeftToRight},
+			{u'\u0394', CharacterDirection::LeftToRight},
+			{u'\u03A6', CharacterDirection::LeftToRight},
+			{u'\u0393', CharacterDirection::LeftToRight},
+			{u'\u0397', CharacterDirection::LeftToRight},
+			{u'\u03C2', CharacterDirection::LeftToRight},
+			{u'\u039A', CharacterDirection::LeftToRight},
+			{u'\u039B', CharacterDirection::LeftToRight}, // end of second row
+			{u'\u0396', CharacterDirection::LeftToRight},
+			{u'\u03A7', CharacterDirection::LeftToRight},
+			{u'\u039E', CharacterDirection::LeftToRight},
+			{u'\u03A9', CharacterDirection::LeftToRight},
+			{u'\u0392', CharacterDirection::LeftToRight},
+			{u'\u039D', CharacterDirection::LeftToRight},
+			{u'\u039C', CharacterDirection::LeftToRight}, // end of third row
+		};
     }
 }
 

@@ -206,12 +206,6 @@ namespace eyegui
             mResizeCallbackFunction(mWidth, mHeight);
         }
 
-		// TODO when called from within eyeGUI, sound is double as fast as normal?!
-		if (input.instantInteraction)
-		{
-			playSound("sounds/test.ogg");
-		}
-
         // Return copy of used input
         return copyInput;
     }
