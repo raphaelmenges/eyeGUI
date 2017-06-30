@@ -80,6 +80,9 @@ namespace eyegui
         // Get string content from localization
         std::u16string getContentFromLocalization(std::string key) const;
 
+		// Check visibility
+		bool isVisible() const;
+
         // Set visibility
         void setVisibility(bool visible, bool fade);
 

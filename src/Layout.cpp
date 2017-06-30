@@ -194,6 +194,11 @@ namespace eyegui
         return mpGUI->getContentFromLocalization(key);
     }
 
+	bool Layout::isVisible() const
+	{
+		return mVisible;
+	}
+
     void Layout::setVisibility(bool visible, bool fade)
     {
         mVisible = visible;

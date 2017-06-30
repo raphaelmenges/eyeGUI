@@ -441,6 +441,13 @@ namespace eyegui
 	*/
 	void setInputUsageOfLayout(Layout* pLayout, bool useInput);
 
+	//! Returns whether the visbility of provided layout is set to true.
+	/*!
+	\param pLayout pointer to layout.
+	\return true if set to visible and false else.
+	*/
+	bool isLayoutVisible(Layout const * pLayout);
+
 	//! Set visibility of layout.
 	/*!
 	  \param pLayout pointer to layout.

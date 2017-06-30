@@ -153,6 +153,11 @@ namespace eyegui
         pLayout->useInput(useInput);
     }
 
+	bool isLayoutVisible(Layout const * pLayout)
+	{
+		return pLayout->isVisible();
+	}
+
     void setVisibilityOfLayout(Layout* pLayout, bool visible, bool reset, bool fade)
     {
         pLayout->setVisibility(visible, fade);
