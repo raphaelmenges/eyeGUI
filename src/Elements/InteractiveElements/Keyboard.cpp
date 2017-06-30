@@ -769,7 +769,7 @@ namespace eyegui
 			std::vector<std::vector<CPair> >
 		{
 			{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'#') },
-			{ CPair(u'€'), CPair(u'$'), CPair(u'\u20AA'), CPair(u'%'), CPair(u'+'), CPair(u'-'), CPair(u'_'), CPair(u'/'), CPair(u'\\'), CPair(u'*'), CPair(u'~'), CPair(u'@') },
+			{ CPair(u'\u20AC'), CPair(u'$'), CPair(u'\u20AA'), CPair(u'%'), CPair(u'+'), CPair(u'-'), CPair(u'_'), CPair(u'/'), CPair(u'\\'), CPair(u'*'), CPair(u'~'), CPair(u'@') },
 			{ CPair(u'('), CPair(u')'), CPair(u'['), CPair(u']'), CPair(u'{'), CPair(u'}'), CPair(u'<'), CPair(u'>'), CPair(u'&'), CPair(u'?'), CPair(u'!') },
 			{ CPair(u'.'), CPair(u':'), CPair(u','), CPair(u';'), CPair(u'='), CPair(u'"'), CPair(u'\''), CPair(u'\u00A7'), CPair(u'|'), CPair(u'^'), CPair(u'\u00B0'), CPair(u' ') }
 		});

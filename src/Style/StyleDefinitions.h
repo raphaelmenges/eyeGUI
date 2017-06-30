@@ -41,6 +41,7 @@ namespace eyegui
 	namespace StylePropertyNameMapper
 	{
 		// TODO NOTE: ADD MAPPING OF PROPERTIES HERE! Also remember to add initial value and constraints in StyleClass.cpp
+		// TODO: use tuples as map entries or so (so no more dependency in style class)
 
 		const std::map<std::string, StylePropertyFloat> FLOAT_TYPE_MAP =
 		{

@@ -211,7 +211,7 @@ namespace eyegui
 		template<typename Type>
 		void setElementStylePropertyValue(Type styleType, std::string value)
 		{
-			mspStyleClass->setValue(styleType, value);
+			mspStyleClass->parseValue(styleType, value);
 		}
 
 		// Update keyboard layouts in element tree (TODO: would be nicer to have general execute on tree function)

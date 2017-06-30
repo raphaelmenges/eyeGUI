@@ -38,7 +38,7 @@ namespace eyegui
 			// Fetch style class
 			if (auto spStyleClass = mspRoot->fetchThisOrChild(styleClass))
 			{
-				spStyleClass->setValue(styleType, value);
+				spStyleClass->parseValue(styleType, value);
 			}
 		}
 
