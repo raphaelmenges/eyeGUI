@@ -112,8 +112,9 @@ namespace eyegui
 			{u'\\', CharacterDirection::Neutral},
 			{u'/', CharacterDirection::Neutral},
 			{u'\u00A7', CharacterDirection::Neutral}, // paragraph
-			{u'\'', CharacterDirection::Neutral },
-			{u'\u05F3', CharacterDirection::Neutral },
+			{u'\'', CharacterDirection::Neutral},
+			{u'\u05F3', CharacterDirection::Neutral},
+			{u'\u00B0', CharacterDirection::Neutral}, // degree symbol
 
 			// Parentheses
 			{u'(', CharacterDirection::Parenthesis},
@@ -130,8 +131,7 @@ namespace eyegui
             {u'\u21A4', CharacterDirection::Neutral}, // backspace symbol
             {u'\u2423', CharacterDirection::Neutral}, // space symbol
             {u'\u2191', CharacterDirection::Neutral}, // shift symbol
-            {u'\u21BA', CharacterDirection::Neutral}, // repeat symbol
-			{u'\u00B0', CharacterDirection::Neutral}  // degree symbol
+            {u'\u21BA', CharacterDirection::Neutral} // repeat symbol
         };
 
 		// Additional German letters
