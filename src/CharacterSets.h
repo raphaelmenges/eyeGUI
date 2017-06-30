@@ -131,7 +131,7 @@ namespace eyegui
             {u'\u2423', CharacterDirection::Neutral}, // space symbol
             {u'\u2191', CharacterDirection::Neutral}, // shift symbol
             {u'\u21BA', CharacterDirection::Neutral}, // repeat symbol
-			{u'\u00B0', CharacterDirection::Neutral } // degree symbol
+			{u'\u00B0', CharacterDirection::Neutral}  // degree symbol
         };
 
 		// Additional German letters
@@ -240,6 +240,30 @@ namespace eyegui
 			{u'\u0392', CharacterDirection::LeftToRight},
 			{u'\u039D', CharacterDirection::LeftToRight},
 			{u'\u039C', CharacterDirection::LeftToRight}, // end of third row
+			// Extra letters in lowercase
+			{u'\u03AC', CharacterDirection::LeftToRight},
+			{u'\u03AD', CharacterDirection::LeftToRight},
+			{u'\u03AE', CharacterDirection::LeftToRight},
+			{u'\u03AF', CharacterDirection::LeftToRight},
+			{u'\u03CA', CharacterDirection::LeftToRight},
+			{u'\u0390', CharacterDirection::LeftToRight},
+			{u'\u03CC', CharacterDirection::LeftToRight},
+			{u'\u03CD', CharacterDirection::LeftToRight},
+			{u'\u03CB', CharacterDirection::LeftToRight},
+			{u'\u03B0', CharacterDirection::LeftToRight},
+			{u'\u03CE', CharacterDirection::LeftToRight},
+			// Extra letters in uppercase
+			{u'\u0386', CharacterDirection::LeftToRight},
+			{u'\u0388', CharacterDirection::LeftToRight},
+			{u'\u0389', CharacterDirection::LeftToRight},
+			{u'\u038A', CharacterDirection::LeftToRight},
+			{u'\u03AA', CharacterDirection::LeftToRight},
+			{u'\u0390', CharacterDirection::LeftToRight},
+			{u'\u038C', CharacterDirection::LeftToRight},
+			{u'\u038E', CharacterDirection::LeftToRight},
+			{u'\u03AB', CharacterDirection::LeftToRight},
+			{u'\u03B0', CharacterDirection::LeftToRight},
+			{u'\u038F', CharacterDirection::LeftToRight}
 		};
     }
 }
