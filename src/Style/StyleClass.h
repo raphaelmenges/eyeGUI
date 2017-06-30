@@ -17,27 +17,14 @@
 
 #include "include/eyeGUI.h"
 #include "src/Style/StyleProperty.h"
+#include "src/Style/StyleDefinitions.h"
 #include "src/Utilities/Helper.h"
 #include "src/Defines.h"
 
 #include <functional>
-#include <map>
-#include <tuple>
 
 namespace eyegui
 {
-	// Indices of types in StyleClass tuple
-	template<typename Type> struct StylePropertyTypeIndex { static const int index = -1; };
-	template<> struct StylePropertyTypeIndex<StylePropertyFloat> { static const int index = 0; };
-	template<> struct StylePropertyTypeIndex<StylePropertyVec4> { static const int index = 1; };
-	template<> struct StylePropertyTypeIndex<StylePropertyString> { static const int index = 2; };
-
-	// Compile time mapping between style property and type
-	template<typename Type> struct StylePropertyValue;
-	template<> struct StylePropertyValue<StylePropertyFloat> { typedef float type; };
-	template<> struct StylePropertyValue<StylePropertyVec4> { typedef glm::vec4 type; };
-	template<> struct StylePropertyValue<StylePropertyString> { typedef std::string type; };
-
 	// Style class, must be built by builder
 	class StyleClass : public std::enable_shared_from_this<StyleClass> // enable shared pointer creation from this
 	{
@@ -50,13 +37,13 @@ namespace eyegui
 		// Get const map corresponding to proptery type
 		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const
 		{
-			return &(std::get<StylePropertyTypeIndex<Type>::index>(mMaps));
+			return &(std::get<StylePropertyTupleIndex<Type>::index>(mMaps));
 		}
 
 		// Get map corresponding to property type
 		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap()
 		{
-			return &(std::get<StylePropertyTypeIndex<Type>::index>(mMaps));
+			return &(std::get<StylePropertyTupleIndex<Type>::index>(mMaps));
 		}
 
 		// Get style property by type
@@ -210,11 +197,8 @@ namespace eyegui
 		// Name
 		std::string mName = "";
 
-		// Maps (TODO: automatic approach to add all style properties as maps?)
-		std::tuple<
-			std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<float> > >,
-			std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > >,
-			std::map<StylePropertyString, std::shared_ptr<StyleProperty<std::string> > > > mMaps;
+		// Maps
+		StyleMaps mMaps; // tuple of maps
 
 		// Parent
 		std::weak_ptr<const StyleClass> mwpParent; // empty for root

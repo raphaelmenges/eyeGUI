@@ -11,7 +11,7 @@
 #include "src/Utilities/Helper.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/PathBuilder.h"
-#include "src/Style/StylePropertyNameMapper.h"
+#include "src/Style/StyleDefinitions.h"
 
 #include <algorithm>
 #include <sstream>

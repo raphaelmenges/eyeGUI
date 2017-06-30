@@ -11,8 +11,32 @@
 
 #include "include/eyeGUI.h"
 
+#include <map>
+#include <tuple>
+
 namespace eyegui
 {
+	// Compile time mapping between style property and it value type
+	template<typename Type> struct StylePropertyValue;
+	template<> struct StylePropertyValue<StylePropertyFloat> { typedef float type; };
+	template<> struct StylePropertyValue<StylePropertyVec4> { typedef glm::vec4 type; };
+	template<> struct StylePropertyValue<StylePropertyString> { typedef std::string type; };
+
+	// Typedef of tuple with maps for the StyleClass
+	template<typename Type> using StyleMap = std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >;
+	typedef
+		std::tuple<
+			StyleMap<StylePropertyFloat>,
+			StyleMap<StylePropertyVec4>,
+			StyleMap<StylePropertyString>
+		> StyleMaps;
+
+	// Indices of property types in tuple above
+	template<typename Type> struct StylePropertyTupleIndex { static const int index = -1; }; // fallback, should produce error
+	template<> struct StylePropertyTupleIndex<StylePropertyFloat> { static const int index = 0; };
+	template<> struct StylePropertyTupleIndex<StylePropertyVec4> { static const int index = 1; };
+	template<> struct StylePropertyTupleIndex<StylePropertyString> { static const int index = 2; };
+
 	// Maps from string to style property type
 	namespace StylePropertyNameMapper
 	{

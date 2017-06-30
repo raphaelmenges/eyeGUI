@@ -11,7 +11,7 @@
 #define ELEMENT_FACTORY_H_
 
 #include "src/Defines.h"
-#include "src/Style/StylePropertyNameMapper.h"
+#include "src/Style/StyleDefinitions.h"
 #include <memory>
 
 namespace eyegui
