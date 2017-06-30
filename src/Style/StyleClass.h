@@ -22,10 +22,16 @@
 
 #include <functional>
 #include <map>
+#include <tuple>
 
 namespace eyegui
 {
-	// (ADD NEW PROPERTY TYPES HERE AS MAPPING)
+	// Indices of types in StyleClass tuple
+	template<typename Type> struct StylePropertyTypeIndex { static const int index = -1; };
+	template<> struct StylePropertyTypeIndex<StylePropertyFloat> { static const int index = 0; };
+	template<> struct StylePropertyTypeIndex<StylePropertyVec4> { static const int index = 1; };
+	template<> struct StylePropertyTypeIndex<StylePropertyString> { static const int index = 2; };
+
 	// Compile time mapping between style property and type
 	template<typename Type> struct StylePropertyValue;
 	template<> struct StylePropertyValue<StylePropertyFloat> { typedef float type; };
@@ -41,20 +47,16 @@ namespace eyegui
 		// ### MAPS HELPER FOR TEMPLATES ###
 		// #################################
 
-		// (ADD FURTHER SPECIALIZATION PER PROPERTY TYPE)
-
 		// Get const map corresponding to proptery type
-		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const { return NULL; } // fallback
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const
+		{
+			return &(std::get<StylePropertyTypeIndex<Type>::index>(mMaps));
+		}
 
-		// Specialization of get const map
-		template<> std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyFloat>::type> > > const * getConstMap() const { return &mFloatMap; }
-		template<> std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyVec4>::type> > > const * getConstMap() const { return &mVec4Map; }
-		template<> std::map<StylePropertyString, std::shared_ptr<StyleProperty<typename StylePropertyValue<StylePropertyString>::type> > > const * getConstMap() const { return &mStringMap; }
-
-		// Get map corresponding to property type (cast away const'ness)
+		// Get map corresponding to property type
 		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap()
 		{
-			return const_cast<std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >*>(getConstMap<Type>());
+			return &(std::get<StylePropertyTypeIndex<Type>::index>(mMaps));
 		}
 
 		// Get style property by type
@@ -208,10 +210,11 @@ namespace eyegui
 		// Name
 		std::string mName = "";
 
-		// Maps (ADD NEW PROPERTY TYPES HERE AS MAP)
-		std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<float> > > mFloatMap;
-		std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > > mVec4Map;
-		std::map<StylePropertyString, std::shared_ptr<StyleProperty<std::string> > > mStringMap;
+		// Maps (TODO: automatic approach to add all style properties as maps?)
+		std::tuple<
+			std::map<StylePropertyFloat, std::shared_ptr<StyleProperty<float> > >,
+			std::map<StylePropertyVec4, std::shared_ptr<StyleProperty<glm::vec4> > >,
+			std::map<StylePropertyString, std::shared_ptr<StyleProperty<std::string> > > > mMaps;
 
 		// Parent
 		std::weak_ptr<const StyleClass> mwpParent; // empty for root
