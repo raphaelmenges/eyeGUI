@@ -10,12 +10,17 @@
 #define STYLE_DEFINITIONS
 
 #include "include/eyeGUI.h"
+#include "src/Style/StyleProperty.h"
+
+#include "externals/GLM/glm/glm.hpp"
 
 #include <map>
 #include <tuple>
 
 namespace eyegui
 {
+	// ALSO TAKE A LOOK INTO CORRESPONDING CPP!
+
 	// Compile time mapping between style property and it value type
 	template<typename Type> struct StylePropertyValue;
 	template<> struct StylePropertyValue<StylePropertyFloat> { typedef float type; };
@@ -23,12 +28,12 @@ namespace eyegui
 	template<> struct StylePropertyValue<StylePropertyString> { typedef std::string type; };
 
 	// Typedef of tuple with maps for the StyleClass
-	template<typename Type> using StyleMap = std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >;
+	template<typename Type> using StylePropertyMap = std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >;
 	typedef
 		std::tuple<
-			StyleMap<StylePropertyFloat>,
-			StyleMap<StylePropertyVec4>,
-			StyleMap<StylePropertyString>
+			StylePropertyMap<StylePropertyFloat>,
+			StylePropertyMap<StylePropertyVec4>,
+			StylePropertyMap<StylePropertyString>
 		> StyleMaps;
 
 	// Indices of property types in tuple above and below
@@ -38,66 +43,21 @@ namespace eyegui
 	template<> struct StylePropertyTupleIndex<StylePropertyString> { static const int index = 2; };
 
 	// TODO
-	// - have uniform map of strings to property type (or at least uniform way to access)
 	// - have some map providing default values of properties
-	// - template specialization providing constraint per property type
-	// - template specialization providing parse function per property type
+	// - template specialization providing constraint per property type (before: change property types)
+	// - template specialization providing parse function per property type (before: change property types)
 
 	// Maps from string to style property type
-	const std::tuple<
+	using StylePropertyStringTuple = std::tuple<
 		std::map<std::string, StylePropertyFloat>,
 		std::map<std::string, StylePropertyVec4>,
-		std::map<std::string, StylePropertyString>
-	> StylePropertyStringMaps
+		std::map<std::string, StylePropertyString> >;
+	struct StylePropertyStringMaps
 	{
-		{
-			{ "AnimationDuration",									StylePropertyFloat::AnimationDuration },
-			{ "SensorPenetrationIncreaseDuration",					StylePropertyFloat::SensorPenetrationIncreaseDuration },
-			{ "SensorPenetrationDecreaseDuration",					StylePropertyFloat::SensorPenetrationDecreaseDuration },
-			{ "ButtonThresholdIncreaseDuration",					StylePropertyFloat::ButtonThresholdIncreaseDuration },
-			{ "ButtonThresholdDecreaseDuration",					StylePropertyFloat::ButtonThresholdDecreaseDuration },
-			{ "ButtonPressingDuration",								StylePropertyFloat::ButtonPressingDuration },
-			{ "SensorInteractionPenetrationAmount",					StylePropertyFloat::SensorInteractionPenetrationAmount },
-			{ "DimIncreaseDuration",								StylePropertyFloat::DimIncreaseDuration },
-			{ "DimDecreaseDuration",								StylePropertyFloat::DimDecreaseDuration },
-			{ "DimAlpha",											StylePropertyFloat::DimAlpha },
-			{ "FlashDuration",										StylePropertyFloat::FlashDuration },
-			{ "MaximalAdaptiveScaleIncrease",						StylePropertyFloat::MaximalAdaptiveScaleIncrease },
-			{ "AdaptiveScaleIncreaseDuration",						StylePropertyFloat::AdaptiveScaleIncreaseDuration },
-			{ "AdaptiveScaleDecreaseDuration",						StylePropertyFloat::AdaptiveScaleDecreaseDuration },
-			{ "KeyboardZoomSpeedMultiplier",						StylePropertyFloat::KeyboardZoomSpeedMultiplier },
-			{ "KeyboardKeySelectionDuration",						StylePropertyFloat::KeyboardKeySelectionDuration },
-			{ "FlowSpeedMultiplier",								StylePropertyFloat::FlowSpeedMultiplier },
-			{ "TextEditScrollSpeedMultiplier",						StylePropertyFloat::TextEditScrollSpeedMultiplier },
-
-			// Experimental
-			{ "FutureKeyboardPressDuration",						StylePropertyFloat::FutureKeyboardPressDuration },
-			{ "FutureKeyboardRetriggerDelay",						StylePropertyFloat::FutureKeyboardRetriggerDelay },
-			{ "FutureKeyboardThresholdDuration",					StylePropertyFloat::FutureKeyboardThresholdDuration },
-			{ "FutureKeyboardRepeatKeyThresholdMultiplier",			StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier },
-			{ "FutureKeyboardSpaceKeyThresholdMultiplier",			StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier },
-			{ "FutureKeyboardBackspaceKeyThresholdMultiplier",		StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier },
-			{ "FutureKeyboardSuggestionLineThresholdMultiplier",	StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier }
-		},
-		{
-			{ "Color",												StylePropertyVec4::Color },
-			{ "BackgroundColor",									StylePropertyVec4::BackgroundColor },
-			{ "HighlightColor",										StylePropertyVec4::HighlightColor },
-			{ "SeparatorColor",										StylePropertyVec4::SeparatorColor },
-			{ "SelectionColor",										StylePropertyVec4::SelectionColor },
-			{ "IconColor",											StylePropertyVec4::IconColor },
-			{ "FontColor",											StylePropertyVec4::FontColor },
-			{ "DimColor",											StylePropertyVec4::DimColor },
-			{ "FlashColor",											StylePropertyVec4::FlashColor },
-			{ "MarkColor",											StylePropertyVec4::MarkColor },
-			{ "PickColor",											StylePropertyVec4::PickColor },
-			{ "ThresholdColor",										StylePropertyVec4::ThresholdColor }
-		},
-		{
-			{ "SoundButtonDown",									StylePropertyString::SoundButtonDown },
-		}
+		static StylePropertyStringTuple value;		
 	};
 
+	// Maps to indicate default value TODO
 }
 
 #endif // STYLE_DEFINITIONS
