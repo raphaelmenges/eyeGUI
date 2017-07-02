@@ -23,9 +23,9 @@ namespace eyegui
 
 	// Compile time mapping between style property and it value type
 	template<typename Type> struct StylePropertyValue;
-	template<> struct StylePropertyValue<StylePropertyFloat> { typedef float type; };
-	template<> struct StylePropertyValue<StylePropertyVec4> { typedef glm::vec4 type; };
-	template<> struct StylePropertyValue<StylePropertyString> { typedef std::string type; };
+	template<> struct StylePropertyValue<StylePropertyFloat>	{ typedef float type; };
+	template<> struct StylePropertyValue<StylePropertyVec4>		{ typedef glm::vec4 type; };
+	template<> struct StylePropertyValue<StylePropertyString>	{ typedef std::string type; };
 
 	// Typedef of tuple with maps for the StyleClass
 	template<typename Type> using StylePropertyMap = std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >;
@@ -37,27 +37,56 @@ namespace eyegui
 		> StyleMaps;
 
 	// Indices of property types in tuple above and below
-	template<typename Type> struct StylePropertyTupleIndex { static const int index = -1; }; // fallback, should produce error
-	template<> struct StylePropertyTupleIndex<StylePropertyFloat> { static const int index = 0; };
-	template<> struct StylePropertyTupleIndex<StylePropertyVec4> { static const int index = 1; };
-	template<> struct StylePropertyTupleIndex<StylePropertyString> { static const int index = 2; };
+	template<typename Type> struct StylePropertyTupleIndex			{ static const int index = -1; }; // fallback, should produce error
+	template<> struct StylePropertyTupleIndex<StylePropertyFloat>	{ static const int index = 0; };
+	template<> struct StylePropertyTupleIndex<StylePropertyVec4>	{ static const int index = 1; };
+	template<> struct StylePropertyTupleIndex<StylePropertyString>	{ static const int index = 2; };
 
 	// TODO
-	// - have some map providing default values of properties
+	// - fill of base style class (iterating over enum options???)
 	// - template specialization providing constraint per property type (before: change property types)
 	// - template specialization providing parse function per property type (before: change property types)
 
 	// Maps from string to style property type
-	using StylePropertyStringTuple = std::tuple<
+	using StylePropertyStringMappingTuple = std::tuple<
 		std::map<std::string, StylePropertyFloat>,
 		std::map<std::string, StylePropertyVec4>,
 		std::map<std::string, StylePropertyString> >;
-	struct StylePropertyStringMaps
+	struct StylePropertyStringMappingMaps
 	{
-		static StylePropertyStringTuple value;		
+		static StylePropertyStringMappingTuple value;
 	};
 
-	// Maps to indicate default value TODO
+	// Maps to indicate default values (TODO: maybe provide fallback so not everything has to be defined? -> maybe hide behind some function
+	struct StylePropertyDefaultValueMaps
+	{
+		static std::map<StylePropertyFloat, StylePropertyValue<StylePropertyFloat>::type> floatDefaults;
+		static std::map<StylePropertyVec4, StylePropertyValue<StylePropertyVec4>::type> vec4Defaults;
+		static std::map<StylePropertyString, StylePropertyValue<StylePropertyString>::type> stringDefaults;
+	};
+
+	// Getter of maps with default values via template specialization
+	template<typename Type>
+	static typename StylePropertyValue<Type>::type StylePropertyDefault(Type t) {};
+	template<>
+	static typename StylePropertyValue<StylePropertyFloat>::type StylePropertyDefault<StylePropertyFloat>(StylePropertyFloat t)
+	{
+		const auto& rMap = StylePropertyDefaultValueMaps::floatDefaults;
+		const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second;
+	}
+	template<>
+	static typename StylePropertyValue<StylePropertyVec4>::type StylePropertyDefault<StylePropertyVec4>(StylePropertyVec4 t)
+	{
+		const auto& rMap = StylePropertyDefaultValueMaps::vec4Defaults;
+		const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second;
+	}
+	template<>
+	static typename StylePropertyValue<StylePropertyString>::type StylePropertyDefault<StylePropertyString>(StylePropertyString t)
+	{
+		const auto& rMap = StylePropertyDefaultValueMaps::stringDefaults;
+		const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second;
+	}
 }
 
 #endif // STYLE_DEFINITIONS
+

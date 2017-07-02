@@ -55,7 +55,7 @@ namespace eyegui
 		template<std::size_t I = 0, typename... Tp>
 		inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
 			internalParse(const std::tuple<Tp...>& t, std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value)
-		{}
+		{} // if comes to here, no string was matched...
 
 		template<std::size_t I = 0, typename... Tp>
 		inline typename std::enable_if < I < sizeof...(Tp), void>::type

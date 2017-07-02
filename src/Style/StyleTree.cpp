@@ -51,6 +51,6 @@ namespace eyegui
 
 	void style_tree_helper::parse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value)
 	{
-		style_tree_helper::internalParse(StylePropertyStringMaps::value, spStyleTree, styleClass, styleType, value);
+		style_tree_helper::internalParse(StylePropertyStringMappingMaps::value, spStyleTree, styleClass, styleType, value);
 	}
 }

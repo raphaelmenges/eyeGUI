@@ -104,32 +104,32 @@ namespace eyegui
 		typedef StylePropertyFloat sFloat; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<float> > spFloat; // simplify shared pointer creation
 		constexpr int iFloat = StylePropertyTupleIndex<StylePropertyFloat>::index;
-		std::get<iFloat>(mMaps)[sFloat::AnimationDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 0.1f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::SensorPenetrationIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 3.0f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::SensorPenetrationDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 1.5f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::ButtonThresholdIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::ButtonThresholdDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 2.0f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::ButtonPressingDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 0.3f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::SensorInteractionPenetrationAmount] = spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint));
-		std::get<iFloat>(mMaps)[sFloat::DimIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 1.5f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::DimDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 0.25f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::DimAlpha] = spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, zeroAndOneConstraint));
-		std::get<iFloat>(mMaps)[sFloat::FlashDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 2.0f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::MaximalAdaptiveScaleIncrease] = spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint));
-		std::get<iFloat>(mMaps)[sFloat::AdaptiveScaleIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::AdaptiveScaleDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::KeyboardZoomSpeedMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint));
-		std::get<iFloat>(mMaps)[sFloat::KeyboardKeySelectionDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 1.25f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::FlowSpeedMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint));
-		std::get<iFloat>(mMaps)[sFloat::TextEditScrollSpeedMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::AnimationDuration] = spFloat(new StyleProperty<float>(shared_from_this(),					0.1f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::SensorPenetrationIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),	3.0f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::SensorPenetrationDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),	1.5f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::ButtonThresholdIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),		1.0f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::ButtonThresholdDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),		2.0f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::ButtonPressingDuration] = spFloat(new StyleProperty<float>(shared_from_this(),				0.3f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::SensorInteractionPenetrationAmount] = spFloat(new StyleProperty<float>(shared_from_this(),	0.5f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::DimIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),					1.5f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::DimDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),					0.25f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::DimAlpha] = spFloat(new StyleProperty<float>(shared_from_this(),							0.5f, zeroAndOneConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FlashDuration] = spFloat(new StyleProperty<float>(shared_from_this(),						2.0f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::MaximalAdaptiveScaleIncrease] = spFloat(new StyleProperty<float>(shared_from_this(),		0.5f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::AdaptiveScaleIncreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),		1.0f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::AdaptiveScaleDecreaseDuration] = spFloat(new StyleProperty<float>(shared_from_this(),		1.0f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::KeyboardZoomSpeedMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(),			1.0f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::KeyboardKeySelectionDuration] = spFloat(new StyleProperty<float>(shared_from_this(),		1.25f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FlowSpeedMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(),					1.0f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::TextEditScrollSpeedMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(),		1.0f, positiveConstraint));
 
 		// Experimental
-		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardPressDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardRetriggerDelay] = spFloat(new StyleProperty<float>(shared_from_this(), 0.5f, positiveConstraint));
-		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardThresholdDuration] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, durationConstraint));
-		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardRepeatKeyThresholdMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint));
-		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardSpaceKeyThresholdMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint));
-		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardBackspaceKeyThresholdMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardPressDuration] = spFloat(new StyleProperty<float>(shared_from_this(),						0.5f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardRetriggerDelay] = spFloat(new StyleProperty<float>(shared_from_this(),					0.5f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardThresholdDuration] = spFloat(new StyleProperty<float>(shared_from_this(),					1.0f, durationConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardRepeatKeyThresholdMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(),		1.0f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardSpaceKeyThresholdMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(),		1.0f, positiveConstraint));
+		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardBackspaceKeyThresholdMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(),	1.0f, positiveConstraint));
 		std::get<iFloat>(mMaps)[sFloat::FutureKeyboardSuggestionLineThresholdMultiplier] = spFloat(new StyleProperty<float>(shared_from_this(), 1.0f, positiveConstraint));
 
 		// Vec4 constraints
@@ -142,18 +142,18 @@ namespace eyegui
 		typedef StylePropertyVec4 sVec4; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<glm::vec4> > spVec4; // simplify shared pointer creation
 		constexpr int iVec4 = StylePropertyTupleIndex<StylePropertyVec4>::index;
-		std::get<iVec4>(mMaps)[sVec4::Color] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::BackgroundColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::HighlightColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 1.0f, 0.0f, 0.5f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::SeparatorColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::SelectionColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::IconColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::FontColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::DimColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.1f, 0.1f, 0.1f, 0.75f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::FlashColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(1.0f, 0.5f, 0.0f, 0.75f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::MarkColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 0.5f, 1.0f, 0.5f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::PickColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.2f, 1.0f, 0.0f, 0.5f), colorConstraint));
-		std::get<iVec4>(mMaps)[sVec4::ThresholdColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(), glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::Color] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),				glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::BackgroundColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),	glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::HighlightColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),		glm::vec4(1.0f, 1.0f, 0.0f, 0.5f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::SeparatorColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::SelectionColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),		glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::IconColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::FontColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::DimColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),			glm::vec4(0.1f, 0.1f, 0.1f, 0.75f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::FlashColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),			glm::vec4(1.0f, 0.5f, 0.0f, 0.75f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::MarkColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),			glm::vec4(0.0f, 0.5f, 1.0f, 0.5f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::PickColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),			glm::vec4(0.2f, 1.0f, 0.0f, 0.5f), colorConstraint));
+		std::get<iVec4>(mMaps)[sVec4::ThresholdColor] = spVec4(new StyleProperty<glm::vec4>(shared_from_this(),		glm::vec4(0.0f, 1.0f, 1.0f, 0.5f), colorConstraint));
 
 		// Initialize string properties
 		typedef StylePropertyString sString; // simplify enum access

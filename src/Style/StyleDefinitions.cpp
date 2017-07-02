@@ -9,7 +9,7 @@
 
 namespace eyegui
 {
-	StylePropertyStringTuple StylePropertyStringMaps::value =
+	StylePropertyStringMappingTuple StylePropertyStringMappingMaps::value =
 	{
 		{
 			{ "AnimationDuration",									StylePropertyFloat::AnimationDuration },
@@ -57,5 +57,57 @@ namespace eyegui
 		{
 			{ "SoundButtonDown",									StylePropertyString::SoundButtonDown },
 		}
+	};
+
+	std::map<StylePropertyFloat, StylePropertyValue<StylePropertyFloat>::type> StylePropertyDefaultValueMaps::floatDefaults =
+	{
+		{ StylePropertyFloat::AnimationDuration,								0.1f },
+		{ StylePropertyFloat::SensorPenetrationIncreaseDuration,				3.0f },
+		{ StylePropertyFloat::SensorPenetrationDecreaseDuration,				1.5f },
+		{ StylePropertyFloat::ButtonThresholdIncreaseDuration,					1.0f },
+		{ StylePropertyFloat::ButtonThresholdDecreaseDuration,					2.0f },
+		{ StylePropertyFloat::ButtonPressingDuration,							0.3f },
+		{ StylePropertyFloat::SensorInteractionPenetrationAmount,				0.5f },
+		{ StylePropertyFloat::DimIncreaseDuration,								1.5f },
+		{ StylePropertyFloat::DimDecreaseDuration,								0.25f },
+		{ StylePropertyFloat::DimAlpha,											0.5f },
+		{ StylePropertyFloat::FlashDuration,									2.0f },
+		{ StylePropertyFloat::MaximalAdaptiveScaleIncrease,						0.5f },
+		{ StylePropertyFloat::AdaptiveScaleIncreaseDuration,					1.0f },
+		{ StylePropertyFloat::AdaptiveScaleDecreaseDuration,					1.0f },
+		{ StylePropertyFloat::KeyboardZoomSpeedMultiplier,						1.0f },
+		{ StylePropertyFloat::KeyboardKeySelectionDuration,						1.25f },
+		{ StylePropertyFloat::FlowSpeedMultiplier,								1.0f },
+		{ StylePropertyFloat::TextEditScrollSpeedMultiplier,					1.0f },
+
+		// Experimental
+		{ StylePropertyFloat::FutureKeyboardPressDuration,						0.5f },
+		{ StylePropertyFloat::FutureKeyboardRetriggerDelay,						0.5f },
+		{ StylePropertyFloat::FutureKeyboardThresholdDuration,					1.0f },
+		{ StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier,		1.0f },
+		{ StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier,		1.0f },
+		{ StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier,	1.0f },
+		{ StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier,	1.0f }
+	};
+
+	std::map<StylePropertyVec4, StylePropertyValue<StylePropertyVec4>::type> StylePropertyDefaultValueMaps::vec4Defaults =
+	{
+		{ StylePropertyVec4::Color,												glm::vec4(0.6f, 0.6f, 0.6f, 1.0f) },
+		{ StylePropertyVec4::BackgroundColor,									glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) },
+		{ StylePropertyVec4::HighlightColor,									glm::vec4(1.0f, 1.0f, 0.0f, 0.5f) },
+		{ StylePropertyVec4::SeparatorColor,									glm::vec4(0.2f, 0.2f, 0.2f, 1.0f) },
+		{ StylePropertyVec4::SelectionColor,									glm::vec4(0.0f, 1.0f, 1.0f, 0.5f) },
+		{ StylePropertyVec4::IconColor,											glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) },
+		{ StylePropertyVec4::FontColor,											glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) },
+		{ StylePropertyVec4::DimColor,											glm::vec4(0.1f, 0.1f, 0.1f, 0.75f) },
+		{ StylePropertyVec4::FlashColor,										glm::vec4(1.0f, 0.5f, 0.0f, 0.75f) },
+		{ StylePropertyVec4::MarkColor,											glm::vec4(0.0f, 0.5f, 1.0f, 0.5f) },
+		{ StylePropertyVec4::PickColor,											glm::vec4(0.2f, 1.0f, 0.0f, 0.5f) },
+		{ StylePropertyVec4::ThresholdColor,									glm::vec4(0.0f, 1.0f, 1.0f, 0.5f) }
+	};
+
+	std::map<StylePropertyString, StylePropertyValue<StylePropertyString>::type> StylePropertyDefaultValueMaps::stringDefaults =
+	{
+		{ StylePropertyString::SoundButtonDown,									std::string() }
 	};
 }
