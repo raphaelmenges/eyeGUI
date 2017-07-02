@@ -41,6 +41,7 @@ namespace eyegui
 	// - have uniform map of strings to property type (or at least uniform way to access)
 	// - have some map providing default values of properties
 	// - template specialization providing constraint per property type
+	// - template specialization providing parse function per property type
 
 	// Maps from string to style property type
 	namespace StylePropertyNameMapper
