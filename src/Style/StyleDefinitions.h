@@ -37,12 +37,14 @@ namespace eyegui
 	template<> struct StylePropertyTupleIndex<StylePropertyVec4> { static const int index = 1; };
 	template<> struct StylePropertyTupleIndex<StylePropertyString> { static const int index = 2; };
 
+	// TODO
+	// - have uniform map of strings to property type (or at least uniform way to access)
+	// - have some map providing default values of properties
+	// - template specialization providing constraint per property type
+
 	// Maps from string to style property type
 	namespace StylePropertyNameMapper
 	{
-		// TODO NOTE: ADD MAPPING OF PROPERTIES HERE! Also remember to add initial value and constraints in StyleClass.cpp
-		// TODO: use tuples as map entries or so (so no more dependency in style class)
-
 		const std::map<std::string, StylePropertyFloat> FLOAT_TYPE_MAP =
 		{
 			{ "AnimationDuration",									StylePropertyFloat::AnimationDuration },

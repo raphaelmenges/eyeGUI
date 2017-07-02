@@ -207,9 +207,9 @@ namespace eyegui
         // Check for any parent with certain type
         bool checkForParentType(Element::Type type) const;
 
-		// Set value of style property owned by element
+		// Parse and set value of style property owned by element
 		template<typename Type>
-		void setElementStylePropertyValue(Type styleType, std::string value)
+		void parseElementStylePropertyValue(Type styleType, std::string value)
 		{
 			mspStyleClass->parseValue(styleType, value);
 		}

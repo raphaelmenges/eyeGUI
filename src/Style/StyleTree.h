@@ -31,9 +31,9 @@ namespace eyegui
 		// Fetch style class
 		std::shared_ptr<const StyleClass> fetchStyleClass(std::string name) const;
 
-		// Set value by name of style class (must have been added before calling this)
+		// Parse and set value by name of style class
 		template<typename Type>
-		void setValue(std::string styleClass, Type styleType, std::string value)
+		void parseValue(std::string styleClass, Type styleType, std::string value)
 		{
 			// Fetch style class
 			if (auto spStyleClass = mspRoot->fetchThisOrChild(styleClass))
