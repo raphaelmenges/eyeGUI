@@ -14,6 +14,7 @@
 
 #include "include/eyeGUI.h"
 
+// TODO: clean up includes (Style tree here is quite heavy)
 #include "src/Layer.h"
 #include "src/Parser/LocalizationParser.h"
 #include "src/Rendering/AssetManager.h"

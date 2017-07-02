@@ -42,12 +42,7 @@ namespace eyegui
 			std::string right = line;
 
 			// Fill it into style property
-			auto floatIterator = StylePropertyNameMapper::FLOAT_TYPE_MAP.find(left);
-			if (floatIterator != StylePropertyNameMapper::FLOAT_TYPE_MAP.end()) { spStyleTree->parseValue(styleClass, floatIterator->second, right); }
-			auto vec4Iterator = StylePropertyNameMapper::VEC4_TYPE_MAP.find(left);
-			if (vec4Iterator != StylePropertyNameMapper::VEC4_TYPE_MAP.end()) { spStyleTree->parseValue(styleClass, vec4Iterator->second, right); }
-			auto stringIterator = StylePropertyNameMapper::STRING_TYPE_MAP.find(left);
-			if (stringIterator != StylePropertyNameMapper::STRING_TYPE_MAP.end()) { spStyleTree->parseValue(styleClass, stringIterator->second, right); }
+			style_tree_helper::parse(spStyleTree, styleClass, left, right);
 		}
 
 		void parse(std::shared_ptr<StyleTree> spStyleTree, std::string filepath)

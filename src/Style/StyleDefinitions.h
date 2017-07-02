@@ -44,7 +44,7 @@ namespace eyegui
 	// - template specialization providing parse function per property type
 
 	// Maps from string to style property type
-	std::tuple<
+	const std::tuple<
 		std::map<std::string, StylePropertyFloat>,
 		std::map<std::string, StylePropertyVec4>,
 		std::map<std::string, StylePropertyString>

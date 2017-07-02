@@ -62,13 +62,8 @@ namespace eyegui
 						property.erase(0, propertyPos + propertyDelimiter.length());
 						std::string right = property;
 
-						// Fill it into style property of elements class (TODO: if all style stuff is templated, remember to fix it here)
-						auto floatIterator = StylePropertyNameMapper::FLOAT_TYPE_MAP.find(left);
-						if (floatIterator != StylePropertyNameMapper::FLOAT_TYPE_MAP.end()) { upElement->parseElementStylePropertyValue(floatIterator->second, right); }
-						auto vec4Iterator = StylePropertyNameMapper::VEC4_TYPE_MAP.find(left);
-						if (vec4Iterator != StylePropertyNameMapper::VEC4_TYPE_MAP.end()) { upElement->parseElementStylePropertyValue(vec4Iterator->second, right); }
-						auto stringIterator = StylePropertyNameMapper::STRING_TYPE_MAP.find(left);
-						if (stringIterator != StylePropertyNameMapper::STRING_TYPE_MAP.end()) { upElement->parseElementStylePropertyValue(stringIterator->second, right); }
+						// Fill it into style property
+						element_helper::parse(upElement.get(), left, right);
 					}
 				}
 			}

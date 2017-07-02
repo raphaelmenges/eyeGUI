@@ -844,4 +844,9 @@ namespace eyegui
             interactionType,
             interactionInfoA);
     }
+
+	void element_helper::parse(Element* pElement, std::string styleType, std::string value)
+	{
+		element_helper::internalParse(StylePropertyStringMaps, pElement, styleType, value);
+	}
 }

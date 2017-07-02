@@ -15,6 +15,7 @@
 #define STYLE_TREE_H_
 
 #include "src/Style/StyleClass.h"
+#include "src/Style/StyleDefinitions.h"
 
 namespace eyegui
 {
@@ -48,26 +49,29 @@ namespace eyegui
 		std::shared_ptr<StyleClass> mspRoot;
 	};
 
-	// TODO: call beneath from parser, not from class. this stuff then calls the class. cool.
-
-	// Parsing value for style tree
-	template<std::size_t I = 0, typename... Tp>
-	inline typename std::enable_if<I == sizeof...(Tp), void>::type
-		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
-	{ }
-
-	template<std::size_t I = 0, typename... Tp>
-	inline typename std::enable_if<I < sizeof...(Tp), void>::type
-		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
+	namespace style_tree_helper
 	{
-		// TODO: 
-		internalParseForStyleTree<I + 1, Tp...>(t, pTree); // recursion call
-	}
+		// Parsing value for style tree
+		template<std::size_t I = 0, typename... Tp>
+		inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
+			internalParse(const std::tuple<Tp...>& t, std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value)
+		{}
 
-	// Initial call
-	void ParseStyleForStyleTree(StyleTree* pTree)
-	{
+		template<std::size_t I = 0, typename... Tp>
+		inline typename std::enable_if < I < sizeof...(Tp), void>::type
+			internalParse(const std::tuple<Tp...>& t, std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value)
+		{
+			// Fetch map from tuple
+			const auto& rMap = std::get<I>(t);
+			auto iterator = rMap.find(styleType);
+			if (iterator != rMap.end()) { spStyleTree->parseValue(styleClass, iterator->second, value); return; }
 
+			// String not yet found in any map, proceed
+			internalParse<I + 1, Tp...>(t, spStyleTree, styleClass, styleType, value); // recursion call
+		}
+
+		// Call to parse style type value where both type and value are encoded as string
+		void parse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value);		
 	}
 }
 

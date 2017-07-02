@@ -320,6 +320,31 @@ namespace eyegui
 		std::shared_ptr<StyleClass> mspStyleClass; // individual style class owned by element
 
     };
+
+	namespace element_helper
+	{
+		// Parsing value for style tree
+		template<std::size_t I = 0, typename... Tp>
+		inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
+			internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
+		{}
+
+		template<std::size_t I = 0, typename... Tp>
+		inline typename std::enable_if < I < sizeof...(Tp), void>::type
+			internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
+		{
+			// Fetch map from tuple
+			const auto& rMap = std::get<I>(t);
+			auto iterator = rMap.find(styleType);
+			if (iterator != rMap.end()) { pElement->parseElementStylePropertyValue(iterator->second, value); return; }
+
+			// String not yet found in any map, proceed
+			internalParse<I + 1, Tp...>(t, pElement, styleType, value); // recursion call
+		}
+
+		// Call to parse style type value where both type and value are encoded as string
+		void parse(Element* pElement, std::string styleType, std::string value);
+	}
 }
 
 #endif // ELEMENT_H_
