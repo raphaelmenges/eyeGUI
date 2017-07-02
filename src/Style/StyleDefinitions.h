@@ -98,31 +98,6 @@ namespace eyegui
 		}
 	};
 
-	// TODO: nice idea, but has to access method in StyleTree from header, so infinite header inclusion...
-	// -> put into StyleTree!!!!
-
-	// Parsing value for style tree
-	template<std::size_t I = 0, typename... Tp>
-	inline typename std::enable_if<I == sizeof...(Tp), void>::type
-		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
-	{ }
-
-	template<std::size_t I = 0, typename... Tp>
-	inline typename std::enable_if<I < sizeof...(Tp), void>::type
-		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
-	{
-		// TODO: 
-		internalParseForStyleTree<I + 1, Tp...>(t, pTree); // recursion call
-	}
-
-	// Initial call
-	void ParseStyleForStyleTree(StyleTree* pTree)
-	{
-
-	}
-
-	// Parsing value for element style
-
 }
 
 #endif // STYLE_DEFINITIONS
