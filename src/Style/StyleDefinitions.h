@@ -6,8 +6,8 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Maps string to style property type.
 
-#ifndef STYLE_PROPERTY_NAME_MAPPER
-#define STYLE_PROPERTY_NAME_MAPPER
+#ifndef STYLE_DEFINITIONS
+#define STYLE_DEFINITIONS
 
 #include "include/eyeGUI.h"
 
@@ -31,7 +31,7 @@ namespace eyegui
 			StyleMap<StylePropertyString>
 		> StyleMaps;
 
-	// Indices of property types in tuple above
+	// Indices of property types in tuple above and below
 	template<typename Type> struct StylePropertyTupleIndex { static const int index = -1; }; // fallback, should produce error
 	template<> struct StylePropertyTupleIndex<StylePropertyFloat> { static const int index = 0; };
 	template<> struct StylePropertyTupleIndex<StylePropertyVec4> { static const int index = 1; };
@@ -44,9 +44,12 @@ namespace eyegui
 	// - template specialization providing parse function per property type
 
 	// Maps from string to style property type
-	namespace StylePropertyNameMapper
+	std::tuple<
+		std::map<std::string, StylePropertyFloat>,
+		std::map<std::string, StylePropertyVec4>,
+		std::map<std::string, StylePropertyString>
+	> StylePropertyStringMaps
 	{
-		const std::map<std::string, StylePropertyFloat> FLOAT_TYPE_MAP =
 		{
 			{ "AnimationDuration",									StylePropertyFloat::AnimationDuration },
 			{ "SensorPenetrationIncreaseDuration",					StylePropertyFloat::SensorPenetrationIncreaseDuration },
@@ -75,8 +78,7 @@ namespace eyegui
 			{ "FutureKeyboardSpaceKeyThresholdMultiplier",			StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier },
 			{ "FutureKeyboardBackspaceKeyThresholdMultiplier",		StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier },
 			{ "FutureKeyboardSuggestionLineThresholdMultiplier",	StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier }
-		};
-		const std::map<std::string, StylePropertyVec4> VEC4_TYPE_MAP =
+		},
 		{
 			{ "Color",												StylePropertyVec4::Color },
 			{ "BackgroundColor",									StylePropertyVec4::BackgroundColor },
@@ -90,12 +92,37 @@ namespace eyegui
 			{ "MarkColor",											StylePropertyVec4::MarkColor },
 			{ "PickColor",											StylePropertyVec4::PickColor },
 			{ "ThresholdColor",										StylePropertyVec4::ThresholdColor }
-		};
-		const std::map<std::string, StylePropertyString> STRING_TYPE_MAP =
+		},
 		{
 			{ "SoundButtonDown",									StylePropertyString::SoundButtonDown },
-		};
+		}
+	};
+
+	// TODO: nice idea, but has to access method in StyleTree from header, so infinite header inclusion...
+	// -> put into StyleTree!!!!
+
+	// Parsing value for style tree
+	template<std::size_t I = 0, typename... Tp>
+	inline typename std::enable_if<I == sizeof...(Tp), void>::type
+		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
+	{ }
+
+	template<std::size_t I = 0, typename... Tp>
+	inline typename std::enable_if<I < sizeof...(Tp), void>::type
+		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
+	{
+		// TODO: 
+		internalParseForStyleTree<I + 1, Tp...>(t, pTree); // recursion call
 	}
+
+	// Initial call
+	void ParseStyleForStyleTree(StyleTree* pTree)
+	{
+
+	}
+
+	// Parsing value for element style
+
 }
 
-#endif // STYLE_PROPERTY_NAME_MAPPER
+#endif // STYLE_DEFINITIONS

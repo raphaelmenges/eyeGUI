@@ -47,6 +47,28 @@ namespace eyegui
 		// Root node of style tree, contains base style class
 		std::shared_ptr<StyleClass> mspRoot;
 	};
+
+	// TODO: call beneath from parser, not from class. this stuff then calls the class. cool.
+
+	// Parsing value for style tree
+	template<std::size_t I = 0, typename... Tp>
+	inline typename std::enable_if<I == sizeof...(Tp), void>::type
+		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
+	{ }
+
+	template<std::size_t I = 0, typename... Tp>
+	inline typename std::enable_if<I < sizeof...(Tp), void>::type
+		internalParseForStyleTree(std::tuple<Tp...>& t, StyleTree* pTree)
+	{
+		// TODO: 
+		internalParseForStyleTree<I + 1, Tp...>(t, pTree); // recursion call
+	}
+
+	// Initial call
+	void ParseStyleForStyleTree(StyleTree* pTree)
+	{
+
+	}
 }
 
 #endif // STYLE_TREE_H_
