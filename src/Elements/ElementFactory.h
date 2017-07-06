@@ -11,6 +11,7 @@
 #define ELEMENT_FACTORY_H_
 
 #include "src/Defines.h"
+#include "src/Elements/Element.h"
 #include "src/Style/StyleDefinitions.h"
 #include <memory>
 

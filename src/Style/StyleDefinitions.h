@@ -65,27 +65,11 @@ namespace eyegui
 		static std::map<StylePropertyString, StylePropertyValue<StylePropertyString>::type> stringDefaults;
 	};
 
+    // Move specializations to cpp as static seems not to be valid in gcc
+
 	// Getter of maps with default values via template specialization
 	template<typename Type>
-	static typename StylePropertyValue<Type>::type StylePropertyDefault(Type t) {};
-	template<>
-	static typename StylePropertyValue<StylePropertyFloat>::type StylePropertyDefault<StylePropertyFloat>(StylePropertyFloat t)
-	{
-		const auto& rMap = StylePropertyDefaultValueMaps::floatDefaults;
-		const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second;
-	}
-	template<>
-	static typename StylePropertyValue<StylePropertyVec4>::type StylePropertyDefault<StylePropertyVec4>(StylePropertyVec4 t)
-	{
-		const auto& rMap = StylePropertyDefaultValueMaps::vec4Defaults;
-		const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second;
-	}
-	template<>
-	static typename StylePropertyValue<StylePropertyString>::type StylePropertyDefault<StylePropertyString>(StylePropertyString t)
-	{
-		const auto& rMap = StylePropertyDefaultValueMaps::stringDefaults;
-		const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second;
-	}
+    typename StylePropertyValue<Type>::type StylePropertyDefault(Type t) {}
 }
 
 #endif // STYLE_DEFINITIONS

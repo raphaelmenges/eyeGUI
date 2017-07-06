@@ -20,7 +20,6 @@
 #include "include/eyeGUI.h"
 #include "src/Object.h"
 #include "src/Styleable.h"
-#include "src/Elements/ElementFactory.h"
 #include "src/Rendering/AssetManager.h"
 #include "src/Style/StyleClass.h"
 #include "src/Utilities/LerpValue.h"
@@ -37,6 +36,7 @@ namespace eyegui
     class NotificationQueue;
     class Frame;
 	class InteractiveElement;
+    class ElementFactory;
 
     class Element : public Object, public Styleable
     {
@@ -220,7 +220,7 @@ namespace eyegui
     protected:
 
 		// Factory is friend
-		friend ElementFactory;
+        friend class ElementFactory;
 
 		// Protected constructor
 		Element(
@@ -321,30 +321,30 @@ namespace eyegui
 
     };
 
-	namespace element_helper
-	{
-		// Parsing value for style tree
-		template<std::size_t I = 0, typename... Tp>
-		inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
-			internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
-		{} // if comes to here, no string was matched...
+    namespace element_helper
+    {
+        // Parsing value for style tree
+        template<std::size_t I = 0, typename... Tp>
+        inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
+            internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
+        {} // if comes to here, no string was matched...
 
-		template<std::size_t I = 0, typename... Tp>
-		inline typename std::enable_if < I < sizeof...(Tp), void>::type
-			internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
-		{
-			// Fetch map from tuple
-			const auto& rMap = std::get<I>(t);
-			auto iterator = rMap.find(styleType);
-			if (iterator != rMap.end()) { pElement->parseElementStylePropertyValue(iterator->second, value); return; }
+        template<std::size_t I = 0, typename... Tp>
+        inline typename std::enable_if < I < sizeof...(Tp), void>::type
+            internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
+        {
+            // Fetch map from tuple
+            const auto& rMap = std::get<I>(t);
+            auto iterator = rMap.find(styleType);
+            if (iterator != rMap.end()) { pElement->parseElementStylePropertyValue(iterator->second, value); return; }
 
-			// String not yet found in any map, proceed
-			internalParse<I + 1, Tp...>(t, pElement, styleType, value); // recursion call
-		}
+            // String not yet found in any map, proceed
+            internalParse<I + 1, Tp...>(t, pElement, styleType, value); // recursion call
+        }
 
-		// Call to parse style type value where both type and value are encoded as string
-		void parse(Element* pElement, std::string styleType, std::string value);
-	}
+        // Call to parse style type value where both type and value are encoded as string
+        void parse(Element* pElement, std::string styleType, std::string value);
+    }
 }
 
 #endif // ELEMENT_H_

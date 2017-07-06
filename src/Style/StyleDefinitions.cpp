@@ -110,4 +110,23 @@ namespace eyegui
 	{
 		{ StylePropertyString::SoundButtonDown,									std::string() }
 	};
+
+    template<>
+    typename StylePropertyValue<StylePropertyFloat>::type StylePropertyDefault<StylePropertyFloat>(StylePropertyFloat t)
+    {
+        const auto& rMap = StylePropertyDefaultValueMaps::floatDefaults;
+        const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second;
+    }
+    template<>
+    typename StylePropertyValue<StylePropertyVec4>::type StylePropertyDefault<StylePropertyVec4>(StylePropertyVec4 t)
+    {
+        const auto& rMap = StylePropertyDefaultValueMaps::vec4Defaults;
+        const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second;
+    }
+    template<>
+    typename StylePropertyValue<StylePropertyString>::type StylePropertyDefault<StylePropertyString>(StylePropertyString t)
+    {
+        const auto& rMap = StylePropertyDefaultValueMaps::stringDefaults;
+        const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second;
+    }
 }
