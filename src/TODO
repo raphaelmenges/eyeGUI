@@ -1,5 +1,8 @@
 ### VERSION 0.9 (getting quite big but no stable version in sight)
 
+## Remark
+- PortAudio is linked statically. So either eyeGUI is added as subdirectory and compiled alongside the main project, or one has to find the path to the static PortAudio compiled built with eyeGUI and link her program against this library, too.
+
 ## New features
 - Ring Container (optional)
 - Style tree on element side
