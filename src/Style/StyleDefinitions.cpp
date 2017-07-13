@@ -9,7 +9,7 @@
 
 namespace eyegui
 {
-	StylePropertyStringMappingTuple StylePropertyStringMappingMaps::value =
+	StylePropertyStringMappingTuple StylePropertyStringMappingMaps::value
 	{
 		{
 			{ "AnimationDuration",									StylePropertyFloat::AnimationDuration },
