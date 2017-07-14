@@ -96,7 +96,9 @@ namespace eyegui
 	//! Enumeration style properties string types
 	enum class StylePropertyString
 	{
-		SoundButtonDown
+		SoundButtonHit,
+		SoundButtonDown,
+		SoundKeyPress
 	};
 
 	//! Enumeration of possible character sets for font rendering.

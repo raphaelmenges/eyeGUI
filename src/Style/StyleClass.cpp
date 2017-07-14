@@ -159,7 +159,9 @@ namespace eyegui
 		typedef StylePropertyString sString; // simplify enum access
 		typedef std::shared_ptr<StyleProperty<std::string> > spString; // simplify shared pointer creation
 		constexpr int iString = StylePropertyTupleIndex<StylePropertyString>::index;
+		std::get<iString>(mMaps)[sString::SoundButtonHit] = spString(new StyleProperty<std::string>(shared_from_this(), std::string()));
 		std::get<iString>(mMaps)[sString::SoundButtonDown] = spString(new StyleProperty<std::string>(shared_from_this(), std::string()));
+		std::get<iString>(mMaps)[sString::SoundKeyPress] = spString(new StyleProperty<std::string>(shared_from_this(), std::string()));
 	}
 
 	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name) const

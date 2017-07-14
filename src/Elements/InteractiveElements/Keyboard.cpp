@@ -878,5 +878,8 @@ namespace eyegui
 
         // Interaction notification
         notifyInteraction("KEY_PRESS", convertUTF16ToUTF8(mLastPressedKeyValue));
+
+		// Sound for key press
+		mpAssetManager->playSound(getStyleValue(StylePropertyString::SoundKeyPress));
     }
 }

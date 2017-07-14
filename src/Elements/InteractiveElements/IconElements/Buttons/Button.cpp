@@ -87,6 +87,12 @@ namespace eyegui
             {
                 down(immediately);
             }
+
+			// Play sound
+			if (!immediately)
+			{
+				mpAssetManager->playSound(getStyleValue(StylePropertyString::SoundButtonHit));
+			}
         }
     }
 

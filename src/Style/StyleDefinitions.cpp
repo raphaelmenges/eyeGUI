@@ -55,7 +55,9 @@ namespace eyegui
 			{ "ThresholdColor",										StylePropertyVec4::ThresholdColor }
 		},
 		{
+			{ "SoundButtonHit",										StylePropertyString::SoundButtonHit },
 			{ "SoundButtonDown",									StylePropertyString::SoundButtonDown },
+			{ "SoundKeyPress",										StylePropertyString::SoundKeyPress },
 		}
 	};
 
@@ -108,7 +110,9 @@ namespace eyegui
 
 	std::map<StylePropertyString, StylePropertyValue<StylePropertyString>::type> StylePropertyDefaultValueMaps::stringDefaults =
 	{
-		{ StylePropertyString::SoundButtonDown,									std::string() }
+		{ StylePropertyString::SoundButtonHit,									std::string() },
+		{ StylePropertyString::SoundButtonDown,									std::string() },
+		{ StylePropertyString::SoundKeyPress,									std::string() }
 	};
 
     template<>
