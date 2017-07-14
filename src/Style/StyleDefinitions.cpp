@@ -9,6 +9,7 @@
 
 namespace eyegui
 {
+	// One *must* enter new properties here!
 	StylePropertyStringMappingTuple StylePropertyStringMappingMaps::value
 	{
 		{
@@ -61,6 +62,7 @@ namespace eyegui
 		}
 	};
 
+	// One *can* enter new properties here!
 	std::map<StylePropertyFloat, StylePropertyValue<StylePropertyFloat>::type> StylePropertyDefaultValueMaps::floatDefaults =
 	{
 		{ StylePropertyFloat::AnimationDuration,								0.1f },
@@ -115,22 +117,20 @@ namespace eyegui
 		{ StylePropertyString::SoundKeyPress,									std::string() }
 	};
 
-    template<>
-    typename StylePropertyValue<StylePropertyFloat>::type StylePropertyDefault<StylePropertyFloat>(StylePropertyFloat t)
-    {
-        const auto& rMap = StylePropertyDefaultValueMaps::floatDefaults;
-        const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second;
-    }
-    template<>
-    typename StylePropertyValue<StylePropertyVec4>::type StylePropertyDefault<StylePropertyVec4>(StylePropertyVec4 t)
-    {
-        const auto& rMap = StylePropertyDefaultValueMaps::vec4Defaults;
-        const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second;
-    }
-    template<>
-    typename StylePropertyValue<StylePropertyString>::type StylePropertyDefault<StylePropertyString>(StylePropertyString t)
-    {
-        const auto& rMap = StylePropertyDefaultValueMaps::stringDefaults;
-        const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second;
-    }
+	// Getter of maps with default values via template specialization
+	StylePropertyValue<StylePropertyFloat>::type StylePropertyDefault(StylePropertyFloat t)
+	{
+		const auto& rMap = StylePropertyDefaultValueMaps::floatDefaults;
+		const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second;
+	}
+	StylePropertyValue<StylePropertyVec4>::type StylePropertyDefault(StylePropertyVec4 t)
+	{
+		const auto& rMap = StylePropertyDefaultValueMaps::vec4Defaults;
+		const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second;
+	}
+	StylePropertyValue<StylePropertyString>::type StylePropertyDefault(StylePropertyString t)
+	{
+		const auto& rMap = StylePropertyDefaultValueMaps::stringDefaults;
+		const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second;
+	}
 }

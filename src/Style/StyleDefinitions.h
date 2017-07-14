@@ -19,8 +19,6 @@
 
 namespace eyegui
 {
-	// ALSO TAKE A LOOK INTO CORRESPONDING CPP!
-
 	// Compile time mapping between style property and it value type
 	template<typename Type> struct StylePropertyValue;
 	template<> struct StylePropertyValue<StylePropertyFloat>	{ typedef float type; };
@@ -65,11 +63,10 @@ namespace eyegui
 		static std::map<StylePropertyString, StylePropertyValue<StylePropertyString>::type> stringDefaults;
 	};
 
-    // Move specializations to cpp as static seems not to be valid in gcc
-
 	// Getter of maps with default values via template specialization
-	template<typename Type>
-    typename StylePropertyValue<Type>::type StylePropertyDefault(Type t) {}
+	StylePropertyValue<StylePropertyFloat>::type StylePropertyDefault(StylePropertyFloat t);
+	StylePropertyValue<StylePropertyVec4>::type StylePropertyDefault(StylePropertyVec4 t);
+	StylePropertyValue<StylePropertyString>::type StylePropertyDefault(StylePropertyString t);
 }
 
 #endif // STYLE_DEFINITIONS
