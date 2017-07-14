@@ -24,67 +24,67 @@
 
 #include <algorithm>
 
-// Static callback for PortAudio stream updates
-static int audioStreamUpdateCallback(
-	const void * inputBuffer, // buffer for audio input via microphone
-	void * outputBuffer, // buffer for audio output via speakers
-	unsigned long framesPerBuffer, // counts of frames (count of samples for all channels)
-	const PaStreamCallbackTimeInfo *timeInfo, // not used
-	PaStreamCallbackFlags flags, // not used
-	void * data) // pointer to audio output data
-{
-	// Return value
-	PaStreamCallbackResult result = PaStreamCallbackResult::paComplete;
-
-	// Cast output buffer
-	short *out = (short*)outputBuffer;
-
-	// Prevent unused variable warnings
-	(void)inputBuffer;
-	(void)timeInfo;
-	(void)flags;
-
-	// Extract pointer to audio output data
-	auto pData = reinterpret_cast<eyegui::AudioOutput*>(data);
-
-	// Fill output buffer for PortAudio
-	bool samplesLeft = pData->getIndex() < pData->getAudio()->getSampleCount();
-	if (samplesLeft)
-	{
-		for (unsigned int i = 0; i < framesPerBuffer; i++) // go over requested frames
-		{
-			for (unsigned int j = 0; j < pData->getAudio()->getChannelCount(); j++) // go over channels
-			{
-				*out++ = pData->getAudio()->getSample(pData->getIndex()); // add sample to output
-				if (pData->getIndex() + 1 < pData->getAudio()->getSampleCount()) // check whether there are samples left in the buffer
-				{
-					pData->incrementIndex();
-				}
-				else
-				{
-					samplesLeft = false;
-					break; // break inner
-				}
-			}
-
-			// Break outer
-			if (!samplesLeft)
-			{
-				break;
-			}
-		}
-	}
-
-	// Decide whether to continue
-	if (samplesLeft)
-	{
-		result = PaStreamCallbackResult::paContinue;
-	}
-	return result;
-}
-
 namespace eyegui
 {
+	// Static callback for PortAudio stream updates
+	static int audioStreamUpdateCallback(
+		const void * inputBuffer, // buffer for audio input via microphone
+		void * outputBuffer, // buffer for audio output via speakers
+		unsigned long framesPerBuffer, // counts of frames (count of samples for all channels)
+		const PaStreamCallbackTimeInfo *timeInfo, // not used
+		PaStreamCallbackFlags flags, // not used
+		void * data) // pointer to audio data
+	{
+		// Return value
+		PaStreamCallbackResult result = PaStreamCallbackResult::paComplete;
+
+		// Cast output buffer
+		short *out = (short*)outputBuffer;
+
+		// Prevent unused variable warnings
+		(void)inputBuffer;
+		(void)timeInfo;
+		(void)flags;
+
+		// Extract pointer to audio data
+		auto pData = reinterpret_cast<eyegui::AudioOutput*>(data);
+
+		// Fill output buffer for PortAudio
+		bool samplesLeft = pData->getIndex() < pData->getAudio()->getSampleCount();
+		if (samplesLeft)
+		{
+			for (unsigned int i = 0; i < framesPerBuffer; i++) // go over requested frames
+			{
+				for (unsigned int j = 0; j < pData->getAudio()->getChannelCount(); j++) // go over channels
+				{
+					if (samplesLeft) // data left that can be written to output
+					{
+						*out++ = pData->getAudio()->getSample(pData->getIndex()); // add sample to output
+						if (pData->getIndex() + 1 < pData->getAudio()->getSampleCount()) // check whether there are samples left in the buffer
+						{
+							pData->incrementIndex();
+						}
+						else
+						{
+							samplesLeft = false;
+						}
+					}
+					else // no data left, so write silence
+					{
+						*out++ = 0;
+					}
+				}
+			}
+		}
+
+		// Decide whether to continue
+		if (samplesLeft)
+		{
+			result = PaStreamCallbackResult::paContinue;
+		}
+		return result;
+	}
+
     AssetManager::AssetManager(GUI const * pGUI)
     {
         // Save members
@@ -516,7 +516,7 @@ namespace eyegui
 				mpStream = NULL;
 			}
 
-			// Set value of static structure accessed by the callbacks
+			// Set audio accessed by the callback
 			mupAudioOutput = std::unique_ptr<AudioOutput>(new AudioOutput(pSound));
 
 			// Open new stream
