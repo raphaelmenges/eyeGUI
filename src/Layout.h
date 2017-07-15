@@ -340,10 +340,27 @@ namespace eyegui
 		// Fetch style class from style tree
 		std::shared_ptr<const StyleClass> fetchStyleTreeClass(std::string name) const;
 
-		// Get raw values of styling properties
-		virtual float getStyleValue(StylePropertyFloat type) const;
-		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
-		virtual std::string getStyleValue(StylePropertyString type) const;
+		// Get raw values of styling property
+		template<typename Type>
+		typename style::PropertyValue<Type>::type getStyleValue(Type type) const
+		{
+			// Go over style classes of tree
+			std::shared_ptr<const StyleProperty<typename style::PropertyValue<Type>::type> > spStyleProperty;
+			for (const auto& rspStyleClass : mStyleTreeClasses)
+			{
+				// Check whether property is really set or just base
+				spStyleProperty = rspStyleClass->fetchProperty(type);
+				if (spStyleProperty->isSet()) // just base, try next class
+				{
+					continue;
+				}
+				else // no base, use this property's value
+				{
+					break;
+				}
+			}
+			return spStyleProperty->get();
+		}
 
 		// Set value of style owned by element
 		template<typename Type>

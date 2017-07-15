@@ -262,10 +262,36 @@ namespace eyegui
         float getDim() const;
         float getMultipliedDimmedAlpha() const;
 
-		// Get style property value (inherited from Styleable interface)
-		virtual float getStyleValue(StylePropertyFloat type) const;
-		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
-		virtual std::string getStyleValue(StylePropertyString type) const;
+		// Get raw values of styling property
+		template<typename Type>
+		typename style::PropertyValue<Type>::type getStyleValue(Type type) const
+		{
+			// Go over the property in the differenct classes
+			std::shared_ptr<const StyleProperty<typename style::PropertyValue<Type>::type> > spStyleProperty;
+
+			// Check own class for some set value
+			spStyleProperty = mspStyleClass->fetchProperty(type);
+			if (spStyleProperty->isSet()) // if the value of this property was actively set, use it!
+			{
+				return spStyleProperty->get();
+			}
+
+			// Go over assigned classes of global style tree
+			for (const auto& rspStyleClass : mStyleTreeClasses)
+			{
+				// Check whether property is really set or just base
+				spStyleProperty = rspStyleClass->fetchProperty(type);
+				if (spStyleProperty->isSet()) // no base, use this property's value
+				{
+					break;
+				}
+				else // just base, try next class
+				{
+					continue;
+				}
+			}
+			return spStyleProperty->get();
+		}
 
 		// Getter of individual style class owned by element
 		std::shared_ptr<StyleClass> fetchElementStyleClass() const;
