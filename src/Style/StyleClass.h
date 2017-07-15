@@ -35,24 +35,24 @@ namespace eyegui
 		// #######################
 
 		// Get const map corresponding to proptery type
-		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > > const * getConstMap() const
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename style::PropertyValue<Type>::type> > > const * getConstMap() const
 		{
-			return &(std::get<StylePropertyTupleIndex<Type>::index>(mMaps));
+			return &(std::get<style::PropertyMapIdx<Type>::index>(mMaps));
 		}
 
 		// Get map corresponding to property type
-		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >* getMap()
+		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename style::PropertyValue<Type>::type> > >* getMap()
 		{
-			return &(std::get<StylePropertyTupleIndex<Type>::index>(mMaps));
+			return &(std::get<style::PropertyMapIdx<Type>::index>(mMaps));
 		}
 
 		// Get style property by type
 		template<typename Type>
-		std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > getStyleProperty(Type type) { return (*getMap<Type>())[type]; }
+		std::shared_ptr<StyleProperty<typename style::PropertyValue<Type>::type> > getStyleProperty(Type type) { return (*getMap<Type>())[type]; }
 
 		// Set property pointer in map
 		template<typename Type>
-		void setMapValue(Type type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > spProperty) { (*getMap<Type>())[type] = spProperty; }
+		void setMapValue(Type type, std::shared_ptr<StyleProperty<typename style::PropertyValue<Type>::type> > spProperty) { (*getMap<Type>())[type] = spProperty; }
 
 	public:
 
@@ -61,21 +61,21 @@ namespace eyegui
 
 		// Fetch value from property
 		template<typename Type>
-		std::shared_ptr<const StyleProperty<typename StylePropertyValue<Type>::type> > fetchProperty(Type type) const
+		std::shared_ptr<const StyleProperty<typename style::PropertyValue<Type>::type> > fetchProperty(Type type) const
 		{
 			return getConstMap<Type>()->at(type);
 		}
 
 		// Get value of property
 		template<typename Type>
-		typename StylePropertyValue<Type>::type getValue(Type type) const
+		typename style::PropertyValue<Type>::type getValue(Type type) const
 		{
 			return getConstMap<Type>()->at(type)->get();
 		}
 
 		// General set value of property and propagate to children
 		template<typename Type>
-		void setValue(Type type, typename StylePropertyValue<Type>::type value)
+		void setValue(Type type, typename style::PropertyValue<Type>::type value)
 		{
 			// Pass to other template
 			genericSetValue(type, value);
@@ -115,7 +115,7 @@ namespace eyegui
 
 		// Set value as template implementation. Does create new property if not existing in instance
 		template<typename Type>
-		void genericSetValue(Type type, typename StylePropertyValue<Type>::type value)
+		void genericSetValue(Type type, typename style::PropertyValue<Type>::type value)
 		{
 			// Check whether property is owned by me
 			auto spStoredProperty = this->getStyleProperty(type);
@@ -136,7 +136,7 @@ namespace eyegui
 			else
 			{
 				// Add new owned property while copying constraint from existing since it is of the same type
-				typedef StyleProperty<typename StylePropertyValue<Type>::type> PropertyType;
+				typedef StyleProperty<typename style::PropertyValue<Type>::type> PropertyType;
 				spStoredProperty = std::shared_ptr<PropertyType>(new PropertyType(shared_from_this(), value, spStoredProperty->getConstraint(), true));
 				this->setMapValue(type, spStoredProperty);
 
@@ -157,7 +157,7 @@ namespace eyegui
 
 		// Propagate value from parent to this and children
 		template<typename Type>
-		void genericPropagateProperty(Type type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > spProperty)
+		void genericPropagateProperty(Type type, std::shared_ptr<StyleProperty<typename style::PropertyValue<Type>::type> > spProperty)
 		{
 			// Check whether property is owned by me
 			auto spStoredProperty = this->getStyleProperty(type);
@@ -194,7 +194,7 @@ namespace eyegui
 		std::string mName = "";
 
 		// Maps
-		StyleMaps mMaps; // tuple of maps
+		style::PropertyMaps mMaps; // tuple of maps
 
 		// Parent
 		std::weak_ptr<const StyleClass> mwpParent; // empty for root

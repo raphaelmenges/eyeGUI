@@ -340,7 +340,7 @@ namespace eyegui
 		// Fetch style class from style tree
 		std::shared_ptr<const StyleClass> fetchStyleTreeClass(std::string name) const;
 
-		// Get values from styling
+		// Get raw values of styling properties
 		virtual float getStyleValue(StylePropertyFloat type) const;
 		virtual glm::vec4 getStyleValue(StylePropertyVec4 type) const;
 		virtual std::string getStyleValue(StylePropertyString type) const;

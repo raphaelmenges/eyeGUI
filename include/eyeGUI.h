@@ -44,7 +44,7 @@ namespace eyegui
 	class Layout;
 	class Frame;
 
-	//! Enumeration style properties float types
+	//! Enumeration of style property float instances
 	enum class StylePropertyFloat
 	{
 		AnimationDuration,
@@ -76,7 +76,6 @@ namespace eyegui
 		FutureKeyboardSuggestionLineThresholdMultiplier
 	};
 
-	//! Enumeration style properties vec4 types
 	enum class StylePropertyVec4
 	{
 		Color,
@@ -93,7 +92,7 @@ namespace eyegui
 		ThresholdColor
 	};
 
-	//! Enumeration style properties string types
+
 	enum class StylePropertyString
 	{
 		SoundButtonHit,

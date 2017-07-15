@@ -8,31 +8,33 @@
 
 namespace eyegui
 {
-	// TODO: remove template parameters from template as it is made only for one type. only parameter is I
 	// Using string mapping tuple as this must be always complete
 	namespace style_class_helper
 	{
+		// Extract size of tuple containing mapping from string to property class
+		constexpr int tupleSize = std::tuple_size<style::PropertyStringTuple>::value;
+
 		// Going over tuple elements and fill provided maps
-		template<std::size_t I = 0, typename... Tp>
-		inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
-			fillDefaults(const std::tuple<Tp...>& t, StyleMaps& rMaps, std::weak_ptr<const StyleClass> wpStyleClass) // takes tuple with string to property map and maps to fill with pointers
+		template<std::size_t I = 0>
+		inline typename std::enable_if<I == tupleSize, void>::type // base case of I == number of tuple elements
+			fillDefaults(const style::PropertyStringTuple& rStringMaps, style::PropertyMaps& rMaps, std::weak_ptr<const StyleClass> wpStyleClass) // takes tuple with string to property map and maps to fill with pointers
 		{}
 
-		template<std::size_t I = 0, typename... Tp>
-		inline typename std::enable_if < I < sizeof...(Tp), void>::type
-			fillDefaults(const std::tuple<Tp...>& t, StyleMaps& rMaps, std::weak_ptr<const StyleClass> wpStyleClass)
+		template<std::size_t I = 0>
+		inline typename std::enable_if<I < tupleSize, void>::type // default case
+			fillDefaults(const style::PropertyStringTuple& rStringMaps, style::PropertyMaps& rMaps, std::weak_ptr<const StyleClass> wpStyleClass)
 		{
 			// Extract reference to string map
-			const auto& rStringMap = std::get<I>(t);
+			const auto& rStringMap = std::get<I>(rStringMaps);
 
 			// Determine type of property (this is mapped type of this string mapping)
-			typedef typename std::tuple_element<I, StylePropertyStringMappingTuple>::type::mapped_type PropertyType;
+			typedef typename std::tuple_element<I, style::PropertyStringTuple>::type::mapped_type PropertyType;
 
 			// Determine property value type
-			typedef typename StylePropertyValue<PropertyType>::type ValueType;
+			typedef typename style::PropertyValue<PropertyType>::type ValueType;
 
 			// Get index in provided rMap to fill value into
-			constexpr int index = StylePropertyTupleIndex<PropertyType>::index; // index of property in StyleMaps TODO this look strange, which all these tuples are confusing
+			constexpr int index = style::PropertyMapIdx<PropertyType>::index;
 	
 			// Go over map for this property
 			for (const auto& entry : rStringMap)
@@ -41,14 +43,14 @@ namespace eyegui
 				PropertyType property = entry.second;
 
 				// Default value
-				ValueType value = StylePropertyDefault(property);
+				ValueType value = style::getPropertyDefault(property);
 
 				// Add entry to map within StyleClass
 				std::get<index>(rMaps)[property] = std::shared_ptr<StyleProperty<ValueType> >(new StyleProperty<ValueType>(wpStyleClass, value)); // TODO: add constraint
 			}
 			
 			// Proceed to next tuple element
-			fillDefaults<I + 1, Tp...>(t, rMaps, wpStyleClass); // recursion call
+			fillDefaults<I + 1>(rStringMaps, rMaps, wpStyleClass); // recursion call
 		}
 	}
 
@@ -129,7 +131,7 @@ namespace eyegui
 	void StyleClass::fill()
 	{
 		// Delegate to fancy template
-		style_class_helper::fillDefaults(StylePropertyStringMappingMaps::value, this->mMaps, shared_from_this());
+		style_class_helper::fillDefaults(style::PropertyStringMapping::value, this->mMaps, shared_from_this());
 	}
 
 	std::shared_ptr<StyleClass> StyleClassBuilder::construct(std::string name) const

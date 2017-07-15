@@ -847,6 +847,6 @@ namespace eyegui
 
 	void element_helper::parse(Element* pElement, std::string styleType, std::string value)
 	{
-		element_helper::internalParse(StylePropertyStringMappingMaps::value, pElement, styleType, value);
+		element_helper::internalParse(style::PropertyStringMapping::value, pElement, styleType, value);
 	}
 }

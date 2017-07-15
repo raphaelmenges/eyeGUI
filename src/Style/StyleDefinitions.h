@@ -4,7 +4,11 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Maps string to style property type.
+// Definitions for the style system. There is following structure:
+//   StyleClass: holds one map for each property class
+//   ProtertyClass: is defined by "type" of property, like duration
+//   PropertyValue: raw type is defined for each property class, like float
+//   Property: is instance of property class and defind by one value, for example AnimationDuration
 
 #ifndef STYLE_DEFINITIONS
 #define STYLE_DEFINITIONS
@@ -19,54 +23,50 @@
 
 namespace eyegui
 {
-	// Compile time mapping between style property and it value type
-	template<typename Type> struct StylePropertyValue;
-	template<> struct StylePropertyValue<StylePropertyFloat>	{ typedef float type; };
-	template<> struct StylePropertyValue<StylePropertyVec4>		{ typedef glm::vec4 type; };
-	template<> struct StylePropertyValue<StylePropertyString>	{ typedef std::string type; };
-
-	// Typedef of tuple with maps for the StyleClass
-	template<typename Type> using StylePropertyMap = std::map<Type, std::shared_ptr<StyleProperty<typename StylePropertyValue<Type>::type> > >;
-	typedef
-		std::tuple<
-			StylePropertyMap<StylePropertyFloat>,
-			StylePropertyMap<StylePropertyVec4>,
-			StylePropertyMap<StylePropertyString>
-		> StyleMaps;
-
-	// Indices of property types in tuple above and below
-	template<typename Type> struct StylePropertyTupleIndex			{ static const int index = -1; }; // fallback, should produce error
-	template<> struct StylePropertyTupleIndex<StylePropertyFloat>	{ static const int index = 0; };
-	template<> struct StylePropertyTupleIndex<StylePropertyVec4>	{ static const int index = 1; };
-	template<> struct StylePropertyTupleIndex<StylePropertyString>	{ static const int index = 2; };
-
-	// TODO
-	// - fill of base style class (iterating over enum options???)
-	// - template specialization providing constraint per property type (before: change property types)
-	// - template specialization providing parse function per property type (before: change property types)
-
-	// Maps from string to style property type
-	using StylePropertyStringMappingTuple = std::tuple<
-		std::map<std::string, StylePropertyFloat>,
-		std::map<std::string, StylePropertyVec4>,
-		std::map<std::string, StylePropertyString> >;
-	struct StylePropertyStringMappingMaps
+	namespace style
 	{
-		static StylePropertyStringMappingTuple value;
-	};
+		// TODO
+		// - template specialization providing constraint per property class
+		// - template specialization providing parse function per property class
 
-	// Maps to indicate default values (TODO: maybe provide fallback so not everything has to be defined? -> maybe hide behind some function
-	struct StylePropertyDefaultValueMaps
-	{
-		static std::map<StylePropertyFloat, StylePropertyValue<StylePropertyFloat>::type> floatDefaults;
-		static std::map<StylePropertyVec4, StylePropertyValue<StylePropertyVec4>::type> vec4Defaults;
-		static std::map<StylePropertyString, StylePropertyValue<StylePropertyString>::type> stringDefaults;
-	};
+		// Compile time mapping of property class to property value
+		template<typename Type> struct PropertyValue;
+		template<> struct PropertyValue<StylePropertyFloat>		{ typedef float type; };
+		template<> struct PropertyValue<StylePropertyVec4>		{ typedef glm::vec4 type; };
+		template<> struct PropertyValue<StylePropertyString>	{ typedef std::string type; };
 
-	// Getter of maps with default values via template specialization
-	StylePropertyValue<StylePropertyFloat>::type StylePropertyDefault(StylePropertyFloat t);
-	StylePropertyValue<StylePropertyVec4>::type StylePropertyDefault(StylePropertyVec4 t);
-	StylePropertyValue<StylePropertyString>::type StylePropertyDefault(StylePropertyString t);
+		// Typedef of tuple containing maps of property classes for style class
+		template<typename Type> using PropertyMap = std::map<Type, std::shared_ptr<StyleProperty<typename PropertyValue<Type>::type> > >;
+		typedef
+			std::tuple<
+			PropertyMap<StylePropertyFloat>,
+			PropertyMap<StylePropertyVec4>,
+			PropertyMap<StylePropertyString>
+			> PropertyMaps;
+
+		// Indices of property classes in tuple above (easier to write it manually instead of complex recursive template structure)
+		template<typename Type> struct PropertyMapIdx			{ static const int index = -1; }; // fallback, should produce error
+		template<> struct PropertyMapIdx<StylePropertyFloat>	{ static const int index = 0; };
+		template<> struct PropertyMapIdx<StylePropertyVec4>		{ static const int index = 1; };
+		template<> struct PropertyMapIdx<StylePropertyString>	{ static const int index = 2; };
+
+		// Maps from string to property class
+		typedef
+			std::tuple<
+			std::map<std::string, StylePropertyFloat>,
+			std::map<std::string, StylePropertyVec4>,
+			std::map<std::string, StylePropertyString> >
+			PropertyStringTuple;
+		struct PropertyStringMapping
+		{
+			static PropertyStringTuple value;
+		};
+
+		// Getter of default value per property class
+		PropertyValue<StylePropertyFloat>::type getPropertyDefault(StylePropertyFloat t);
+		PropertyValue<StylePropertyVec4>::type getPropertyDefault(StylePropertyVec4 t);
+		PropertyValue<StylePropertyString>::type getPropertyDefault(StylePropertyString t);
+	}
 }
 
 #endif // STYLE_DEFINITIONS
