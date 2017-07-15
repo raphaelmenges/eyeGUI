@@ -25,18 +25,44 @@ namespace eyegui
 {
 	namespace style
 	{
-		// TODO
-		// - template specialization providing constraint per property class
-		// - template specialization providing parse function per property class
+		// ###################################
+		// Information for each property class
+		// ###################################
+		template<typename Type> struct PropertyInfo;
 
-		// Compile time mapping of property class to property value
-		template<typename Type> struct PropertyValue;
-		template<> struct PropertyValue<StylePropertyFloat>		{ typedef float type; };
-		template<> struct PropertyValue<StylePropertyVec4>		{ typedef glm::vec4 type; };
-		template<> struct PropertyValue<StylePropertyString>	{ typedef std::string type; };
+		// Float
+		template<> struct PropertyInfo<StylePropertyFloat>
+		{
+			typedef float type; // raw type
+			static const int idx = 0; // index of map in PropertyMaps tuple
+			static type constraint(type value) { return value; } // constraint function
+			// parse function
+		};
+
+		// Vec4
+		template<> struct PropertyInfo<StylePropertyVec4>
+		{
+			typedef glm::vec4 type; // raw type
+			static const int idx = 1; // index of map in PropertyMaps tuple
+			static type constraint(type value) { return value; } // constraint function
+			// parse function
+		};
+
+		// String
+		template<> struct PropertyInfo<StylePropertyString>
+		{
+			typedef std::string type; // raw type
+			static const int idx = 2; // index of map in PropertyMaps tuple
+			static type constraint(type value) { return value; } // constraint function
+			// parse function
+		};
+		
+		// ###################################
+		//    Tuple of maps for StyleClass
+		// ###################################
 
 		// Typedef of tuple containing maps of property classes for style class
-		template<typename Type> using PropertyMap = std::map<Type, std::shared_ptr<StyleProperty<typename PropertyValue<Type>::type> > >;
+		template<typename Type> using PropertyMap = std::map<Type, std::shared_ptr<StyleProperty<typename PropertyInfo<Type>::type> > >;
 		typedef
 			std::tuple<
 			PropertyMap<StylePropertyFloat>,
@@ -44,11 +70,9 @@ namespace eyegui
 			PropertyMap<StylePropertyString>
 			> PropertyMaps;
 
-		// Indices of property classes in tuple above (easier to write it manually instead of complex recursive template structure)
-		template<typename Type> struct PropertyMapIdx			{ static const int index = -1; }; // fallback, should produce error
-		template<> struct PropertyMapIdx<StylePropertyFloat>	{ static const int index = 0; };
-		template<> struct PropertyMapIdx<StylePropertyVec4>		{ static const int index = 1; };
-		template<> struct PropertyMapIdx<StylePropertyString>	{ static const int index = 2; };
+		// ###################################
+		//   Mapping from string to property
+		// ###################################
 
 		// Maps from string to property class
 		typedef
@@ -62,10 +86,14 @@ namespace eyegui
 			static PropertyStringTuple value;
 		};
 
-		// Getter of default value per property class
-		PropertyValue<StylePropertyFloat>::type getPropertyDefault(StylePropertyFloat t);
-		PropertyValue<StylePropertyVec4>::type getPropertyDefault(StylePropertyVec4 t);
-		PropertyValue<StylePropertyString>::type getPropertyDefault(StylePropertyString t);
+		// ###################################
+		//    Default values of properties
+		// ###################################
+
+		// Getter of default value for each property
+		typename PropertyInfo<StylePropertyFloat>::type		getPropertyDefault(StylePropertyFloat t);
+		typename PropertyInfo<StylePropertyVec4>::type		getPropertyDefault(StylePropertyVec4 t);
+		typename PropertyInfo<StylePropertyString>::type	getPropertyDefault(StylePropertyString t);
 	}
 }
 

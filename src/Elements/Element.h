@@ -264,10 +264,10 @@ namespace eyegui
 
 		// Get raw values of styling property
 		template<typename Type>
-		typename style::PropertyValue<Type>::type getStyleValue(Type type) const
+		typename style::PropertyInfo<Type>::type getStyleValue(Type type) const
 		{
 			// Go over the property in the differenct classes
-			std::shared_ptr<const StyleProperty<typename style::PropertyValue<Type>::type> > spStyleProperty;
+			std::shared_ptr<const StyleProperty<typename style::PropertyInfo<Type>::type> > spStyleProperty;
 
 			// Check own class for some set value
 			spStyleProperty = mspStyleClass->fetchProperty(type);

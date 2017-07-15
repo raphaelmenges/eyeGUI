@@ -67,13 +67,13 @@ namespace eyegui
 		// Maps of default values
 		struct PropertyDefaultValues
 		{
-			static std::map<StylePropertyFloat, PropertyValue<StylePropertyFloat>::type>	floatDefaults;
-			static std::map<StylePropertyVec4, PropertyValue<StylePropertyVec4>::type>		vec4Defaults;
-			static std::map<StylePropertyString, PropertyValue<StylePropertyString>::type>	stringDefaults;
+			static std::map<StylePropertyFloat, PropertyInfo<StylePropertyFloat>::type>		floatDefaults;
+			static std::map<StylePropertyVec4, PropertyInfo<StylePropertyVec4>::type>		vec4Defaults;
+			static std::map<StylePropertyString, PropertyInfo<StylePropertyString>::type>	stringDefaults;
 		};
 
 		// One *can* enter default values for new property instances here!
-		std::map<StylePropertyFloat, PropertyValue<StylePropertyFloat>::type> PropertyDefaultValues::floatDefaults =
+		std::map<StylePropertyFloat, PropertyInfo<StylePropertyFloat>::type> PropertyDefaultValues::floatDefaults =
 		{
 			{ StylePropertyFloat::AnimationDuration,								0.1f },
 			{ StylePropertyFloat::SensorPenetrationIncreaseDuration,				3.0f },
@@ -104,7 +104,7 @@ namespace eyegui
 			{ StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier,	1.0f }
 		};
 
-		std::map<StylePropertyVec4, PropertyValue<StylePropertyVec4>::type> PropertyDefaultValues::vec4Defaults =
+		std::map<StylePropertyVec4, PropertyInfo<StylePropertyVec4>::type> PropertyDefaultValues::vec4Defaults =
 		{
 			{ StylePropertyVec4::Color,												glm::vec4(0.6f, 0.6f, 0.6f, 1.0f) },
 			{ StylePropertyVec4::BackgroundColor,									glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) },
@@ -120,7 +120,7 @@ namespace eyegui
 			{ StylePropertyVec4::ThresholdColor,									glm::vec4(0.0f, 1.0f, 1.0f, 0.5f) }
 		};
 
-		std::map<StylePropertyString, PropertyValue<StylePropertyString>::type> PropertyDefaultValues::stringDefaults =
+		std::map<StylePropertyString, PropertyInfo<StylePropertyString>::type> PropertyDefaultValues::stringDefaults =
 		{
 			{ StylePropertyString::SoundButtonHit,									std::string() },
 			{ StylePropertyString::SoundButtonDown,									std::string() },
@@ -128,17 +128,17 @@ namespace eyegui
 		};
 
 		// Getter for default values of property values
-		PropertyValue<StylePropertyFloat>::type getPropertyDefault(StylePropertyFloat t)
+		typename PropertyInfo<StylePropertyFloat>::type getPropertyDefault(StylePropertyFloat t)
 		{
 			const auto& rMap = PropertyDefaultValues::floatDefaults;
 			const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second;
 		}
-		PropertyValue<StylePropertyVec4>::type getPropertyDefault(StylePropertyVec4 t)
+		typename PropertyInfo<StylePropertyVec4>::type getPropertyDefault(StylePropertyVec4 t)
 		{
 			const auto& rMap = PropertyDefaultValues::vec4Defaults;
 			const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second;
 		}
-		PropertyValue<StylePropertyString>::type getPropertyDefault(StylePropertyString t)
+		typename PropertyInfo<StylePropertyString>::type getPropertyDefault(StylePropertyString t)
 		{
 			const auto& rMap = PropertyDefaultValues::stringDefaults;
 			const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second;

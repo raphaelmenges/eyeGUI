@@ -31,10 +31,10 @@ namespace eyegui
 			typedef typename std::tuple_element<I, style::PropertyStringTuple>::type::mapped_type PropertyType;
 
 			// Determine property value type
-			typedef typename style::PropertyValue<PropertyType>::type ValueType;
+			typedef typename style::PropertyInfo<PropertyType>::type ValueType;
 
 			// Get index in provided rMap to fill value into
-			constexpr int index = style::PropertyMapIdx<PropertyType>::index;
+			constexpr int index = style::PropertyInfo<PropertyType>::idx;
 	
 			// Go over map for this property
 			for (const auto& entry : rStringMap)
@@ -46,7 +46,7 @@ namespace eyegui
 				ValueType value = style::getPropertyDefault(property);
 
 				// Add entry to map within StyleClass
-				std::get<index>(rMaps)[property] = std::shared_ptr<StyleProperty<ValueType> >(new StyleProperty<ValueType>(wpStyleClass, value)); // TODO: add constraint
+				std::get<index>(rMaps)[property] = std::shared_ptr<StyleProperty<ValueType> >(new StyleProperty<ValueType>(wpStyleClass, value, &style::PropertyInfo<PropertyType>::constraint));
 			}
 			
 			// Proceed to next tuple element

@@ -28,11 +28,11 @@ namespace eyegui
 	{
 	public:
 
-		// Constructor takes pointer to class thats owns the property and an initial value. Optionally a constraint that is checked at set can be added 
-		StyleProperty(std::weak_ptr<const StyleClass> wpStyleClass, T value, std::function<T(T)> constraint = [](T value) {return value; }, bool markSet = false)
+		// Constructor takes pointer to style class thats owns the property and an initial value
+		StyleProperty(std::weak_ptr<const StyleClass> wpStyleClass, T value, T(* constraint)(T), bool markSet = false)
 		{
 			this->mwpStyleClass = wpStyleClass;
-			this->mConstraint = std::move(constraint);
+			this->mConstraint = constraint;
 			this->mValue = this->mConstraint(value);
 			if (markSet) { this->mIsSet = true; }
 		}
@@ -45,9 +45,6 @@ namespace eyegui
 
 		// Get value
 		T get() const { return this->mValue; }
-
-		// Get copy of constraint
-		std::function<T(T)> getConstraint() const { return this->mConstraint; }
 
 		// Is actively set?
 		bool isSet() const { return mIsSet; }
@@ -63,8 +60,8 @@ namespace eyegui
 		// Value
 		T mValue;
 
-		// Constraint function
-		std::function<T(T)> mConstraint;
+		// Constraint function pointer
+		T(* mConstraint)(T) = nullptr;
 
 		// Marker for being actively set value
 		bool mIsSet = false;
