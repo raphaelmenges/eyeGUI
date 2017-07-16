@@ -14,134 +14,177 @@ namespace eyegui
 		// One *must* enter new property instances here!
 		PropertyStringTuple PropertyStringMapping::value
 		{
+			// Duration
 			{
-				{ "AnimationDuration",									StylePropertyFloat::AnimationDuration },
-				{ "SensorPenetrationIncreaseDuration",					StylePropertyFloat::SensorPenetrationIncreaseDuration },
-				{ "SensorPenetrationDecreaseDuration",					StylePropertyFloat::SensorPenetrationDecreaseDuration },
-				{ "ButtonThresholdIncreaseDuration",					StylePropertyFloat::ButtonThresholdIncreaseDuration },
-				{ "ButtonThresholdDecreaseDuration",					StylePropertyFloat::ButtonThresholdDecreaseDuration },
-				{ "ButtonPressingDuration",								StylePropertyFloat::ButtonPressingDuration },
-				{ "SensorInteractionPenetrationAmount",					StylePropertyFloat::SensorInteractionPenetrationAmount },
-				{ "DimIncreaseDuration",								StylePropertyFloat::DimIncreaseDuration },
-				{ "DimDecreaseDuration",								StylePropertyFloat::DimDecreaseDuration },
-				{ "DimAlpha",											StylePropertyFloat::DimAlpha },
-				{ "FlashDuration",										StylePropertyFloat::FlashDuration },
-				{ "MaximalAdaptiveScaleIncrease",						StylePropertyFloat::MaximalAdaptiveScaleIncrease },
-				{ "AdaptiveScaleIncreaseDuration",						StylePropertyFloat::AdaptiveScaleIncreaseDuration },
-				{ "AdaptiveScaleDecreaseDuration",						StylePropertyFloat::AdaptiveScaleDecreaseDuration },
-				{ "KeyboardZoomSpeedMultiplier",						StylePropertyFloat::KeyboardZoomSpeedMultiplier },
-				{ "KeyboardKeySelectionDuration",						StylePropertyFloat::KeyboardKeySelectionDuration },
-				{ "FlowSpeedMultiplier",								StylePropertyFloat::FlowSpeedMultiplier },
-				{ "TextEditScrollSpeedMultiplier",						StylePropertyFloat::TextEditScrollSpeedMultiplier },
+				{ "AnimationDuration",					property::Duration::AnimationDuration },
+				{ "SensorPenetrationIncreaseDuration",	property::Duration::SensorPenetrationIncreaseDuration },
+				{ "SensorPenetrationDecreaseDuration",	property::Duration::SensorPenetrationDecreaseDuration },
+				{ "ButtonThresholdIncreaseDuration",	property::Duration::ButtonThresholdIncreaseDuration },
+				{ "ButtonThresholdDecreaseDuration",	property::Duration::ButtonThresholdDecreaseDuration },
+				{ "ButtonPressingDuration",				property::Duration::ButtonPressingDuration },
+				{ "DimIncreaseDuration",				property::Duration::DimIncreaseDuration },
+				{ "DimDecreaseDuration",				property::Duration::DimDecreaseDuration },
+				{ "AdaptiveScaleIncreaseDuration",		property::Duration::AdaptiveScaleIncreaseDuration },
+				{ "AdaptiveScaleDecreaseDuration",		property::Duration::AdaptiveScaleDecreaseDuration },
+				{ "FlashDuration",						property::Duration::FlashDuration },
+				{ "KeyboardKeySelectionDuration",		property::Duration::KeyboardKeySelectionDuration },
 
 				// Experimental
-				{ "FutureKeyboardPressDuration",						StylePropertyFloat::FutureKeyboardPressDuration },
-				{ "FutureKeyboardRetriggerDelay",						StylePropertyFloat::FutureKeyboardRetriggerDelay },
-				{ "FutureKeyboardThresholdDuration",					StylePropertyFloat::FutureKeyboardThresholdDuration },
-				{ "FutureKeyboardRepeatKeyThresholdMultiplier",			StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier },
-				{ "FutureKeyboardSpaceKeyThresholdMultiplier",			StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier },
-				{ "FutureKeyboardBackspaceKeyThresholdMultiplier",		StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier },
-				{ "FutureKeyboardSuggestionLineThresholdMultiplier",	StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier }
+				{ "FutureKeyboardPressDuration",		property::Duration::FutureKeyboardPressDuration },
+				{ "FutureKeyboardThresholdDuration",	property::Duration::FutureKeyboardThresholdDuration }
 			},
+
+			// Percentage
 			{
-				{ "Color",												StylePropertyVec4::Color },
-				{ "BackgroundColor",									StylePropertyVec4::BackgroundColor },
-				{ "HighlightColor",										StylePropertyVec4::HighlightColor },
-				{ "SeparatorColor",										StylePropertyVec4::SeparatorColor },
-				{ "SelectionColor",										StylePropertyVec4::SelectionColor },
-				{ "IconColor",											StylePropertyVec4::IconColor },
-				{ "FontColor",											StylePropertyVec4::FontColor },
-				{ "DimColor",											StylePropertyVec4::DimColor },
-				{ "FlashColor",											StylePropertyVec4::FlashColor },
-				{ "MarkColor",											StylePropertyVec4::MarkColor },
-				{ "PickColor",											StylePropertyVec4::PickColor },
-				{ "ThresholdColor",										StylePropertyVec4::ThresholdColor }
+				{ "DimAlpha",	property::Percentage::DimAlpha }
 			},
+
+			// Amount
 			{
-				{ "SoundButtonHit",										StylePropertyString::SoundButtonHit },
-				{ "SoundButtonDown",									StylePropertyString::SoundButtonDown },
-				{ "SoundKeyPress",										StylePropertyString::SoundKeyPress },
+				{ "SensorInteractionPenetrationAmount",	property::Amount::SensorInteractionPenetrationAmount },
+				{ "KeyboardZoomSpeedMultiplier",		property::Amount::KeyboardZoomSpeedMultiplier },
+				{ "FlowSpeedMultiplier",				property::Amount::FlowSpeedMultiplier },
+				{ "TextEditScrollSpeedMultiplier",		property::Amount::TextEditScrollSpeedMultiplier },
+				{ "MaximalAdaptiveScaleIncrease",		property::Amount::MaximalAdaptiveScaleIncrease },
+
+				// Experimental
+				{ "FutureKeyboardRepeatKeyThresholdMultiplier",			property::Amount::FutureKeyboardRepeatKeyThresholdMultiplier },
+				{ "FutureKeyboardSpaceKeyThresholdMultiplier",			property::Amount::FutureKeyboardSpaceKeyThresholdMultiplier },
+				{ "FutureKeyboardBackspaceKeyThresholdMultiplier",		property::Amount::FutureKeyboardBackspaceKeyThresholdMultiplier },
+				{ "FutureKeyboardSuggestionLineThresholdMultiplier",	property::Amount::FutureKeyboardSuggestionLineThresholdMultiplier },
+				{ "FutureKeyboardRetriggerDelay",						property::Amount::FutureKeyboardRetriggerDelay }
+			},
+
+			// Color
+			{
+				{ "Color",				property::Color::Color },
+				{ "BackgroundColor",	property::Color::BackgroundColor },
+				{ "HighlightColor",		property::Color::HighlightColor },
+				{ "SeparatorColor",		property::Color::SeparatorColor },
+				{ "SelectionColor",		property::Color::SelectionColor },
+				{ "IconColor",			property::Color::IconColor },
+				{ "FontColor",			property::Color::FontColor },
+				{ "DimColor",			property::Color::DimColor },
+				{ "FlashColor",			property::Color::FlashColor },
+				{ "MarkColor",			property::Color::MarkColor },
+				{ "PickColor",			property::Color::PickColor },
+				{ "ThresholdColor",		property::Color::ThresholdColor }
+			},
+
+			// Asset Path
+			{
+				{ "ButtonHitSound",		property::AssetPath::ButtonHitSound },
+				{ "ButtonDownSound",	property::AssetPath::ButtonDownSound },
+				{ "KeyPressSound",		property::AssetPath::KeyPressSound }
 			}
 		};
 
 		// Maps of default values
 		struct PropertyDefaultValues
 		{
-			static std::map<StylePropertyFloat, PropertyInfo<StylePropertyFloat>::type>		floatDefaults;
-			static std::map<StylePropertyVec4, PropertyInfo<StylePropertyVec4>::type>		vec4Defaults;
-			static std::map<StylePropertyString, PropertyInfo<StylePropertyString>::type>	stringDefaults;
+			static std::map<property::Duration, PropertyInfo<property::Duration>::type>		durationDefaults;
+			static std::map<property::Percentage, PropertyInfo<property::Percentage>::type>	percentageDefaults;
+			static std::map<property::Amount, PropertyInfo<property::Amount>::type>			amountDefaults;
+			static std::map<property::Color, PropertyInfo<property::Color>::type>			colorDefaults;
+			static std::map<property::AssetPath, PropertyInfo<property::AssetPath>::type>	assetPathDefaults;
+
 		};
 
 		// One *can* enter default values for new property instances here!
-		std::map<StylePropertyFloat, PropertyInfo<StylePropertyFloat>::type> PropertyDefaultValues::floatDefaults =
+		std::map<property::Duration, PropertyInfo<property::Duration>::type> PropertyDefaultValues::durationDefaults =
 		{
-			{ StylePropertyFloat::AnimationDuration,								0.1f },
-			{ StylePropertyFloat::SensorPenetrationIncreaseDuration,				3.0f },
-			{ StylePropertyFloat::SensorPenetrationDecreaseDuration,				1.5f },
-			{ StylePropertyFloat::ButtonThresholdIncreaseDuration,					1.0f },
-			{ StylePropertyFloat::ButtonThresholdDecreaseDuration,					2.0f },
-			{ StylePropertyFloat::ButtonPressingDuration,							0.3f },
-			{ StylePropertyFloat::SensorInteractionPenetrationAmount,				0.5f },
-			{ StylePropertyFloat::DimIncreaseDuration,								1.5f },
-			{ StylePropertyFloat::DimDecreaseDuration,								0.25f },
-			{ StylePropertyFloat::DimAlpha,											0.5f },
-			{ StylePropertyFloat::FlashDuration,									2.0f },
-			{ StylePropertyFloat::MaximalAdaptiveScaleIncrease,						0.5f },
-			{ StylePropertyFloat::AdaptiveScaleIncreaseDuration,					1.0f },
-			{ StylePropertyFloat::AdaptiveScaleDecreaseDuration,					1.0f },
-			{ StylePropertyFloat::KeyboardZoomSpeedMultiplier,						1.0f },
-			{ StylePropertyFloat::KeyboardKeySelectionDuration,						1.25f },
-			{ StylePropertyFloat::FlowSpeedMultiplier,								1.0f },
-			{ StylePropertyFloat::TextEditScrollSpeedMultiplier,					1.0f },
+			{ property::Duration::AnimationDuration,								0.1f },
+			{ property::Duration::SensorPenetrationIncreaseDuration,				3.0f },
+			{ property::Duration::SensorPenetrationDecreaseDuration,				1.5f },
+			{ property::Duration::ButtonThresholdIncreaseDuration,					1.0f },
+			{ property::Duration::ButtonThresholdDecreaseDuration,					2.0f },
+			{ property::Duration::ButtonPressingDuration,							0.3f },
+			{ property::Duration::DimIncreaseDuration,								1.5f },
+			{ property::Duration::DimDecreaseDuration,								0.25f },
+			{ property::Duration::FlashDuration,									2.0f },
+			{ property::Duration::AdaptiveScaleIncreaseDuration,					1.0f },
+			{ property::Duration::AdaptiveScaleDecreaseDuration,					1.0f },
+			{ property::Duration::KeyboardKeySelectionDuration,						1.25f },
 
 			// Experimental
-			{ StylePropertyFloat::FutureKeyboardPressDuration,						0.5f },
-			{ StylePropertyFloat::FutureKeyboardRetriggerDelay,						0.5f },
-			{ StylePropertyFloat::FutureKeyboardThresholdDuration,					1.0f },
-			{ StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier,		1.0f },
-			{ StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier,		1.0f },
-			{ StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier,	1.0f },
-			{ StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier,	1.0f }
+			{ property::Duration::FutureKeyboardPressDuration,						0.5f },
+			{ property::Duration::FutureKeyboardThresholdDuration,					1.0f },
 		};
 
-		std::map<StylePropertyVec4, PropertyInfo<StylePropertyVec4>::type> PropertyDefaultValues::vec4Defaults =
+		std::map<property::Percentage, PropertyInfo<property::Percentage>::type> PropertyDefaultValues::percentageDefaults =
 		{
-			{ StylePropertyVec4::Color,												glm::vec4(0.6f, 0.6f, 0.6f, 1.0f) },
-			{ StylePropertyVec4::BackgroundColor,									glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) },
-			{ StylePropertyVec4::HighlightColor,									glm::vec4(1.0f, 1.0f, 0.0f, 0.5f) },
-			{ StylePropertyVec4::SeparatorColor,									glm::vec4(0.2f, 0.2f, 0.2f, 1.0f) },
-			{ StylePropertyVec4::SelectionColor,									glm::vec4(0.0f, 1.0f, 1.0f, 0.5f) },
-			{ StylePropertyVec4::IconColor,											glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) },
-			{ StylePropertyVec4::FontColor,											glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) },
-			{ StylePropertyVec4::DimColor,											glm::vec4(0.1f, 0.1f, 0.1f, 0.75f) },
-			{ StylePropertyVec4::FlashColor,										glm::vec4(1.0f, 0.5f, 0.0f, 0.75f) },
-			{ StylePropertyVec4::MarkColor,											glm::vec4(0.0f, 0.5f, 1.0f, 0.5f) },
-			{ StylePropertyVec4::PickColor,											glm::vec4(0.2f, 1.0f, 0.0f, 0.5f) },
-			{ StylePropertyVec4::ThresholdColor,									glm::vec4(0.0f, 1.0f, 1.0f, 0.5f) }
+			{ property::Percentage::DimAlpha, 0.5f },
 		};
 
-		std::map<StylePropertyString, PropertyInfo<StylePropertyString>::type> PropertyDefaultValues::stringDefaults =
+		std::map<property::Amount, PropertyInfo<property::Amount>::type> PropertyDefaultValues::amountDefaults =
 		{
-			{ StylePropertyString::SoundButtonHit,									std::string() },
-			{ StylePropertyString::SoundButtonDown,									std::string() },
-			{ StylePropertyString::SoundKeyPress,									std::string() }
+			{ property::Amount::SensorInteractionPenetrationAmount,					0.5f },
+			{ property::Amount::MaximalAdaptiveScaleIncrease,						0.5f },
+			{ property::Amount::KeyboardZoomSpeedMultiplier,						1.0f },
+			{ property::Amount::FlowSpeedMultiplier,								1.0f },
+			{ property::Amount::TextEditScrollSpeedMultiplier,						1.0f },
+
+			// Experimental
+			{ property::Amount::FutureKeyboardRetriggerDelay,						0.5f },
+			{ property::Amount::FutureKeyboardRepeatKeyThresholdMultiplier,			1.0f },
+			{ property::Amount::FutureKeyboardSpaceKeyThresholdMultiplier,			1.0f },
+			{ property::Amount::FutureKeyboardBackspaceKeyThresholdMultiplier,		1.0f },
+			{ property::Amount::FutureKeyboardSuggestionLineThresholdMultiplier,	1.0f }
 		};
 
-		// Getter for default values of property values
-		typename PropertyInfo<StylePropertyFloat>::type getPropertyDefault(StylePropertyFloat t)
+
+		std::map<property::Color, PropertyInfo<property::Color>::type> PropertyDefaultValues::colorDefaults =
 		{
-			const auto& rMap = PropertyDefaultValues::floatDefaults;
-			const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second;
+			{ property::Color::Color,												glm::vec4(0.6f, 0.6f, 0.6f, 1.0f) },
+			{ property::Color::BackgroundColor,										glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) },
+			{ property::Color::HighlightColor,										glm::vec4(1.0f, 1.0f, 0.0f, 0.5f) },
+			{ property::Color::SeparatorColor,										glm::vec4(0.2f, 0.2f, 0.2f, 1.0f) },
+			{ property::Color::SelectionColor,										glm::vec4(0.0f, 1.0f, 1.0f, 0.5f) },
+			{ property::Color::IconColor,											glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) },
+			{ property::Color::FontColor,											glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) },
+			{ property::Color::DimColor,											glm::vec4(0.1f, 0.1f, 0.1f, 0.75f) },
+			{ property::Color::FlashColor,											glm::vec4(1.0f, 0.5f, 0.0f, 0.75f) },
+			{ property::Color::MarkColor,											glm::vec4(0.0f, 0.5f, 1.0f, 0.5f) },
+			{ property::Color::PickColor,											glm::vec4(0.2f, 1.0f, 0.0f, 0.5f) },
+			{ property::Color::ThresholdColor,										glm::vec4(0.0f, 1.0f, 1.0f, 0.5f) }
+		};
+
+		std::map<property::AssetPath, PropertyInfo<property::AssetPath>::type> PropertyDefaultValues::assetPathDefaults =
+		{
+			{ property::AssetPath::ButtonHitSound,									std::string() },
+			{ property::AssetPath::ButtonDownSound,									std::string() },
+			{ property::AssetPath::KeyPressSound,									std::string() }
+		};
+
+		// Getter for default value for each property
+		typename PropertyInfo<property::Duration>::type	getPropertyDefault(property::Duration t)
+		{
+			const auto& rMap = PropertyDefaultValues::durationDefaults;
+			const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second; // first case is fallback
 		}
-		typename PropertyInfo<StylePropertyVec4>::type getPropertyDefault(StylePropertyVec4 t)
+
+		typename PropertyInfo<property::Percentage>::type getPropertyDefault(property::Percentage t)
 		{
-			const auto& rMap = PropertyDefaultValues::vec4Defaults;
-			const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second;
+			const auto& rMap = PropertyDefaultValues::percentageDefaults;
+			const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second; // first case is fallback
 		}
-		typename PropertyInfo<StylePropertyString>::type getPropertyDefault(StylePropertyString t)
+
+		typename PropertyInfo<property::Amount>::type getPropertyDefault(property::Amount t)
 		{
-			const auto& rMap = PropertyDefaultValues::stringDefaults;
-			const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second;
+			const auto& rMap = PropertyDefaultValues::amountDefaults;
+			const auto i = rMap.find(t); return i == rMap.end() ? 0.f : i->second; // first case is fallback
+		}
+
+		typename PropertyInfo<property::Color>::type getPropertyDefault(property::Color t)
+		{
+			const auto& rMap = PropertyDefaultValues::colorDefaults;
+			const auto i = rMap.find(t); return i == rMap.end() ? glm::vec4(0.f) : i->second; // first case is fallback
+		}
+
+		typename PropertyInfo<property::AssetPath>::type getPropertyDefault(property::AssetPath t)
+		{
+			const auto& rMap = PropertyDefaultValues::assetPathDefaults;
+			const auto i = rMap.find(t); return i == rMap.end() ? std::string() : i->second; // first case is fallback
 		}
 	}
 }

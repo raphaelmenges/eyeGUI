@@ -135,7 +135,7 @@ namespace eyegui
 			descriptionVisible = false;
 		}
 
-        mDescriptionAlpha.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !descriptionVisible);
+        mDescriptionAlpha.update(tpf / getStyleValue(property::Duration::AnimationDuration), !descriptionVisible);
 
         return adaptiveScale;
     }
@@ -146,7 +146,7 @@ namespace eyegui
         if (mupDescriptionFlow != NULL && mDescriptionAlpha.getValue() > 0)
         {
             // Drawing of text flow
-            mupDescriptionFlow->draw(getStyleValue(StylePropertyVec4::FontColor), mDescriptionAlpha.getValue() * mAlpha, true);
+            mupDescriptionFlow->draw(getStyleValue(property::Color::FontColor), mDescriptionAlpha.getValue() * mAlpha, true);
         }
 
         // Draw stuff like highlighting

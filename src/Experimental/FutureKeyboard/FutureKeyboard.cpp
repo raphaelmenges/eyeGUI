@@ -221,10 +221,10 @@ namespace eyegui
 			if(rspSuggestion->update(
 				tpf,
 				pInput,
-				getStyleValue(StylePropertyFloat::FutureKeyboardPressDuration),
-				getStyleValue(StylePropertyFloat::FutureKeyboardThresholdDuration),
-				getStyleValue(StylePropertyFloat::FutureKeyboardRetriggerDelay),
-				getStyleValue(StylePropertyFloat::FutureKeyboardSuggestionLineThresholdMultiplier)))
+				getStyleValue(property::Duration::FutureKeyboardPressDuration),
+				getStyleValue(property::Duration::FutureKeyboardThresholdDuration),
+				getStyleValue(property::Amount::FutureKeyboardRetriggerDelay),
+				getStyleValue(property::Amount::FutureKeyboardSuggestionLineThresholdMultiplier)))
 			{
 				// Remember suggestion
 				mWordBeforeSuggestion = mCurrentWord;
@@ -266,24 +266,24 @@ namespace eyegui
 			float thresholdMultiplier = 1.f;
 			if (rspKey->getId() == "repeat")
 			{
-				thresholdMultiplier = getStyleValue(StylePropertyFloat::FutureKeyboardRepeatKeyThresholdMultiplier);
+				thresholdMultiplier = getStyleValue(property::Amount::FutureKeyboardRepeatKeyThresholdMultiplier);
 			}
 			else if (rspKey->getId() == "space")
 			{
-				thresholdMultiplier = getStyleValue(StylePropertyFloat::FutureKeyboardSpaceKeyThresholdMultiplier);
+				thresholdMultiplier = getStyleValue(property::Amount::FutureKeyboardSpaceKeyThresholdMultiplier);
 			}
 			else if (rspKey->getId() == "backspace")
 			{
-				thresholdMultiplier = getStyleValue(StylePropertyFloat::FutureKeyboardBackspaceKeyThresholdMultiplier);
+				thresholdMultiplier = getStyleValue(property::Amount::FutureKeyboardBackspaceKeyThresholdMultiplier);
 			}
 
             // Record whether hit
             FutureKey::HitType type = rspKey->update(
 				tpf,
 				pInput,
-				getStyleValue(StylePropertyFloat::FutureKeyboardPressDuration),
-				getStyleValue(StylePropertyFloat::FutureKeyboardThresholdDuration),
-				getStyleValue(StylePropertyFloat::FutureKeyboardRetriggerDelay),
+				getStyleValue(property::Duration::FutureKeyboardPressDuration),
+				getStyleValue(property::Duration::FutureKeyboardThresholdDuration),
+				getStyleValue(property::Amount::FutureKeyboardRetriggerDelay),
 				thresholdMultiplier);
 
             // *** LETTERS ***
@@ -610,9 +610,9 @@ namespace eyegui
 		for (const auto& rspSuggestion : mSuggestionList)
 		{
 			rspSuggestion->draw(
-				getStyleValue(StylePropertyVec4::BackgroundColor),
-				getStyleValue(StylePropertyVec4::FontColor),
-				getStyleValue(StylePropertyVec4::ThresholdColor),
+				getStyleValue(property::Color::BackgroundColor),
+				getStyleValue(property::Color::FontColor),
+				getStyleValue(property::Color::ThresholdColor),
 				getMultipliedDimmedAlpha());
 		}
 
@@ -620,10 +620,10 @@ namespace eyegui
         for(const auto& rspKey : mKeyList)
         {
             rspKey->draw(
-				getStyleValue(StylePropertyVec4::Color),
-				getStyleValue(StylePropertyVec4::FontColor),
-				getStyleValue(StylePropertyVec4::BackgroundColor),
-				getStyleValue(StylePropertyVec4::ThresholdColor),
+				getStyleValue(property::Color::Color),
+				getStyleValue(property::Color::FontColor),
+				getStyleValue(property::Color::BackgroundColor),
+				getStyleValue(property::Color::ThresholdColor),
                 getMultipliedDimmedAlpha());
         }
 
@@ -635,7 +635,7 @@ namespace eyegui
 		if (mMode == Mode::MANY_SUGGESTION_LINES)
 		{
 			mpEmptySuggestion->bind();
-			mpEmptySuggestion->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
+			mpEmptySuggestion->getShader()->fillValue("color", getStyleValue(property::Color::BackgroundColor));
 			mpEmptySuggestion->getShader()->fillValue("alpha", mAlpha);
 
 			// Draw all six placeholders

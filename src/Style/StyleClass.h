@@ -81,14 +81,9 @@ namespace eyegui
 		template<typename Type>
 		void parseValue(Type type, std::string value)
 		{
-			rawValue = style::PropertyInfo<Type>::parse(value);
+			auto rawValue = style::PropertyInfo<Type>::parse(value);
 			setValue(type, rawValue);
 		}
-		
-		// Special setters of property values (TODO: there should be a compile time map providing function to map string to value)
-		void parseValue(StylePropertyFloat type, std::string value) { setValue(type, stringToFloat(value)); }
-		void parseValue(StylePropertyVec4 type, std::string value) { setValue(type, stringHexRGBAToVec4RGBA(value)); }
-		void parseValue(StylePropertyString type, std::string value) { setValue(type, value); }
 
 		// Fetch this or child by name. Return empty pointer if not found
 		std::shared_ptr<StyleClass> fetchThisOrChild(std::string name);

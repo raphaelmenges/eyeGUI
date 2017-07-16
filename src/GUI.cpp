@@ -263,16 +263,6 @@ namespace eyegui
 		style_parser::parse(mspStyleTree, filepath);
     }
 
-	void GUI::setStyleTreePropertyValue(std::string styleClass, StylePropertyFloat styleType, std::string value)
-	{
-		mspStyleTree->parseValue(styleClass, styleType, value);
-	}
-
-	void GUI::setStyleTreePropertyValue(std::string styleClass, StylePropertyVec4 styleType, std::string value)
-	{
-		mspStyleTree->parseValue(styleClass, styleType, value);
-	}
-
     void GUI::setGazeVisualizationDrawing(bool draw)
     {
         mDrawGazeVisualization = draw;

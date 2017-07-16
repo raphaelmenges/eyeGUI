@@ -87,7 +87,7 @@ namespace eyegui
         {
             mpHighlightItem->bind();
             mpHighlightItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpHighlightItem->getShader()->fillValue("highlightColor", getStyleValue(StylePropertyVec4::HighlightColor));
+            mpHighlightItem->getShader()->fillValue("highlightColor", getStyleValue(property::Color::HighlightColor));
             mpHighlightItem->getShader()->fillValue("highlight", mHighlight.getValue());
             mpHighlightItem->getShader()->fillValue("time", mpLayout->getAccPeriodicTime());
             mpHighlightItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
@@ -100,7 +100,7 @@ namespace eyegui
         {
             mpSelectionItem->bind();
             mpSelectionItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpSelectionItem->getShader()->fillValue("selectionColor", getStyleValue(StylePropertyVec4::SelectionColor));
+            mpSelectionItem->getShader()->fillValue("selectionColor", getStyleValue(property::Color::SelectionColor));
             mpSelectionItem->getShader()->fillValue("selection", mSelection.getValue());
             mpSelectionItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpSelectionItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
@@ -111,10 +111,10 @@ namespace eyegui
     float InteractiveElement::specialUpdate(float tpf, Input* pInput)
     {
         // Highlight
-        mHighlight.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mIsHighlighted);
+        mHighlight.update(tpf / getStyleValue(property::Duration::AnimationDuration), !mIsHighlighted);
 
         // Selection
-        mSelection.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mIsSelected);
+        mSelection.update(tpf / getStyleValue(property::Duration::AnimationDuration), !mIsSelected);
 
         // Instant interaction
         bool penetrated = penetratedByInput(pInput);

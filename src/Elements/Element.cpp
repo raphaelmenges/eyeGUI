@@ -379,7 +379,7 @@ namespace eyegui
 
     float Element::getDynamicScale() const
     {
-        return mRelativeScale + (mAdaptiveScale.getValue() * getStyleValue(StylePropertyFloat::MaximalAdaptiveScaleIncrease));
+        return mRelativeScale + (mAdaptiveScale.getValue() * getStyleValue(property::Amount::MaximalAdaptiveScaleIncrease));
     }
 
     float Element::getRelativeScale() const
@@ -402,7 +402,7 @@ namespace eyegui
         // *** OWN UPDATING ***
 
         // Activity animation
-        mActivity.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mActive);
+        mActivity.update(tpf / getStyleValue(property::Duration::AnimationDuration), !mActive);
 
         // Save current alpha (already animated by layout or other element)
         mAlpha = alpha;
@@ -414,19 +414,19 @@ namespace eyegui
         if (mForceUndim)
         {
             // Undim it
-            mDim.update(-tpf / getStyleValue(StylePropertyFloat::DimDecreaseDuration));
+            mDim.update(-tpf / getStyleValue(property::Duration::DimDecreaseDuration));
         }
         else if (mDimming)
         {
             if (penetrated)
             {
                 // Undim it
-                mDim.update(-tpf / getStyleValue(StylePropertyFloat::DimDecreaseDuration));
+                mDim.update(-tpf / getStyleValue(property::Duration::DimDecreaseDuration));
             }
             else
             {
                 // Dim it
-                mDim.update(tpf / getStyleValue(StylePropertyFloat::DimIncreaseDuration));
+                mDim.update(tpf / getStyleValue(property::Duration::DimIncreaseDuration));
             }
         }
         else
@@ -438,7 +438,7 @@ namespace eyegui
 		// Flashing
 		if (mFlash.getValue() > 0.f)
 		{
-			mFlash.update(-tpf / getStyleValue(StylePropertyFloat::FlashDuration));
+			mFlash.update(-tpf / getStyleValue(property::Duration::FlashDuration));
 		}
 
         // Adaptive scaling
@@ -448,28 +448,28 @@ namespace eyegui
             if (penetrated)
             {
                 // Scale it up
-                mAdaptiveScale.update(tpf / getStyleValue(StylePropertyFloat::AdaptiveScaleIncreaseDuration));
+                mAdaptiveScale.update(tpf / getStyleValue(property::Duration::AdaptiveScaleIncreaseDuration));
             }
             else
             {
                 // Scale it down
-                mAdaptiveScale.update(-tpf / getStyleValue(StylePropertyFloat::AdaptiveScaleDecreaseDuration));
+                mAdaptiveScale.update(-tpf / getStyleValue(property::Duration::AdaptiveScaleDecreaseDuration));
             }
         }
         else
         {
             // Scale it down, because could have been set by using scale from special update (children!)
-            mAdaptiveScale.update(-tpf / getStyleValue(StylePropertyFloat::AdaptiveScaleDecreaseDuration));
+            mAdaptiveScale.update(-tpf / getStyleValue(property::Duration::AdaptiveScaleDecreaseDuration));
         }
 
         // Marking
-        mMark.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mMarking);
+        mMark.update(tpf / getStyleValue(property::Duration::AnimationDuration), !mMarking);
 
         // Update replaced element if there is some
         if (mupReplacedElement.get() != NULL)
         {
             float replacedAlpha = mAlpha * (mupReplacedElement->getAlpha()
-                - (tpf / getStyleValue(StylePropertyFloat::AnimationDuration)));
+                - (tpf / getStyleValue(property::Duration::AnimationDuration)));
             replacedAlpha = clamp(replacedAlpha, 0, 1);
             mupReplacedElement->update(tpf, replacedAlpha, NULL, mDim.getValue());
 
@@ -560,7 +560,7 @@ namespace eyegui
             {
                 mpMarkItem->bind();
                 mpMarkItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-                mpMarkItem->getShader()->fillValue("markColor", getStyleValue(StylePropertyVec4::MarkColor));
+                mpMarkItem->getShader()->fillValue("markColor", getStyleValue(property::Color::MarkColor));
                 mpMarkItem->getShader()->fillValue("mark", mMark.getValue());
                 mpMarkItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
@@ -583,7 +583,7 @@ namespace eyegui
             {
                 mpDimItem->bind();
                 mpDimItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-                mpDimItem->getShader()->fillValue("dimColor", getStyleValue(StylePropertyVec4::DimColor));
+                mpDimItem->getShader()->fillValue("dimColor", getStyleValue(property::Color::DimColor));
                 mpDimItem->getShader()->fillValue("dim", mDim.getValue());
                 mpDimItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
                 mpMarkItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
@@ -595,7 +595,7 @@ namespace eyegui
 			{
 				mpFlashItem->bind();
 				mpFlashItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-				mpFlashItem->getShader()->fillValue("flashColor", getStyleValue(StylePropertyVec4::FlashColor));
+				mpFlashItem->getShader()->fillValue("flashColor", getStyleValue(property::Color::FlashColor));
 				mpFlashItem->getShader()->fillValue("flash", mFlash.getValue());
 				mpFlashItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
 				mpFlashItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
@@ -745,7 +745,7 @@ namespace eyegui
 
     float Element::getMultipliedDimmedAlpha() const
     {
-        return mAlpha * glm::mix(1.0f , getStyleValue(StylePropertyFloat::DimAlpha), mDim.getValue());
+        return mAlpha * glm::mix(1.0f , getStyleValue(property::Percentage::DimAlpha), mDim.getValue());
     }
 
 	std::shared_ptr<StyleClass> Element::fetchElementStyleClass() const

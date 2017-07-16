@@ -232,7 +232,7 @@ namespace eyegui
 		float PRESSED_KEY_SCALING_MULTIPLIER = 2.5f; // Just animation scale of pressed key which is moving and fading towards user
 
 		// Use speed multiplier
-		ZOOM_INCREASE_DURATION /= getStyleValue(StylePropertyFloat::KeyboardZoomSpeedMultiplier);
+		ZOOM_INCREASE_DURATION /= getStyleValue(property::Amount::KeyboardZoomSpeedMultiplier);
 
 		// *** SETUP ***
 
@@ -440,7 +440,7 @@ namespace eyegui
 					(*pKeys)[i][j]->transformAndSize(keyPositionX, keyPositionY, keySize);
 
 					// Actual updating
-					bool selected = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated, getStyleValue(StylePropertyFloat::KeyboardKeySelectionDuration)); // do not calculate penetration for each key but use one from elements
+					bool selected = (*pKeys)[i][j]->update(tpf, !mKeyboardRecovers && penetrated, getStyleValue(property::Duration::KeyboardKeySelectionDuration)); // do not calculate penetration for each key but use one from elements
 
 					// Check for "key selected"
 					if (selected) // && (*pKeys)[i][j]->isFocused())
@@ -468,12 +468,12 @@ namespace eyegui
     void Keyboard::specialDraw() const
     {
         // *** BACKGROUND ***
-        if (getStyleValue(StylePropertyVec4::BackgroundColor).a > 0)
+        if (getStyleValue(property::Color::BackgroundColor).a > 0)
         {
             // Bind, fill and draw background
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
+            mpBackground->getShader()->fillValue("color", getStyleValue(property::Color::BackgroundColor));
             mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
@@ -500,12 +500,12 @@ namespace eyegui
             for(const auto& rupKey : rLine)
             {
                 rupKey->draw(
-					getStyleValue(StylePropertyVec4::Color),
-					getStyleValue(StylePropertyVec4::PickColor),
-					getStyleValue(StylePropertyVec4::IconColor),
-					getStyleValue(StylePropertyVec4::ThresholdColor),
+					getStyleValue(property::Color::Color),
+					getStyleValue(property::Color::PickColor),
+					getStyleValue(property::Color::IconColor),
+					getStyleValue(property::Color::ThresholdColor),
                     // mThreshold.getValue() * rupKey->getFocusValue(),
-					getStyleValue(StylePropertyVec4::SelectionColor),
+					getStyleValue(property::Color::SelectionColor),
                     getMultipliedDimmedAlpha());
             }
         }
@@ -514,11 +514,11 @@ namespace eyegui
         for (const auto& rPressedKey : mPressedKeys)
         {
             rPressedKey.second->draw(
-                getStyleValue(StylePropertyVec4::Color),
-                getStyleValue(StylePropertyVec4::PickColor),
-                getStyleValue(StylePropertyVec4::IconColor),
-                getStyleValue(StylePropertyVec4::ThresholdColor),
-				getStyleValue(StylePropertyVec4::SelectionColor),
+                getStyleValue(property::Color::Color),
+                getStyleValue(property::Color::PickColor),
+                getStyleValue(property::Color::IconColor),
+                getStyleValue(property::Color::ThresholdColor),
+				getStyleValue(property::Color::SelectionColor),
                 getMultipliedDimmedAlpha() * rPressedKey.first);
         }
 
@@ -880,6 +880,6 @@ namespace eyegui
         notifyInteraction("KEY_PRESS", convertUTF16ToUTF8(mLastPressedKeyValue));
 
 		// Sound for key press
-		mpAssetManager->playSound(getStyleValue(StylePropertyString::SoundKeyPress));
+		mpAssetManager->playSound(getStyleValue(property::AssetPath::KeyPressSound));
     }
 }

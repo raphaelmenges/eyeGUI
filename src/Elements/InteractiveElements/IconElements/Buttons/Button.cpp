@@ -91,7 +91,7 @@ namespace eyegui
 			// Play sound
 			if (!immediately)
 			{
-				mpAssetManager->playSound(getStyleValue(StylePropertyString::SoundButtonHit));
+				mpAssetManager->playSound(getStyleValue(property::AssetPath::ButtonHitSound));
 			}
         }
     }
@@ -121,7 +121,7 @@ namespace eyegui
 			// Play sound
 			if(!immediately)
 			{
-				mpAssetManager->playSound(getStyleValue(StylePropertyString::SoundButtonDown));
+				mpAssetManager->playSound(getStyleValue(property::AssetPath::ButtonDownSound));
 			}
         }
     }
@@ -171,11 +171,11 @@ namespace eyegui
         // Pressing animation
         if (mIsDown && mPressing.getValue() < 1)
         {
-            mPressing.update(tpf / getStyleValue(StylePropertyFloat::ButtonPressingDuration));
+            mPressing.update(tpf / getStyleValue(property::Duration::ButtonPressingDuration));
         }
         else if (!mIsDown && mPressing.getValue() > 0)
         {
-            mPressing.update(-tpf / getStyleValue(StylePropertyFloat::ButtonPressingDuration));
+            mPressing.update(-tpf / getStyleValue(property::Duration::ButtonPressingDuration));
         }
 
         // If pressed and no switch, go back (do it each frame and not only at end of going down,
@@ -192,7 +192,7 @@ namespace eyegui
             && penetrated // penetration
             && !(!mIsSwitch && mPressing.getValue() > 0)) // avoids to add threshold for none switch when at down position
         {
-            mThreshold.update(tpf / getStyleValue(StylePropertyFloat::ButtonThresholdIncreaseDuration));
+            mThreshold.update(tpf / getStyleValue(property::Duration::ButtonThresholdIncreaseDuration));
 
             if (mThreshold.getValue() >= 1)
             {
@@ -202,7 +202,7 @@ namespace eyegui
         }
         else
         {
-            mThreshold.update(-tpf / getStyleValue(StylePropertyFloat::ButtonThresholdDecreaseDuration));
+            mThreshold.update(-tpf / getStyleValue(property::Duration::ButtonThresholdDecreaseDuration));
         }
 
         return adaptiveScale;
@@ -214,7 +214,7 @@ namespace eyegui
         {
             mpThresholdItem->bind();
             mpThresholdItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpThresholdItem->getShader()->fillValue("thresholdColor", getStyleValue(StylePropertyVec4::ThresholdColor));
+            mpThresholdItem->getShader()->fillValue("thresholdColor", getStyleValue(property::Color::ThresholdColor));
             mpThresholdItem->getShader()->fillValue("threshold", mThreshold.getValue());
             mpThresholdItem->getShader()->fillValue("alpha", mAlpha);
             if(!mUseCircleThreshold)

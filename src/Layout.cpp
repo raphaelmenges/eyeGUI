@@ -65,7 +65,7 @@ namespace eyegui
         // *** OWN UPDATE ***
 
         // Update alpha
-        mAlpha.update(tpf / getStyleValue(StylePropertyFloat::AnimationDuration), !mVisible);
+        mAlpha.update(tpf / getStyleValue(property::Duration::AnimationDuration), !mVisible);
 
         // *** UPDATE FRAMES ***
 
@@ -89,7 +89,7 @@ namespace eyegui
                     if (pFrame->isRemoved())
                     {
                         // Do fading of removed frame
-                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / getStyleValue(StylePropertyFloat::AnimationDuration));
+                        float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / getStyleValue(property::Duration::AnimationDuration));
                         fadingAlpha = clamp(fadingAlpha, 0, 1);
                         pFrame->setRemovedFadingAlpha(fadingAlpha);
 

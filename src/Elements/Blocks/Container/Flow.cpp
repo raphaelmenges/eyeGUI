@@ -97,7 +97,7 @@ namespace eyegui
 				offsetSpeed = ((float)(4 * (x - (mWidth / 2))) / (float)mWidth);
 			}
             offsetSpeed /= mSpace; // Normalization
-            mOffset.update(offsetSpeed * tpf * getStyleValue(StylePropertyFloat::FlowSpeedMultiplier));
+            mOffset.update(offsetSpeed * tpf * getStyleValue(property::Amount::FlowSpeedMultiplier));
 
             // Only transform inner element if necessary
             if(oldValue != mOffset.getValue())

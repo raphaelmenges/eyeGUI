@@ -88,14 +88,29 @@ namespace eyegui
 		pGUI->loadStyleSheet(filepath);
     }
 
-	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value)
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Duration property, std::string value)
 	{
-		pGUI->setStyleTreePropertyValue(styleClass, stylePropertyType, value);
+		pGUI->setStyleTreePropertyValue(styleClass, property, value);
 	}
 
-	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value)
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Percentage property, std::string value)
 	{
-		pGUI->setStyleTreePropertyValue(styleClass, stylePropertyType, value);
+		pGUI->setStyleTreePropertyValue(styleClass, property, value);
+	}
+
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Amount property, std::string value)
+	{
+		pGUI->setStyleTreePropertyValue(styleClass, property, value);
+	}
+
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Color property, std::string value)
+	{
+		pGUI->setStyleTreePropertyValue(styleClass, property, value);
+	}
+
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::AssetPath property, std::string value)
+	{
+		pGUI->setStyleTreePropertyValue(styleClass, property, value);
 	}
 
     void setGazeVisualizationDrawing(GUI* pGUI, bool draw)
@@ -182,14 +197,29 @@ namespace eyegui
         return pLayout->getAbsolutePositionAndSizeOfElement(id);
     }
 
-	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value)
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Duration property, std::string value)
 	{
-		pLayout->parseElementStylePropertyValue(id, stylePropertyType, value);
+		pLayout->parseElementStylePropertyValue(id, property, value);
 	}
 
-	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value)
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Percentage property, std::string value)
 	{
-		pLayout->parseElementStylePropertyValue(id, stylePropertyType, value);
+		pLayout->parseElementStylePropertyValue(id, property, value);
+	}
+
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Amount property, std::string value)
+	{
+		pLayout->parseElementStylePropertyValue(id, property, value);
+	}
+
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Color property, std::string value)
+	{
+		pLayout->parseElementStylePropertyValue(id, property, value);
+	}
+
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::AssetPath property, std::string value)
+	{
+		pLayout->parseElementStylePropertyValue(id, property, value);
 	}
 
     void setElementActivity(Layout* pLayout, std::string id, bool active, bool fade)

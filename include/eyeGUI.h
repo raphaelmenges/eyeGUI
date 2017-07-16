@@ -37,76 +37,86 @@
 #include <functional>
 #include <vector>
 
- //! Namespace of eyeGUI interface.
+//! Namespace of eyeGUI interface.
 namespace eyegui
 {
 	class GUI;
 	class Layout;
 	class Frame;
 
-	/*
-	Duration
-	Percentage(between zero and one)
-	Amount(is positive)
-	Color
-	AssetPath
-	*/
-
-	//! Enumeration of style property float instances
-	enum class StylePropertyFloat
+	//! Namespace of styling properties
+	namespace property
 	{
-		AnimationDuration,
-		SensorPenetrationIncreaseDuration,
-		SensorPenetrationDecreaseDuration,
-		ButtonThresholdIncreaseDuration,
-		ButtonThresholdDecreaseDuration,
-		ButtonPressingDuration,
-		SensorInteractionPenetrationAmount,
-		DimIncreaseDuration,
-		DimDecreaseDuration,
-		DimAlpha,
-		FlashDuration,
-		MaximalAdaptiveScaleIncrease,
-		AdaptiveScaleIncreaseDuration,
-		AdaptiveScaleDecreaseDuration,
-		KeyboardZoomSpeedMultiplier,
-		KeyboardKeySelectionDuration,
-		FlowSpeedMultiplier,
-		TextEditScrollSpeedMultiplier,
+		//! Enumeration of durations, which are stored as floats.
+		enum class Duration
+		{
+			AnimationDuration,
+			SensorPenetrationIncreaseDuration,
+			SensorPenetrationDecreaseDuration,
+			ButtonThresholdIncreaseDuration,
+			ButtonThresholdDecreaseDuration,
+			ButtonPressingDuration,
+			DimIncreaseDuration,
+			DimDecreaseDuration,
+			AdaptiveScaleIncreaseDuration,
+			AdaptiveScaleDecreaseDuration,
+			FlashDuration,
+			KeyboardKeySelectionDuration,
 
-		// Experimental
-		FutureKeyboardPressDuration,
-		FutureKeyboardRetriggerDelay,
-		FutureKeyboardThresholdDuration,
-		FutureKeyboardRepeatKeyThresholdMultiplier,
-		FutureKeyboardSpaceKeyThresholdMultiplier,
-		FutureKeyboardBackspaceKeyThresholdMultiplier,
-		FutureKeyboardSuggestionLineThresholdMultiplier
-	};
+			// Experimental
+			FutureKeyboardPressDuration,
+			FutureKeyboardThresholdDuration,
+		};
 
-	enum class StylePropertyVec4
-	{
-		Color,
-		BackgroundColor,
-		HighlightColor,
-		SeparatorColor,
-		SelectionColor,
-		IconColor,
-		FontColor,
-		DimColor,
-		FlashColor,
-		MarkColor,
-		PickColor,
-		ThresholdColor
-	};
+		//! Enumeration of percentages, which are stored as floats.
+		enum class Percentage
+		{
+			DimAlpha
+		};
 
+		//! Enumeration of amounts, which are stored as floats.
+		enum class Amount
+		{
+			SensorInteractionPenetrationAmount,
+			KeyboardZoomSpeedMultiplier,
+			FlowSpeedMultiplier,
+			TextEditScrollSpeedMultiplier,
+			MaximalAdaptiveScaleIncrease,
 
-	enum class StylePropertyString
-	{
-		SoundButtonHit,
-		SoundButtonDown,
-		SoundKeyPress
-	};
+			// Experimental
+			FutureKeyboardRepeatKeyThresholdMultiplier,
+			FutureKeyboardSpaceKeyThresholdMultiplier,
+			FutureKeyboardBackspaceKeyThresholdMultiplier,
+			FutureKeyboardSuggestionLineThresholdMultiplier,
+			FutureKeyboardRetriggerDelay
+		};
+
+		//! Enumeration of colors, which are stored as vec4.
+		enum class Color
+		{
+			Color,
+			BackgroundColor,
+			HighlightColor,
+			SeparatorColor,
+			SelectionColor,
+			IconColor,
+			FontColor,
+			DimColor,
+			FlashColor,
+			MarkColor,
+			PickColor,
+			ThresholdColor
+		};
+
+		//! Enumeration of asset paths, which are stored as strings.
+		enum class AssetPath
+		{
+			ButtonHitSound,
+			ButtonDownSound,
+			KeyPressSound
+		};
+
+	}
 
 	//! Enumeration of possible character sets for font rendering.
 	enum class KeyboardLayout { US_ENGLISH, GERMANY_GERMAN, ISRAEL_HEBREW, GREECE_GREEK };
@@ -362,15 +372,18 @@ namespace eyegui
 	*/
 	void loadStyleSheet(GUI* pGUI, std::string filepath);
 
-	//! Set value of style property in style tree class.
+	//! Set value of property in style tree class.
 	/*!
 	\param pGUI pointer to GUI.
 	\param styleClass is name of style class where property exists.
-	\param styleProperty is property which value is set.
+	\param property in which value is set.
 	\param value is encoded value.
 	*/
-	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyFloat stylePropertyType, std::string value);
-	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, StylePropertyVec4 stylePropertyType, std::string value);
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Duration property, std::string value);
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Percentage property, std::string value);
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Amount property, std::string value);
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::Color property, std::string value);
+	void setStyleTreePropertyValue(GUI* pGUI, std::string styleClass, property::AssetPath property, std::string value);
 
 	//! Set gaze visualization drawing.
 	/*!
@@ -490,15 +503,18 @@ namespace eyegui
 		Layout* pLayout,
 		std::string id);
 
-	//! Set value of style property in of individual class in element.
+	//! Set value of property in element.
 	/*!
 	\param pGUI pointer to GUI.
 	\param id is the unique id of an element.
-	\param styleProperty is property which value is set.
+	\param property is value to set.
 	\param value is encoded value.
 	*/
-	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyFloat stylePropertyType, std::string value);
-	void setElementStylePropertyValue(Layout* pLayout, std::string id, StylePropertyVec4 stylePropertyType, std::string value);
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Duration property, std::string value);
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Percentage property, std::string value);
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Amount property, std::string value);
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::Color property, std::string value);
+	void setElementStylePropertyValue(Layout* pLayout, std::string id, property::AssetPath property, std::string value);
 
 	//! Activity of element.
 	/*!

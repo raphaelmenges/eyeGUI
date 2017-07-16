@@ -70,11 +70,11 @@ namespace eyegui
     void Block::specialDraw() const
     {
         // Draw simple background color
-        if (getStyleValue(StylePropertyVec4::BackgroundColor).a > 0)
+        if (getStyleValue(property::Color::BackgroundColor).a > 0)
         {
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
+            mpBackground->getShader()->fillValue("color", getStyleValue(property::Color::BackgroundColor));
             mpBackground->getShader()->fillValue("alpha", mAlpha);
             mpBackground->draw();
         }

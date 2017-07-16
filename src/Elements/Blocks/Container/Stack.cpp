@@ -80,10 +80,10 @@ namespace eyegui
         Container::specialDraw();
 
         // Draw separators
-        if (mSeparatorDrawMatrices.size() > 0 && getStyleValue(StylePropertyVec4::SeparatorColor).a > 0)
+        if (mSeparatorDrawMatrices.size() > 0 && getStyleValue(property::Color::SeparatorColor).a > 0)
         {
             mpSeparatorItem->bind();
-            mpSeparatorItem->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::SeparatorColor));
+            mpSeparatorItem->getShader()->fillValue("color", getStyleValue(property::Color::SeparatorColor));
             mpSeparatorItem->getShader()->fillValue("alpha", mAlpha);
 
             for (uint i = 0; i < mSeparatorDrawMatrices.size(); i++)

@@ -286,7 +286,7 @@ namespace eyegui
 		// Update active entity's fading
 		if (!mwpActiveEntity.expired())
 		{
-			mActiveEntityFading = glm::min(mActiveEntityFading + tpf, getStyleValue(StylePropertyFloat::AnimationDuration));
+			mActiveEntityFading = glm::min(mActiveEntityFading + tpf, getStyleValue(property::Duration::AnimationDuration));
 		}
 
 		// *** UPDATE OF TEXT FLOW ***
@@ -316,7 +316,7 @@ namespace eyegui
 			}
 
 			// Update relative offset
-			mTextFlowYOffset.update(offsetSpeed * tpf * getStyleValue(StylePropertyFloat::TextEditScrollSpeedMultiplier));
+			mTextFlowYOffset.update(offsetSpeed * tpf * getStyleValue(property::Amount::TextEditScrollSpeedMultiplier));
 
 			/* TODO: CHECK WHETHER THIS KIND OF INTERACTION MAKES SENSE
 
@@ -362,12 +362,12 @@ namespace eyegui
     void TextEdit::specialDraw() const
     {
         // *** BACKGROUND ***
-        if (getStyleValue(StylePropertyVec4::BackgroundColor).a > 0)
+        if (getStyleValue(property::Color::BackgroundColor).a > 0)
         {
             // Bind, fill and draw background
             mpBackground->bind();
             mpBackground->getShader()->fillValue("matrix", mFullDrawMatrix);
-            mpBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::BackgroundColor));
+            mpBackground->getShader()->fillValue("color", getStyleValue(property::Color::BackgroundColor));
             mpBackground->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
             mpBackground->draw();
         }
@@ -401,7 +401,7 @@ namespace eyegui
 
 		// Draw background behind active entity
 		mpActiveEntityBackground->bind();
-		mpActiveEntityBackground->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::MarkColor)); // TODO: marked color used. Maybe use some custom
+		mpActiveEntityBackground->getShader()->fillValue("color", getStyleValue(property::Color::MarkColor)); // TODO: marked color used. Maybe use some custom
 
 		// Draw currently active one
 		if (auto spActiveEntity = mwpActiveEntity.lock())
@@ -417,7 +417,7 @@ namespace eyegui
 
 					// Draw flow part background
 					mpActiveEntityBackground->getShader()->fillValue("matrix", activeEntityBackgroundDrawMatrix);
-					mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / getStyleValue(StylePropertyFloat::AnimationDuration)) * getMultipliedDimmedAlpha());
+					mpActiveEntityBackground->getShader()->fillValue("alpha", (mActiveEntityFading / getStyleValue(property::Duration::AnimationDuration)) * getMultipliedDimmedAlpha());
 
 					// Draw it
 					mpActiveEntityBackground->draw();
@@ -429,7 +429,7 @@ namespace eyegui
 
 		// Drawing of text flow
 		mupTextFlow->draw(
-			getStyleValue(StylePropertyVec4::FontColor),
+			getStyleValue(property::Color::FontColor),
 			mAlpha,
 			false,
 			0,
@@ -464,7 +464,7 @@ namespace eyegui
 		// Draw pulsing cursor over text
 		mpCursor->bind();
 		mpCursor->getShader()->fillValue("matrix", cursorDrawMatrix);
-		mpCursor->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::FontColor));
+		mpCursor->getShader()->fillValue("color", getStyleValue(property::Color::FontColor));
 		mpCursor->getShader()->fillValue("alpha", getMultipliedDimmedAlpha() * (glm::cos(mCursorPulse) * 0.5f) + 0.5f);
 		mpCursor->draw();
 

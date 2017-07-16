@@ -82,12 +82,12 @@ namespace eyegui
             highlight(false);
 
             // Update of value
-            mPenetration.update(tpf / getStyleValue(StylePropertyFloat::SensorPenetrationIncreaseDuration));
+            mPenetration.update(tpf / getStyleValue(property::Duration::SensorPenetrationIncreaseDuration));
         }
         else
         {
             // Update of value
-            mPenetration.update(-tpf / getStyleValue(StylePropertyFloat::SensorPenetrationDecreaseDuration));
+            mPenetration.update(-tpf / getStyleValue(property::Duration::SensorPenetrationDecreaseDuration));
         }
 
         // Inform listener after updating when penetrated
@@ -107,8 +107,8 @@ namespace eyegui
         mpIcon->bind(1);
         mpSensorItem->bind();
         mpSensorItem->getShader()->fillValue("matrix", mFullDrawMatrix);
-        mpSensorItem->getShader()->fillValue("color", getStyleValue(StylePropertyVec4::Color));
-        mpSensorItem->getShader()->fillValue("iconColor", getStyleValue(StylePropertyVec4::IconColor));
+        mpSensorItem->getShader()->fillValue("color", getStyleValue(property::Color::Color));
+        mpSensorItem->getShader()->fillValue("iconColor", getStyleValue(property::Color::IconColor));
         mpSensorItem->getShader()->fillValue("penetration", mPenetration.getValue());
         mpSensorItem->getShader()->fillValue("iconUVScale", iconAspectRatioCorrection());
         mpSensorItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
@@ -130,7 +130,7 @@ namespace eyegui
 
     void Sensor::specialInteract()
     {
-        penetrate(getStyleValue(StylePropertyFloat::SensorInteractionPenetrationAmount));
+        penetrate(getStyleValue(property::Amount::SensorInteractionPenetrationAmount));
     }
 
     void Sensor::specialPipeNotification(NotificationType notification, Layout* pLayout)

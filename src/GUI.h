@@ -77,9 +77,12 @@ namespace eyegui
         // Load a style sheet
         void loadStyleSheet(std::string filepath);
 
-		// Set value of style property in style class
-		void setStyleTreePropertyValue(std::string styleClass, StylePropertyFloat styleProperty, std::string value);
-		void setStyleTreePropertyValue(std::string styleClass, StylePropertyVec4 styleProperty, std::string value);
+		// Set value of property in style class
+		template<typename Type>
+		void setStyleTreePropertyValue(std::string styleClass, Type property, std::string value)
+		{
+			mspStyleTree->parseValue(styleClass, property, value);
+		}
 
         // Set gaze visualization drawing
         void setGazeVisualizationDrawing(bool draw);
