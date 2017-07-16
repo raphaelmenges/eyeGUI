@@ -51,27 +51,30 @@ namespace eyegui
 
 	namespace style_tree_helper
 	{
+		// Extract size of tuple containing mapping from string to property class
+		constexpr int tupleSize = std::tuple_size<style::PropertyStringTuple>::value;
+
 		// Parsing value for style tree
-		template<std::size_t I = 0, typename... Tp>
-		inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
-			internalParse(const std::tuple<Tp...>& t, std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value)
+		template<std::size_t I = 0>
+		inline typename std::enable_if<I == tupleSize, void>::type // base case of I == number of tuple elements
+			internalParse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string property, std::string value)
 		{} // if comes to here, no string was matched...
 
-		template<std::size_t I = 0, typename... Tp>
-		inline typename std::enable_if < I < sizeof...(Tp), void>::type
-			internalParse(const std::tuple<Tp...>& t, std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value)
+		template<std::size_t I = 0>
+		inline typename std::enable_if<I < tupleSize, void>::type
+			internalParse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string property, std::string value)
 		{
-			// Fetch map from tuple
-			const auto& rMap = std::get<I>(t);
-			auto iterator = rMap.find(styleType);
+			// Check whether map contains given property string, so value is parsed and inserted
+			const auto& rMap = std::get<I>(style::PropertyStringMapping::value);
+			auto iterator = rMap.find(property);
 			if (iterator != rMap.end()) { spStyleTree->parseValue(styleClass, iterator->second, value); return; }
 
 			// String not yet found in any map, proceed
-			internalParse<I + 1, Tp...>(t, spStyleTree, styleClass, styleType, value); // recursion call
+			internalParse<I + 1>(spStyleTree, styleClass, property, value); // recursion call
 		}
 
 		// Call to parse style type value where both type and value are encoded as string
-		void parse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value);		
+		void parse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string property, std::string value);		
 	}
 }
 

@@ -49,8 +49,8 @@ namespace eyegui
 		return spStyleClass;
 	}
 
-	void style_tree_helper::parse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string styleType, std::string value)
+	void style_tree_helper::parse(std::shared_ptr<StyleTree> spStyleTree, std::string styleClass, std::string property, std::string value)
 	{
-		style_tree_helper::internalParse(style::PropertyStringMapping::value, spStyleTree, styleClass, styleType, value);
+		style_tree_helper::internalParse(spStyleTree, styleClass, property, value);
 	}
 }
