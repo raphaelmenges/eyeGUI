@@ -1,6 +1,6 @@
 //	The MIT License (MIT)
 //
-//	Copyright(c) 2016 Raphael Menges
+//	Copyright(c) 2017 Raphael Menges
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files(the "Software"), to deal
@@ -43,6 +43,14 @@ namespace eyegui
 	class GUI;
 	class Layout;
 	class Frame;
+
+	/*
+	Duration
+	Percentage(between zero and one)
+	Amount(is positive)
+	Color
+	AssetPath
+	*/
 
 	//! Enumeration of style property float instances
 	enum class StylePropertyFloat
