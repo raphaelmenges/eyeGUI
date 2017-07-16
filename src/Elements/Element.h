@@ -349,27 +349,30 @@ namespace eyegui
 
     namespace element_helper
     {
+		// Extract size of tuple containing mapping from string to property class
+		constexpr int tupleSize = std::tuple_size<style::PropertyStringTuple>::value;
+
         // Parsing value for style tree
-        template<std::size_t I = 0, typename... Tp>
-        inline typename std::enable_if<I == sizeof...(Tp), void>::type // base case of I == number of tuple elements
-            internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
+        template<std::size_t I = 0>
+        inline typename std::enable_if<I == tupleSize, void>::type // base case of I == number of tuple elements
+            internalParse(Element* pElement, std::string property, std::string value)
         {} // if comes to here, no string was matched...
 
-        template<std::size_t I = 0, typename... Tp>
-        inline typename std::enable_if < I < sizeof...(Tp), void>::type
-            internalParse(const std::tuple<Tp...>& t, Element* pElement, std::string styleType, std::string value)
+        template<std::size_t I = 0>
+        inline typename std::enable_if<I < tupleSize, void>::type
+            internalParse(Element* pElement, std::string property, std::string value)
         {
-            // Fetch map from tuple
-            const auto& rMap = std::get<I>(t);
-            auto iterator = rMap.find(styleType);
+            // Check whether map contains given property string, so value is parsed and inserted
+            const auto& rMap = std::get<I>(style::PropertyStringMapping::value);
+            auto iterator = rMap.find(property);
             if (iterator != rMap.end()) { pElement->parseElementStylePropertyValue(iterator->second, value); return; }
 
             // String not yet found in any map, proceed
-            internalParse<I + 1, Tp...>(t, pElement, styleType, value); // recursion call
+            internalParse<I + 1>(pElement, property, value); // recursion call
         }
 
-        // Call to parse style type value where both type and value are encoded as string
-        void parse(Element* pElement, std::string styleType, std::string value);
+        // Call to parse property value where both property and value are encoded as string
+		void parse(Element* pElement, std::string property, std::string value);
     }
 }
 

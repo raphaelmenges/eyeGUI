@@ -4,12 +4,12 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Style class has maps of style property pointers. Some of those properties
+// Style class has maps of property shared pointers. Some of those properties
 // are just references to properties from parent classes and other are owned
 // by this. If a property is owned, propagation of values of its type from
 // parent class is stopped. Children are optionally stored as shared pointer,
 // because this is desired for the style tree but not for element style
-// classes. Those are already shared pointer in the corresponding element
+// classes. These are already shared pointer in the corresponding element
 // and would survive the deletion of the element if stored as shared here.
 
 #ifndef STYLE_CLASS_H_
@@ -30,36 +30,32 @@ namespace eyegui
 	{
 	private: // map interaction must be defined before usage
 
-		// #######################
-		// ### MAP INTERACTION ###
-		// #######################
-
-		// Get const map corresponding to proptery type
+		// Get const map corresponding to proptery class
 		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename style::PropertyInfo<Type>::type> > > const * getConstMap() const
 		{
 			return &(std::get<style::PropertyInfo<Type>::idx>(mMaps));
 		}
 
-		// Get map corresponding to property type
+		// Get map corresponding to property class
 		template<typename Type> std::map<Type, std::shared_ptr<StyleProperty<typename style::PropertyInfo<Type>::type> > >* getMap()
 		{
 			return &(std::get<style::PropertyInfo<Type>::idx>(mMaps));
 		}
 
-		// Get style property by type
+		// Get property from map
 		template<typename Type>
-		std::shared_ptr<StyleProperty<typename style::PropertyInfo<Type>::type> > getStyleProperty(Type type) { return (*getMap<Type>())[type]; }
+		std::shared_ptr<StyleProperty<typename style::PropertyInfo<Type>::type> > getProperty(Type type) { return (*getMap<Type>())[type]; }
 
-		// Set property pointer in map
+		// Set property in map
 		template<typename Type>
-		void setMapValue(Type type, std::shared_ptr<StyleProperty<typename style::PropertyInfo<Type>::type> > spProperty) { (*getMap<Type>())[type] = spProperty; }
+		void setProperty(Type type, std::shared_ptr<StyleProperty<typename style::PropertyInfo<Type>::type> > spProperty) { (*getMap<Type>())[type] = spProperty; }
 
 	public:
 
 		// Add child
 		std::shared_ptr<StyleClass> addChild(bool storeShared, std::string name = "");
 
-		// Fetch value from property
+		// Fetch const pointer to property
 		template<typename Type>
 		std::shared_ptr<const StyleProperty<typename style::PropertyInfo<Type>::type> > fetchProperty(Type type) const
 		{
@@ -79,6 +75,14 @@ namespace eyegui
 		{
 			// Pass to other template
 			genericSetValue(type, value);
+		}
+
+		// Parse value and set it
+		template<typename Type>
+		void parseValue(Type type, std::string value)
+		{
+			rawValue = style::PropertyInfo<Type>::parse(value);
+			setValue(type, rawValue);
 		}
 		
 		// Special setters of property values (TODO: there should be a compile time map providing function to map string to value)
@@ -109,16 +113,12 @@ namespace eyegui
 		// Called only by builder
 		void fill();
 
-		// ####################
-		// ### VALUE SETTER ###
-		// ####################
-
 		// Set value as template implementation. Does create new property if not existing in instance
 		template<typename Type>
 		void genericSetValue(Type type, typename style::PropertyInfo<Type>::type value)
 		{
 			// Check whether property is owned by me
-			auto spStoredProperty = this->getStyleProperty(type);
+			auto spStoredProperty = this->getProperty(type);
 			auto spStoredPropertyStyleClass = spStoredProperty->getStyleClass().lock();
 			bool owned = false;
 			if (spStoredPropertyStyleClass)
@@ -138,7 +138,7 @@ namespace eyegui
 				// Add new owned property
 				typedef StyleProperty<typename style::PropertyInfo<Type>::type> PropertyType;
 				spStoredProperty = std::shared_ptr<PropertyType>(new PropertyType(shared_from_this(), value, &style::PropertyInfo<Type>::constraint, true));
-				this->setMapValue(type, spStoredProperty);
+				this->setProperty(type, spStoredProperty);
 
 				// Propagate it to children
 				for (auto& rwpChild : this->mWeakChildren)
@@ -151,16 +151,12 @@ namespace eyegui
 			}
 		}
 
-		// #########################
-		// ### VALUE PROPAGATION ###
-		// #########################
-
 		// Propagate value from parent to this and children
 		template<typename Type>
 		void genericPropagateProperty(Type type, std::shared_ptr<StyleProperty<typename style::PropertyInfo<Type>::type> > spProperty)
 		{
 			// Check whether property is owned by me
-			auto spStoredProperty = this->getStyleProperty(type);
+			auto spStoredProperty = this->getProperty(type);
 			auto spStoredPropertyStyleClass = spStoredProperty->getStyleClass().lock();
 			bool owned = false;
 			if (spStoredPropertyStyleClass)
@@ -173,7 +169,7 @@ namespace eyegui
 			if (!owned)
 			{
 				// Store pointer to property
-				this->setMapValue(type, spProperty);
+				this->setProperty(type, spProperty);
 
 				// Propagate it to children
 				for (auto& rwpChild : this->mWeakChildren)
@@ -186,10 +182,6 @@ namespace eyegui
 			} // else: stop propagation here
 		}
 
-		// ###############
-		// ### MEMBERS ###
-		// ###############
-
 		// Name
 		std::string mName = "";
 
@@ -201,7 +193,7 @@ namespace eyegui
 
 		// Children
 		std::vector<std::shared_ptr<StyleClass> > mChildren; // empty for classes belonging to element, only used classes of style tree for storing them
-		std::vector<std::weak_ptr<StyleClass> > mWeakChildren; // this is used for all calculations, as it is always contains the children
+		std::vector<std::weak_ptr<StyleClass> > mWeakChildren; // this is used for all calculations, as it is always contains all the children
 	};
 
 	// Builder for style class. Takes care of some prerequisites, as style class is always used in shared pointer which produces problems in constructor
@@ -209,7 +201,7 @@ namespace eyegui
 	{
 	public:
 
-		// Construct a style class (necessary because "shared from" this is used for StyleClass, but this may not be done in its constructor)
+		// Construct a style class (necessary because "shared from" this is used for StyleClass, but this may not be used in its constructor)
 		std::shared_ptr<StyleClass> construct(std::string name = "") const;
 	};
 }

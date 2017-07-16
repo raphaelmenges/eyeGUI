@@ -14,10 +14,10 @@ namespace eyegui
 		// Extract size of tuple containing mapping from string to property class
 		constexpr int tupleSize = std::tuple_size<style::PropertyStringTuple>::value;
 
-		// Going over tuple elements and fill provided maps
+		// Go over tuple elements of mapping and fill provided maps
 		template<std::size_t I = 0>
 		inline typename std::enable_if<I == tupleSize, void>::type // base case of I == number of tuple elements
-			fillDefaults(const style::PropertyStringTuple& rStringMaps, style::PropertyMaps& rMaps, std::weak_ptr<const StyleClass> wpStyleClass) // takes tuple with string to property map and maps to fill with pointers
+			fillDefaults(const style::PropertyStringTuple& rStringMaps, style::PropertyMaps& rMaps, std::weak_ptr<const StyleClass> wpStyleClass) // takes tuple with string to property map and tuple of maps to initialize
 		{}
 
 		template<std::size_t I = 0>
@@ -27,26 +27,26 @@ namespace eyegui
 			// Extract reference to string map
 			const auto& rStringMap = std::get<I>(rStringMaps);
 
-			// Determine type of property (this is mapped type of this string mapping)
-			typedef typename std::tuple_element<I, style::PropertyStringTuple>::type::mapped_type PropertyType;
+			// Determine class of property (this is mapped type of the string mapping)
+			typedef typename std::tuple_element<I, style::PropertyStringTuple>::type::mapped_type PropertyClass;
 
 			// Determine property value type
-			typedef typename style::PropertyInfo<PropertyType>::type ValueType;
+			typedef typename style::PropertyInfo<PropertyClass>::type ValueType;
 
-			// Get index in provided rMap to fill value into
-			constexpr int index = style::PropertyInfo<PropertyType>::idx;
+			// Get index in provided rMaps to fill value into
+			constexpr int index = style::PropertyInfo<PropertyClass>::idx;
 	
-			// Go over map for this property
+			// Go over map for this property class
 			for (const auto& entry : rStringMap)
 			{
 				// Instance of property
-				PropertyType property = entry.second;
+				PropertyClass property = entry.second;
 
 				// Default value
 				ValueType value = style::getPropertyDefault(property);
 
-				// Add entry to map within StyleClass
-				std::get<index>(rMaps)[property] = std::shared_ptr<StyleProperty<ValueType> >(new StyleProperty<ValueType>(wpStyleClass, value, &style::PropertyInfo<PropertyType>::constraint));
+				// Add entry to map within style class
+				std::get<index>(rMaps)[property] = std::shared_ptr<StyleProperty<ValueType> >(new StyleProperty<ValueType>(wpStyleClass, value, &style::PropertyInfo<PropertyClass>::constraint));
 			}
 			
 			// Proceed to next tuple element

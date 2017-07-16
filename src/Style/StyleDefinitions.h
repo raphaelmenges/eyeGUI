@@ -9,12 +9,14 @@
 //   ProtertyClass: is defined by "type" of property, like duration
 //   PropertyValue: raw type is defined for each property class, like float
 //   Property: is instance of property class and defind by one value, for example AnimationDuration
+// If adding a new PropertyClass here, remember to add setter in eyeGUI.h
 
 #ifndef STYLE_DEFINITIONS
 #define STYLE_DEFINITIONS
 
 #include "include/eyeGUI.h"
 #include "src/Style/StyleProperty.h"
+#include "src/Utilities/Helper.h"
 
 #include "externals/GLM/glm/glm.hpp"
 
@@ -36,7 +38,7 @@ namespace eyegui
 			typedef float type; // raw type
 			static const int idx = 0; // index of map in PropertyMaps tuple
 			static type constraint(type value) { return value; } // constraint function
-			// parse function
+			static type parse(std::string value) { return stringToFloat(value); } // parse function
 		};
 
 		// Vec4
@@ -45,7 +47,7 @@ namespace eyegui
 			typedef glm::vec4 type; // raw type
 			static const int idx = 1; // index of map in PropertyMaps tuple
 			static type constraint(type value) { return value; } // constraint function
-			// parse function
+			static type parse(std::string value) { return stringHexRGBAToVec4RGBA(value); } // parse function
 		};
 
 		// String
@@ -54,7 +56,7 @@ namespace eyegui
 			typedef std::string type; // raw type
 			static const int idx = 2; // index of map in PropertyMaps tuple
 			static type constraint(type value) { return value; } // constraint function
-			// parse function
+			static type parse(std::string value) { return value; } // parse function
 		};
 		
 		// ###################################

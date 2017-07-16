@@ -5,9 +5,9 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Tree of style classes with single root. Guarantees that name of style
-// classes is unique. Returns only const pointers to style classes,
-// for value setting the corresponding method must be called. GUI objects
-// has one tree which is filled by loaded stylesheets. Elements and layouts
+// classes are unique. Returns only const pointers to style classes,
+// for value setting the corresponding method must be called. GUI object
+// have one tree which is filled by loaded stylesheets. Elements and layouts
 // are assigned classes, whereby all properties directly set in element class
 // do override the values from this tree.
 
@@ -34,12 +34,12 @@ namespace eyegui
 
 		// Parse and set value by name of style class
 		template<typename Type>
-		void parseValue(std::string styleClass, Type styleType, std::string value)
+		void parseValue(std::string styleClass, Type propertyClass, std::string value)
 		{
 			// Fetch style class
 			if (auto spStyleClass = mspRoot->fetchThisOrChild(styleClass))
 			{
-				spStyleClass->parseValue(styleType, value);
+				spStyleClass->parseValue(propertyClass, value);
 			}
 		}
 
