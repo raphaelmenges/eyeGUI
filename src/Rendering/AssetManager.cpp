@@ -577,7 +577,7 @@ namespace eyegui
 			parameters.hostApiSpecificStreamInfo = NULL;
 			if (parameters.device == paNoDevice)
 			{
-				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: Have not found an audio device");
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: Have not found an output audio device");
 				return;
 			}
 
@@ -636,7 +636,7 @@ namespace eyegui
 		parameters.suggestedLatency = Pa_GetDeviceInfo(parameters.device)->defaultLowInputLatency;
 		parameters.hostApiSpecificStreamInfo = NULL;
 		if (parameters.device == paNoDevice) {
-			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: Have not found an audio device");
+			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: Have not found an input audio device");
 			return false;
 		}
 

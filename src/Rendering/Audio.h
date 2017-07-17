@@ -5,7 +5,6 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Encapsulation of read audio data.
-// TODO: prohibit other constructors, as mpBuffer could be handled wrongly.
 // TODO: General thing about this audio stuff: Makes it sense to use long instead of int?
 
 #ifndef AUDIO_H_
@@ -30,6 +29,10 @@ namespace eyegui
 		short getSample(int index) const { return mpBuffer[index]; } // no bounds check performed!
 
 	private:
+
+		// Private constructors to prohibit mishandling of the buffer structure (like multiple or no freeing)
+		Audio(const Audio&);  // inaccessible
+		Audio& operator=(const Audio&);  // inaccessible
 
 		// Members
 		unsigned int mChannelCount;
