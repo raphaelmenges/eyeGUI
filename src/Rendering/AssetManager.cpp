@@ -710,6 +710,31 @@ namespace eyegui
 			// Set stream to NULL
 			mpInputStream = NULL;
 
+			/*
+			// THIS IS A BRAIN DEAD DIRECT PLAYBACK OF RECORD
+			auto spBuffer = mspAudioInput->getBuffer().lock();
+			short *buffer = (short*)malloc(sizeof(short) * mspAudioInput->getSampleCount());
+
+			for (int i = 0; i < mspAudioInput->getSampleCount(); i++)
+			{
+				buffer[i] = spBuffer->at(i);
+			}
+
+			// Fill sound audio structure (buffer will be freed at destruction of that pointer)
+			auto rupSound = std::unique_ptr<Audio>(
+				new Audio(
+					mspAudioInput->getChannelCount(),
+					mspAudioInput->getSampleCount(),
+					mspAudioInput->getSampleRate(),
+					buffer));
+
+			// Store sound
+			mSounds["test"] = std::move(rupSound);
+
+			// Play it
+			playSound("test");
+			*/
+
 			// Success
 			return true;
 		}
