@@ -71,6 +71,9 @@ namespace eyegui
 	static const float GAZE_VISUALIZATION_MIN_SIZE = 0.02f;
 	static const float GAZE_VISUALIZATION_MAX_SIZE = 0.075f;
 	static const glm::vec4 GAZE_VISUALIZATION_COLOR = glm::vec4(0.f, 0.f, 1.f, 0.5f);
+	static const int AUDIO_INPUT_SAMPLE_RATE = 44100;
+	static const int AUDIO_INPUT_CHANNEL_COUNT = 1;
+	static const unsigned int AUDIO_INPUT_MAX_INPUT_SECONDS = 10;
 }
 
 #endif // DEFINES_H_

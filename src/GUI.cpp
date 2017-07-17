@@ -303,6 +303,21 @@ namespace eyegui
 		mupAssetManager->playSound(filepath);
 	}
 
+	bool GUI::startAudioRecording()
+	{
+		return mupAssetManager->startAudioRecording();
+	}
+
+	bool GUI::endAudioRecording()
+	{
+		return mupAssetManager->endAudioRecording();
+	}
+
+	std::shared_ptr<const AudioRecord> GUI::retrieveAudioRecord() const
+	{
+		return mupAssetManager->retrieveAudioRecord();
+	}
+
     int GUI::getWindowWidth() const
     {
         return mWidth;

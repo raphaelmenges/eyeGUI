@@ -115,7 +115,6 @@ namespace eyegui
 			ButtonDownSound,
 			KeyPressSound
 		};
-
 	}
 
 	//! Enumeration of possible character sets for font rendering.
@@ -267,7 +266,7 @@ namespace eyegui
 		void virtual chosen(Layout* pLayout, std::string id, std::string value) = 0;
 	};
 
-	//! Struct for relative values of position and size
+	//! Struct for relative values of position and size.
 	struct RelativePositionAndSize
 	{
 		float x = 0;
@@ -276,13 +275,40 @@ namespace eyegui
 		float height = 0;
 	};
 
-	//! Struct for absolute pixel values of position and size
+	//! Struct for absolute pixel values of position and size.
 	struct AbsolutePositionAndSize
 	{
 		int x = 0;
 		int y = 0;
 		int width = 0;
 		int height = 0;
+	};
+
+	//! Class for holding audio records.
+	class AudioRecord
+	{
+	public:
+
+		//! Constructor.
+		AudioRecord(unsigned int channelCount, unsigned int sampleRate, unsigned int maxSeconds);
+
+		//! Add sample. Increments index and returns whether successful.
+		bool addSample(short sample);
+
+		//! Getter.
+		int getChannelCount() const;
+		int getSampleRate() const;
+		int getSampleCount() const;
+		std::weak_ptr<const std::vector<short> > getBuffer() const;
+
+	private:
+
+		//! Members.
+		std::shared_ptr<std::vector<short> > mspBuffer;
+		unsigned int mChannelCount;
+		unsigned int mSampleRate;
+		unsigned int mMaxSeconds;
+		unsigned int mIndex = 0;
 	};
 
 	//! Struct for input. Coordinate system orginates at upper left corner of screen.
@@ -455,6 +481,27 @@ namespace eyegui
 	\param filepath to sound file.
 	*/
 	void playSound(GUI* pGUI, std::string filepath);
+
+	//! Start recording of audio.
+	/*!
+	\param pGUI pointer to GUI.
+	\return true if successfully started, else false.
+	*/
+	bool startAudioRecording(GUI* pGUI);
+
+	//! End recording of audio.
+	/*!
+	\param pGUI pointer to GUI.
+	\return true if successfully ended, else false.
+	*/
+	bool endAudioRecording(GUI* pGUI);
+
+	//! Retrieve latest recorded audio. May not be called during recording.
+	/*!
+	\param pGUI pointer to GUI.
+	\return Shared pointer to the recorded audio data. Nullptr in case no audio is available.
+	*/
+	std::shared_ptr<const AudioRecord> retrieveAudioRecord(GUI const * pGUI);
 
 	//! Control layout's input usage.
 	/*!

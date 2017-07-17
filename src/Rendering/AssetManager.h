@@ -59,7 +59,7 @@ namespace eyegui
     // Forward declaration
     class GUI;
 
-	// Class containing information about currently played audio
+	// Class containing information for audio output
 	class AudioOutput
 	{
 	public:
@@ -125,6 +125,15 @@ namespace eyegui
 		// Play sound. Does nothing for empty filepath string
 		void playSound(std::string filepath);
 
+		// Start recording audio
+		bool startAudioRecording();
+
+		// End recording audio
+		bool endAudioRecording();
+
+		// Retrieve recorded audio. Returns nullptr in case of nothing has been recorded yet
+		std::shared_ptr<const AudioRecord> retrieveAudioRecord() const;
+
         // Create text flow and return it as unique pointer
         std::unique_ptr<TextFlow> createTextFlow(
             FontSize fontSize,
@@ -162,8 +171,10 @@ namespace eyegui
 
 		// Audio
 		bool mPortAudioInitialized = false;
-		PaStream* mpStream = nullptr; // current stream
+		PaStream* mpOutputStream = nullptr; // current output stream
 		std::unique_ptr<AudioOutput> mupAudioOutput; // currently outputted audio data
+		PaStream* mpInputStream = nullptr; // current input stream, used as indicactor for ongoing record
+		std::shared_ptr<AudioRecord> mspAudioInput; // currently inputted audio data
     };
 }
 

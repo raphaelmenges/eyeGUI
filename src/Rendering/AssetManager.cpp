@@ -24,10 +24,13 @@
 
 #include <algorithm>
 
+// TODO TESTING
+#include <iostream>
+
 namespace eyegui
 {
-	// Static callback for PortAudio stream updates
-	static int audioStreamUpdateCallback(
+	// Static callback for PortAudio output stream
+	static int audioStreamPlayCallback(
 		const void * inputBuffer, // buffer for audio input via microphone
 		void * outputBuffer, // buffer for audio output via speakers
 		unsigned long framesPerBuffer, // counts of frames (count of samples for all channels)
@@ -83,6 +86,52 @@ namespace eyegui
 			result = PaStreamCallbackResult::paContinue;
 		}
 		return result;
+	}
+
+	// Static callback for PortAudio input stream
+	static int audioStreamRecordCallback(
+		const void * inputBuffer, // buffer for audio input via microphone
+		void * outputBuffer, // buffer for audio output via speakers
+		unsigned long framesPerBuffer, // counts of frames (count of samples for all channels)
+		const PaStreamCallbackTimeInfo *timeInfo, // not used
+		PaStreamCallbackFlags flags, // not used
+		void * data) // pointer to audio data
+	{
+		// Return value
+		PaStreamCallbackResult result = PaStreamCallbackResult::paComplete;
+
+		// Cast input buffer
+		short *in = (short*)inputBuffer;
+
+		// Prevent unused variable warnings
+		(void)inputBuffer;
+		(void)timeInfo;
+		(void)flags;
+
+		// Extract pointer to audio data
+		auto pData = reinterpret_cast<eyegui::AudioRecord*>(data);
+
+		// Fill buffer with data from PortAudio
+		bool spaceLeft = true;
+		for (unsigned int i = 0; i < framesPerBuffer && spaceLeft; i++) // go over frames
+		{
+			for (unsigned int j = 0; j < pData->getChannelCount() && spaceLeft; j++) // go over channels
+			{
+				spaceLeft &= pData->addSample(*in++); // add sample to input structure
+			}
+		}
+
+		// Decide whether to continue
+		if (spaceLeft)
+		{
+			result = PaStreamCallbackResult::paContinue;
+		}
+		return result;
+	}
+
+	static void audioStreamRecordFinished(void* userData)
+	{
+		// TODO: automatically end audio recording
 	}
 
     AssetManager::AssetManager(GUI const * pGUI)
@@ -492,34 +541,34 @@ namespace eyegui
 			PaError err;
 
 			// Stop existing stream if necessary
-			if (mpStream != NULL)
+			if (mpOutputStream != NULL)
 			{
 				// Aborts stream (stop would wait until buffer finished)
-				err = Pa_AbortStream(mpStream);
+				err = Pa_AbortStream(mpOutputStream);
 				if (err != paNoError)
 				{
 					OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-					mpStream = NULL;
+					mpOutputStream = NULL;
 					return;
 				}
 
 				// Close stream
-				err = Pa_CloseStream(mpStream);
+				err = Pa_CloseStream(mpOutputStream);
 				if (err != paNoError)
 				{
 					OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-					mpStream = NULL;
+					mpOutputStream = NULL;
 					return;
 				}
 
 				// Set stream to NULL
-				mpStream = NULL;
+				mpOutputStream = NULL;
 			}
 
 			// Set audio accessed by the callback
 			mupAudioOutput = std::unique_ptr<AudioOutput>(new AudioOutput(pSound));
 
-			// Open new stream
+			// Set up stream
 			PaStreamParameters parameters;
 			parameters.device = Pa_GetDefaultOutputDevice();
 			parameters.channelCount = pSound->getChannelCount();
@@ -532,31 +581,152 @@ namespace eyegui
 				return;
 			}
 
+			// TODO: add callback about finished sound, so stream can be closed
+
 			// Open stream
 			err = Pa_OpenStream(
-				&mpStream,
+				&mpOutputStream,
 				NULL,
 				&parameters,
 				pSound->getSampleRate(),
 				paFramesPerBufferUnspecified,
 				paClipOff,
-				audioStreamUpdateCallback,
+				audioStreamPlayCallback,
 				mupAudioOutput.get()); // provide pointer to audio output data (must be valid during callback)
 			if (err != paNoError)
 			{
 				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-				mpStream = NULL;
+				mpOutputStream = NULL;
 				return;
 			}
 
 			// Start stream
-			err = Pa_StartStream(mpStream);
+			err = Pa_StartStream(mpOutputStream);
 			if (err != paNoError)
 			{
 				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
-				mpStream = NULL; // possible memory leak
+				mpOutputStream = NULL; // possible memory leak?
 				return;
 			}
+		}
+	}
+
+	bool AssetManager::startAudioRecording()
+	{
+		// Check for PortAudio
+		if (!mPortAudioInitialized)
+		{
+			return false;
+		}
+
+		// Return false if ongoing recording
+		if (mpInputStream != nullptr)
+		{
+			return false;
+		}
+
+		// Prepare audio data structure
+		mspAudioInput = std::shared_ptr<AudioRecord>(new AudioRecord(AUDIO_INPUT_CHANNEL_COUNT, AUDIO_INPUT_SAMPLE_RATE, AUDIO_INPUT_MAX_INPUT_SECONDS));
+
+		// Set up stream
+		PaStreamParameters parameters;
+		parameters.device = Pa_GetDefaultInputDevice();
+		parameters.channelCount = AUDIO_INPUT_CHANNEL_COUNT;
+		parameters.sampleFormat = paInt16;
+		parameters.suggestedLatency = Pa_GetDeviceInfo(parameters.device)->defaultLowInputLatency;
+		parameters.hostApiSpecificStreamInfo = NULL;
+		if (parameters.device == paNoDevice) {
+			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: Have not found an audio device");
+			return false;
+		}
+
+		// Variable to fetch errors
+		PaError err;
+
+		// Open stream
+		err = Pa_OpenStream(
+			&mpInputStream,
+			&parameters,
+			NULL,
+			AUDIO_INPUT_SAMPLE_RATE,
+			paFramesPerBufferUnspecified,
+			paClipOff,
+			audioStreamRecordCallback,
+			mspAudioInput.get());
+		if (err != paNoError)
+		{
+			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+			mpInputStream = NULL;
+			return false;
+		}
+
+		// Set callback for getting callback at finished stream
+		err = Pa_SetStreamFinishedCallback(mpInputStream, &audioStreamRecordFinished);
+
+		// Start stream
+		err = Pa_StartStream(mpInputStream);
+		if (err != paNoError)
+		{
+			OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+			mpInputStream = NULL; // possible memory leak?
+			return false;
+		}
+
+		return true;
+	}
+
+	bool AssetManager::endAudioRecording()
+	{
+		// Check for PortAudio
+		if (!mPortAudioInitialized)
+		{
+			return false;
+		}
+
+		// Variable to fetch errors
+		PaError err;
+
+		// Stop existing stream if necessary
+		if (mpInputStream != NULL)
+		{
+			// Aborts stream (stop would wait until buffer finished)
+			err = Pa_AbortStream(mpInputStream);
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+				mpInputStream = NULL;
+				return false;
+			}
+
+			// Close stream
+			err = Pa_CloseStream(mpInputStream);
+			if (err != paNoError)
+			{
+				OperationNotifier::notifyAboutWarning(OperationNotifier::Operation::RUNTIME, "PortAudio error: " + std::string(Pa_GetErrorText(err)));
+				mpInputStream = NULL;
+				return false;
+			}
+
+			// Set stream to NULL
+			mpInputStream = NULL;
+
+			// Success
+			return true;
+		}
+
+		// Return false
+		return false;
+	}
+
+	std::shared_ptr<const AudioRecord> AssetManager::retrieveAudioRecord() const
+	{
+		if (mpInputStream == nullptr) // acts like a semaphore, as audio record is manipulated by callback above, which is called randomly during execution
+		{
+			return mspAudioInput; // even ok to return nullptr, so just do it
+		}
+		else
+		{
+			return nullptr;
 		}
 	}
 

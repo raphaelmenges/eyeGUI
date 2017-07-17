@@ -21,6 +21,31 @@ static const std::string VERSION_STRING = "0.9";
 
 namespace eyegui
 {
+	AudioRecord::AudioRecord(unsigned int channelCount, unsigned int sampleRate, unsigned int maxSeconds)
+		: mChannelCount(channelCount), mSampleRate(sampleRate), mMaxSeconds(maxSeconds)
+	{
+		mspBuffer = std::shared_ptr<std::vector<short> >(new std::vector<short>(mChannelCount * mSampleRate * mMaxSeconds, 0));
+	}
+
+	bool AudioRecord::addSample(short sample)
+	{
+		if (mIndex < mspBuffer->size())
+		{
+			(*(mspBuffer.get()))[mIndex] = sample;
+			++mIndex;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	int AudioRecord::getChannelCount() const { return mChannelCount; }
+	int AudioRecord::getSampleRate() const { return mSampleRate; }
+	int AudioRecord::getSampleCount() const { return mIndex; }
+	std::weak_ptr<const std::vector<short> > AudioRecord::getBuffer() const { return mspBuffer; }
+
     GUI* GUIBuilder::construct() const
     {
 		// TODO: Testing
@@ -161,6 +186,21 @@ namespace eyegui
 	void playSound(GUI* pGUI, std::string filepath)
 	{
 		pGUI->playSound(filepath);
+	}
+
+	bool startAudioRecording(GUI* pGUI)
+	{
+		return pGUI->startAudioRecording();
+	}
+
+	bool endAudioRecording(GUI* pGUI)
+	{
+		return pGUI->endAudioRecording();
+	}
+
+	std::shared_ptr<const AudioRecord> retrieveAudioRecord(GUI const * pGUI)
+	{
+		return pGUI->retrieveAudioRecord();
 	}
 
     void setInputUsageOfLayout(Layout* pLayout, bool useInput)

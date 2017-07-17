@@ -105,6 +105,15 @@ namespace eyegui
 		// Play some sound
 		void playSound(std::string filepath);
 
+		// Start recording audio
+		bool startAudioRecording();
+
+		// End recording audio
+		bool endAudioRecording();
+
+		// Retrieve recorded audio.
+		std::shared_ptr<const AudioRecord> retrieveAudioRecord() const;
+
         // *** Methods accessed by other classes ***
 
         // Getter for window size

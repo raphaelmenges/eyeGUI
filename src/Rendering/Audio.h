@@ -4,7 +4,9 @@
 //============================================================================
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
-// Encapsulation of audio data.
+// Encapsulation of read audio data.
+// TODO: prohibit other constructors, as mpBuffer could be handled wrongly.
+// TODO: General thing about this audio stuff: Makes it sense to use long instead of int?
 
 #ifndef AUDIO_H_
 #define AUDIO_H_
