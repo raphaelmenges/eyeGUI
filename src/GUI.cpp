@@ -579,8 +579,8 @@ namespace eyegui
 		{
 			rLayer->second->executeOnLayouts([](Layout& rLayout)
 			{
-				// Execute keyboard update on all elements of layout
-				rLayout.executeOnElements([](Element* pElement)
+				// Execute keyboard update on all elements of layout by calling it on root and then internally recursively
+				rLayout.executeOnRoots([](Element* pElement)
 				{
 					// Finally, do that update keyboard thing
 					pElement->updateKeyboardLayout();

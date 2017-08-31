@@ -377,13 +377,17 @@ namespace eyegui
 			}
 		}
 
-		// Execute query on elements
-		void executeOnElements(std::function<void(Element*)> function)
+		// Execute query on roots
+		void executeOnRoots(std::function<void(Element*)> function)
 		{
-			mupMainFrame->executeOnElements(function);
-			for (auto& rFrame : mFloatingFrames)
+			mupMainFrame->executeOnRoot(function);
+			for (uint i = 0; i < mFloatingFrames.size(); i++)
 			{
-				rFrame->executeOnElements(function);
+				Frame* pFrame = mFloatingFrames[i].get();
+				if (pFrame != NULL) // check for nullptr as their might be unused pointers
+				{
+					pFrame->executeOnRoot(function);
+				}
 			}
 		}
 

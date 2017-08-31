@@ -118,10 +118,13 @@ namespace eyegui
         // Set size
         void setSize(float relativeSizeX, float relativeSizeY);
 
-		// Execute on held elements
-		void executeOnElements(std::function<void(Element*)> function)
+		// Execute on root
+		void executeOnRoot(std::function<void(Element*)> function)
 		{
-			function(mupRoot.get());
+			if (mupRoot != nullptr)
+			{
+				function(mupRoot.get());
+			}
 		}
 
     private:
