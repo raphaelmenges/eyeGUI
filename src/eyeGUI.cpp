@@ -415,6 +415,11 @@ namespace eyegui
         pLayout->hitButton(id);
     }
 
+	void classifyButton(Layout* pLayout, std::string id, bool accept)
+	{
+		pLayout->classifyButton(id, accept);
+	}
+
     void buttonDown(Layout* pLayout, std::string id, bool immediately)
     {
         pLayout->buttonDown(id, immediately);

@@ -48,7 +48,8 @@ namespace eyegui
 			std::string iconFilepath,
 			std::u16string desc,
 			std::string descKey,
-			bool isSwitch);
+			bool isSwitch,
+			bool instantPress);
 
         // Drawing filled by subclasses
         virtual void specialDraw() const;

@@ -475,6 +475,19 @@ namespace eyegui
         }
     }
 
+	void Layout::classifyButton(std::string id, bool accept)
+	{
+		Button* pButton = toButton(fetchElement(id));
+		if (pButton != NULL)
+		{
+			pButton->classify(accept);
+		}
+		else
+		{
+			throwWarning(OperationNotifier::Operation::RUNTIME, "Cannot find button with id: " + id);
+		}
+	}
+
     void Layout::buttonDown(std::string id, bool immediately)
     {
         Button* pButton = toButton(fetchElement(id));

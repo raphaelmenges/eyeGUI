@@ -172,6 +172,13 @@ namespace eyegui
 		  \param id is the unique id of the button which causes the callback.
 		*/
 		void virtual up(Layout* pLayout, std::string id) = 0;
+
+		//! Callback for selecting button.
+		/*!
+		\param pLayout pointer to layout from which callback is coming.
+		\param id is the unique id of the button which causes the callback.
+		*/
+		void virtual selected(Layout* pLayout, std::string id) = 0;
 	};
 
 	//! Abstract listener class for sensors.
@@ -805,6 +812,14 @@ namespace eyegui
 	  \param id is the unique id of an element.
 	*/
 	void hitButton(Layout* pLayout, std::string id);
+
+	//! Classify currently selected button.
+	/*!
+	\param pLayout pointer to layout.
+	\param id is the unique id of an element.
+	\param accept if true and reject selection when false.
+	*/
+	void classifyButton(Layout* pLayout, std::string id, bool accept);
 
 	//! Button down.
 	/*!

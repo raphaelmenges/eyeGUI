@@ -162,6 +162,9 @@ namespace eyegui
         // Hit button
         void hitButton(std::string id);
 
+		// Classify button
+		void classifyButton(std::string id, bool accept);
+
         // Button down
         void buttonDown(std::string id, bool immediately);
 

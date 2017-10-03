@@ -31,7 +31,8 @@ namespace eyegui
         std::string iconFilepath,
         std::u16string desc,
         std::string descKey,
-        bool isSwitch) : IconElement(
+        bool isSwitch,
+		bool instantPress) : IconElement(
             id,
             styles,
             pParent,
@@ -54,6 +55,8 @@ namespace eyegui
         mIsSwitch = isSwitch;
         mUseCircleThreshold = useCircleThreshold;
         mIsDown = false;
+		mSelectionClassification = Classification::NO_SELECTION;
+		mInstantPress = instantPress;
 
         // Render items
         if(mUseCircleThreshold)
@@ -160,50 +163,98 @@ namespace eyegui
         return mIsDown;
     }
 
+	void Button::classify(bool accept)
+	{
+		if (mSelectionClassification == Classification::PENDING)
+		{
+			if (accept)
+			{
+				mSelectionClassification = Classification::ACCEPT;
+			}
+			else
+			{
+				mSelectionClassification = Classification::REJECT;
+			}
+		}
+	}
+
     float Button::specialUpdate(float tpf, Input* pInput)
     {
         // Super call
         float adaptiveScale = IconElement::specialUpdate(tpf, pInput);
 
-        // Check for penetration by input
-        bool penetrated = penetratedByInput(pInput);
+		// If something is selected, wait for reaction from application
+		if (mSelectionClassification != Classification::NO_SELECTION)
+		{
+			// Wait for application to classify selection
+			if (mSelectionClassification == Classification::ACCEPT) // accept
+			{
+				// Hit the button
+				hit();
 
-        // Pressing animation
-        if (mIsDown && mPressing.getValue() < 1)
-        {
-            mPressing.update(tpf / getStyleValue(property::Duration::ButtonPressingDuration));
-        }
-        else if (!mIsDown && mPressing.getValue() > 0)
-        {
-            mPressing.update(-tpf / getStyleValue(property::Duration::ButtonPressingDuration));
-        }
+				// Reset selection
+				mSelectionClassification = Classification::NO_SELECTION;
+			}
+			else if (mSelectionClassification == Classification::REJECT) // reject
+			{
+				// Reset selection
+				mSelectionClassification = Classification::NO_SELECTION;
 
-        // If pressed and no switch, go back (do it each frame and not only at end of going down,
-        // because otherwise a deactivation would prohibit going up because of the test for
-        // activity in up()
-        if (mIsDown && !mIsSwitch && mPressing.getValue() >= 1)
-        {
-            up();
-        }
+			} // else: pending
+		}
+		else
+		{
 
-        // Threshold
-        if (
-            (mPressing.getValue() == 0 || mPressing.getValue() == 1) // only when completey up or down
-            && penetrated // penetration
-            && !(!mIsSwitch && mPressing.getValue() > 0)) // avoids to add threshold for none switch when at down position
-        {
-            mThreshold.update(tpf / getStyleValue(property::Duration::ButtonThresholdIncreaseDuration));
+			// Check for penetration by input
+			bool penetrated = penetratedByInput(pInput);
 
-            if (mThreshold.getValue() >= 1)
-            {
-                hit();
-                mThreshold.setValue(0);
-            }
-        }
-        else
-        {
-            mThreshold.update(-tpf / getStyleValue(property::Duration::ButtonThresholdDecreaseDuration));
-        }
+			// Pressing animation
+			if (mIsDown && mPressing.getValue() < 1)
+			{
+				mPressing.update(tpf / getStyleValue(property::Duration::ButtonPressingDuration));
+			}
+			else if (!mIsDown && mPressing.getValue() > 0)
+			{
+				mPressing.update(-tpf / getStyleValue(property::Duration::ButtonPressingDuration));
+			}
+
+			// If pressed and no switch, go back (do it each frame and not only at end of going down,
+			// because otherwise a deactivation would prohibit going up because of the test for
+			// activity in up()
+			if (mIsDown && !mIsSwitch && mPressing.getValue() >= 1)
+			{
+				up();
+			}
+
+			// Threshold
+			if (
+				(mPressing.getValue() == 0 || mPressing.getValue() == 1) // only when completey up or down
+				&& penetrated // penetration
+				&& !(!mIsSwitch && mPressing.getValue() > 0)) // avoids to add threshold for none switch when at down position
+			{
+				mThreshold.update(tpf / getStyleValue(property::Duration::ButtonThresholdIncreaseDuration));
+
+				if (mThreshold.getValue() >= 1)
+				{
+					if (mInstantPress)
+					{
+						hit(); // just hit
+					}
+					else
+					{
+						mSelectionClassification = Classification::PENDING;
+						mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_SELECTED);
+						notifyInteraction("BUTTON_SELECTED");
+					}
+					mThreshold.setValue(0);
+					
+				}
+			}
+			else
+			{
+				mThreshold.update(-tpf / getStyleValue(property::Duration::ButtonThresholdDecreaseDuration));
+			}
+		}
 
         return adaptiveScale;
     }
@@ -233,6 +284,18 @@ namespace eyegui
             mpThresholdItem->draw();
         }
 
+		// Draw pending classification (this is called "selection" for keyboard but here the term is already used :( )
+		if (mSelectionClassification == Classification::PENDING)
+		{
+			mpSelectionItem->bind();
+			mpSelectionItem->getShader()->fillValue("matrix", mFullDrawMatrix);
+			mpSelectionItem->getShader()->fillValue("selectionColor", getStyleValue(property::Color::SelectionColor));
+			mpSelectionItem->getShader()->fillValue("selection", 1.f);
+			mpSelectionItem->getShader()->fillValue("alpha", getMultipliedDimmedAlpha());
+			mpSelectionItem->getShader()->fillValue("mask", 0); // Mask is always in slot 0
+			mpSelectionItem->draw();
+		}
+
         // Super call
         IconElement::specialDraw();
     }
@@ -242,6 +305,8 @@ namespace eyegui
         IconElement::specialReset();
 
         mThreshold.setValue(0);
+
+		mSelectionClassification = Classification::NO_SELECTION;
 
         // Handle pressing
         if(mIsSwitch)
@@ -272,6 +337,9 @@ namespace eyegui
 
         // Reset threshold
         mThreshold.setValue(0);
+
+		// No more classification
+		mSelectionClassification = Classification::NO_SELECTION;
     }
 
     void Button::specialPipeNotification(NotificationType notification, Layout* pLayout)
@@ -288,6 +356,9 @@ namespace eyegui
         case NotificationType::BUTTON_UP:
             notifyListener(&ButtonListener::up, pLayout, getId());
             break;
+		case NotificationType::BUTTON_SELECTED:
+			notifyListener(&ButtonListener::selected, pLayout, getId());
+			break;
         default:
             throwWarning(
                 OperationNotifier::Operation::BUG,

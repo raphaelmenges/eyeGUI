@@ -631,6 +631,9 @@ namespace eyegui
             // Is button a switch?
             bool isSwitch = parser_helpers::parseBoolAttribute("switch", xmlCircleButton);
 
+			// Do not classification
+			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlCircleButton, true); // fallback here should be true
+
             // Create circle button
 			ElementFactory fac;
 			auto upCircleButton = fac.build<CircleButton>(
@@ -649,7 +652,8 @@ namespace eyegui
 				iconFilepath,
 				desc,
 				descKey,
-				isSwitch);
+				isSwitch,
+				instantPress);
 
             // Return circle button
             return (std::move(upCircleButton));
@@ -667,6 +671,9 @@ namespace eyegui
 
             // Is button a switch?
             bool isSwitch = parser_helpers::parseBoolAttribute("switch", xmlBoxButton);
+
+			// Do not classification
+			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlBoxButton, true); // fallback here should be true
 
             // Create box button
 			ElementFactory fac;
@@ -686,7 +693,8 @@ namespace eyegui
 				iconFilepath,
 				desc,
 				descKey,
-				isSwitch);
+				isSwitch,
+				instantPress);
 
             // Return box button
             return (std::move(upBoxButton));
@@ -742,6 +750,9 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Usage of available space in DropButton not in range of 0% to 100%", filepath);
             }
 
+			// Do not classification
+			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlDropButton, true); // fallback here should be true
+
             // Create drop button
 			ElementFactory fac;
 			auto upDropButton = fac.build<DropButton>(
@@ -760,7 +771,8 @@ namespace eyegui
 				iconFilepath,
 				desc,
 				descKey,
-				space);
+				space,
+				instantPress);
 
             // Attach inner element
             tinyxml2::XMLElement const * xmlElement = xmlDropButton->FirstChildElement();
@@ -789,7 +801,7 @@ namespace eyegui
         std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
         {
 			// Do not care for key check
-			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlKeyboard);
+			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlKeyboard, true); // fallback here should be true
 
 			// Force static layout
 			std::string layout = parser_helpers::parseStringAttribute("layout", xmlKeyboard);

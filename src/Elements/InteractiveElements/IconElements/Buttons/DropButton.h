@@ -64,7 +64,8 @@ namespace eyegui
 			std::string iconFilepath,
 			std::u16string desc,
 			std::string descKey,
-			float space);
+			float space,
+			bool instantPress);
 
         // Updating filled by subclasses, returns adaptive scale
         virtual float specialUpdate(float tpf, Input* pInput);

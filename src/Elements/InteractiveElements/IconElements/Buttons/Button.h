@@ -32,6 +32,9 @@ namespace eyegui
         // Is button down?
         bool isDown() const;
 
+		// Classify current selection if something is selected
+		void classify(bool accept);
+
     protected:
 
 		// Factory is friend
@@ -55,7 +58,8 @@ namespace eyegui
 			std::string iconFilepath,
 			std::u16string desc,
 			std::string descKey,
-			bool isSwitch
+			bool isSwitch,
+			bool instantPress
 			);
 
         // Updating filled by subclasses, returns adaptive scale
@@ -78,6 +82,9 @@ namespace eyegui
 
     private:
 
+		// Enum for classification of selection
+		enum class Classification { NO_SELECTION, PENDING, ACCEPT, REJECT };
+
         // Members
         bool mUseCircleThreshold;
         bool mIsDown;
@@ -85,6 +92,8 @@ namespace eyegui
         LerpValue mThreshold; // [0..1]
         LerpValue mPressing; // [0..1]
         RenderItem const * mpThresholdItem;
+		Classification mSelectionClassification;
+		bool mInstantPress;
     };
 }
 

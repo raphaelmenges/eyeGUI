@@ -24,7 +24,8 @@ namespace eyegui
         std::string iconFilepath,
 		std::u16string desc,
 		std::string descKey,
-        bool isSwitch) : Button(
+        bool isSwitch,
+		bool instantPress) : Button(
             id,
             styles,
             pParent,
@@ -41,7 +42,8 @@ namespace eyegui
             iconFilepath,
 			desc,
 			descKey,
-            isSwitch)
+            isSwitch,
+			instantPress)
     {
         mType = Type::BOX_BUTTON;
 

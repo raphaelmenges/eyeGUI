@@ -28,7 +28,8 @@ namespace eyegui
         std::string iconFilepath,
 		std::u16string desc,
 		std::string descKey,
-        float space) : BoxButton(
+        float space,
+		bool instantPress) : BoxButton(
             id,
             styles,
             pParent,
@@ -43,7 +44,8 @@ namespace eyegui
             iconFilepath,
 			desc,
 			descKey,
-            true)
+            true, // always a switch
+			instantPress)
     {
         mType = Type::DROP_BUTTON;
 
