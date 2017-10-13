@@ -30,7 +30,8 @@ namespace eyegui
         float fontMediumSize,
         float fontSmallSize,
         FontSize descriptionFontSize,
-        bool resizeInvisibleLayouts)
+        bool resizeInvisibleLayouts,
+		bool useDriftMap)
     {
         // Initialize OpenGL
         GLSetup::init();
@@ -57,6 +58,7 @@ namespace eyegui
 		mDescriptionVisibility = DescriptionVisibility::ON_PENETRATION;
         mResizeCallbackSet = false;
 		mupDriftMap = std::unique_ptr<DriftMap>(new DriftMap());
+		mUseDriftMap = useDriftMap;
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -120,9 +122,6 @@ namespace eyegui
                 // Initializes resizing, piped to layouts during updating
                 mResizing = true;
                 mResizeWaitTime = RESIZE_WAIT_DURATION;
-
-				// Reset drift map
-				mupDriftMap->reset();
 
                 // Save to members
                 mNewWidth = width;
@@ -193,6 +192,12 @@ namespace eyegui
 
         // Copy constant input
         Input copyInput = input;
+
+		// Apply drift correction
+		if (mUseDriftMap)
+		{
+			mupDriftMap->correct(copyInput.gazeX, copyInput.gazeY);
+		}
 
         // Update all layers in reversed order
         for (int i = (int)mLayers.size() - 1; i >= 0; i--)
@@ -276,6 +281,11 @@ namespace eyegui
     {
         mDrawGazeVisualization = !mDrawGazeVisualization;
     }
+
+	void GUI::resetDriftMap()
+	{
+		mupDriftMap->reset();
+	}
 
 	void GUI::prefetchImage(std::string filepath)
 	{
@@ -435,6 +445,9 @@ namespace eyegui
 
         // Reset gaze drawer
         mupGazeDrawer->reset();
+
+		// Reset drift map
+		mupDriftMap->reset();
 
         // Then, resize all layers
         for (auto& rLayer : mLayers)

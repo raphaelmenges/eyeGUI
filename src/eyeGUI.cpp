@@ -62,7 +62,8 @@ namespace eyegui
             fontMediumSize,
             fontSmallSize,
             descriptionFontSize,
-            resizeInvisibleLayouts);
+            resizeInvisibleLayouts,
+			useDriftMap);
     }
 
     Layout* addLayout(GUI* pGUI, std::string filepath, int layer, bool visible)
@@ -147,6 +148,11 @@ namespace eyegui
     {
         pGUI->toggleGazeVisualizationDrawing();
     }
+
+	void resetDriftMap(GUI* pGUI)
+	{
+		pGUI->resetDriftMap();
+	}
 
     void setDescriptionVisibility(GUI* pGUI, DescriptionVisibility visbility)
     {

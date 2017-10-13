@@ -5,7 +5,7 @@
 
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Drift map. Is filled at interaction through dwell times activation of
-// elements with the offset between center of the activated elements and the
+// elements with the distance between center of the activated elements and the
 // provided gaze coordinates. Offset is from center of activation to gaze.
 
 #ifndef DRIFT_MAP_H_
@@ -25,6 +25,15 @@ namespace eyegui
 
 		// Reset drift map
 		void reset();
+
+		// Correct drift
+		void correct(int& gazeX, int& gazeY);
+
+	private:
+
+		// Global value of drift
+		float mDriftX = 0;
+		float mDriftY = 0;
 	};
 }
 

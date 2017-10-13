@@ -48,7 +48,8 @@ namespace eyegui
             float fontMediumSize,
             float fontSmallSize,
             FontSize descriptionFontSize,
-			bool resizeInvisibleLayouts);
+			bool resizeInvisibleLayouts,
+			bool useDriftMap);
 
         // Destructor
         virtual ~GUI();
@@ -90,6 +91,9 @@ namespace eyegui
 
         // Toggle gaze visualization drawing
         void toggleGazeVisualizationDrawing();
+
+		// Reset drift map
+		void resetDriftMap();
 
         // Prefatch image to avoid lag
         void prefetchImage(std::string filepath);
@@ -282,6 +286,7 @@ namespace eyegui
 		std::function<void(int, int)> mResizeCallbackFunction;
 		bool mResizeCallbackSet;
 		std::unique_ptr<DriftMap> mupDriftMap;
+		bool mUseDriftMap;
     };
 }
 

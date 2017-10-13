@@ -344,6 +344,7 @@ namespace eyegui
 		float fontSmallSize = 0.0175f; //!< Height of small font in percentage of GUI height
 		FontSize descriptionFontSize = FontSize::SMALL; //!< Font size of icon element descriptions
 		bool resizeInvisibleLayouts = true; //!< Resize invisible layouts. Has advantage that one can ask for the size of elements all time
+		bool useDriftMap = true; //!< Use estimations from drift map to improve accuracy
 	};
 
 	//! Creates layout inside GUI and returns pointer to it. Is executed at update call.
@@ -430,6 +431,12 @@ namespace eyegui
 	  \param pGUI pointer to GUI.
 	*/
 	void toggleGazeVisualizationDrawing(GUI* pGUI);
+
+	//! Resets drift map (potentially after a recalibration of the eyetracker)
+	/*!
+	\param pGUI pointer to GUI.
+	*/
+	void resetDriftMap(GUI* pGUI);
 
 	//! Set how descriptions of icon elements are displayed.
 	/*!

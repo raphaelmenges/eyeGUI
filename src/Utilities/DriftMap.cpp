@@ -24,10 +24,23 @@ namespace eyegui
 
 		std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;
 		std::cout << "DriftX: " << driftX << " DriftY: " << driftY << std::endl;
+
+		// Update drift
+		mDriftX = 0.5f * mDriftX + 0.5f * (float)driftX;
+		mDriftY = 0.5f * mDriftY + 0.5f * (float)driftY;
 	}
 
 	void DriftMap::reset()
 	{
+		std::cout << "######################### HERE IS DRIFT MAP RESET" << std::endl;
+		mDriftX = 0;
+		mDriftY = 0;
+	}
 
+	void DriftMap::correct(int& gazeX, int& gazeY)
+	{
+		// Subtract drift from gaze
+		gazeX -= mDriftX;
+		gazeY -= mDriftY;
 	}
 }
