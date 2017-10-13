@@ -16,13 +16,14 @@
 
 namespace eyegui
 {
-    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::vector<std::string> styles) : 
+    Layout::Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, DriftMap* pDriftMap, std::vector<std::string> styles) :
 		Styleable(styles, [pGUI](std::string styleClass) { return pGUI->fetchStyleTree()->fetchStyleClass(styleClass); }) // Styleable constructor. Do not delegate member method here, since members not yet initialized
     {
         // Initialize members
         mName = name;
         mpGUI = pGUI;
         mpAssetManager = pAssetManager;
+		mpDriftMap = pDriftMap;
         mupIds = NULL;
         mAlpha.setValue(1);
         mVisible = true;
@@ -860,11 +861,12 @@ namespace eyegui
         if (pStack != NULL)
         {
             // Create brick
-            std::unique_ptr<elementsAndIds> upPair = std::move(
-                brick_parser::parse(
-                    this,
-                    pStack->getFrame(),
-                    pStack->getAssetManager(),
+			std::unique_ptr<elementsAndIds> upPair = std::move(
+				brick_parser::parse(
+					this,
+					pStack->getFrame(),
+					pStack->getAssetManager(),
+					pStack->getDriftMap(),
                     pStack->getNotificationQueue(),
                     pStack,
                     filepath,
@@ -1139,6 +1141,7 @@ namespace eyegui
                     pElement->getLayout(),
                     pElement->getFrame(),
                     pElement->getAssetManager(),
+					pElement->getDriftMap(),
                     pElement->getNotificationQueue(),
                     pElement->getParent(),
                     filepath,
@@ -1208,6 +1211,7 @@ namespace eyegui
                 this,
                 pFrame,
                 mpAssetManager,
+				mpDriftMap,
                 mupNotificationQueue.get(),
                 NULL,
                 filepath,

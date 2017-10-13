@@ -20,6 +20,7 @@ namespace eyegui
 			Layout const * pLayout,
 			Frame* pFrame,
 			AssetManager* pAssetManager,
+			DriftMap* pDriftMap,
 			NotificationQueue* pNotificationQueue,
 			Element* pParent,
 			std::string filepath,

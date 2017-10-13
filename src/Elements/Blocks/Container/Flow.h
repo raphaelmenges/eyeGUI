@@ -46,6 +46,7 @@ namespace eyegui
 			Layout const * pLayout,
 			Frame* pFrame,
 			AssetManager* pAssetManager,
+			DriftMap* pDriftMap,
 			NotificationQueue* pNotificationQueue,
 			float relativeScale,
 			float border,

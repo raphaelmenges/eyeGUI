@@ -18,11 +18,12 @@ namespace eyegui
 	class GUI;
 	class Layout;
 	class AssetManager;
+	class DriftMap;
 
 	namespace layout_parser
 	{
 		// Parsing
-		std::unique_ptr<Layout> parse(GUI* pGUI, AssetManager* pAssetManager, std::string filepath);
+		std::unique_ptr<Layout> parse(GUI const * pGUI, AssetManager* pAssetManager, DriftMap* pDriftMap, std::string filepath);
 	}
 }
 

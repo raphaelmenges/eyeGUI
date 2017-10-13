@@ -23,6 +23,7 @@ namespace eyegui
         Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
+		DriftMap* pDriftMap,
         NotificationQueue* pNotificationQueue,
         RenderingMask renderingMask,
         float relativeScale,
@@ -44,6 +45,7 @@ namespace eyegui
         mpLayout = pLayout;
         mpFrame = pFrame;
         mpAssetManager = pAssetManager;
+		mpDriftMap = pDriftMap;
         mpNotificationQueue = pNotificationQueue;
         mRelativeScale = relativeScale;
         mBorder = border;
@@ -278,6 +280,11 @@ namespace eyegui
     {
         return mpAssetManager;
     }
+
+	DriftMap* Element::getDriftMap() const
+	{
+		return mpDriftMap;
+	}
 
     NotificationQueue* Element::getNotificationQueue() const
     {

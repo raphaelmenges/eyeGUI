@@ -17,13 +17,13 @@ namespace eyegui
 {
     namespace element_parser
     {
-        std::unique_ptr<elementsAndIds> parse(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string> idMapper)
+        std::unique_ptr<elementsAndIds> parse(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string> idMapper)
         {
             // Create map for ids
             std::unique_ptr<idMap> upIdMap = std::unique_ptr<idMap>(new std::map<std::string, Element*>);
 
             // Parse elements
-            std::unique_ptr<Element> upElement = std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, pParent, filepath, idMapper, *(upIdMap.get())));
+            std::unique_ptr<Element> upElement = std::move(parseElement(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, xmlElement, pParent, filepath, idMapper, *(upIdMap.get())));
 
             // Create and fill pair
             std::unique_ptr<elementsAndIds> upPair = std::unique_ptr<elementsAndIds>(new elementsAndIds);
@@ -34,7 +34,7 @@ namespace eyegui
             return std::move(upPair);
         }
 
-        std::unique_ptr<Element> parseElement(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
+        std::unique_ptr<Element> parseElement(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, tinyxml2::XMLElement const * xmlElement, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
             // Names of style classes of element from tree, including inherited from parent
             std::vector<std::string> styles = parseStyleClassesNames(xmlElement, pLayout, pParent, filepath);
@@ -45,7 +45,7 @@ namespace eyegui
             if (xmlElement == NULL)
             {
                 // Fallback
-                return(std::move(parseBlank(pLayout, pFrame, pAssetManager, pNotificationQueue, EMPTY_STRING_ATTRIBUTE, styles, 1, 0, false, false, NULL, pParent, filepath)));
+                return(std::move(parseBlank(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, EMPTY_STRING_ATTRIBUTE, styles, 1, 0, false, false, NULL, pParent, filepath)));
             }
 
             // Unique pointer to element
@@ -76,68 +76,68 @@ namespace eyegui
             std::string value = std::string(xmlElement->Value());
             if (value == "grid")
             {
-                upElement = std::move(parseGrid(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
+                upElement = std::move(parseGrid(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
             }
             else if (value == "blank")
             {
-                upElement = std::move(parseBlank(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseBlank(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "block")
             {
-                upElement = std::move(parseBlock(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseBlock(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "picture")
             {
-                upElement = std::move(parsePicture(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parsePicture(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "stack")
             {
-                upElement = std::move(parseStack(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
+                upElement = std::move(parseStack(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
             }
             else if (value == "textblock")
             {
-                upElement = std::move(parseTextBlock(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseTextBlock(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "circlebutton")
             {
-                upElement = std::move(parseCircleButton(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseCircleButton(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "boxbutton")
             {
-                upElement = std::move(parseBoxButton(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseBoxButton(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "sensor")
             {
-                upElement = std::move(parseSensor(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseSensor(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "dropbutton")
             {
-                upElement = std::move(parseDropButton(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
+                upElement = std::move(parseDropButton(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
             }
             else if (value == "keyboard")
             {
-                upElement = std::move(parseKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseKeyboard(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "wordsuggest")
             {
-                upElement = std::move(parseWordSuggest(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseWordSuggest(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
             else if (value == "flow")
             {
-                upElement = std::move(parseFlow(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
+                upElement = std::move(parseFlow(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath, rIdMapper, rIdMap));
             }
             else if (value == "progressbar")
             {
-                upElement = std::move(parseProgressBar(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+                upElement = std::move(parseProgressBar(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
             }
 			else if (value == "textedit")
 			{
-				upElement = std::move(parseTextEdit(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+				upElement = std::move(parseTextEdit(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
 			}
 			// Experimental
 			else if (value == "futurekeyboard")
 			{
-				upElement = std::move(parseFutureKeyboard(pLayout, pFrame, pAssetManager, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
+				upElement = std::move(parseFutureKeyboard(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, id, styles, relativeScale, border, dimming, adaptiveScaling, xmlElement, pParent, filepath));
 			}
             else
             {
@@ -156,7 +156,7 @@ namespace eyegui
             }
         }
 
-        std::unique_ptr<Grid> parseGrid(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlGrid, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
+        std::unique_ptr<Grid> parseGrid(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlGrid, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
             // Fetch values for block from xml
             bool consumeInput;
@@ -196,6 +196,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -243,7 +244,7 @@ namespace eyegui
 
                     // Determine element in cell
                     tinyxml2::XMLElement const * xmlElement = xmlColumn->FirstChildElement();
-                    upGrid->attachElement(i, j, std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, upGrid.get(), filepath, rIdMapper, rIdMap)));
+                    upGrid->attachElement(i, j, std::move(parseElement(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, xmlElement, upGrid.get(), filepath, rIdMapper, rIdMap)));
 
                     // Get column sibling if necessary
                     xmlColumn = xmlColumn->NextSiblingElement();
@@ -291,7 +292,7 @@ namespace eyegui
             return std::move(upGrid);
         }
 
-        std::unique_ptr<Blank> parseBlank(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBlank, Element* pParent, std::string filepath)
+        std::unique_ptr<Blank> parseBlank(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBlank, Element* pParent, std::string filepath)
         {
             // Create blank
 			ElementFactory fac;
@@ -303,6 +304,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -313,7 +315,7 @@ namespace eyegui
 			return (std::move(upBlank));
         }
 
-        std::unique_ptr<Block> parseBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBlock, Element* pParent, std::string filepath)
+        std::unique_ptr<Block> parseBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBlock, Element* pParent, std::string filepath)
         {
             // Fetch values for block from xml
             bool consumeInput;
@@ -332,6 +334,7 @@ namespace eyegui
                         pLayout,
                         pFrame,
                         pAssetManager,
+						pDriftMap,
                         pNotificationQueue,
                         relativeScale,
                         border,
@@ -345,7 +348,7 @@ namespace eyegui
             return (std::move(upBlock));
         }
 
-        std::unique_ptr<Picture> parsePicture(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlPicture, Element* pParent, std::string filepath)
+        std::unique_ptr<Picture> parsePicture(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlPicture, Element* pParent, std::string filepath)
         {
             // Get full path to image file
             std::string imageFilepath = parser_helpers::parseStringAttribute("src", xmlPicture);
@@ -380,6 +383,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -392,7 +396,7 @@ namespace eyegui
 			return (std::move(upPicture));
         }
 
-        std::unique_ptr<Stack> parseStack(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlStack, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
+        std::unique_ptr<Stack> parseStack(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlStack, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
             // Fetch values for block from xml
             bool consumeInput;
@@ -488,6 +492,7 @@ namespace eyegui
                     pLayout,
                     pFrame,
                     pAssetManager,
+					pDriftMap,
                     pNotificationQueue,
                     relativeScale,
                     border,
@@ -509,7 +514,7 @@ namespace eyegui
             while (xmlElement != NULL)
             {
                 // Fetch element
-                upStack->attachElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, upStack.get(), filepath, rIdMapper, rIdMap)));
+                upStack->attachElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, xmlElement, upStack.get(), filepath, rIdMapper, rIdMap)));
 
                 // Try to get next sibling element
                 xmlElement = xmlElement->NextSiblingElement();
@@ -519,7 +524,7 @@ namespace eyegui
             return (std::move(upStack));
         }
 
-        std::unique_ptr<TextBlock> parseTextBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlTextBlock, Element* pParent, std::string filepath)
+        std::unique_ptr<TextBlock> parseTextBlock(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlTextBlock, Element* pParent, std::string filepath)
         {
             // Fetch values for block from xml
             bool consumeInput;
@@ -598,6 +603,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -618,7 +624,7 @@ namespace eyegui
             return std::move(upTextBlock);
         }
 
-        std::unique_ptr<CircleButton> parseCircleButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlCircleButton, Element* pParent, std::string filepath)
+        std::unique_ptr<CircleButton> parseCircleButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlCircleButton, Element* pParent, std::string filepath)
         {
             // Extract filepath
             std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlCircleButton);
@@ -644,6 +650,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -659,7 +666,7 @@ namespace eyegui
             return (std::move(upCircleButton));
         }
 
-        std::unique_ptr<BoxButton> parseBoxButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBoxButton, Element* pParent, std::string filepath)
+        std::unique_ptr<BoxButton> parseBoxButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlBoxButton, Element* pParent, std::string filepath)
         {
             // Extract filepath
             std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlBoxButton);
@@ -685,6 +692,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -700,7 +708,7 @@ namespace eyegui
             return (std::move(upBoxButton));
         }
 
-        std::unique_ptr<Sensor> parseSensor(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlSensor, Element* pParent, std::string filepath)
+        std::unique_ptr<Sensor> parseSensor(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlSensor, Element* pParent, std::string filepath)
         {
             // Extract filepath
             std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlSensor);
@@ -720,6 +728,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -733,7 +742,7 @@ namespace eyegui
             return (std::move(upSensor));
         }
 
-        std::unique_ptr<DropButton> parseDropButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlDropButton, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
+        std::unique_ptr<DropButton> parseDropButton(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlDropButton, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
             // Extract filepath
             std::string iconFilepath = parser_helpers::parseStringAttribute("icon", xmlDropButton);
@@ -763,6 +772,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -786,7 +796,7 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "DropButton has more than one inner element", filepath);
             }
 
-            upDropButton->attachInnerElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, upDropButton.get(), filepath, rIdMapper, rIdMap)));
+            upDropButton->attachInnerElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, xmlElement, upDropButton.get(), filepath, rIdMapper, rIdMap)));
 
             // Check, that drop button was NOT inserted into some kind of scrolling box
             if (upDropButton->checkForParentType(Element::Type::FLOW))
@@ -798,7 +808,7 @@ namespace eyegui
             return (std::move(upDropButton));
         }
 
-        std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
+        std::unique_ptr<Keyboard> parseKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlKeyboard, Element* pParent, std::string filepath)
         {
 			// Do not care for key check
 			bool instantPress = parser_helpers::parseBoolAttribute("instantpress", xmlKeyboard, true); // fallback here should be true
@@ -849,6 +859,7 @@ namespace eyegui
 					pLayout,
 					pFrame,
 					pAssetManager,
+					pDriftMap,
 					pNotificationQueue,
 					relativeScale,
 					border,
@@ -867,6 +878,7 @@ namespace eyegui
 					pLayout,
 					pFrame,
 					pAssetManager,
+					pDriftMap,
 					pNotificationQueue,
 					relativeScale,
 					border,
@@ -879,7 +891,7 @@ namespace eyegui
 			return (std::move(upKeyboard));
         }
 
-        std::unique_ptr<WordSuggest> parseWordSuggest(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlWordSuggest, Element* pParent, std::string filepath)
+        std::unique_ptr<WordSuggest> parseWordSuggest(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlWordSuggest, Element* pParent, std::string filepath)
         {
             // Get font size
             FontSize fontSize;
@@ -895,6 +907,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -906,7 +919,7 @@ namespace eyegui
 			return (std::move(upWordSuggest));
         }
 
-        std::unique_ptr<Flow> parseFlow(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFlow, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
+        std::unique_ptr<Flow> parseFlow(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFlow, Element* pParent, std::string filepath, std::map<std::string, std::string>& rIdMapper, idMap& rIdMap)
         {
             // Fetch values for block from xml
             bool consumeInput;
@@ -947,6 +960,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -972,13 +986,13 @@ namespace eyegui
                 throwError(OperationNotifier::Operation::PARSING, "Flow has more than one inner element", filepath);
             }
 
-            upFlow->attachInnerElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, upFlow.get(), filepath, rIdMapper, rIdMap)));
+            upFlow->attachInnerElement(std::move(parseElement(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, xmlElement, upFlow.get(), filepath, rIdMapper, rIdMap)));
 
             // Return flow
             return (std::move(upFlow));
         }
 
-        std::unique_ptr<ProgressBar> parseProgressBar(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlProgressBar, Element* pParent, std::string filepath)
+        std::unique_ptr<ProgressBar> parseProgressBar(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlProgressBar, Element* pParent, std::string filepath)
         {
             // Fetch values for block from xml
             bool consumeInput;
@@ -1021,6 +1035,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -1036,7 +1051,7 @@ namespace eyegui
             return (std::move(upProgressBar));
         }
 
-		std::unique_ptr<TextEdit> parseTextEdit(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlTextEdit, Element* pParent, std::string filepath)
+		std::unique_ptr<TextEdit> parseTextEdit(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlTextEdit, Element* pParent, std::string filepath)
 		{
 			// Get font size
 			FontSize fontSize;
@@ -1052,6 +1067,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,
@@ -1063,7 +1079,7 @@ namespace eyegui
 			return (std::move(upTextEdit));
 		}
 
-		std::unique_ptr<FutureKeyboard> parseFutureKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFutureKeyboard, Element* pParent, std::string filepath)
+		std::unique_ptr<FutureKeyboard> parseFutureKeyboard(Layout const * pLayout, Frame* pFrame, AssetManager* pAssetManager, DriftMap* pDriftMap, NotificationQueue* pNotificationQueue, std::string id, std::vector<std::string> styles, float relativeScale, float border, bool dimming, bool adaptiveScaling, tinyxml2::XMLElement const * xmlFutureKeyboard, Element* pParent, std::string filepath)
 		{
 			// Decide mode
 			std::string modeValue = parser_helpers::parseStringAttribute("mode", xmlFutureKeyboard);
@@ -1095,6 +1111,7 @@ namespace eyegui
 				pLayout,
 				pFrame,
 				pAssetManager,
+				pDriftMap,
 				pNotificationQueue,
 				relativeScale,
 				border,

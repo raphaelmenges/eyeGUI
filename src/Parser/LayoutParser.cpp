@@ -18,7 +18,7 @@ namespace eyegui
 {
     namespace layout_parser
     {
-        std::unique_ptr<Layout> parse(GUI* pGUI, AssetManager* pAssetManager, std::string filepath)
+        std::unique_ptr<Layout> parse(GUI const * pGUI, AssetManager* pAssetManager, DriftMap* pDriftMap, std::string filepath)
         {
             // Check file name
             if (!checkFileNameExtension(filepath, LAYOUT_EXTENSION))
@@ -73,7 +73,7 @@ namespace eyegui
 			if (styles.empty()) { styles.push_back(STYLE_BASE_CLASS_NAME); }
 
             // Create layout
-            std::unique_ptr<Layout> upLayout = std::unique_ptr<Layout>(new Layout(name, pGUI, pAssetManager, styles));
+            std::unique_ptr<Layout> upLayout = std::unique_ptr<Layout>(new Layout(name, pGUI, pAssetManager, pDriftMap, styles));
 
             // Then there should be an element
             tinyxml2::XMLElement* xmlRoot = xmlLayout->FirstChildElement();
@@ -86,7 +86,7 @@ namespace eyegui
 
             // Create, parse further internal an attach
             std::unique_ptr<elementsAndIds> upPair;
-            upPair = std::move(element_parser::parse(upLayout.get(), upLayout->getMainFrame(), pAssetManager, upLayout->getNotificationQueue(), xmlRoot, NULL, filepath));
+            upPair = std::move(element_parser::parse(upLayout.get(), upLayout->getMainFrame(), pAssetManager, pDriftMap, upLayout->getNotificationQueue(), xmlRoot, NULL, filepath));
             upLayout->attachElementToMainFrameAsRoot(std::move(upPair->first), std::move(upPair->second));
 
             // Return ready to use layout

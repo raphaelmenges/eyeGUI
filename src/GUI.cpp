@@ -56,6 +56,7 @@ namespace eyegui
         mResizeInvisibleLayouts = resizeInvisibleLayouts;
 		mDescriptionVisibility = DescriptionVisibility::ON_PENETRATION;
         mResizeCallbackSet = false;
+		mupDriftMap = std::unique_ptr<DriftMap>(new DriftMap());
 
         // Initialize default font ("" handled by asset manager)
         mpDefaultFont = mupAssetManager->fetchFont(fontFilepath);
@@ -87,7 +88,7 @@ namespace eyegui
     Layout* GUI::addLayout(std::string filepath, int layer, bool visible)
     {
         // Parse layout
-        std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), filepath);
+		std::unique_ptr<Layout> upLayout = layout_parser::parse(this, mupAssetManager.get(), mupDriftMap.get(), filepath);
 
         // Get raw pointer to return
         Layout* pLayout = upLayout.get();

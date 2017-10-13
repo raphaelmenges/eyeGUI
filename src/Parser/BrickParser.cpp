@@ -19,6 +19,7 @@ namespace eyegui
 			Layout const * pLayout,
 			Frame* pFrame,
 			AssetManager* pAssetManager,
+			DriftMap* pDriftMap,
 			NotificationQueue* pNotificationQueue,
 			Element* pParent,
 			std::string filepath,
@@ -43,7 +44,7 @@ namespace eyegui
 
             // Collect values to return
             std::unique_ptr<elementsAndIds> upPair = std::unique_ptr<elementsAndIds>(new elementsAndIds);
-            upPair = std::move(element_parser::parse(pLayout, pFrame, pAssetManager, pNotificationQueue, xmlElement, pParent, filepath, idMapper));
+            upPair = std::move(element_parser::parse(pLayout, pFrame, pAssetManager, pDriftMap, pNotificationQueue, xmlElement, pParent, filepath, idMapper));
 
             // Return the pair
             return std::move(upPair);

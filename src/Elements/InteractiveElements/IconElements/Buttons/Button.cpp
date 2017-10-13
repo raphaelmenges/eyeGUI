@@ -11,6 +11,7 @@
 #include "NotificationQueue.h"
 #include "src/Utilities/OperationNotifier.h"
 #include "src/Utilities/Helper.h"
+#include "src/Utilities/DriftMap.h"
 
 namespace eyegui
 {
@@ -21,6 +22,7 @@ namespace eyegui
         Layout const * pLayout,
         Frame* pFrame,
         AssetManager* pAssetManager,
+		DriftMap* pDriftMap,
         NotificationQueue* pNotificationQueue,
         RenderingMask renderingMask,
         bool useCircleThreshold,
@@ -39,6 +41,7 @@ namespace eyegui
             pLayout,
             pFrame,
             pAssetManager,
+			pDriftMap,
             pNotificationQueue,
             renderingMask,
             relativeScale,
@@ -234,8 +237,10 @@ namespace eyegui
 			{
 				mThreshold.update(tpf / getStyleValue(property::Duration::ButtonThresholdIncreaseDuration));
 
+				// Check for dwell time based activation
 				if (mThreshold.getValue() >= 1)
 				{
+					// Decide on press
 					if (mInstantPress)
 					{
 						hit(); // just hit
@@ -246,8 +251,12 @@ namespace eyegui
 						mpNotificationQueue->enqueue(getId(), NotificationType::BUTTON_SELECTED);
 						notifyInteraction("BUTTON_SELECTED");
 					}
+
+					// Reset threshold of dwell time
 					mThreshold.setValue(0);
-					
+
+					// Update drift map
+					mpDriftMap->updateDriftMap(0, 0, 0.f);					
 				}
 			}
 			else

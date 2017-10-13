@@ -22,6 +22,7 @@
 #include "src/Style/StyleTree.h"
 #include "src/Rendering/GazeDrawer.h"
 #include "src/Utilities/Dictionary.h"
+#include "src/Utilities/DriftMap.h"
 
 #include <memory>
 #include <vector>
@@ -280,6 +281,7 @@ namespace eyegui
 		bool mResizeInvisibleLayouts;
 		std::function<void(int, int)> mResizeCallbackFunction;
 		bool mResizeCallbackSet;
+		std::unique_ptr<DriftMap> mupDriftMap;
     };
 }
 

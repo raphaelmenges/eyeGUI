@@ -39,7 +39,7 @@ namespace eyegui
         friend class NotificationQueue;
 
         // Constructor
-        Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, std::vector<std::string> styles);
+        Layout(std::string name, GUI const * pGUI, AssetManager* pAssetManager, DriftMap* pDriftMap, std::vector<std::string> styles);
 
         // Destructor
         virtual ~Layout();
@@ -450,6 +450,7 @@ namespace eyegui
         std::string mName;
         GUI const * mpGUI;
         AssetManager* mpAssetManager;
+		DriftMap* mpDriftMap;
         std::unique_ptr<Frame> mupMainFrame;
         std::unique_ptr<std::map<std::string, Element*> > mupIds;
         std::vector<std::unique_ptr<Frame> > mFloatingFrames;
