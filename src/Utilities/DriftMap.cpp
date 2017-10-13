@@ -16,9 +16,8 @@ namespace eyegui
 		
 	}
 
-	void DriftMap::notifyActivation(int gazeX, int gazeY, int centerX, int centerY, float activationDuration)
+	void DriftMap::notifyInteraction(int gazeX, int gazeY, int centerX, int centerY)
 	{
-		// TODO: activationDuration not used
 		int driftX = gazeX - centerX;
 		int driftY = gazeY - centerY;
 

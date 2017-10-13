@@ -255,8 +255,12 @@ namespace eyegui
 					// Reset threshold of dwell time
 					mThreshold.setValue(0);
 
-					// Update drift map
-					mpDriftMap->notifyActivation(pInput->gazeX, pInput->gazeY, mX + mWidth/2, mY + mHeight/2, getStyleValue(property::Duration::ButtonThresholdIncreaseDuration));
+					// Notify drift map about interaction
+					mpDriftMap->notifyInteraction(
+						pInput->gazeX, // gazeX
+						pInput->gazeY,  // gazeY
+						mX + mWidth/2, // centerX
+						mY + mHeight/2); // centerY
 				}
 			}
 			else
