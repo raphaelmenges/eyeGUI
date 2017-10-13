@@ -256,7 +256,7 @@ namespace eyegui
 					mThreshold.setValue(0);
 
 					// Update drift map
-					mpDriftMap->updateDriftMap(0, 0, 0.f);					
+					mpDriftMap->notifyActivation(pInput->gazeX, pInput->gazeY, mX + mWidth/2, mY + mHeight/2, getStyleValue(property::Duration::ButtonThresholdIncreaseDuration));
 				}
 			}
 			else

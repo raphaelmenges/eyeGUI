@@ -121,6 +121,9 @@ namespace eyegui
                 mResizing = true;
                 mResizeWaitTime = RESIZE_WAIT_DURATION;
 
+				// Reset drift map
+				mupDriftMap->reset();
+
                 // Save to members
                 mNewWidth = width;
                 mNewHeight = height;

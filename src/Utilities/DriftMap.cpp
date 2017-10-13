@@ -16,12 +16,17 @@ namespace eyegui
 		
 	}
 
-	void DriftMap::updateDriftMap(int x, int y, float activationDuration)
+	void DriftMap::notifyActivation(int gazeX, int gazeY, int centerX, int centerY, float activationDuration)
 	{
+		// TODO: activationDuration not used
+		int driftX = gazeX - centerX;
+		int driftY = gazeY - centerY;
+
 		std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;
+		std::cout << "DriftX: " << driftX << " DriftY: " << driftY << std::endl;
 	}
 
-	void DriftMap::resetDriftMap()
+	void DriftMap::reset()
 	{
 
 	}

@@ -6,7 +6,7 @@
 // Author: Raphael Menges (https://github.com/raphaelmenges)
 // Drift map. Is filled at interaction through dwell times activation of
 // elements with the offset between center of the activated elements and the
-// provided gaze coordinates.
+// provided gaze coordinates. Offset is from center of activation to gaze.
 
 #ifndef DRIFT_MAP_H_
 #define DRIFT_MAP_H_
@@ -21,10 +21,10 @@ namespace eyegui
 		DriftMap();
 
 		// Tell about center of attention and time until activation
-		void updateDriftMap(int x, int y, float activationDuration);
+		void notifyActivation(int gazeX, int gazeY, int centerX, int centerY, float activationDuration);
 
 		// Reset drift map
-		void resetDriftMap();
+		void reset();
 	};
 }
 

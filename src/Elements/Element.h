@@ -21,7 +21,6 @@
 #include "src/Object.h"
 #include "src/Styleable.h"
 #include "src/Rendering/AssetManager.h"
-#include "src/Utilities/DriftMap.h"
 #include "src/Style/StyleClass.h"
 #include "src/Utilities/LerpValue.h"
 #include "externals/GLM/glm/glm.hpp"
@@ -38,6 +37,7 @@ namespace eyegui
     class Frame;
 	class InteractiveElement;
     class ElementFactory;
+	class DriftMap;
 
     class Element : public Object, public Styleable
     {
