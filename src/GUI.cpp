@@ -57,7 +57,7 @@ namespace eyegui
         mResizeInvisibleLayouts = resizeInvisibleLayouts;
 		mDescriptionVisibility = DescriptionVisibility::ON_PENETRATION;
         mResizeCallbackSet = false;
-		mupDriftMap = std::unique_ptr<DriftMap>(new DriftMap());
+		mupDriftMap = std::unique_ptr<DriftMap>(new DriftMap(this));
 		mUseDriftMap = useDriftMap;
 
         // Initialize default font ("" handled by asset manager)
