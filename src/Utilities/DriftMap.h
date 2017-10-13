@@ -20,8 +20,11 @@ namespace eyegui
 		// Constructor
 		DriftMap();
 
+		// Update gaze to compare interaction center to
+		void update(int gazeX, int gazeY);
+
 		// Tell about center of attention and time until activation
-		void notifyInteraction(int gazeX, int gazeY, int centerX, int centerY);
+		void notifyInteraction(int centerX, int centerY);
 
 		// Reset drift map
 		void reset();
@@ -32,6 +35,8 @@ namespace eyegui
 	private:
 
 		// Global value of drift
+		int mGazeX = 0;
+		int mGazeY = 0;
 		float mDriftX = 0;
 		float mDriftY = 0;
 	};

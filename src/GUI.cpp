@@ -194,6 +194,7 @@ namespace eyegui
         Input copyInput = input;
 
 		// Apply drift correction
+		mupDriftMap->update(copyInput.gazeX, copyInput.gazeY); // give it gaze before drift correction
 		if (mUseDriftMap)
 		{
 			mupDriftMap->correct(copyInput.gazeX, copyInput.gazeY);

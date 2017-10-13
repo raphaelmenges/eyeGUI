@@ -13,15 +13,22 @@ namespace eyegui
 {
 	DriftMap::DriftMap()
 	{
-		
+		// Nothing to do here
 	}
 
-	void DriftMap::notifyInteraction(int gazeX, int gazeY, int centerX, int centerY)
+	void DriftMap::update(int gazeX, int gazeY)
 	{
-		int driftX = gazeX - centerX;
-		int driftY = gazeY - centerY;
+		mGazeX = gazeX;
+		mGazeY = gazeY;
+	}
+
+	void DriftMap::notifyInteraction(int centerX, int centerY)
+	{
+		int driftX = mGazeX - centerX;
+		int driftY = mGazeY - centerY;
 
 		std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;
+		std::cout << "X: " << centerX << " Y: " << centerY << std::endl;
 		std::cout << "DriftX: " << driftX << " DriftY: " << driftY << std::endl;
 
 		// Update drift

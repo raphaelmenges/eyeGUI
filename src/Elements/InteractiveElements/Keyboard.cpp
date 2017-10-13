@@ -461,6 +461,11 @@ namespace eyegui
 
 						// Interaction notification
 						notifyInteraction("KEY_SELECTED");
+
+						// Notify drift map
+						mpDriftMap->notifyInteraction(
+							keyPositionX, // centerX
+							keyPositionY); // centerY
 					}
 				}
 			}

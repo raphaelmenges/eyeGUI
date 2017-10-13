@@ -90,8 +90,6 @@ namespace eyegui
 			if (mPenetration.getValue() > 0.1f) // only do so after a certain threshold to be sure about user intention
 			{
 				mpDriftMap->notifyInteraction(
-					pInput->gazeX, // gazeX
-					pInput->gazeY,  // gazeY
 					mX + mWidth / 2, // centerX
 					mY + mHeight / 2); // centerY
 			}
