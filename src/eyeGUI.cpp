@@ -154,6 +154,11 @@ namespace eyegui
 		pGUI->resetDriftMap();
 	}
 
+	DriftGrid getCurrentDriftMap(GUI const * pGUI)
+	{
+		return pGUI->getCurrentDriftMap();
+	}
+
     void setDescriptionVisibility(GUI* pGUI, DescriptionVisibility visbility)
     {
         pGUI->setDescriptionVisibility(visbility);

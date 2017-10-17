@@ -287,6 +287,11 @@ namespace eyegui
 		mupDriftMap->reset();
 	}
 
+	DriftGrid GUI::getCurrentDriftMap() const
+	{
+		return mupDriftMap->getCurrentDriftMap();
+	}
+
 	void GUI::prefetchImage(std::string filepath)
 	{
 		// Do it immediately

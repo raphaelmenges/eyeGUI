@@ -141,6 +141,19 @@ namespace eyegui
 	//! Enumeration of available description visibility behaviors.
 	enum class DescriptionVisibility { HIDDEN, ON_PENETRATION, VISIBLE };
 
+	//! Struct used by drift map to compensate for eye tracker accuracy issues.
+	struct DriftGrid
+	{
+		//! Horizontal cell count.
+		static const int RES_X = 16;
+
+		//! Vertical cell count.
+		static const int RES_Y = 9;
+
+		//! Vertices of grid holding the drift values.
+		std::pair<float, float> verts[RES_X + 1][RES_Y + 1] = { std::make_pair(0.f, 0.f) };
+	};
+
 	//! Abstract listener class for buttons.
 	class ButtonListener
 	{
@@ -434,9 +447,16 @@ namespace eyegui
 
 	//! Resets drift map (potentially after a recalibration of the eyetracker)
 	/*!
-	\param pGUI pointer to GUI.
+		\param pGUI pointer to GUI.
 	*/
 	void resetDriftMap(GUI* pGUI);
+
+	//! Retrieve copy of structure in current drift map.
+	/*!
+		\param pGUI pointer to GUI.
+		\return Copy of drift grid of current drift map.
+	*/
+	DriftGrid getCurrentDriftMap(GUI const * pGUI);
 
 	//! Set how descriptions of icon elements are displayed.
 	/*!

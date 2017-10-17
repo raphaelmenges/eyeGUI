@@ -115,6 +115,19 @@ namespace eyegui
 		}
 	}
 
+	DriftGrid DriftMap::getCurrentDriftMap() const
+	{
+		DriftGrid copy;
+		for (int x = 0; x <= mGrid.RES_X; x++)
+		{
+			for (int y = 0; y <= mGrid.RES_Y; y++)
+			{
+				copy.verts[x][y] = mGrid.verts[x][y];
+			}
+		}
+		return copy;
+	}
+
 	void DriftMap::calculateNearestGridVertex(int coordX, int coordY, int& rVertexX, int& rVertexY) const
 	{
 		float relativeX = (float)coordX / (float)(mpGUI->getWindowWidth() - 1); // relative value

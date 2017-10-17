@@ -13,6 +13,8 @@
 #ifndef DRIFT_MAP_H_
 #define DRIFT_MAP_H_
 
+#include "include/eyeGUI.h"
+
 #include <algorithm>
 
 namespace eyegui
@@ -23,14 +25,6 @@ namespace eyegui
 	class DriftMap
 	{
 	public:
-
-		// Grid
-		struct Grid
-		{
-			static const int RES_X = 16; // cell count
-			static const int RES_Y = 9; // cell count
-			std::pair<float, float> verts[RES_X + 1][RES_Y + 1] = { std::make_pair(0.f, 0.f) };
-		};
 
 		// Constructor
 		DriftMap(GUI const * pGUI);
@@ -43,6 +37,9 @@ namespace eyegui
 
 		// Reset drift map
 		void reset();
+
+		// Get copy of current drift map
+		DriftGrid getCurrentDriftMap() const;
 
 	private:
 
@@ -69,7 +66,7 @@ namespace eyegui
 		float mGlobalDriftY = 0;
 
 		// Grid
-		Grid mGrid;
+		DriftGrid mGrid;
 	};
 }
 
