@@ -31,7 +31,7 @@ namespace eyegui
 		void update(int& rGazeX, int& rGazeY);
 
 		// Tell about center of attention and time until activation
-		void notifyInteraction(int centerX, int centerY);
+		void notifyInteraction(float centerX, float centerY);
 
 		// Reset drift map
 		void reset();

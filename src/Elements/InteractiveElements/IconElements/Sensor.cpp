@@ -86,12 +86,20 @@ namespace eyegui
             // Update of value
             mPenetration.update(tpf / getStyleValue(property::Duration::SensorPenetrationIncreaseDuration));
 
-			// Notify drift map about interaction
-			if (mPenetration.getValue() > 0.1f) // only do so after a certain threshold to be sure about user intention
+			// Notify drift map about interaction. Is only notified when exceeding the threshold
+			if (mPenetration.getValue() > 0.25f) // only do so after a certain threshold to be sure about user intention
 			{
-				mpDriftMap->notifyInteraction(
-					mX + mWidth / 2, // centerX
-					mY + mHeight / 2); // centerY
+				if (!mDriftMapNotified) // not yet notified
+				{
+					mpDriftMap->notifyInteraction(
+						(float)mX + (mWidth / 2.f), // centerX
+						(float)mY + (mHeight / 2.f)); // centerY
+					mDriftMapNotified = true;
+				}
+			}
+			else
+			{
+				mDriftMapNotified = false;
 			}
 
         }

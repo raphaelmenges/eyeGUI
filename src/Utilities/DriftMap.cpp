@@ -72,15 +72,15 @@ namespace eyegui
 		rGazeY -= (int)driftY;
 	}
 
-	void DriftMap::notifyInteraction(int centerX, int centerY)
+	void DriftMap::notifyInteraction(float centerX, float centerY)
 	{
 		// ###########################
 		// ### UPDATE OF DRIFT MAP ###
 		// ###########################
 
 		// Calculate drift of interaction
-		float driftX = (float)(mGazeX - centerX);
-		float driftY = (float)(mGazeY - centerY);
+		float driftX = (float)(mGazeX) - centerX;
+		float driftY = (float)(mGazeY) - centerY;
 
 		// Debug output TODO: remove
 		std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;

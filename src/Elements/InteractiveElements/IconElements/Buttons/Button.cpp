@@ -257,8 +257,8 @@ namespace eyegui
 
 					// Notify drift map about interaction
 					mpDriftMap->notifyInteraction(
-						mX + mWidth/2, // centerX
-						mY + mHeight/2); // centerY
+						(float)mX + (mWidth / 2.f), // centerX
+						(float)mY + (mHeight / 2.f)); // centerY
 				}
 			}
 			else

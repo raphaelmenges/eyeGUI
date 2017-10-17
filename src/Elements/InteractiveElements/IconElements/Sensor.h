@@ -67,6 +67,7 @@ namespace eyegui
         // Members
         LerpValue mPenetration; // [0..1]
         RenderItem const * mpSensorItem;
+		bool mDriftMapNotified = false;
     };
 }
 
