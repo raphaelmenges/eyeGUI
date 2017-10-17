@@ -52,12 +52,12 @@ namespace eyegui
 
 		// ### Grid with bilinear interpolation
 		
-		auto grid = calculateNearestGridVertices(rGazeX, rGazeY);	
-
-		if (different)
-		{
-			std::cout << "gridLowerX: " << grid.lowerX << " gridUpperX: " << grid.upperX << " gridLowerY: " << grid.lowerY << " gridUpperY: " << grid.upperY << " relativeX: " << grid.innerX << " relativeY: " << grid.innerY << std::endl;
-		}
+		// auto grid = calculateNearestGridVertices(rGazeX, rGazeY);	
+		// 
+		// if (different)
+		// {
+		// 	std::cout << "gridLowerX: " << grid.lowerX << " gridUpperX: " << grid.upperX << " gridLowerY: " << grid.lowerY << " gridUpperY: " << grid.upperY << " relativeX: " << grid.innerX << " relativeY: " << grid.innerY << std::endl;
+		// }
 
 		// Access values from vertices
 		float driftAX = mGrid[grid.lowerX][grid.lowerY].first * (1.f - grid.innerX) + mGrid[grid.upperX][grid.lowerY].first * grid.innerX;
@@ -82,10 +82,10 @@ namespace eyegui
 		float driftX = (float)(mGazeX) - centerX;
 		float driftY = (float)(mGazeY) - centerY;
 
-		// Debug output TODO: remove
-		std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;
-		std::cout << "X: " << centerX << " Y: " << centerY << std::endl;
-		std::cout << "DriftX: " << driftX << " DriftY: " << driftY << std::endl;
+		// // Debug output TODO: remove
+		// std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;
+		// std::cout << "X: " << centerX << " Y: " << centerY << std::endl;
+		// std::cout << "DriftX: " << driftX << " DriftY: " << driftY << std::endl;
 
 		// Update global drift
 		mGlobalDriftX = (0.5f * mGlobalDriftX) + (0.5f * driftX);
@@ -99,7 +99,7 @@ namespace eyegui
 
 	void DriftMap::reset()
 	{
-		std::cout << "######################### HERE IS DRIFT MAP RESET" << std::endl;
+		// std::cout << "######################### HERE IS DRIFT MAP RESET" << std::endl;
 
 		// Reset global drift
 		mGlobalDriftX = 0;
