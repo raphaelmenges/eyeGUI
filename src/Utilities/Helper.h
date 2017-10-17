@@ -18,6 +18,7 @@
 namespace eyegui
 {
     float clamp(float value, float lowerBound, float upperBound);
+	int clamp(int value, int lowerBound, int upperBound);
 
     bool checkFileNameExtension(std::string filepath, std::string expectedExtension);
 

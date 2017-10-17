@@ -91,7 +91,7 @@ namespace eyegui
                     {
                         // Do fading of removed frame
                         float fadingAlpha = pFrame->getRemovedFadingAlpha() - (tpf / getStyleValue(property::Duration::AnimationDuration));
-                        fadingAlpha = clamp(fadingAlpha, 0, 1);
+                        fadingAlpha = clamp(fadingAlpha, 0.f, 1.f);
                         pFrame->setRemovedFadingAlpha(fadingAlpha);
 
                         // Update

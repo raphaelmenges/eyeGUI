@@ -419,7 +419,7 @@ namespace eyegui
 
 					// Radius of focus
 					float focusWeight = 1.f - (glm::length(positionDelta) / (FOCUS_RADIUS * initialKeySize)); // key size used for normalization
-					focusWeight = clamp(focusWeight, 0, 1); // between zero and one
+					focusWeight = clamp(focusWeight, 0.f, 1.f); // between zero and one
 
 					// Only near keys have to be moved
 					positionDelta *= 0.25f; // scale it

@@ -477,7 +477,7 @@ namespace eyegui
         {
             float replacedAlpha = mAlpha * (mupReplacedElement->getAlpha()
                 - (tpf / getStyleValue(property::Duration::AnimationDuration)));
-            replacedAlpha = clamp(replacedAlpha, 0, 1);
+            replacedAlpha = clamp(replacedAlpha, 0.f, 1.f);
             mupReplacedElement->update(tpf, replacedAlpha, NULL, mDim.getValue());
 
             // Check, whether replacement is still visible

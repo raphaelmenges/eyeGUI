@@ -137,6 +137,11 @@ namespace eyegui
         return value < lowerBound ? lowerBound : (value > upperBound ? upperBound : value);
     }
 
+	int clamp(int value, int lowerBound, int upperBound)
+	{
+		return value < lowerBound ? lowerBound : (value > upperBound ? upperBound : value);
+	}
+
     bool checkFileNameExtension(std::string filepath, std::string expectedExtension)
     {
         // Extract token behind last dot

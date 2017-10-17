@@ -8,6 +8,8 @@
 // elements with the distance between center of the activated elements and the
 // provided gaze coordinates. Offset is from center of activation to gaze.
 
+// TODO: breaks for windows smaller than 1x1 (division through 0)
+
 #ifndef DRIFT_MAP_H_
 #define DRIFT_MAP_H_
 
@@ -25,8 +27,8 @@ namespace eyegui
 		// Constructor
 		DriftMap(GUI const * pGUI);
 
-		// Update gaze to compare interaction center to
-		void update(int gazeX, int gazeY);
+		// Takes reference to gaze, stores it and provides correction
+		void update(int& rGazeX, int& rGazeY);
 
 		// Tell about center of attention and time until activation
 		void notifyInteraction(int centerX, int centerY);
@@ -34,13 +36,18 @@ namespace eyegui
 		// Reset drift map
 		void reset();
 
-		// Correct drift
-		void correct(int& gazeX, int& gazeY); // TODO: strange to have update and correct taking the gaze
-
 	private:
 
-		// Calculate nearest grid point. Values expected to be within window coordinates
-		void calculateGridPoint(int coordX, int coordY, int& rGridPointX, int& rGridPointY) const;
+		// Calculate nearest grid vertices
+		void calculateNearestGridVertex(int coordX, int coordY, int& rVertexX, int& rVertexY) const;
+
+		// Calculate nearest grid vertices
+		struct GridPosition
+		{
+			int lowerX, upperX = 0, lowerY, upperY = 0; // grid vertices
+			float innerX, innerY; // relative position within vertices
+		};
+		GridPosition calculateNearestGridVertices(int coordX, int coordY) const;
 
 		// Pointer to GUI
 		GUI const * mpGUI;
