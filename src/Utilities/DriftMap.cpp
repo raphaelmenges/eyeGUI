@@ -10,11 +10,18 @@
 #include "src/GUI.h"
 #include "src/Utilities/Helper.h"
 
+#include "externals/GLM/glm/glm.hpp"
+
 #include <iostream>
 #include <cmath>
 
 namespace eyegui
 {
+	float lerp(const float& oldValue, const float& newValue, const float& weight)
+	{
+		return oldValue * (1.f - weight) + newValue * weight;
+	}
+
 	DriftMap::DriftMap(GUI const * pGUI)
 	{
 		mpGUI = pGUI;
@@ -82,6 +89,10 @@ namespace eyegui
 		float driftX = (float)(mGazeX) - centerX;
 		float driftY = (float)(mGazeY) - centerY;
 
+		// Apply limitation to drift in pixels
+		driftX = clamp(driftX, -32.f, 32.f);
+		driftY = clamp(driftY, -32.f, 32.f);
+
 		// // Debug output TODO: remove
 		// std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;
 		// std::cout << "X: " << centerX << " Y: " << centerY << std::endl;
@@ -91,10 +102,30 @@ namespace eyegui
 		mGlobalDriftX = (0.5f * mGlobalDriftX) + (0.5f * driftX);
 		mGlobalDriftY = (0.5f * mGlobalDriftY) + (0.5f * driftY);
 
-		// Update nearest vertex of grid via nearest neighbor
+		// Set nearest vertex of grid via nearest neighbor
+		/*
 		int gridX, gridY;
 		calculateNearestGridVertex(mGazeX, mGazeY, gridX, gridY);
 		mGrid.verts[gridX][gridY] = { driftX, driftY }; // simple override entries
+		*/
+
+		// Adapt values of nearest vertices by distance
+		auto n = calculateNearestGridVertices(mGazeX, mGazeY); // input is gaze and its drift is corrected
+		const float norm = 1.f / glm::sqrt(2.f);
+		float oneMinusInnerX = 1.f - n.innerX;
+		float oneMinusInnerY = 1.f - n.innerY;
+
+		// Weights
+		float ll = glm::length(glm::vec2(oneMinusInnerX, oneMinusInnerY)) * norm;
+		float ul = glm::length(glm::vec2(n.innerX, oneMinusInnerY)) * norm;
+		float uu = glm::length(glm::vec2(n.innerX, n.innerY)) * norm;
+		float lu = glm::length(glm::vec2(oneMinusInnerX, n.innerY)) * norm;
+
+		// Update of values
+		mGrid.verts[n.lowerX][n.lowerY] = { lerp(mGrid.verts[n.lowerX][n.lowerY].first, driftX, ll), lerp(mGrid.verts[n.lowerX][n.lowerY].second, driftY, ll) };
+		mGrid.verts[n.upperX][n.lowerY] = { lerp(mGrid.verts[n.upperX][n.lowerY].first, driftX, ul), lerp(mGrid.verts[n.upperX][n.lowerY].second, driftY, ul) };
+		mGrid.verts[n.upperX][n.upperY] = { lerp(mGrid.verts[n.upperX][n.upperY].first, driftX, uu), lerp(mGrid.verts[n.upperX][n.upperY].second, driftY, uu) };
+		mGrid.verts[n.lowerX][n.upperY] = { lerp(mGrid.verts[n.lowerX][n.upperY].first, driftX, lu), lerp(mGrid.verts[n.lowerX][n.upperY].second, driftY, lu) };
 	}
 
 	void DriftMap::reset()
