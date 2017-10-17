@@ -95,7 +95,7 @@ namespace eyegui
 		// Reset drift map
 		void resetDriftMap();
 
-		// Retrieve copy of structure in current drift map.
+		// Retrieve copy of structure in current drift map
 		DriftGrid getCurrentDriftMap() const;
 
         // Prefatch image to avoid lag
