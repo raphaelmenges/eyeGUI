@@ -52,7 +52,7 @@ namespace eyegui
 
 		// ### Grid with bilinear interpolation
 		
-		// auto grid = calculateNearestGridVertices(rGazeX, rGazeY);	
+		auto grid = calculateNearestGridVertices(rGazeX, rGazeY);	
 		// 
 		// if (different)
 		// {
