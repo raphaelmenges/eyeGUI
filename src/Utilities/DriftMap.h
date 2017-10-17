@@ -24,6 +24,14 @@ namespace eyegui
 	{
 	public:
 
+		// Grid
+		struct Grid
+		{
+			static const int RES_X = 16; // cell count
+			static const int RES_Y = 9; // cell count
+			std::pair<float, float> verts[RES_X + 1][RES_Y + 1] = { std::make_pair(0.f, 0.f) };
+		};
+
 		// Constructor
 		DriftMap(GUI const * pGUI);
 
@@ -44,7 +52,7 @@ namespace eyegui
 		// Calculate nearest grid vertices
 		struct GridPosition
 		{
-			int lowerX, upperX = 0, lowerY, upperY = 0; // grid vertices
+			int lowerX, upperX, lowerY, upperY = 0; // grid vertices
 			float innerX, innerY; // relative position within vertices
 		};
 		GridPosition calculateNearestGridVertices(int coordX, int coordY) const;
@@ -61,9 +69,7 @@ namespace eyegui
 		float mGlobalDriftY = 0;
 
 		// Grid
-		static const int RESOLUTION_X = 16; // cell count
-		static const int RESOLUTION_Y = 9; // cell count
-		std::pair<float, float> mGrid[RESOLUTION_X+1][RESOLUTION_Y+1] = { std::make_pair(0.f, 0.f) };
+		Grid mGrid;
 	};
 }
 
