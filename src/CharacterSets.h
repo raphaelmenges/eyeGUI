@@ -144,7 +144,8 @@ namespace eyegui
             {u'\u00dc', CharacterDirection::LeftToRight}, // UE
             {u'\u00fc', CharacterDirection::LeftToRight}, // ue
             {u'\u00df', CharacterDirection::LeftToRight}, // sz
-            {u'\u20AC', CharacterDirection::LeftToRight}  // Euro
+			{u'\u1E9E', CharacterDirection::LeftToRight }, // SZ
+			{u'\u20AC', CharacterDirection::LeftToRight}  // Euro
         };
 
 		// Modern Hebrew
@@ -263,7 +264,9 @@ namespace eyegui
 			{u'\u038E', CharacterDirection::LeftToRight},
 			{u'\u03AB', CharacterDirection::LeftToRight},
 			{u'\u03B0', CharacterDirection::LeftToRight},
-			{u'\u038F', CharacterDirection::LeftToRight}
+			{u'\u038F', CharacterDirection::LeftToRight},
+			// Symbols
+			{u'\u0384', CharacterDirection::Neutral}
 		};
     }
 }

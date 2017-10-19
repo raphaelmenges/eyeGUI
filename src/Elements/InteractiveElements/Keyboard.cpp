@@ -724,7 +724,7 @@ namespace eyegui
                 mKeymaps.back().initialKeyPositions,
                 std::vector<std::vector<CPair> >
             {
-                { CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'\u00df') },
+                { CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'\u00df', u'\u1E9E') },
                 { CPair(u'q', u'Q'), CPair(u'w', u'W'), CPair(u'e', u'E'), CPair(u'r', u'R'), CPair(u't', u'T'), CPair(u'z', u'Z'), CPair(u'u', u'U'), CPair(u'i', u'I'), CPair(u'o', u'O'), CPair(u'p', u'P'), CPair(u'\u00fc', u'\u00dc'), CPair(u'\u20AC') },
                 { CPair(u'a', u'A'), CPair(u's', u'S'), CPair(u'd', u'D'), CPair(u'f', u'F'), CPair(u'g', u'G'), CPair(u'h', u'H'), CPair(u'j', u'J'), CPair(u'k', u'K'), CPair(u'l', u'L'), CPair(u'\u00f6', u'\u00d6'), CPair(u'\u00e4', u'\u00c4') },
                 { CPair(u'@'), CPair(u'y', u'Y'), CPair(u'x', u'X'), CPair(u'c', u'C'), CPair(u'v', u'V'), CPair(u'b', u'B'), CPair(u'n', u'N'), CPair(u'm', u'M'), CPair(u',', u';'), CPair(u'.', u':'), CPair(u'?'), CPair(u'!') }
@@ -758,7 +758,7 @@ namespace eyegui
 				mKeymaps.back().initialKeyPositions,
 				std::vector<std::vector<CPair> >
 			{
-				{ CPair(u'\u03AC', u'\u0386'), CPair(u'\u03AD', u'\u0388'), CPair(u'\u03AE', u'\u0389'), CPair(u'\u03AF', u'\u038A'), CPair(u'\u03CA', u'\u03AA'), CPair(u'\u0390', u'\u0390'), CPair(u'\u03CC', u'\u038C'), CPair(u'\u03CD', u'\u038E'), CPair(u'\u03CB', u'\u03AB'), CPair(u'\u03B0', u'\u03B0'), CPair(u'\u03CE', u'\u038F') },
+				{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'#') },
 				{ CPair(u'\u03B8', u'\u0398'), CPair(u'\u03C9', u'\u03A9'), CPair(u'\u03B5', u'\u0395'), CPair(u'\u03C1', u'\u03A1'), CPair(u'\u03C4', u'\u03A4'), CPair(u'\u03C8', u'\u03A8'), CPair(u'\u03C5', u'\u03A5'), CPair(u'\u03B9', u'\u0399'), CPair(u'\u03BF', u'\u039F'), CPair(u'\u03C0', u'\u03A0'), CPair(u'-'), CPair(u'\u20AC') },
 				{ CPair(u'\u03B1', u'\u0391'), CPair(u'\u03C3', u'\u03A3'), CPair(u'\u03B4', u'\u0394'), CPair(u'\u03C6', u'\u03A6'), CPair(u'\u03B3', u'\u0393'), CPair(u'\u03B7', u'\u0397'), CPair(u'\u03C2', u'\u03C2'), CPair(u'\u03BA', u'\u039A'), CPair(u'\u03BB', u'\u039B'), CPair(u'('), CPair(u')') },
 				{ CPair(u'@'), CPair(u'\u03B6', u'\u0396'), CPair(u'\u03C7', u'\u03A7'), CPair(u'\u03BE', u'\u039E'), CPair(u'\u03C9', u'\u03A9'), CPair(u'\u03B2', u'\u0392'), CPair(u'\u03BD', u'\u039D'), CPair(u'\u03BC', u'\u039C'), CPair(u',', u';'), CPair(u'.', u':'), CPair(u'?'), CPair(u'!') }
@@ -777,7 +777,7 @@ namespace eyegui
 			mKeymaps.back().initialKeyPositions,
 			std::vector<std::vector<CPair> >
 		{
-			{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'#') },
+			{ CPair(u'\u03AC', u'\u0386'), CPair(u'\u03AD', u'\u0388'), CPair(u'\u03AE', u'\u0389'), CPair(u'\u03AF', u'\u038A'), CPair(u'\u03CA', u'\u03AA'), CPair(u'\u0390', u'\u0390'), CPair(u'\u03CC', u'\u038C'), CPair(u'\u03CD', u'\u038E'), CPair(u'\u03CB', u'\u03AB'), CPair(u'\u03B0', u'\u03B0'), CPair(u'\u03CE', u'\u038F') },
 			{ CPair(u'\u20AC'), CPair(u'$'), CPair(u'\u20AA'), CPair(u'%'), CPair(u'+'), CPair(u'-'), CPair(u'_'), CPair(u'/'), CPair(u'\\'), CPair(u'*'), CPair(u'~'), CPair(u'@') },
 			{ CPair(u'('), CPair(u')'), CPair(u'['), CPair(u']'), CPair(u'{'), CPair(u'}'), CPair(u'<'), CPair(u'>'), CPair(u'&'), CPair(u'?'), CPair(u'!') },
 			{ CPair(u'.'), CPair(u':'), CPair(u','), CPair(u';'), CPair(u'='), CPair(u'"'), CPair(u'\''), CPair(u'\u00A7'), CPair(u'|'), CPair(u'^'), CPair(u'\u00B0'), CPair(u' ') }
