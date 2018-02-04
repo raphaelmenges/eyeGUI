@@ -43,40 +43,12 @@ namespace eyegui
 		// ### APPLICATION OF DRIFT CORRECTION ###
 		// #######################################
 
-		// ### Global drift
-		/*
-		rGazeX -= mGlobalDriftX;
-		rGazeY -= mGlobalDriftY;
-		*/
-
-		// ### Grid with nearest neighbor interpolation
-		/*
-		int gridX, gridY;
-		calculateNearestGridVertex(rGazeX, rGazeY, gridX, gridY);
-		rGazeX -= (int)mGrid[gridX][gridY].first;
-		rGazeY -= (int)mGrid[gridX][gridY].second;
-		*/
-
-		// ### Grid with bilinear interpolation
-		
-		auto n = calculateNearestGridVertices(rGazeX, rGazeY);	
-		// 
-		// if (different)
-		// {
-		// 	std::cout << "gridLowerX: " << grid.lowerX << " gridUpperX: " << grid.upperX << " gridLowerY: " << grid.lowerY << " gridUpperY: " << grid.upperY << " relativeX: " << grid.innerX << " relativeY: " << grid.innerY << std::endl;
-		// }
-
-		// Access values from vertices
-		float driftAX = mGrid.verts[n.lowerX][n.lowerY].first * (1.f - n.innerX) + mGrid.verts[n.upperX][n.lowerY].first * n.innerX;
-		float driftBX = mGrid.verts[n.lowerX][n.upperY].first * (1.f - n.innerX) + mGrid.verts[n.upperX][n.upperY].first * n.innerX;
-		float driftX = driftAX * (1.f - n.innerY) + driftBX * n.innerY;
-		float driftAY = mGrid.verts[n.lowerX][n.lowerY].second * (1.f - n.innerX) + mGrid.verts[n.upperX][n.lowerY].second * n.innerX;
-		float driftBY = mGrid.verts[n.lowerX][n.upperY].second * (1.f - n.innerX) + mGrid.verts[n.upperX][n.upperY].second * n.innerX;
-		float driftY = driftAY * (1.f - n.innerY) + driftBY * n.innerY;
-
-		// Apply
-		rGazeX -= (int)driftX;
-		rGazeY -= (int)driftY;
+		// Apply drift correction
+		float gazeX = (float)rGazeX;
+		float gazeY = (float)rGazeY;
+		apply(gazeX, gazeY);
+		rGazeX = gazeX;
+		rGazeY = gazeY;
 	}
 
 	void DriftMap::notifyInteraction(float centerX, float centerY)
@@ -157,6 +129,44 @@ namespace eyegui
 			}
 		}
 		return copy;
+	}
+
+	void DriftMap::apply(float& rX, float& rY) const
+	{
+		// ### Global drift
+		/*
+		rGazeX -= mGlobalDriftX;
+		rGazeY -= mGlobalDriftY;
+		*/
+
+		// ### Grid with nearest neighbor interpolation
+		/*
+		int gridX, gridY;
+		calculateNearestGridVertex(rGazeX, rGazeY, gridX, gridY);
+		rGazeX -= (int)mGrid[gridX][gridY].first;
+		rGazeY -= (int)mGrid[gridX][gridY].second;
+		*/
+
+		// ### Grid with bilinear interpolation
+
+		auto n = calculateNearestGridVertices(rX, rY);
+		// 
+		// if (different)
+		// {
+		// 	std::cout << "gridLowerX: " << grid.lowerX << " gridUpperX: " << grid.upperX << " gridLowerY: " << grid.lowerY << " gridUpperY: " << grid.upperY << " relativeX: " << grid.innerX << " relativeY: " << grid.innerY << std::endl;
+		// }
+
+		// Access values from vertices
+		float driftAX = mGrid.verts[n.lowerX][n.lowerY].first * (1.f - n.innerX) + mGrid.verts[n.upperX][n.lowerY].first * n.innerX;
+		float driftBX = mGrid.verts[n.lowerX][n.upperY].first * (1.f - n.innerX) + mGrid.verts[n.upperX][n.upperY].first * n.innerX;
+		float driftX = driftAX * (1.f - n.innerY) + driftBX * n.innerY;
+		float driftAY = mGrid.verts[n.lowerX][n.lowerY].second * (1.f - n.innerX) + mGrid.verts[n.upperX][n.lowerY].second * n.innerX;
+		float driftBY = mGrid.verts[n.lowerX][n.upperY].second * (1.f - n.innerX) + mGrid.verts[n.upperX][n.upperY].second * n.innerX;
+		float driftY = driftAY * (1.f - n.innerY) + driftBY * n.innerY;
+
+		// Apply
+		rX -= (int)driftX;
+		rY -= (int)driftY;
 	}
 
 	void DriftMap::calculateNearestGridVertex(int coordX, int coordY, int& rVertexX, int& rVertexY) const

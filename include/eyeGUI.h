@@ -458,6 +458,14 @@ namespace eyegui
 	*/
 	DriftGrid getCurrentDriftMap(GUI const * pGUI);
 
+	//! Applies drift correction for provided coordinate. Does also work when eyeGUI does not use the drift map itself.
+	/*!
+	\param pGUI pointer to GUI.
+	\param rX is reference to x coordinate to correct.
+	\param rY is reference to y coordinate to correct.
+	*/
+	void applyDriftMap(GUI const * pGUI, float &rX, float &rY);
+
 	//! Set how descriptions of icon elements are displayed.
 	/*!
 	\param pGUI pointer to GUI.

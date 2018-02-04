@@ -159,6 +159,11 @@ namespace eyegui
 		return pGUI->getCurrentDriftMap();
 	}
 
+	void applyDriftMap(GUI const * pGUI, float &rX, float &rY)
+	{
+		return pGUI->applyDriftMap(rX, rY);
+	}
+
     void setDescriptionVisibility(GUI* pGUI, DescriptionVisibility visbility)
     {
         pGUI->setDescriptionVisibility(visbility);

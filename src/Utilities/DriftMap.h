@@ -45,6 +45,9 @@ namespace eyegui
 		// Get copy of current drift map
 		DriftGrid getCurrentDriftMap() const;
 
+		// Apply
+		void apply(float& rX, float& rY) const;
+
 	private:
 
 		// Calculate nearest grid vertices

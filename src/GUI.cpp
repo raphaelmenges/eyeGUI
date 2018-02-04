@@ -292,6 +292,11 @@ namespace eyegui
 		return mupDriftMap->getCurrentDriftMap();
 	}
 
+	void GUI::applyDriftMap(float &rX, float &rY) const
+	{
+		mupDriftMap->apply(rX, rY);
+	}
+
 	void GUI::prefetchImage(std::string filepath)
 	{
 		// Do it immediately

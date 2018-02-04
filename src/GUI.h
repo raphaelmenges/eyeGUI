@@ -98,6 +98,9 @@ namespace eyegui
 		// Retrieve copy of structure in current drift map
 		DriftGrid getCurrentDriftMap() const;
 
+		// Applies drift correction for provided coordinate. Does also work when GUI does not use the drift map itself
+		void applyDriftMap(float &rX, float &rY) const;
+
         // Prefatch image to avoid lag
         void prefetchImage(std::string filepath);
 
