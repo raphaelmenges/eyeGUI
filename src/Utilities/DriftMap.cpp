@@ -90,8 +90,8 @@ namespace eyegui
 		float driftY = (float)(mGazeY) - centerY;
 
 		// Apply limitation to drift in pixels
-		driftX = clamp(driftX, -32.f, 32.f);
-		driftY = clamp(driftY, -32.f, 32.f);
+		driftX = clamp(driftX, -DRIFT_MAP_MAX_DRIFT_PIXEL, DRIFT_MAP_MAX_DRIFT_PIXEL);
+		driftY = clamp(driftY, -DRIFT_MAP_MAX_DRIFT_PIXEL, DRIFT_MAP_MAX_DRIFT_PIXEL);
 
 		// // Debug output TODO: remove
 		// std::cout << "######################### HERE IS DRIFT MAP UPDATE" << std::endl;

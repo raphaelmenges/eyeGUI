@@ -74,6 +74,7 @@ namespace eyegui
 	static const int AUDIO_INPUT_SAMPLE_RATE = 44100;
 	static const int AUDIO_INPUT_CHANNEL_COUNT = 1;
 	static const unsigned int AUDIO_INPUT_MAX_INPUT_SECONDS = 10;
+	static const float DRIFT_MAP_MAX_DRIFT_PIXEL = 32;
 }
 
 #endif // DEFINES_H_
