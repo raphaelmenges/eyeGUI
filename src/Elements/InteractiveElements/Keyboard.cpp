@@ -464,8 +464,8 @@ namespace eyegui
 
 						// Notify drift map
 						mpDriftMap->notifyInteraction(
-							keyPositionX, // centerX
-							keyPositionY); // centerY
+							(float)keyPositionX, // centerX
+							(float)keyPositionY); // centerY
 					}
 				}
 			}
@@ -760,7 +760,7 @@ namespace eyegui
 			{
 				{ CPair(u'1'), CPair(u'2'), CPair(u'3'), CPair(u'4'), CPair(u'5'), CPair(u'6'), CPair(u'7'), CPair(u'8'), CPair(u'9'), CPair(u'0'), CPair(u'-', u'+') },
 				{ CPair(u';', u':'), CPair(u'\u03C2', u'\u03C2'), CPair(u'\u03B5', u'\u0395'), CPair(u'\u03C1', u'\u03A1'), CPair(u'\u03C4', u'\u03A4'), CPair(u'\u03C5', u'\u03A5'), CPair(u'\u03B8', u'\u0398'), CPair(u'\u03B9', u'\u0399'), CPair(u'\u03BF', u'\u039F'), CPair(u'\u03C0', u'\u03A0'), CPair(u'(', u'{'), CPair(u')', u'}') },
-				{ CPair(u'\u03B1', u'\u0391'), CPair(u'\u03C3', u'\u03A3'), CPair(u'\u03B4', u'\u0394'), CPair(u'\u03C6', u'\u03A6'), CPair(u'\u03B3', u'\u0393'), CPair(u'\u03B7', u'\u0397'), CPair(u'\u03BE', u'\u039E'), CPair(u'\u03BA', u'\u039A'), CPair(u'\u03BB', u'\u039B'), CPair(u'\u20AC', u'\*'), CPair(u'\'', u'"') },
+				{ CPair(u'\u03B1', u'\u0391'), CPair(u'\u03C3', u'\u03A3'), CPair(u'\u03B4', u'\u0394'), CPair(u'\u03C6', u'\u03A6'), CPair(u'\u03B3', u'\u0393'), CPair(u'\u03B7', u'\u0397'), CPair(u'\u03BE', u'\u039E'), CPair(u'\u03BA', u'\u039A'), CPair(u'\u03BB', u'\u039B'), CPair(u'\u20AC', u'*'), CPair(u'\'', u'"') },
 				{ CPair(u'@', u'%'), CPair(u'\u03B6', u'\u0396'), CPair(u'\u03C7', u'\u03A7'), CPair(u'\u03C8', u'\u03A8'), CPair(u'\u03C9', u'\u03A9'), CPair(u'\u03B2', u'\u0392'), CPair(u'\u03BD', u'\u039D'), CPair(u'\u03BC', u'\u039C'), CPair(u',', u'<'), CPair(u'.', u'>'), CPair(u'/', u'?'), CPair(u'!', u'#') }
 			});
 

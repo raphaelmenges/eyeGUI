@@ -50,16 +50,16 @@ namespace eyegui
 
 	private:
 
-		// Calculate nearest grid vertices
-		void calculateNearestGridVertex(int coordX, int coordY, int& rVertexX, int& rVertexY) const;
+		// Calculate nearest grid vertex (singular!)
+		void calculateNearestGridVertex(float coordX, float coordY, int& rVertexX, int& rVertexY) const;
 
-		// Calculate nearest grid vertices
+		// Calculate nearest grid vertices (plural!)
 		struct GridPosition
 		{
 			int lowerX, upperX, lowerY, upperY = 0; // grid vertices
 			float innerX, innerY; // relative position within vertices
 		};
-		GridPosition calculateNearestGridVertices(int coordX, int coordY) const;
+		GridPosition calculateNearestGridVertices(float coordX, float coordY) const;
 
 		// Pointer to GUI
 		GUI const * mpGUI;

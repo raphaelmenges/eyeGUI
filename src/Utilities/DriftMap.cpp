@@ -47,8 +47,8 @@ namespace eyegui
 		float gazeX = (float)rGazeX;
 		float gazeY = (float)rGazeY;
 		apply(gazeX, gazeY);
-		rGazeX = gazeX;
-		rGazeY = gazeY;
+		rGazeX = (int)gazeX;
+		rGazeY = (int)gazeY;
 	}
 
 	void DriftMap::notifyInteraction(float centerX, float centerY)
@@ -82,7 +82,7 @@ namespace eyegui
 		*/
 
 		// Adapt values of nearest vertices by distance
-		auto n = calculateNearestGridVertices(mGazeX, mGazeY); // input is gaze and its drift is corrected
+		auto n = calculateNearestGridVertices((float)mGazeX, (float)mGazeY); // input is gaze and its drift is corrected
 		const float norm = 1.f / glm::sqrt(2.f);
 		float oneMinusInnerX = 1.f - n.innerX;
 		float oneMinusInnerY = 1.f - n.innerY;
@@ -169,26 +169,26 @@ namespace eyegui
 		rY -= (int)driftY;
 	}
 
-	void DriftMap::calculateNearestGridVertex(int coordX, int coordY, int& rVertexX, int& rVertexY) const
+	void DriftMap::calculateNearestGridVertex(float coordX, float coordY, int& rVertexX, int& rVertexY) const
 	{
-		float relativeX = (float)coordX / (float)(mpGUI->getWindowWidth() - 1); // relative value
+		float relativeX = coordX / (float)(mpGUI->getWindowWidth() - 1); // relative value
 		relativeX *= mGrid.RES_X; // value in interval [0,RES_X]
 		rVertexX = (int)(relativeX + 0.5f);
 		rVertexX = clamp(rVertexX, 0, mGrid.RES_X);
-		float relativeY = (float)coordY / (float)(mpGUI->getWindowHeight() - 1); // relative value
+		float relativeY = coordY / (float)(mpGUI->getWindowHeight() - 1); // relative value
 		relativeY *= mGrid.RES_Y; // value in interval [0,RES_Y]
 		rVertexY = (int)(relativeY + 0.5f);
 		rVertexY = clamp(rVertexY, 0, mGrid.RES_Y);
 	}
 
-	DriftMap::GridPosition DriftMap::calculateNearestGridVertices(int coordX, int coordY) const
+	DriftMap::GridPosition DriftMap::calculateNearestGridVertices(float coordX, float coordY) const
 	{
 		GridPosition result;
-		float gridX = ((float)coordX / (float)(mpGUI->getWindowWidth() - 1)) * mGrid.RES_X;  // value in interval [0,RES_X]
+		float gridX = (coordX / (float)(mpGUI->getWindowWidth() - 1)) * mGrid.RES_X;  // value in interval [0,RES_X]
 		result.lowerX = (int)std::floor(gridX); result.lowerX = clamp(result.lowerX, 0, mGrid.RES_X);
 		result.upperX = (int)std::ceil(gridX); result.upperX = clamp(result.upperX, 0, mGrid.RES_X);
 		result.innerX = gridX - (float)result.lowerX; result.innerX = clamp(result.innerX, 0.f, 1.f); // relative position within grid cell
-		float gridY = ((float)coordY / (float)(mpGUI->getWindowHeight() - 1)) * mGrid.RES_Y;  // value in interval [0,RES_Y]
+		float gridY = (coordY / (float)(mpGUI->getWindowHeight() - 1)) * mGrid.RES_Y;  // value in interval [0,RES_Y]
 		result.lowerY = (int)std::floor(gridY); result.lowerY = clamp(result.lowerY, 0, mGrid.RES_Y);
 		result.upperY = (int)std::ceil(gridY); result.upperY = clamp(result.upperY, 0, mGrid.RES_Y);
 		result.innerY = gridY - (float)result.lowerY; result.innerY = clamp(result.innerY, 0.f, 1.f); // relative position within grid cell
