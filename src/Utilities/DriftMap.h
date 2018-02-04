@@ -9,6 +9,10 @@
 // provided gaze coordinates. Offset is from center of activation to gaze.
 
 // TODO: breaks for windows smaller than 1x1 (division through 0)
+// TODO: this current design assumes that there is only one eyeGUI gui object
+// but it would be better to have a shared drift map object which can be
+// used and filled by multiple GUI objects. Or make the usage of multiple
+// GUI objects no more necessary (e.g. in GazeTheWeb)
 
 #ifndef DRIFT_MAP_H_
 #define DRIFT_MAP_H_
