@@ -193,10 +193,13 @@ namespace eyegui
         // Copy constant input
         Input copyInput = input;
 
-		// Apply drift correction
+		// Update drift map
+		mupDriftMap->update(copyInput.gazeX, copyInput.gazeY);
+
+		// Apply drift map
 		if (mUseDriftMap)
 		{
-			mupDriftMap->update(copyInput.gazeX, copyInput.gazeY);
+			mupDriftMap->apply(copyInput.gazeX, copyInput.gazeY);
 		}
 
         // Update all layers in reversed order

@@ -33,8 +33,8 @@ namespace eyegui
 		// Constructor
 		DriftMap(GUI const * pGUI);
 
-		// Takes reference to gaze, stores it and provides correction
-		void update(int& rGazeX, int& rGazeY);
+		// Stores current gaze for updating drift map
+		void update(int gazeX, int rGazeY);
 
 		// Tell about center of attention and time until activation
 		void notifyInteraction(float centerX, float centerY);
@@ -46,6 +46,7 @@ namespace eyegui
 		DriftGrid getCurrentDriftMap() const;
 
 		// Apply
+		void apply(int& rX, int& rY) const;
 		void apply(float& rX, float& rY) const;
 
 	private:

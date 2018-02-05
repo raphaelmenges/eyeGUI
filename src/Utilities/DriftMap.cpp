@@ -27,28 +27,11 @@ namespace eyegui
 		mpGUI = pGUI;
 	}
 
-	void DriftMap::update(int& rGazeX, int& rGazeY)
+	void DriftMap::update(int gazeX, int gazeY)
 	{
-		bool different = rGazeX != mGazeX && rGazeY != mGazeY;
-
-		// #######################
-		// ### UPDATE OF STATE ###
-		// #######################
-
 		// Store current gaze for future drift estimations
-		mGazeX = rGazeX;
-		mGazeY = rGazeY;
-
-		// #######################################
-		// ### APPLICATION OF DRIFT CORRECTION ###
-		// #######################################
-
-		// Apply drift correction
-		float gazeX = (float)rGazeX;
-		float gazeY = (float)rGazeY;
-		apply(gazeX, gazeY);
-		rGazeX = (int)gazeX;
-		rGazeY = (int)gazeY;
+		mGazeX = gazeX;
+		mGazeY = gazeY;
 	}
 
 	void DriftMap::notifyInteraction(float centerX, float centerY)
@@ -131,6 +114,15 @@ namespace eyegui
 		return copy;
 	}
 
+	void DriftMap::apply(int& rX, int& rY) const
+	{
+		float x = (float)rX;
+		float y = (float)rY;
+		apply(x, y);
+		rX = (int)x;
+		rY = (int)y;
+	}
+
 	void DriftMap::apply(float& rX, float& rY) const
 	{
 		// ### Global drift
@@ -165,8 +157,8 @@ namespace eyegui
 		float driftY = driftAY * (1.f - n.innerY) + driftBY * n.innerY;
 
 		// Apply
-		rX -= (int)driftX;
-		rY -= (int)driftY;
+		rX -= driftX;
+		rY -= driftY;
 	}
 
 	void DriftMap::calculateNearestGridVertex(float coordX, float coordY, int& rVertexX, int& rVertexY) const
