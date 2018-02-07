@@ -14,12 +14,20 @@
 
 #include <iostream>
 #include <cmath>
+#include <chrono>
 
 namespace eyegui
 {
+	long long GetTimestamp()
+	{
+		std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+		return ms.count();
+	}
+
 	DriftMap::DriftMap(GUI const * pGUI)
 	{
 		mpGUI = pGUI;
+		mGrid.initTimestamp = GetTimestamp();
 	}
 
 	void DriftMap::update(int gazeX, int gazeY)
@@ -65,6 +73,9 @@ namespace eyegui
 				mGrid.cells[x][y] = { 0.f, 0.f };
 			}
 		}
+
+		// Reset initialization timestamp
+		mGrid.initTimestamp = GetTimestamp();
 	}
 
 	DriftGrid DriftMap::getCurrentDriftMap() const
@@ -77,6 +88,7 @@ namespace eyegui
 				copy.cells[x][y] = mGrid.cells[x][y];
 			}
 		}
+		copy.initTimestamp = mGrid.initTimestamp;
 		return copy;
 	}
 

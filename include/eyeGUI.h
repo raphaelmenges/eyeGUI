@@ -152,6 +152,9 @@ namespace eyegui
 
 		//! Cells of grid containing horizontal and vertical drift.
 		std::pair<float, float> cells[RES_X][RES_Y] = { std::make_pair(0.f, 0.f) };
+
+		//! Timestamp (ms) of initialization
+		long long initTimestamp = 0;
 	};
 
 	//! Abstract listener class for buttons.
