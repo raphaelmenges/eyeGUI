@@ -51,27 +51,12 @@ namespace eyegui
 
 	private:
 
-		// Calculate nearest grid vertex (singular!)
-		void calculateNearestGridVertex(float coordX, float coordY, int& rVertexX, int& rVertexY) const;
-
-		// Calculate nearest grid vertices (plural!)
-		struct GridPosition
-		{
-			int lowerX, upperX, lowerY, upperY = 0; // grid vertices
-			float innerX, innerY; // relative position within vertices
-		};
-		GridPosition calculateNearestGridVertices(float coordX, float coordY) const;
-
 		// Pointer to GUI
 		GUI const * mpGUI;
 
 		// Current gaze
 		int mGazeX = 0;
 		int mGazeY = 0;
-
-		// Global drift
-		float mGlobalDriftX = 0;
-		float mGlobalDriftY = 0;
 
 		// Grid
 		DriftGrid mGrid;

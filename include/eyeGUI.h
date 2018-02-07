@@ -150,8 +150,8 @@ namespace eyegui
 		//! Vertical cell count.
 		static const int RES_Y = 9;
 
-		//! Vertices of grid holding the drift values.
-		std::pair<float, float> verts[RES_X + 1][RES_Y + 1] = { std::make_pair(0.f, 0.f) };
+		//! Cells of grid containing horizontal and vertical drift.
+		std::pair<float, float> cells[RES_X][RES_Y] = { std::make_pair(0.f, 0.f) };
 	};
 
 	//! Abstract listener class for buttons.
