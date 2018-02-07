@@ -35,14 +35,24 @@ namespace eyegui
 		float driftX = (float)(mGazeX) - centerX;
 		float driftY = (float)(mGazeY) - centerY;
 
+		// Limit drift
+		glm::vec2 drift(driftX, driftY);
+		float driftLength = glm::length(drift);
+		if (driftLength > DRIFT_MAP_MAX_DRIFT_PIXEL_RADIUS)
+		{
+			drift = DRIFT_MAP_MAX_DRIFT_PIXEL_RADIUS * glm::normalize(drift);
+		}
+
 		// Check into which cell to enter
 		float cellSizeX = (float)(mpGUI->getWindowWidth()) / (float)(DriftGrid::RES_X);
 		float cellSizeY = (float)(mpGUI->getWindowHeight()) / (float)(DriftGrid::RES_Y);
 		int cellX = (float)(mGazeX) / cellSizeX;
 		int cellY = (float)(mGazeY) / cellSizeY;
+		cellX = glm::clamp(cellX, 0, DriftGrid::RES_X - 1);
+		cellY = glm::clamp(cellY, 0, DriftGrid::RES_Y - 1);
 
 		// Override cell drift
-		mGrid.cells[cellX][cellY] = std::make_pair(driftX, driftY);
+		mGrid.cells[cellX][cellY] = std::make_pair(drift.x, drift.y);
 	}
 
 	void DriftMap::reset()
