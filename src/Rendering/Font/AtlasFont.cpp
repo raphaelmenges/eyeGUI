@@ -83,10 +83,12 @@ namespace eyegui
         // Check whether key was found
         if (pGlyph == NULL)
         {
+            /*
             throwWarning(
                 OperationNotifier::Operation::RUNTIME,
                 "Failed to find a character, check font file and character set",
                 mFilepath);
+			*/
 
             // Try to load fallback
             switch (fontSize)
