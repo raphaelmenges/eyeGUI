@@ -104,7 +104,7 @@ namespace eyegui
             "   float gradient = length(2*uv-1);\n" // simple gradient as base
             "   float circle = (1.0-gradient) * 75;\n" // extend gradient to unclamped circle
             "   float thresholdMask = clamp(100 * clamp((length(2*uv-1)) - (1.025 * threshold - 0.025), 0, 1), 0 ,1);\n" // inverted threshold
-            "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * sqrt(threshold) * (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
+            "   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * threshold * (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
             "}\n";
 
         static const char* pBoxThresholdFragmentShader =
@@ -119,7 +119,7 @@ namespace eyegui
             "void main() {\n"
             "   float thresholdMask = mix(uv.r, uv.g, orientation);\n"
             "   thresholdMask =  clamp(100 * clamp(1.9 * abs(thresholdMask - 0.5)  - (0.975 * threshold - 0.025), 0, 1), 0, 1);\n" // inverted threshold
-			"   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * sqrt(threshold) * (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
+			"   fragColor = vec4(1.0, 1.0, 1.0, texture(mask, uv).r * threshold * (1.0 - thresholdMask) * alpha) * thresholdColor;\n"
             "}\n";
 
         static const char* pHighlightFragmentShader =
