@@ -32,7 +32,14 @@ namespace eyegui
 
         // Calculate relative size of character
         float targetGlyphHeight = mpFont->getTargetGlyphHeight(FontSize::KEYBOARD);
-        mCharacterSize = std::max(KEY_MIN_SCALE, mpGlyph->size.y / targetGlyphHeight);
+        mCharacterSize = 
+			0.8f * std::max(KEY_MIN_SCALE, // chars may not be too small
+				glm::min(1.f, // limit to 1
+					((mpGlyph->size.y * 1.5f) // make size a little bit bigger so 'q' and 'e' will have the same final height
+						/ targetGlyphHeight))); // normalize by font height
+
+		// Calculate relative y offset of character
+		mCharacterYOffset = 0.25 * ((mpGlyph->bearing.y / targetGlyphHeight) - 0.6); // TODO: this is just scaled to "make it look good"
 
         // Prepare quad for displaying the character
         prepareQuad();
@@ -46,6 +53,7 @@ namespace eyegui
         mpQuadShader = rOtherKey.mpQuadShader;
         mpGlyph = rOtherKey.mpGlyph;
         mCharacterSize = rOtherKey.mCharacterSize;
+		mCharacterYOffset = rOtherKey.mCharacterYOffset;
 
         // But create own quad!
         prepareQuad();
@@ -177,12 +185,12 @@ namespace eyegui
         // Fill vertex buffer (in OpenGL space)
         glBindBuffer(GL_ARRAY_BUFFER, mQuadVertexBuffer);
         std::vector<glm::vec3> vertices;
-        vertices.push_back(glm::vec3(a, a, 0));
-        vertices.push_back(glm::vec3(b, a, 0));
-        vertices.push_back(glm::vec3(b, b, 0));
-        vertices.push_back(glm::vec3(b, b, 0));
-        vertices.push_back(glm::vec3(a, b, 0));
-        vertices.push_back(glm::vec3(a, a, 0));
+        vertices.push_back(glm::vec3(a, a + mCharacterYOffset, 0));
+        vertices.push_back(glm::vec3(b, a + mCharacterYOffset, 0));
+        vertices.push_back(glm::vec3(b, b + mCharacterYOffset, 0));
+        vertices.push_back(glm::vec3(b, b + mCharacterYOffset, 0));
+        vertices.push_back(glm::vec3(a, b + mCharacterYOffset, 0));
+        vertices.push_back(glm::vec3(a, a + mCharacterYOffset, 0));
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * 3 * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
         // Texture coordinates are dynamic and filled in transformAndSize method

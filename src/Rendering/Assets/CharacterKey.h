@@ -56,6 +56,7 @@ namespace eyegui
         char16_t mCharacter;
         Glyph const * mpGlyph;
         float mCharacterSize;
+		float mCharacterYOffset; // this is in OpenGL coordinates
         Shader const * mpQuadShader;
         GLuint mQuadVertexBuffer;
         GLuint mQuadTextureCoordinateBuffer;
