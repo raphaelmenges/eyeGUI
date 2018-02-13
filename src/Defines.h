@@ -44,7 +44,7 @@ namespace eyegui
     static const float KEY_FOCUS_DURATION = 0.3f;
     static const float KEY_PICK_DURATION = 0.1f;
     static const float KEY_MIN_SCALE = 0.35f;
-    static const char16_t FONT_FALLBACK_CHARACTER = u' ';
+	static const char16_t FONT_FALLBACK_CHARACTER = u'\u25A1';
     static const float FONT_KEYBOARD_SIZE = 0.1f; // percentage of screen height
     static const uint DICTIONARY_MAX_FOLLOWING_WORDS = 2; // maximal count of words for each fully collected one serving as prefix
     static const uint DICTIONARY_INPUT_REPEAT_IGNORE_DEPTH = 1; // "Aaal" -> "Aal"

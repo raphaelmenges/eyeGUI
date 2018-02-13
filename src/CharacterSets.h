@@ -131,7 +131,9 @@ namespace eyegui
             {u'\u21A4', CharacterDirection::Neutral}, // backspace symbol
             {u'\u2423', CharacterDirection::Neutral}, // space symbol
             {u'\u2191', CharacterDirection::Neutral}, // shift symbol
-            {u'\u21BA', CharacterDirection::Neutral} // repeat symbol
+			{ u'\u21BA', CharacterDirection::Neutral }, // repeat symbol
+			{u'\u25A1', CharacterDirection::Neutral}  // char not found symbol
+
         };
 
 		// Additional German letters
